@@ -882,8 +882,8 @@ export const dbService = {
       const existingProducts = getMockData<Product>(MOCK_PRODUCTS_KEY);
       const updatedList: Product[] = [...existingProducts];
 
-      const targetBranchId = branchId || DEFAULT_BRANCH_ID;
-      const targetBranchName = branchName || DEFAULT_BRANCH_NAME;
+      const targetBranchId = branchId || null;
+      const targetBranchName = branchName || null;
 
       const upsertItems: Product[] = [];
 
