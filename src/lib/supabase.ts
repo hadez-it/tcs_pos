@@ -915,43 +915,23 @@ export const dbService = {
       const upsertItems: Product[] = [];
 
       importedItems.forEach(item => {
-        let idKey = item.id || item.sku || generateId();
-        const existingIdx = updatedList.findIndex(p => p.id === idKey || (p.sku && p.sku.toUpperCase() === idKey.toUpperCase()));
-
-        // Duplicate id within this same import batch (or a collision with an
-        // existing product) must not produce a second upsert row with the same
-        // primary key — that makes ON CONFLICT DO UPDATE hit the row twice.
-        if (usedIds.has(idKey)) {
+        // Never reuse CSV identifiers: every imported row gets a brand-new id,
+        // barcode, and sku so a re-import can never clash with existing rows.
+        let idKey = generateId();
+        while (usedIds.has(idKey)) {
           idKey = generateId();
         }
-        const existingProduct = existingIdx !== -1 ? updatedList[existingIdx] : undefined;
 
-        // If we're updating a product that already exists, keep its codes so a
-        // re-import of the same file never churns barcodes / SKUs.
-        let barcode = existingProduct?.barcode || item.barcode || idKey;
-        let sku = (existingProduct?.sku || item.sku || idKey).toUpperCase();
+        const barcode = nextSequentialBarcode(usedBarcodes);
 
-        if (existingProduct) {
-          // Release this product's own codes so they don't count as taken for itself.
-          usedBarcodes.delete(normalizeBarcode(existingProduct.barcode));
-          usedSkus.delete(normalizeSku(existingProduct.sku));
+        let sku = normalizeSku(idKey);
+        while (usedSkus.has(sku)) {
+          sku = normalizeSku(generateId());
         }
 
-        // Resolve collisions with other products or earlier rows in this import.
-        if (barcode && usedBarcodes.has(normalizeBarcode(barcode))) {
-          barcode = nextSequentialBarcode(usedBarcodes);
-        }
+        usedIds.add(idKey);
         usedBarcodes.add(normalizeBarcode(barcode));
-
-        if (sku && usedSkus.has(normalizeSku(sku))) {
-          let suffix = 1;
-          let candidate = `${sku}-${suffix}`;
-          while (usedSkus.has(normalizeSku(candidate))) {
-            candidate = `${sku}-${++suffix}`;
-          }
-          sku = candidate;
-        }
-        usedSkus.add(normalizeSku(sku));
+        usedSkus.add(sku);
 
         const fullItem: Product = {
           id: idKey,
@@ -976,12 +956,7 @@ export const dbService = {
           branch_name: targetBranchName,
         };
 
-        if (existingIdx !== -1) {
-          updatedList[existingIdx] = { ...updatedList[existingIdx], ...fullItem };
-        } else {
-          updatedList.push(fullItem);
-        }
-        usedIds.add(idKey);
+        updatedList.push(fullItem);
         upsertItems.push(fullItem);
       });
 
