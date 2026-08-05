@@ -889,10 +889,12 @@ export const dbService = {
       // below can never mint a code that already lives in the database.
       const usedBarcodes = new Set<string>();
       const usedSkus = new Set<string>();
+      const usedIds = new Set<string>();
 
       existingProducts.forEach(p => {
         if (p.barcode) usedBarcodes.add(normalizeBarcode(p.barcode));
         if (p.sku) usedSkus.add(normalizeSku(p.sku));
+        if (p.id) usedIds.add(p.id);
       });
 
       if (isSupabaseConfigured && supabase) {
@@ -903,6 +905,7 @@ export const dbService = {
           (remoteRows || []).forEach(p => {
             if (p.barcode) usedBarcodes.add(normalizeBarcode(p.barcode));
             if (p.sku) usedSkus.add(normalizeSku(p.sku));
+            if (p.id) usedIds.add(p.id);
           });
         } catch (err) {
           console.warn('Could not fetch remote product codes for import dedupe:', err);
@@ -912,8 +915,15 @@ export const dbService = {
       const upsertItems: Product[] = [];
 
       importedItems.forEach(item => {
-        const idKey = item.id || item.sku || generateId();
+        let idKey = item.id || item.sku || generateId();
         const existingIdx = updatedList.findIndex(p => p.id === idKey || (p.sku && p.sku.toUpperCase() === idKey.toUpperCase()));
+
+        // Duplicate id within this same import batch (or a collision with an
+        // existing product) must not produce a second upsert row with the same
+        // primary key — that makes ON CONFLICT DO UPDATE hit the row twice.
+        if (usedIds.has(idKey)) {
+          idKey = generateId();
+        }
         const existingProduct = existingIdx !== -1 ? updatedList[existingIdx] : undefined;
 
         // If we're updating a product that already exists, keep its codes so a
@@ -971,6 +981,7 @@ export const dbService = {
         } else {
           updatedList.push(fullItem);
         }
+        usedIds.add(idKey);
         upsertItems.push(fullItem);
       });
 
