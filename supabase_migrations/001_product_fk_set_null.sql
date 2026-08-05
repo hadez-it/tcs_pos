@@ -29,7 +29,7 @@ BEGIN
   FOR r IN
     SELECT c.conname AS cn
     FROM pg_constraint c
-    WHERE c.conftype = 'f'
+    WHERE c.contype = 'f'
       AND c.conrelid = tbl_real::regclass
       AND c.confrelid = 'public.products'::regclass
   LOOP
