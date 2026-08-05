@@ -878,6 +878,88 @@ export const dbService = {
       }
     },
 
+    /**
+     * Adds to a product's current stock (additive "fill stock") and records a
+     * stock-in transaction. Throws if quantity is not a positive number.
+     */
+    async restock(id: string, quantity: number, performedBy: string): Promise<Product> {
+      if (!quantity || quantity <= 0) {
+        throw new Error('Restock quantity must be a positive number.');
+      }
+
+      // Always update LocalStorage first (offline-safe mirror).
+      const products = getMockData<Product>(MOCK_PRODUCTS_KEY);
+      const idx = products.findIndex(p => p.id === id);
+      if (idx === -1) throw new Error('Product not found');
+
+      const current = products[idx];
+      const oldStock = current.stock || 0;
+      const newStock = oldStock + quantity;
+      const updatedProduct: Product = {
+        ...current,
+        stock: newStock,
+        updated_at: new Date().toLocaleString()
+      };
+      products[idx] = updatedProduct;
+      saveMockData(MOCK_PRODUCTS_KEY, products);
+
+      const txRecord: InventoryTransaction = {
+        id: generateId(),
+        product_id: id,
+        product_name: current.name,
+        branch_id: current.branch_id || DEFAULT_BRANCH_ID,
+        branch_name: current.branch_name || DEFAULT_BRANCH_NAME,
+        type: 'stock-in',
+        quantity,
+        notes: `Restocked +${quantity}. Old stock: ${oldStock}, New stock: ${newStock}`,
+        performed_by: performedBy,
+        created_at: new Date().toISOString()
+      };
+      const transactions = getMockData<InventoryTransaction>(MOCK_TRANSACTIONS_KEY);
+      transactions.push(txRecord);
+      saveMockData(MOCK_TRANSACTIONS_KEY, transactions);
+
+      if (isSupabaseConfigured && supabase) {
+        try {
+          const { data: remoteCurrent } = await supabase
+            .from('products')
+            .select('*')
+            .eq('id', id)
+            .single();
+          const remoteOld = remoteCurrent?.stock || current.stock || 0;
+          const remoteNew = remoteOld + quantity;
+
+          const { error } = await supabase
+            .from('products')
+            .update({ stock: remoteNew })
+            .eq('id', id);
+          if (error) throw error;
+
+          try {
+            await supabase.from('inventory_transactions').insert({
+              id: generateId(),
+              product_id: id,
+              product_name: current.name,
+              branch_id: current.branch_id || DEFAULT_BRANCH_ID,
+              branch_name: current.branch_name || DEFAULT_BRANCH_NAME,
+              type: 'stock-in',
+              quantity,
+              notes: `Restocked +${quantity}. Old stock: ${remoteOld}, New stock: ${remoteNew}`,
+              performed_by: performedBy,
+              created_at: new Date().toISOString()
+            });
+          } catch (txErr) {
+            console.warn('inventory_transactions insert failed (non-fatal):', txErr);
+          }
+        } catch (err: any) {
+          console.warn('Supabase products.restock failed (local state kept):', err);
+          throw new Error(err.message || 'Failed to restock product in database.');
+        }
+      }
+
+      return updatedProduct;
+    },
+
     async bulkImport(importedItems: Partial<Product>[], performedBy: string, branchId?: string, branchName?: string): Promise<number> {
       const existingProducts = getMockData<Product>(MOCK_PRODUCTS_KEY);
       const updatedList: Product[] = [...existingProducts];

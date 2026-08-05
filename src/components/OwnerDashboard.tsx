@@ -5,7 +5,7 @@ import {
   Briefcase, CheckCircle, RefreshCw, Layers, Shield, FileText, Building2, Store, MapPin,
   Database, Copy, Download, Printer, Tag, FileSpreadsheet, Upload, Award, Eye, Receipt, CreditCard,
   Menu, X, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Image, Sparkles, Globe, Phone, Mail, Check, Settings,
-  ArrowUpRight, ArrowDownLeft, Wallet, Banknote, TrendingDown
+  ArrowUpRight, ArrowDownLeft, Wallet, Banknote, TrendingDown, PackagePlus
 } from 'lucide-react';
 import { 
   ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend 
@@ -19,6 +19,7 @@ import { SUPABASE_SCHEMA_SQL } from '../data/schemaSql';
 import BarcodePrintModal from './BarcodePrintModal';
 import CsvImportModal from './CsvImportModal';
 import SearchableCategorySelect from './SearchableCategorySelect';
+import QuickRestockModal from './QuickRestockModal';
 
 interface OwnerDashboardProps {
   user: UserProfile;
@@ -175,6 +176,10 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
   // CSV Import Modal State
   const [showCsvModal, setShowCsvModal] = useState(false);
 
+  // Quick Restock Modal State
+  const [restockProduct, setRestockProduct] = useState<Product | null>(null);
+  const [isRestocking, setIsRestocking] = useState(false);
+
   // Cashier Sales History Modal State
   const [selectedCashierForHistory, setSelectedCashierForHistory] = useState<{ cashier: UserProfile; sales: SaleWithItems[] } | null>(null);
 
@@ -293,6 +298,25 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
     await dbService.products.bulkImport(importedItems, user.name, branchId, branchName);
     await loadData();
     toast(`Successfully imported ${importedItems.length} products!`, 'success');
+  };
+
+  const openQuickRestock = (prod: Product) => {
+    setRestockProduct(prod);
+  };
+
+  const handleQuickRestock = async (productId: string, quantity: number) => {
+    if (isRestocking) return;
+    setIsRestocking(true);
+    try {
+      await dbService.products.restock(productId, quantity, user.name);
+      await loadData();
+      setRestockProduct(null);
+      setIsRestocking(false);
+      toast(`Stock added: +${quantity}.`, 'success');
+    } catch (err: any) {
+      setIsRestocking(false);
+      throw err;
+    }
   };
 
   const handleCopySql = () => {
@@ -1267,6 +1291,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
   useBackDismiss(showBarcodeModal, () => setShowBarcodeModal(false));
   useBackDismiss(showSqlModal, () => setShowSqlModal(false));
   useBackDismiss(showCsvModal, () => setShowCsvModal(false));
+  useBackDismiss(restockProduct !== null, () => setRestockProduct(null));
   useBackDismiss(showCashFlowModal, () => setShowCashFlowModal(false));
   useBackDismiss(selectedCashierForHistory !== null, () => setSelectedCashierForHistory(null));
   useBackDismiss(deleteConfirm !== null, () => setDeleteConfirm(null));
@@ -2289,6 +2314,13 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                                     <span>Edit</span>
                                   </button>
                                   <button
+                                    onClick={() => openQuickRestock(prod)}
+                                    className="p-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-lg transition-colors flex items-center gap-1 text-[10px] font-bold"
+                                  >
+                                    <PackagePlus className="w-3 h-3" />
+                                    <span>Restock</span>
+                                  </button>
+                                  <button
                                     onClick={() => triggerDeleteProduct(prod.id, prod.name)}
                                     className="p-1.5 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg transition-colors flex items-center gap-1 text-[10px] font-bold"
                                   >
@@ -2433,6 +2465,13 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                                         title="Edit Details & Adjust Stock"
                                       >
                                         <Edit2 className="w-3.5 h-3.5" />
+                                      </button>
+                                      <button
+                                        onClick={() => openQuickRestock(prod)}
+                                        className="p-1.5 hover:bg-emerald-50 text-emerald-600 hover:text-emerald-800 rounded transition-colors cursor-pointer"
+                                        title="Quick Restock"
+                                      >
+                                        <PackagePlus className="w-3.5 h-3.5" />
                                       </button>
                                       <button
                                         onClick={() => triggerDeleteProduct(prod.id, prod.name)}
@@ -4514,6 +4553,13 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
         branches={branches}
         defaultBranchId={user.branch_id || ''}
         defaultBranchName={user.branch_name || ''}
+      />
+
+      <QuickRestockModal
+        product={restockProduct}
+        isOpen={restockProduct !== null}
+        onClose={() => setRestockProduct(null)}
+        onRestock={handleQuickRestock}
       />
 
       {/* Bottom Navigation Bar - Android Material Design */}
