@@ -26,6 +26,7 @@ export const QuickRestockModal: React.FC<QuickRestockModalProps> = ({
     if (isOpen) {
       setQuantity(1);
       setErrorMsg(null);
+      setIsSaving(false);
     }
   }, [isOpen, product]);
 
@@ -43,6 +44,7 @@ export const QuickRestockModal: React.FC<QuickRestockModalProps> = ({
     setErrorMsg(null);
     try {
       await onRestock(product.id, quantity);
+      setIsSaving(false);
     } catch (err: any) {
       setErrorMsg(err.message || 'Failed to restock product.');
       setIsSaving(false);
