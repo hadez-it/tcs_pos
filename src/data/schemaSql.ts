@@ -194,7 +194,7 @@ CREATE POLICY "Owners can delete sales (void)"
 CREATE TABLE public.sale_items (
     id          TEXT PRIMARY KEY,
     sale_id     TEXT REFERENCES public.sales(id) ON DELETE CASCADE,
-    product_id  TEXT REFERENCES public.products(id),
+    product_id  TEXT REFERENCES public.products(id) ON DELETE SET NULL,
     product_name TEXT NOT NULL,
     quantity    INTEGER NOT NULL,
     unit_price  NUMERIC NOT NULL,
@@ -220,7 +220,7 @@ CREATE POLICY "Owners can delete sale_items (void)"
 -- ── 6. Inventory Transactions ────────────────────────────────
 CREATE TABLE public.inventory_transactions (
     id          TEXT PRIMARY KEY,
-    product_id  TEXT REFERENCES public.products(id),
+    product_id  TEXT REFERENCES public.products(id) ON DELETE SET NULL,
     product_name TEXT NOT NULL,
     branch_id   TEXT NOT NULL REFERENCES public.branches(id),
     branch_name TEXT NOT NULL,
