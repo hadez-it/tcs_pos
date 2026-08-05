@@ -1,0 +1,455 @@
+@import "tailwindcss";
+
+@theme {
+  --color-premium-50: #f0f0ff;
+  --color-premium-100: #e0e0ff;
+  --color-premium-200: #c4b5fd;
+  --color-premium-300: #a78bfa;
+  --color-premium-400: #8b5cf6;
+  --color-premium-500: #6d28d9;
+  --color-premium-600: #5b21b6;
+  --color-premium-700: #4c1d95;
+  --color-premium-800: #3b0764;
+  --color-premium-900: #2e1065;
+
+  --color-android-surface: #ffffff;
+  --color-android-background: #f1f5f9;
+  --color-android-nav: #1e293b;
+  --color-android-nav-active: #6366f1;
+  --color-android-status: #1e1b4b;
+
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.2);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+@layer base {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  *::-webkit-scrollbar {
+    width: 3px;
+    height: 3px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 999px;
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
+
+  html, body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  body {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #f1f5f9;
+  }
+
+  #root {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+  }
+
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+
+  /* Android-native touch targets: minimum 48px */
+  button, a, input, select, textarea {
+    min-height: 44px;
+  }
+
+  /* Smooth momentum scrolling for Android */
+  .android-scroll {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+    scroll-behavior: smooth;
+  }
+
+  /* Safe area insets for Android notch/punch-hole */
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  /* Bottom nav safe area */
+  .android-nav-padding {
+    padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+@layer utilities {
+  .glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+  }
+
+  .glass-strong {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+
+  .shadow-premium {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.04);
+  }
+
+  .shadow-premium-lg {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 16px 48px rgba(0, 0, 0, 0.08);
+  }
+
+  .shadow-premium-xl {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04), 0 24px 64px rgba(0, 0, 0, 0.08);
+  }
+
+  .text-gradient {
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Android ripple effect on tap */
+  .active-scale {
+    transition: transform 0.12s cubic-bezier(0.2, 0, 0, 1);
+  }
+
+  .active-scale:active {
+    transform: scale(0.97);
+  }
+
+  .card-hover {
+    transition: all 0.2s ease;
+  }
+
+  .card-hover:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.04);
+  }
+
+  /* Android Material-style bottom sheet animation */
+  .sheet-enter {
+    animation: sheetEnter 0.35s cubic-bezier(0.2, 0, 0, 1) forwards;
+  }
+
+  .sheet-exit {
+    animation: sheetExit 0.25s cubic-bezier(0.2, 0, 0, 1) forwards;
+  }
+
+  /* Android bottom nav item animation */
+  .nav-item-tap {
+    transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+  }
+
+  .nav-item-tap:active {
+    transform: scale(0.9);
+  }
+
+  /* Android status bar gradient */
+  .android-status-bar {
+    background: linear-gradient(to right, #1e1b4b, #312e81);
+  }
+
+  /* Pull indicator for bottom sheets */
+  .pull-indicator {
+    width: 36px;
+    height: 4px;
+    border-radius: 2px;
+    background: #cbd5e1;
+    margin: 0 auto;
+  }
+
+  /* Haptic feedback simulation via visual */
+  .haptic-press {
+    transition: transform 0.08s ease;
+  }
+
+  .haptic-press:active {
+    transform: scale(0.96);
+  }
+
+  /* Android FAB shadow */
+  .fab-shadow {
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4), 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes sheetEnter {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+@keyframes sheetExit {
+  from { transform: translateY(0); }
+  to { transform: translateY(100%); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes ripple {
+  0% { transform: scale(0); opacity: 0.6; }
+  100% { transform: scale(4); opacity: 0; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.35s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.animate-slide-down {
+  animation: slideDown 0.25s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.25s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 2s ease-in-out infinite;
+}
+
+.animate-count-up {
+  animation: countUp 0.4s ease;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.3s ease;
+}
+
+/* Android bottom sheet styles */
+.bottom-sheet-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 50;
+  animation: fadeIn 0.2s ease;
+}
+
+.bottom-sheet {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-height: 90vh;
+  background: white;
+  border-radius: 24px 24px 0 0;
+  z-index: 51;
+  animation: sheetEnter 0.35s cubic-bezier(0.2, 0, 0, 1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.bottom-sheet.closing {
+  animation: sheetExit 0.25s cubic-bezier(0.2, 0, 0, 1) forwards;
+}
+
+/* Full screen modal for Android */
+.android-fullsheet {
+  position: fixed;
+  inset: 0;
+  background: white;
+  z-index: 50;
+  animation: sheetEnter 0.3s cubic-bezier(0.2, 0, 0, 1);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Swipeable list item */
+.swipe-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.swipe-action-left {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  padding-left: 16px;
+  background: #ef4444;
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.swipe-action-right {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  padding-right: 16px;
+  background: #6366f1;
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* Android material input styles.
+   Kept in @layer components so per-input utilities (pl-11, pr-24, py-2.5,
+   text-xs, ...) still win — unlayered rules outrank Tailwind's utility layer. */
+@layer components {
+  .android-input {
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 15px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    min-height: 48px;
+  }
+
+  .android-input:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    background: white;
+  }
+}
+
+/* Android chip style */
+.android-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1.5px solid #e2e8f0;
+  background: white;
+  transition: all 0.15s ease;
+  cursor: pointer;
+  min-height: 36px;
+}
+
+.android-chip.active {
+  background: #6366f1;
+  color: white;
+  border-color: #6366f1;
+}
+
+/* Card elevation for Android Material */
+.android-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.android-card:active {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  transform: scale(0.99);
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .print-area, .print-area * {
+    visibility: visible;
+  }
+  .print-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+}
+
+/* Android notch handling */
+@supports (padding-top: env(safe-area-inset-top)) {
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
