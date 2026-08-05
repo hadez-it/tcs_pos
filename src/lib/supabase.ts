@@ -887,77 +887,78 @@ export const dbService = {
         throw new Error('Restock quantity must be a positive number.');
       }
 
-      // Always update LocalStorage first (offline-safe mirror).
-      const products = getMockData<Product>(MOCK_PRODUCTS_KEY);
-      const idx = products.findIndex(p => p.id === id);
-      if (idx === -1) throw new Error('Product not found');
-
-      const current = products[idx];
-      const oldStock = current.stock || 0;
-      const newStock = oldStock + quantity;
-      const updatedProduct: Product = {
-        ...current,
-        stock: newStock,
-        updated_at: new Date().toLocaleString()
+      const buildUpdated = (current: Product): { product: Product; tx: InventoryTransaction } => {
+        const oldStock = current.stock || 0;
+        const newStock = oldStock + quantity;
+        const updatedProduct: Product = {
+          ...current,
+          stock: newStock,
+          updated_at: new Date().toLocaleString()
+        };
+        const tx: InventoryTransaction = {
+          id: generateId(),
+          product_id: id,
+          product_name: current.name,
+          branch_id: current.branch_id || DEFAULT_BRANCH_ID,
+          branch_name: current.branch_name || DEFAULT_BRANCH_NAME,
+          type: 'stock-in',
+          quantity,
+          notes: `Restocked +${quantity}. Old stock: ${oldStock}, New stock: ${newStock}`,
+          performed_by: performedBy,
+          created_at: new Date().toISOString()
+        };
+        return { product: updatedProduct, tx };
       };
-      products[idx] = updatedProduct;
-      saveMockData(MOCK_PRODUCTS_KEY, products);
-
-      const txRecord: InventoryTransaction = {
-        id: generateId(),
-        product_id: id,
-        product_name: current.name,
-        branch_id: current.branch_id || DEFAULT_BRANCH_ID,
-        branch_name: current.branch_name || DEFAULT_BRANCH_NAME,
-        type: 'stock-in',
-        quantity,
-        notes: `Restocked +${quantity}. Old stock: ${oldStock}, New stock: ${newStock}`,
-        performed_by: performedBy,
-        created_at: new Date().toISOString()
-      };
-      const transactions = getMockData<InventoryTransaction>(MOCK_TRANSACTIONS_KEY);
-      transactions.push(txRecord);
-      saveMockData(MOCK_TRANSACTIONS_KEY, transactions);
 
       if (isSupabaseConfigured && supabase) {
         try {
-          const { data: remoteCurrent } = await supabase
+          // Read from the database (the authoritative source when online).
+          const { data: current, error: fetchErr } = await supabase
             .from('products')
             .select('*')
             .eq('id', id)
             .single();
-          const remoteOld = remoteCurrent?.stock || current.stock || 0;
-          const remoteNew = remoteOld + quantity;
+          if (fetchErr) throw fetchErr;
 
+          const { product, tx } = buildUpdated(current);
           const { error } = await supabase
             .from('products')
-            .update({ stock: remoteNew })
+            .update({ stock: product.stock })
             .eq('id', id);
           if (error) throw error;
 
           try {
-            await supabase.from('inventory_transactions').insert({
-              id: generateId(),
-              product_id: id,
-              product_name: current.name,
-              branch_id: current.branch_id || DEFAULT_BRANCH_ID,
-              branch_name: current.branch_name || DEFAULT_BRANCH_NAME,
-              type: 'stock-in',
-              quantity,
-              notes: `Restocked +${quantity}. Old stock: ${remoteOld}, New stock: ${remoteNew}`,
-              performed_by: performedBy,
-              created_at: new Date().toISOString()
-            });
+            await supabase.from('inventory_transactions').insert(tx);
           } catch (txErr) {
             console.warn('inventory_transactions insert failed (non-fatal):', txErr);
           }
-        } catch (err: any) {
-          console.warn('Supabase products.restock failed (local state kept):', err);
-          throw new Error(err.message || 'Failed to restock product in database.');
-        }
-      }
 
-      return updatedProduct;
+          return product;
+        } catch (err: any) {
+          console.warn('Supabase products.restock failed, falling back to LocalStorage:', err);
+          const products = getMockData<Product>(MOCK_PRODUCTS_KEY);
+          const idx = products.findIndex(p => p.id === id);
+          if (idx === -1) throw new Error('Product not found');
+          const { product, tx } = buildUpdated(products[idx]);
+          products[idx] = product;
+          saveMockData(MOCK_PRODUCTS_KEY, products);
+          const transactions = getMockData<InventoryTransaction>(MOCK_TRANSACTIONS_KEY);
+          transactions.push(tx);
+          saveMockData(MOCK_TRANSACTIONS_KEY, transactions);
+          return product;
+        }
+      } else {
+        const products = getMockData<Product>(MOCK_PRODUCTS_KEY);
+        const idx = products.findIndex(p => p.id === id);
+        if (idx === -1) throw new Error('Product not found');
+        const { product, tx } = buildUpdated(products[idx]);
+        products[idx] = product;
+        saveMockData(MOCK_PRODUCTS_KEY, products);
+        const transactions = getMockData<InventoryTransaction>(MOCK_TRANSACTIONS_KEY);
+        transactions.push(tx);
+        saveMockData(MOCK_TRANSACTIONS_KEY, transactions);
+        return product;
+      }
     },
 
     async bulkImport(importedItems: Partial<Product>[], performedBy: string, branchId?: string, branchName?: string): Promise<number> {
