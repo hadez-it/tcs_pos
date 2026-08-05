@@ -208,7 +208,12 @@ export const SearchableCategorySelect: React.FC<SearchableCategorySelectProps> =
                 {allowCreate && !creatingNew && searchQuery.trim() !== '' && (
                   <button
                     type="button"
-                    onClick={() => setCreatingNew(true)}
+                    onClick={() => {
+                      onChange(searchQuery.trim());
+                      setIsOpen(false);
+                      setCreatingNew(false);
+                      setSearchQuery('');
+                    }}
                     className="w-full text-left px-3 py-2 rounded-lg text-xs font-semibold flex items-center justify-between transition-all cursor-pointer text-indigo-600 hover:bg-indigo-50 hover:text-white"
                   >
                     <span className="truncate">
