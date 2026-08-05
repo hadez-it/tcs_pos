@@ -886,16 +886,42 @@ export const dbService = {
       const targetBranchName = branchName || null;
 
       const upsertItems: Product[] = [];
+      const usedBarcodes = new Set<string>();
+      const usedSkus = new Set<string>();
+
+      existingProducts.forEach(p => {
+        if (p.barcode) usedBarcodes.add(normalizeBarcode(p.barcode));
+        if (p.sku) usedSkus.add(normalizeSku(p.sku));
+      });
 
       importedItems.forEach(item => {
         const idKey = item.id || item.sku || generateId();
         const existingIdx = updatedList.findIndex(p => p.id === idKey || (p.sku && p.sku.toUpperCase() === idKey.toUpperCase()));
 
+        let barcode = item.barcode || idKey;
+        let sku = (item.sku || idKey).toUpperCase();
+
+        // Resolve collisions with existing products or earlier rows in this import.
+        if (barcode && usedBarcodes.has(normalizeBarcode(barcode))) {
+          barcode = nextSequentialBarcode(usedBarcodes);
+        }
+        usedBarcodes.add(normalizeBarcode(barcode));
+
+        if (sku && usedSkus.has(normalizeSku(sku))) {
+          let suffix = 1;
+          let candidate = `${sku}-${suffix}`;
+          while (usedSkus.has(normalizeSku(candidate))) {
+            candidate = `${sku}-${++suffix}`;
+          }
+          sku = candidate;
+        }
+        usedSkus.add(normalizeSku(sku));
+
         const fullItem: Product = {
           id: idKey,
-          sku: item.sku || idKey,
+          sku,
           name: item.name || 'Unnamed Product',
-          barcode: item.barcode || idKey,
+          barcode,
           price: typeof item.price === 'number' ? item.price : 0,
           cost: typeof item.cost === 'number' ? item.cost : 0,
           stock: typeof item.stock === 'number' ? item.stock : 0,
@@ -927,7 +953,8 @@ export const dbService = {
       if (isSupabaseConfigured && supabase) {
         const { error } = await supabase.from('products').upsert(upsertItems);
         if (error) {
-          console.warn('Supabase bulkImport upsert warn (saved to LocalStorage):', error);
+          console.error('Supabase bulkImport upsert error:', error);
+          throw new Error(error.message || 'Failed to import products to database.');
         }
       }
 
