@@ -885,7 +885,8 @@ export const dbService = {
       const targetBranchId = branchId || null;
       const targetBranchName = branchName || null;
 
-      const upsertItems: Product[] = [];
+      // Seed taken codes from BOTH localStorage and Supabase so the dedupe
+      // below can never mint a code that already lives in the database.
       const usedBarcodes = new Set<string>();
       const usedSkus = new Set<string>();
 
@@ -894,14 +895,39 @@ export const dbService = {
         if (p.sku) usedSkus.add(normalizeSku(p.sku));
       });
 
+      if (isSupabaseConfigured && supabase) {
+        try {
+          const { data: remoteRows } = await supabase
+            .from('products')
+            .select('id, sku, barcode');
+          (remoteRows || []).forEach(p => {
+            if (p.barcode) usedBarcodes.add(normalizeBarcode(p.barcode));
+            if (p.sku) usedSkus.add(normalizeSku(p.sku));
+          });
+        } catch (err) {
+          console.warn('Could not fetch remote product codes for import dedupe:', err);
+        }
+      }
+
+      const upsertItems: Product[] = [];
+
       importedItems.forEach(item => {
         const idKey = item.id || item.sku || generateId();
         const existingIdx = updatedList.findIndex(p => p.id === idKey || (p.sku && p.sku.toUpperCase() === idKey.toUpperCase()));
+        const existingProduct = existingIdx !== -1 ? updatedList[existingIdx] : undefined;
 
-        let barcode = item.barcode || idKey;
-        let sku = (item.sku || idKey).toUpperCase();
+        // If we're updating a product that already exists, keep its codes so a
+        // re-import of the same file never churns barcodes / SKUs.
+        let barcode = existingProduct?.barcode || item.barcode || idKey;
+        let sku = (existingProduct?.sku || item.sku || idKey).toUpperCase();
 
-        // Resolve collisions with existing products or earlier rows in this import.
+        if (existingProduct) {
+          // Release this product's own codes so they don't count as taken for itself.
+          usedBarcodes.delete(normalizeBarcode(existingProduct.barcode));
+          usedSkus.delete(normalizeSku(existingProduct.sku));
+        }
+
+        // Resolve collisions with other products or earlier rows in this import.
         if (barcode && usedBarcodes.has(normalizeBarcode(barcode))) {
           barcode = nextSequentialBarcode(usedBarcodes);
         }
