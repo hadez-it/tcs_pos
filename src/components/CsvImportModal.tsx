@@ -206,6 +206,11 @@ export const CsvImportModal: React.FC<CsvImportModalProps> = ({
 
   const handleConfirmImport = async () => {
     if (parsedItems.length === 0 || isProcessing) return;
+    if (!selectedBranchId) {
+      setErrorMsg('Please select a branch before importing.');
+      toast('Please select a branch before importing.', 'error');
+      return;
+    }
     setIsProcessing(true);
     try {
       await onImportSuccess(parsedItems, selectedBranchId, selectedBranchName);
@@ -282,7 +287,7 @@ gamdvdstpnrqlk,R33 135w QC Adaptor ခေါင်းလွတ်,null,အား
 
           {/* BRANCH SELECTOR */}
           <div className="flex items-center space-x-3">
-            <label className="text-xs font-extrabold text-slate-700 whitespace-nowrap">Branch:</label>
+            <label className="text-xs font-extrabold text-slate-700 whitespace-nowrap">Branch <span className="text-red-500">*</span>:</label>
             <select
               value={selectedBranchId}
               onChange={(e) => {
@@ -292,6 +297,7 @@ gamdvdstpnrqlk,R33 135w QC Adaptor ခေါင်းလွတ်,null,အား
               }}
               className="flex-1 px-3 py-2 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
             >
+              <option value="" disabled>Select a branch to import into...</option>
               {branches.map(b => (
                 <option key={b.id} value={b.id}>{b.name} ({b.code})</option>
               ))}
@@ -421,7 +427,7 @@ gamdvdstpnrqlk,R33 135w QC Adaptor ခေါင်းလွတ်,null,အား
             </button>
             <button
               onClick={handleConfirmImport}
-              disabled={parsedItems.length === 0 || isProcessing}
+              disabled={parsedItems.length === 0 || isProcessing || !selectedBranchId}
               className="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-xs transition-all flex items-center space-x-1.5 disabled:opacity-50"
             >
               {isProcessing ? (
