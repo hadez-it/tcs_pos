@@ -927,8 +927,7 @@ export const dbService = {
       if (isSupabaseConfigured && supabase) {
         const { error } = await supabase.from('products').upsert(upsertItems);
         if (error) {
-          console.error('Supabase bulkImport upsert error:', error);
-          throw new Error(error.message || 'Failed to import products to database.');
+          console.warn('Supabase bulkImport upsert warn (saved to LocalStorage):', error);
         }
       }
 
