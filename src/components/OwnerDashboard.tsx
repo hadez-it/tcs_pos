@@ -3513,7 +3513,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
               </button>
             </div>
 
-            <form onSubmit={handleProductSubmit} className="flex flex-col flex-1 overflow-hidden min-h-0 text-xs">
+            <form onSubmit={handleProductSubmit} onKeyDown={(e) => { if (e.key === 'Enter' && !e.defaultPrevented) e.preventDefault(); }} className="flex flex-col flex-1 overflow-hidden min-h-0 text-xs">
               <div className="p-5 overflow-y-auto space-y-5 flex-1">
                 {formError && (
                   <div className="p-3 bg-red-50 border border-red-100 rounded-xl text-xs text-red-700 flex items-start space-x-1.5">
