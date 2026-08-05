@@ -18,6 +18,7 @@ import { useBackDismiss, useBackTabHistory } from '../lib/backNavigation';
 import { SUPABASE_SCHEMA_SQL } from '../data/schemaSql';
 import BarcodePrintModal from './BarcodePrintModal';
 import CsvImportModal from './CsvImportModal';
+import PrinterSettings from './PrinterSettings';
 import SearchableCategorySelect from './SearchableCategorySelect';
 import QuickRestockModal from './QuickRestockModal';
 
@@ -36,7 +37,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
   const [branches, setBranches] = useState<Branch[]>([]);
   const [selectedBranchId, setSelectedBranchId] = useState<string>('all');
   const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'cashiers' | 'staff-performance' | 'transactions' | 'branches' | 'settings' | 'cash-flow'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'cashiers' | 'staff-performance' | 'transactions' | 'branches' | 'settings' | 'cash-flow' | 'printers'>('overview');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isTabChanging, setIsTabChanging] = useState(false);
 
@@ -75,7 +76,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
   const INCOME_CATEGORIES = ['POS Sales', 'Investment', 'Loan Received', 'Other Income'];
   const EXPENSE_CATEGORIES = ['Inventory / Stock', 'Rent', 'Salaries', 'Utilities', 'Transport', 'Supplies', 'Marketing', 'Repairs', 'Other Expense'];
 
-  const handleTabSwitch = (tab: 'overview' | 'products' | 'cashiers' | 'staff-performance' | 'transactions' | 'branches' | 'settings' | 'cash-flow') => {
+  const handleTabSwitch = (tab: 'overview' | 'products' | 'cashiers' | 'staff-performance' | 'transactions' | 'branches' | 'settings' | 'cash-flow' | 'printers') => {
     // 1. Immediately close sidebar drawer for zero-lag menu response
     setIsSidebarOpen(false);
 
@@ -1280,7 +1281,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
   const [showMoreMenu, setShowMoreMenu] = useState(false);
 
   const mainTabs = ['overview', 'products', 'cashiers', 'cash-flow', 'branches'] as const;
-  const moreTabs = ['staff-performance', 'transactions', 'settings'] as const;
+  const moreTabs = ['staff-performance', 'transactions', 'settings', 'printers'] as const;
 
   // Back button: each surface pops in the reverse order it was opened, so a
   // delete confirmation raised from inside a modal closes before that modal.
@@ -1326,6 +1327,8 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                   ? 'Staff'
                   : activeTab === 'settings'
                   ? 'Branding'
+                  : activeTab === 'printers'
+                  ? 'Printers'
                   : activeTab === 'transactions'
                   ? 'Audit Logs'
                   : activeTab === 'cash-flow'
@@ -3530,6 +3533,11 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                 </form>
               </div>
             )}
+
+            {/* PRINTERS & DEVICES TAB */}
+            {activeTab === 'printers' && (
+              <PrinterSettings storeName={businessProfile.name} />
+            )}
           </div>
         )}
         </div>
@@ -4641,6 +4649,15 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
               >
                 <Store className="w-5 h-5 text-indigo-500" />
                 <span>Business & Branding</span>
+              </button>
+              <button
+                onClick={() => { handleTabSwitch('printers'); setShowMoreMenu(false); }}
+                className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-bold transition-all cursor-pointer active-scale ${
+                  activeTab === 'printers' ? 'bg-indigo-50 text-indigo-700' : 'text-slate-700 hover:bg-slate-50'
+                }`}
+              >
+                <Printer className="w-5 h-5 text-indigo-500" />
+                <span>Printers & Receipts</span>
               </button>
 
               <div className="border-t border-slate-100 my-2" />
