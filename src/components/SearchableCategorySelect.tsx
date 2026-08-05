@@ -161,8 +161,10 @@ export const SearchableCategorySelect: React.FC<SearchableCategorySelectProps> =
                 No matches
                 {allowCreate && searchQuery.trim() !== '' && (
                   <div className="mt-2 text-xs font-medium text-indigo-600 cursor-pointer hover:text-indigo-800" onClick={() => {
-                    setCreatingNew(true);
-                    searchInputRef.current?.focus();
+                    onChange(searchQuery.trim());
+                    setIsOpen(false);
+                    setCreatingNew(false);
+                    setSearchQuery('');
                   }}>
                     Create "{searchQuery}" →
                   </div>
