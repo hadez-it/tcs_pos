@@ -118,6 +118,7 @@ export function barcode(
   type: BarcodeType = 'CODE39',
   height: number = 50, // barcode bar height in dots (default ~50 dots for 58mm printers)
   hriPosition: 0 | 1 | 2 | 3 = 3, // HRI text position: 0=none, 1=above, 2=below, 3=both
+  moduleWidth: number = 2, // GS w n — narrow-module width (1..6)
 ): Uint8Array {
   const typeMap: Record<BarcodeType, number> = {
     UPCA: 0, UPCE: 1, EAN13: 2, EAN8: 3,
@@ -140,7 +141,7 @@ export function barcode(
   cmds.push(new Uint8Array([0x1d, 0x48, hriPosition]));
 
   // Set barcode width (GS w n) — n=2 is common for 58mm printers
-  cmds.push(new Uint8Array([0x1d, 0x77, 2]));
+  cmds.push(new Uint8Array([0x1d, 0x77, Math.min(Math.max(moduleWidth, 1), 6)]));
 
   // Print barcode (function B: GS k m n d1...dk)
   const cmd = new Uint8Array(4 + dataBytes.length);
@@ -301,11 +302,21 @@ export interface ThermalLabelOptions {
 const DOTS_PER_MM = 8; // 203 dpi
 const FONT_A_CHAR_DOTS = 12; // width of one font-A character
 const FONT_A_LINE_DOTS = 24; // height of one font-A text line
-const PRINTER_MARGIN_MM = 5; // printable area leaves ~5mm on each edge
+
+/**
+ * Printable width in mm for a given roll/paper width.
+ * Narrow rolls keep tighter side margins; 58mm/80mm follow the common specs
+ * (48mm / 72mm printable).
+ */
+export function getPrintableMm(paperWidthMm: number): number {
+  if (paperWidthMm <= 40) return Math.max(paperWidthMm - 4, 10);
+  if (paperWidthMm <= 58) return 48;
+  if (paperWidthMm <= 80) return 72;
+  return paperWidthMm - 8;
+}
 
 function printableDotsForPaper(paperWidthMm: number): number {
-  const printableMm = Math.max(paperWidthMm - PRINTER_MARGIN_MM * 2, 10);
-  return Math.round(printableMm * DOTS_PER_MM);
+  return Math.round(getPrintableMm(paperWidthMm) * DOTS_PER_MM);
 }
 
 /** Wrap text by words into lines of at most maxChars characters. */
@@ -354,6 +365,25 @@ export function normalizeBarcodeValue(value: string, type: BarcodeType): string 
       const clean = (value || '000000').toUpperCase().replace(/[^A-Z0-9\-\.\ \/\+%]/g, '');
       return clean || '000000';
     }
+  }
+}
+
+/**
+ * Estimate how many printable dots a barcode will occupy so the module width
+ * can be chosen to fit narrow labels. Rough module counts per symbology.
+ */
+function estimateBarcodeModules(data: string, type: BarcodeType): number {
+  const n = data.length;
+  switch (type) {
+    case 'CODE128': return (n + 2) * 11 + 20;
+    case 'CODE39': return n * 16 + 20;
+    case 'CODE93': return (n + 2) * 9 + 20;
+    case 'ITF': return Math.ceil(n / 2) * 18 + 20;
+    case 'EAN13': return 95 + 20;
+    case 'EAN8': return 67 + 20;
+    case 'UPCA': return 95 + 20;
+    case 'UPCE': return 51 + 20;
+    default: return (n + 2) * 11 + 20;
   }
 }
 
@@ -422,9 +452,11 @@ export function buildThermalLabel(opts: ThermalLabelOptions): Uint8Array {
     usedDots += lines.length * FONT_A_LINE_DOTS;
   }
 
-  // Barcode (printer-native engine)
+  // Barcode (printer-native engine), module width chosen to fit the label width
   const barcodeHeightDots = Math.max(Math.round(barcodeHeightMm * DOTS_PER_MM), 20);
-  cmds.push(barcode(normalizeBarcodeValue(barcodeValue, barcodeType), barcodeType, barcodeHeightDots, showBarcodeText ? 2 : 0));
+  const barcodeData = normalizeBarcodeValue(barcodeValue, barcodeType);
+  const moduleWidth = Math.min(Math.max(Math.floor(labelWidthDots / estimateBarcodeModules(barcodeData, barcodeType)), 1), 4);
+  cmds.push(barcode(barcodeData, barcodeType, barcodeHeightDots, showBarcodeText ? 2 : 0, moduleWidth));
   usedDots += barcodeHeightDots + (showBarcodeText ? FONT_A_LINE_DOTS : 0);
 
   // Price footer

@@ -9,7 +9,7 @@ import BarcodeSVG from './BarcodeSVG';
 import * as printerBridge from '../lib/printerBridge';
 import {
   buildThermalLabel, init as escInit, setCodePage,
-  BarcodeType, normalizeBarcodeValue,
+  BarcodeType, normalizeBarcodeValue, getPrintableMm,
 } from '../lib/escpos';
 
 interface BarcodePrintModalProps {
@@ -64,8 +64,8 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
   const [showCodeText, setShowCodeText] = useState(true);
 
   // ── Custom paper size (mm) ──────────────────────────────────────────────────
-  const [paperWidth, setPaperWidth] = useState<'58' | '80'>('58');
-  const [labelWidth, setLabelWidth] = useState('50');
+  const [paperWidth, setPaperWidth] = useState<'32' | '58' | '80'>('32');
+  const [labelWidth, setLabelWidth] = useState('32');
   const [labelHeight, setLabelHeight] = useState('25');
   const [barcodeHeight, setBarcodeHeight] = useState('10');
   const [barcodeType, setBarcodeType] = useState<BarcodeType>('CODE128');
@@ -84,9 +84,9 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
   const [selectedAddress, setSelectedAddress] = useState('');
 
   // ── Derived dimensions ──────────────────────────────────────────────────────
-  const effPaperWidth = paperWidth === '80' ? 80 : 58;
-  const printableMm = effPaperWidth - 10;
-  const effLabelWidth = clamp(parseMm(labelWidth) || 50, 10, printableMm);
+  const effPaperWidth = paperWidth === '80' ? 80 : paperWidth === '58' ? 58 : 32;
+  const printableMm = getPrintableMm(effPaperWidth);
+  const effLabelWidth = clamp(parseMm(labelWidth) || effPaperWidth, 5, 80);
   const effLabelHeight = clamp(parseMm(labelHeight) || 25, 8, 300);
   const effBarcodeHeight = clamp(parseMm(barcodeHeight) || 10, 3, Math.min(effLabelHeight * 0.8, 40));
 
@@ -349,6 +349,7 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
                   Paper Width
                 </label>
                 <div className="flex gap-1.5 text-xs">
+                  <button onClick={() => setPaperWidth('32')} className={segBtn(paperWidth === '32')}>32mm</button>
                   <button onClick={() => setPaperWidth('58')} className={segBtn(paperWidth === '58')}>58mm</button>
                   <button onClick={() => setPaperWidth('80')} className={segBtn(paperWidth === '80')}>80mm</button>
                 </div>
@@ -359,7 +360,7 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
                   <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
                     Width (mm)
                   </label>
-                  <input type="number" min={10} max={printableMm} value={labelWidth}
+                  <input type="number" min={5} max={80} value={labelWidth}
                     onChange={e => setLabelWidth(e.target.value)} className={numInputClass} />
                 </div>
                 <div>
@@ -380,7 +381,7 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
 
               <p className="text-[10px] text-slate-400 font-medium leading-relaxed">
                 Label: {effLabelWidth.toFixed(0)} × {effLabelHeight.toFixed(0)}mm
-                {effLabelWidth > printableMm && <span className="text-amber-600 font-bold"> — clamped to {printableMm}mm printable</span>}
+                {effLabelWidth > printableMm && <span className="text-amber-600 font-bold"> — printable width {printableMm}mm</span>}
               </p>
             </div>
 
