@@ -1,60 +1,77 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { 
-  Printer, X, Search, CheckSquare, Square, Settings2, 
-  Tag, Store, DollarSign, Layers, Plus, Minus, RotateCcw,
-  Bluetooth, BluetoothOff, Loader2, CheckCircle2, AlertCircle
+import {
+  Printer, X, Search, CheckSquare, Square, Settings2,
+  Tag, Bluetooth, BluetoothOff, Loader2, CheckCircle2, AlertCircle,
+  Minus, Plus, Ruler, Scissors,
 } from 'lucide-react';
-import { Product, Branch } from '../types';
+import { Product } from '../types';
 import BarcodeSVG from './BarcodeSVG';
 import * as printerBridge from '../lib/printerBridge';
-import { buildLabel, init as escInit, setCodePage } from '../lib/escpos';
+import {
+  buildThermalLabel, init as escInit, setCodePage,
+  BarcodeType, normalizeBarcodeValue,
+} from '../lib/escpos';
 
 interface BarcodePrintModalProps {
   products: Product[];
-  branches: Branch[];
   isOpen: boolean;
   onClose: () => void;
   selectedProductId?: string | null;
+  currencySymbol?: string;
 }
+
+const BARCODE_TYPES: { value: BarcodeType; label: string }[] = [
+  { value: 'CODE128', label: 'CODE128' },
+  { value: 'CODE39', label: 'CODE39' },
+  { value: 'EAN13', label: 'EAN13' },
+  { value: 'EAN8', label: 'EAN8' },
+  { value: 'UPCA', label: 'UPC-A' },
+  { value: 'UPCE', label: 'UPC-E' },
+  { value: 'ITF', label: 'ITF' },
+  { value: 'CODE93', label: 'CODE93' },
+];
+
+const clamp = (n: number, min: number, max: number) => Math.min(Math.max(n, min), max);
+const parseMm = (v: string) => {
+  const n = parseFloat(v);
+  return isFinite(n) && n > 0 ? n : 0;
+};
 
 export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
   products,
-  branches,
   isOpen,
   onClose,
   selectedProductId,
+  currencySymbol = 'Ks',
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [storeName, setStoreName] = useState('My Retail Store');
-  
-  // Map of productId -> print quantity
+
   const [selectedProducts, setSelectedProducts] = useState<{ [id: string]: number }>(() => {
     const initialMap: { [id: string]: number } = {};
     if (selectedProductId) {
       const prod = products.find(p => p.id === selectedProductId);
-      if (prod) {
-        initialMap[prod.id] = Math.max(1, prod.stock || 1);
-      }
+      if (prod) initialMap[prod.id] = 1;
     } else {
-      // Default select all products with quantity 1
-      products.forEach(p => {
-        initialMap[p.id] = 1;
-      });
+      products.forEach(p => { initialMap[p.id] = 1; });
     }
     return initialMap;
   });
 
-  // Display Settings
   const [showStoreName, setShowStoreName] = useState(true);
   const [showProductName, setShowProductName] = useState(true);
   const [showPrice, setShowPrice] = useState(true);
   const [showCodeText, setShowCodeText] = useState(true);
-  
-  // Label Size Presets
-  // 'small' = 38x25mm, 'standard' = 50x25mm, 'large' = 60x40mm, 'a4' = A4 sheet grid
-  const [labelSize, setLabelSize] = useState<'small' | 'standard' | 'large' | 'a4'>('standard');
 
-  // ── Printer State (native SPP in Android shell, Web BT in browser) ────────
+  // ── Custom paper size (mm) ──────────────────────────────────────────────────
+  const [paperWidth, setPaperWidth] = useState<'58' | '80'>('58');
+  const [labelWidth, setLabelWidth] = useState('50');
+  const [labelHeight, setLabelHeight] = useState('25');
+  const [barcodeHeight, setBarcodeHeight] = useState('10');
+  const [barcodeType, setBarcodeType] = useState<BarcodeType>('CODE128');
+  const [cutMode, setCutMode] = useState<'full' | 'partial'>('full');
+
+  // ── Printer state (native SPP in Android shell, Web BT in browser) ────────
   const isNative = printerBridge.isNativeShell();
   const [btAvailable] = useState(() => printerBridge.isBluetoothAvailable());
   const [btConnected, setBtConnected] = useState(() => printerBridge.isConnected());
@@ -63,11 +80,16 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
   const [btPrinting, setBtPrinting] = useState(false);
   const [btProgress, setBtProgress] = useState({ current: 0, total: 0 });
   const [btError, setBtError] = useState<string | null>(null);
-  // Native: picking from the phone's already-paired printers (no chooser).
   const [pairedDevices, setPairedDevices] = useState<printerBridge.PairedPrinter[]>([]);
   const [selectedAddress, setSelectedAddress] = useState('');
 
-  // Compute print items list early (needed by handleBtPrint)
+  // ── Derived dimensions ──────────────────────────────────────────────────────
+  const effPaperWidth = paperWidth === '80' ? 80 : 58;
+  const printableMm = effPaperWidth - 10;
+  const effLabelWidth = clamp(parseMm(labelWidth) || 50, 10, printableMm);
+  const effLabelHeight = clamp(parseMm(labelHeight) || 25, 8, 300);
+  const effBarcodeHeight = clamp(parseMm(barcodeHeight) || 10, 3, Math.min(effLabelHeight * 0.8, 40));
+
   const printItemsList: Array<{ product: Product; labelIndex: number }> = [];
   Object.entries(selectedProducts).forEach(([prodId, rawQty]) => {
     const qty = Number(rawQty) || 0;
@@ -79,11 +101,9 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
     }
   });
 
-  // Listen for printer disconnect events
   useEffect(() => {
     if (!isOpen) return;
     if (isNative) {
-      // Load the phone's paired printers so the user can pick one directly.
       printerBridge.getPairedPrinters().then(devs => {
         setPairedDevices(devs);
         if (devs.length > 0) setSelectedAddress(devs[0].address);
@@ -110,7 +130,7 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
       setBtError(null);
     } catch (err: any) {
       if (err?.name === 'NotFoundError') {
-        setBtError(null); // User cancelled — don't show error
+        setBtError(null);
       } else {
         setBtError(err?.message || 'Failed to connect to printer');
       }
@@ -125,6 +145,24 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
     setPrinterName('');
   }, []);
 
+  const labelOptionsFor = (product: Product) => ({
+    storeName,
+    productName: product.name,
+    barcodeValue: product.barcode || product.sku || '000000',
+    price: product.price,
+    showStoreName,
+    showProductName,
+    showPrice,
+    showBarcodeText: showCodeText,
+    currencySymbol,
+    paperWidthMm: effPaperWidth,
+    labelWidthMm: effLabelWidth,
+    labelHeightMm: effLabelHeight,
+    barcodeType,
+    barcodeHeightMm: effBarcodeHeight,
+    cutMode,
+  });
+
   const handleBtPrint = useCallback(async () => {
     if (!printerBridge.isConnected() || printItemsList.length === 0 || btPrinting) return;
 
@@ -133,38 +171,19 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
     setBtProgress({ current: 0, total: printItemsList.length });
 
     try {
-      // Send init command first
       await printerBridge.send(escInit());
       await printerBridge.send(setCodePage('CP437'));
 
-      // Send each label
       for (let i = 0; i < printItemsList.length; i++) {
         const item = printItemsList[i];
-        const codeVal = item.product.barcode || item.product.sku || '000000';
-
-        const labelData = buildLabel({
-          storeName,
-          productName: item.product.name,
-          barcodeValue: codeVal,
-          price: item.product.price,
-          showStoreName,
-          showProductName,
-          showPrice,
-          showBarcodeText: showCodeText,
-          currencySymbol: '$',
-        });
-
-        await printerBridge.send(labelData);
+        await printerBridge.send(buildThermalLabel(labelOptionsFor(item.product)));
         setBtProgress({ current: i + 1, total: printItemsList.length });
-
-        // Brief delay between labels to let printer process
         if (i < printItemsList.length - 1) {
-          await new Promise(r => setTimeout(r, 200));
+          await new Promise(r => setTimeout(r, 150));
         }
       }
     } catch (err: any) {
       setBtError(err?.message || 'Print failed. Check printer connection.');
-      // If connection was lost, update state
       if (!printerBridge.isConnected()) {
         setBtConnected(false);
         setPrinterName('');
@@ -173,23 +192,23 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
       setBtPrinting(false);
       setBtProgress({ current: 0, total: 0 });
     }
-  }, [printItemsList, storeName, showStoreName, showProductName, showPrice, showCodeText, btPrinting]);
+  }, [printItemsList, labelOptionsFor, btPrinting]);
 
   if (!isOpen) return null;
 
-  const filteredProducts = products.filter(p => 
+  const filteredProducts = products.filter(p =>
     p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     p.sku.toLowerCase().includes(searchTerm.toLowerCase()) ||
     (p.barcode && p.barcode.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
-  const toggleSelectProduct = (id: string, defaultQty: number = 1) => {
+  const toggleSelectProduct = (id: string) => {
     setSelectedProducts(prev => {
       const copy = { ...prev };
       if (copy[id] !== undefined) {
         delete copy[id];
       } else {
-        copy[id] = defaultQty > 0 ? defaultQty : 1;
+        copy[id] = 1;
       }
       return copy;
     });
@@ -211,9 +230,7 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
     setSelectedProducts(newMap);
   };
 
-  const deselectAll = () => {
-    setSelectedProducts({});
-  };
+  const deselectAll = () => setSelectedProducts({});
 
   const updateQuantity = (id: string, qty: number) => {
     if (qty <= 0) {
@@ -223,23 +240,28 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
         return copy;
       });
     } else {
-      setSelectedProducts(prev => ({
-        ...prev,
-        [id]: qty,
-      }));
+      setSelectedProducts(prev => ({ ...prev, [id]: qty }));
     }
   };
 
   const totalLabels = printItemsList.length;
 
-  const handlePrint = () => {
-    window.print();
-  };
+  const numInputClass = "w-full px-2 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-800 focus:outline-none focus:border-indigo-500";
+  const segBtn = (active: boolean) =>
+    `flex-1 px-2 py-1.5 rounded-lg border font-bold text-[11px] transition-all text-center cursor-pointer ${
+      active
+        ? 'bg-indigo-50 border-indigo-500 text-indigo-700 shadow-2xs'
+        : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
+    }`;
+
+  const previewScale = Math.min(240 / effLabelWidth, 5);
+  const previewW = Math.round(effLabelWidth * previewScale);
+  const previewH = Math.round(effLabelHeight * previewScale);
 
   return (
     <div className="fixed inset-0 bg-slate-900/70 z-50 flex items-center justify-center p-2 sm:p-4 backdrop-blur-xs transition-opacity animate-fade-in">
       <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-5xl max-h-[92vh] flex flex-col overflow-hidden">
-        
+
         {/* MODAL HEADER */}
         <div className="p-4 sm:p-5 border-b border-slate-200 flex justify-between items-center bg-slate-50/80">
           <div className="flex items-center space-x-3">
@@ -248,16 +270,15 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
             </div>
             <div>
               <h3 className="font-extrabold text-slate-900 text-sm sm:text-base">
-                Inventory Barcode Label Generator
+                Barcode Label Generator
               </h3>
               <p className="text-xs text-slate-500 font-medium">
-                Customize, preview, and print barcodes for sticker labels & price tags
+                Print sticker labels to a Bluetooth thermal printer
               </p>
             </div>
           </div>
 
           <div className="flex items-center space-x-2">
-            {/* Bluetooth Printer Controls */}
             {btAvailable && (
               <div className="flex items-center space-x-1.5 mr-1">
                 {btConnected ? (
@@ -290,13 +311,9 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
                     <button
                       onClick={handleConnectPrinter}
                       disabled={btConnecting}
-                      className="px-2.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-[10px] rounded-lg shadow-xs transition-all flex items-center space-x-1 disabled:opacity-50"
+                      className="px-2.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-[10px] rounded-lg shadow-xs transition-all flex items-center space-x-1 disabled:opacity-50 cursor-pointer"
                     >
-                      {btConnecting ? (
-                        <Loader2 className="w-3 h-3 animate-spin" />
-                      ) : (
-                        <Bluetooth className="w-3 h-3" />
-                      )}
+                      {btConnecting ? <Loader2 className="w-3 h-3 animate-spin" /> : <Bluetooth className="w-3 h-3" />}
                       <span>{btConnecting ? 'Connecting...' : 'Connect Printer'}</span>
                     </button>
                   </>
@@ -304,59 +321,74 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
               </div>
             )}
 
-            {/* Browser Print Button */}
-            <button
-              onClick={handlePrint}
-              disabled={totalLabels === 0}
-              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-xs transition-all flex items-center space-x-1.5 disabled:opacity-50"
-            >
-              <Printer className="w-4 h-4" />
-              <span>Print {totalLabels} Labels</span>
-            </button>
-
-            {/* Bluetooth Print Button */}
-            {btAvailable && (
-              <button
-                onClick={handleBtPrint}
-                disabled={totalLabels === 0 || !btConnected || btPrinting}
-                className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-xs transition-all flex items-center space-x-1.5 disabled:opacity-50"
-              >
-                {btPrinting ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                  <Bluetooth className="w-4 h-4" />
-                )}
-                <span>
-                  {btPrinting
-                    ? `Printing ${btProgress.current}/${btProgress.total}`
-                    : 'BT Print'
-                  }
-                </span>
-              </button>
-            )}
-
             <button
               onClick={onClose}
-              className="p-2 text-slate-400 hover:text-slate-600 rounded-xl hover:bg-slate-100 transition-colors"
+              className="p-2 text-slate-400 hover:text-slate-600 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
         </div>
 
-        {/* MODAL BODY (TWO PANELS: SETTINGS/SELECTION & LIVE PREVIEW) */}
+        {/* MODAL BODY */}
         <div className="flex-1 overflow-hidden grid grid-cols-1 lg:grid-cols-12 divide-y lg:divide-y-0 lg:divide-x divide-slate-200">
-          
-          {/* LEFT PANEL: PRODUCT SELECTOR & CUSTOMIZATION (5 COLS) */}
+
+          {/* LEFT PANEL */}
           <div className="lg:col-span-5 flex flex-col overflow-y-auto p-4 space-y-4 bg-slate-50/50">
-            
-            {/* STORE NAME & DISPLAY TOGGLES */}
+
+            {/* LABEL SIZE (MM) */}
             <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-2xs space-y-3">
-              <div className="flex items-center justify-between text-xs font-bold text-slate-800">
-                <span className="flex items-center gap-1.5">
-                  <Settings2 className="w-4 h-4 text-indigo-600" />
-                  <span>Label Design Options</span>
-                </span>
+              <div className="flex items-center gap-1.5 text-xs font-bold text-slate-800">
+                <Ruler className="w-4 h-4 text-indigo-600" />
+                <span>Custom Label Size</span>
+                <span className="text-[10px] font-semibold text-slate-400">({printableMm}mm printable)</span>
+              </div>
+
+              <div>
+                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
+                  Paper Width
+                </label>
+                <div className="flex gap-1.5 text-xs">
+                  <button onClick={() => setPaperWidth('58')} className={segBtn(paperWidth === '58')}>58mm</button>
+                  <button onClick={() => setPaperWidth('80')} className={segBtn(paperWidth === '80')}>80mm</button>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-2">
+                <div>
+                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
+                    Width (mm)
+                  </label>
+                  <input type="number" min={10} max={printableMm} value={labelWidth}
+                    onChange={e => setLabelWidth(e.target.value)} className={numInputClass} />
+                </div>
+                <div>
+                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
+                    Height (mm)
+                  </label>
+                  <input type="number" min={8} max={300} value={labelHeight}
+                    onChange={e => setLabelHeight(e.target.value)} className={numInputClass} />
+                </div>
+                <div>
+                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
+                    Barcode H (mm)
+                  </label>
+                  <input type="number" min={3} max={40} value={barcodeHeight}
+                    onChange={e => setBarcodeHeight(e.target.value)} className={numInputClass} />
+                </div>
+              </div>
+
+              <p className="text-[10px] text-slate-400 font-medium leading-relaxed">
+                Label: {effLabelWidth.toFixed(0)} × {effLabelHeight.toFixed(0)}mm
+                {effLabelWidth > printableMm && <span className="text-amber-600 font-bold"> — clamped to {printableMm}mm printable</span>}
+              </p>
+            </div>
+
+            {/* LABEL DESIGN */}
+            <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-2xs space-y-3">
+              <div className="flex items-center gap-1.5 text-xs font-bold text-slate-800">
+                <Settings2 className="w-4 h-4 text-indigo-600" />
+                <span>Label Design</span>
               </div>
 
               <div>
@@ -372,141 +404,78 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
                 />
               </div>
 
-              {/* Toggles */}
-              <div className="grid grid-cols-2 gap-2 text-[11px] font-medium text-slate-700 pt-1">
+              <div className="grid grid-cols-2 gap-2 text-[11px] font-medium text-slate-700">
                 <label className="flex items-center space-x-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={showStoreName}
-                    onChange={e => setShowStoreName(e.target.checked)}
-                    className="rounded text-indigo-600 focus:ring-indigo-500"
-                  />
+                  <input type="checkbox" checked={showStoreName} onChange={e => setShowStoreName(e.target.checked)} className="rounded text-indigo-600 focus:ring-indigo-500" />
                   <span>Store Name</span>
                 </label>
-
                 <label className="flex items-center space-x-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={showProductName}
-                    onChange={e => setShowProductName(e.target.checked)}
-                    className="rounded text-indigo-600 focus:ring-indigo-500"
-                  />
+                  <input type="checkbox" checked={showProductName} onChange={e => setShowProductName(e.target.checked)} className="rounded text-indigo-600 focus:ring-indigo-500" />
                   <span>Product Title</span>
                 </label>
-
                 <label className="flex items-center space-x-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={showPrice}
-                    onChange={e => setShowPrice(e.target.checked)}
-                    className="rounded text-indigo-600 focus:ring-indigo-500"
-                  />
+                  <input type="checkbox" checked={showPrice} onChange={e => setShowPrice(e.target.checked)} className="rounded text-indigo-600 focus:ring-indigo-500" />
                   <span>Selling Price</span>
                 </label>
-
                 <label className="flex items-center space-x-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={showCodeText}
-                    onChange={e => setShowCodeText(e.target.checked)}
-                    className="rounded text-indigo-600 focus:ring-indigo-500"
-                  />
+                  <input type="checkbox" checked={showCodeText} onChange={e => setShowCodeText(e.target.checked)} className="rounded text-indigo-600 focus:ring-indigo-500" />
                   <span>SKU / BC Text</span>
                 </label>
               </div>
 
-              {/* Label Size Selection */}
-              <div className="pt-2 border-t border-slate-100">
-                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
-                  Label Sticker Preset
-                </label>
-                <div className="grid grid-cols-2 gap-1.5 text-xs">
-                  <button
-                    onClick={() => setLabelSize('standard')}
-                    className={`px-2 py-1.5 rounded-lg border font-bold text-[11px] transition-all text-center ${
-                      labelSize === 'standard' 
-                        ? 'bg-indigo-50 border-indigo-500 text-indigo-700 shadow-2xs' 
-                        : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
-                    }`}
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
+                    Barcode Format
+                  </label>
+                  <select
+                    value={barcodeType}
+                    onChange={e => setBarcodeType(e.target.value as BarcodeType)}
+                    className="w-full px-2 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-800 focus:outline-none focus:border-indigo-500 cursor-pointer"
                   >
-                    Standard (50×25mm)
-                  </button>
-                  <button
-                    onClick={() => setLabelSize('small')}
-                    className={`px-2 py-1.5 rounded-lg border font-bold text-[11px] transition-all text-center ${
-                      labelSize === 'small' 
-                        ? 'bg-indigo-50 border-indigo-500 text-indigo-700 shadow-2xs' 
-                        : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
-                    }`}
-                  >
-                    Compact (38×25mm)
-                  </button>
-                  <button
-                    onClick={() => setLabelSize('large')}
-                    className={`px-2 py-1.5 rounded-lg border font-bold text-[11px] transition-all text-center ${
-                      labelSize === 'large' 
-                        ? 'bg-indigo-50 border-indigo-500 text-indigo-700 shadow-2xs' 
-                        : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
-                    }`}
-                  >
-                    Large Tag (60×40mm)
-                  </button>
-                  <button
-                    onClick={() => setLabelSize('a4')}
-                    className={`px-2 py-1.5 rounded-lg border font-bold text-[11px] transition-all text-center ${
-                      labelSize === 'a4' 
-                        ? 'bg-indigo-50 border-indigo-500 text-indigo-700 shadow-2xs' 
-                        : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
-                    }`}
-                  >
-                    A4 Sheet Grid (24/page)
-                  </button>
+                    {BARCODE_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
+                    Cut Mode
+                  </label>
+                  <div className="flex gap-1.5 text-xs">
+                    <button onClick={() => setCutMode('full')} className={segBtn(cutMode === 'full')}>
+                      <span className="inline-flex items-center justify-center gap-1"><Scissors className="w-3 h-3" />Full</span>
+                    </button>
+                    <button onClick={() => setCutMode('partial')} className={segBtn(cutMode === 'partial')}>
+                      <span className="inline-flex items-center justify-center gap-1"><Scissors className="w-3 h-3" />Partial</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* PRODUCT SELECTION TABLE */}
+            {/* PRODUCT SELECTION */}
             <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-2xs flex-1 flex flex-col min-h-[280px]">
               <div className="flex items-center justify-between gap-2 mb-2">
-                <span className="text-xs font-extrabold text-slate-800">Select Products to Print</span>
+                <span className="text-xs font-extrabold text-slate-800">Select Products</span>
                 <div className="flex items-center space-x-1.5 text-[10px]">
-                  <button
-                    onClick={selectAll}
-                    className="text-indigo-600 font-bold hover:underline"
-                  >
-                    All
-                  </button>
+                  <button onClick={selectAll} className="text-indigo-600 font-bold hover:underline cursor-pointer">All</button>
                   <span className="text-slate-300">|</span>
-                  <button
-                    onClick={deselectAll}
-                    className="text-slate-500 hover:underline"
-                  >
-                    None
-                  </button>
+                  <button onClick={deselectAll} className="text-slate-500 hover:underline cursor-pointer">None</button>
                   <span className="text-slate-300">|</span>
-                  <button
-                    onClick={() => setAllQuantities('stock')}
-                    className="text-slate-600 font-medium hover:underline"
-                    title="Set label quantity equal to current inventory stock"
-                  >
-                    Qty = Stock
-                  </button>
+                  <button onClick={() => setAllQuantities('stock')} className="text-slate-600 font-medium hover:underline cursor-pointer" title="Set label count equal to current inventory stock">Qty = Stock</button>
                 </div>
               </div>
 
-              {/* Search */}
               <div className="relative mb-2">
                 <Search className="absolute inset-y-0 left-0 pl-2.5 w-3.5 h-3.5 my-auto text-slate-400" />
                 <input
                   type="text"
                   value={searchTerm}
                   onChange={e => setSearchTerm(e.target.value)}
-                  placeholder="Filter by product name, SKU..."
+                  placeholder="Filter by name, SKU, barcode..."
                   className="w-full pl-8 pr-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 focus:outline-none focus:border-indigo-500"
                 />
               </div>
 
-              {/* Product List */}
               <div className="flex-1 overflow-y-auto space-y-1.5 max-h-[260px] pr-1">
                 {filteredProducts.length === 0 ? (
                   <div className="text-center py-8 text-slate-400 text-xs">No products found.</div>
@@ -515,48 +484,32 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
                     const isSelected = selectedProducts[prod.id] !== undefined;
                     const qty = selectedProducts[prod.id] || 0;
                     const code = prod.barcode || prod.sku;
-
                     return (
                       <div
                         key={prod.id}
                         className={`p-2 rounded-lg border transition-all flex items-center justify-between text-xs ${
-                          isSelected 
-                            ? 'bg-indigo-50/50 border-indigo-200' 
-                            : 'bg-white border-slate-100 hover:bg-slate-50'
+                          isSelected ? 'bg-indigo-50/50 border-indigo-200' : 'bg-white border-slate-100 hover:bg-slate-50'
                         }`}
                       >
                         <div className="flex items-center space-x-2.5 min-w-0 pr-2">
-                          <button
-                            onClick={() => toggleSelectProduct(prod.id, prod.stock)}
-                            className="text-indigo-600 shrink-0"
-                          >
-                            {isSelected ? (
-                              <CheckSquare className="w-4 h-4 text-indigo-600" />
-                            ) : (
-                              <Square className="w-4 h-4 text-slate-300" />
-                            )}
+                          <button onClick={() => toggleSelectProduct(prod.id)} className="text-indigo-600 shrink-0 cursor-pointer">
+                            {isSelected ? <CheckSquare className="w-4 h-4 text-indigo-600" /> : <Square className="w-4 h-4 text-slate-300" />}
                           </button>
                           <div className="min-w-0">
                             <p className="font-bold text-slate-900 truncate text-[11px]">{prod.name}</p>
                             <p className="text-[10px] text-slate-500 font-mono">
-                              {code} • <span className="font-semibold text-slate-700">${prod.price}</span>
+                              {code} • <span className="font-semibold text-slate-700">{prod.price.toLocaleString()} {currencySymbol}</span>
                             </p>
                           </div>
                         </div>
 
                         {isSelected && (
                           <div className="flex items-center space-x-1 shrink-0 bg-white border border-slate-200 rounded-md p-0.5 shadow-2xs">
-                            <button
-                              onClick={() => updateQuantity(prod.id, qty - 1)}
-                              className="w-5 h-5 flex items-center justify-center text-slate-600 hover:bg-slate-100 rounded font-bold"
-                            >
+                            <button onClick={() => updateQuantity(prod.id, qty - 1)} className="w-5 h-5 flex items-center justify-center text-slate-600 hover:bg-slate-100 rounded font-bold cursor-pointer">
                               <Minus className="w-3 h-3" />
                             </button>
                             <span className="w-6 text-center font-bold text-xs font-mono">{qty}</span>
-                            <button
-                              onClick={() => updateQuantity(prod.id, qty + 1)}
-                              className="w-5 h-5 flex items-center justify-center text-slate-600 hover:bg-slate-100 rounded font-bold"
-                            >
+                            <button onClick={() => updateQuantity(prod.id, qty + 1)} className="w-5 h-5 flex items-center justify-center text-slate-600 hover:bg-slate-100 rounded font-bold cursor-pointer">
                               <Plus className="w-3 h-3" />
                             </button>
                           </div>
@@ -569,115 +522,72 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
             </div>
           </div>
 
-          {/* RIGHT PANEL: LIVE PRINT PREVIEW SHEET (7 COLS) */}
+          {/* RIGHT PANEL: LIVE PREVIEW */}
           <div className="lg:col-span-7 flex flex-col overflow-hidden bg-slate-100/70 p-4">
-            
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center space-x-2">
                 <Tag className="w-4 h-4 text-indigo-600" />
                 <span className="font-extrabold text-slate-900 text-xs sm:text-sm">
-                  Live Print Preview ({totalLabels} total sticker labels)
+                  Preview ({totalLabels} labels · {effLabelWidth.toFixed(0)}×{effLabelHeight.toFixed(0)}mm)
                 </span>
               </div>
 
-              <div className="flex items-center space-x-2">
+              {btAvailable && (
                 <button
-                  onClick={handlePrint}
-                  disabled={totalLabels === 0}
-                  className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-lg shadow-xs transition-colors flex items-center space-x-1.5 disabled:opacity-50"
+                  onClick={handleBtPrint}
+                  disabled={totalLabels === 0 || !btConnected || btPrinting}
+                  className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-lg shadow-xs transition-colors flex items-center space-x-1.5 disabled:opacity-50 cursor-pointer"
                 >
-                  <Printer className="w-3.5 h-3.5" />
-                  <span>Print Sheet</span>
+                  {btPrinting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Bluetooth className="w-3.5 h-3.5" />}
+                  <span>{btPrinting ? `${btProgress.current}/${btProgress.total}` : 'BT Print'}</span>
                 </button>
-
-                {btAvailable && (
-                  <button
-                    onClick={handleBtPrint}
-                    disabled={totalLabels === 0 || !btConnected || btPrinting}
-                    className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-lg shadow-xs transition-colors flex items-center space-x-1.5 disabled:opacity-50"
-                  >
-                    {btPrinting ? (
-                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                    ) : (
-                      <Bluetooth className="w-3.5 h-3.5" />
-                    )}
-                    <span>{btPrinting ? `${btProgress.current}/${btProgress.total}` : 'BT Print'}</span>
-                  </button>
-                )}
-              </div>
+              )}
             </div>
 
-            {/* Bluetooth Error Banner */}
             {btError && (
               <div className="mb-3 px-3 py-2 bg-red-50 border border-red-200 rounded-lg flex items-center space-x-2 text-xs text-red-700">
                 <AlertCircle className="w-4 h-4 shrink-0" />
                 <span className="flex-1">{btError}</span>
-                <button onClick={() => setBtError(null)} className="text-red-400 hover:text-red-600">
+                <button onClick={() => setBtError(null)} className="text-red-400 hover:text-red-600 cursor-pointer">
                   <X className="w-3 h-3" />
                 </button>
               </div>
             )}
 
-            {/* PREVIEW CONTAINER */}
-            <div className="flex-1 overflow-y-auto bg-slate-200/50 p-4 rounded-xl border border-slate-300 shadow-inner flex justify-center">
+            <div className="flex-1 overflow-y-auto bg-slate-200/50 p-4 rounded-xl border border-slate-300 shadow-inner">
               {totalLabels === 0 ? (
-                <div className="m-auto text-center py-16 text-slate-400 text-xs">
+                <div className="text-center py-16 text-slate-400 text-xs">
                   <Printer className="w-10 h-10 mx-auto mb-2 text-slate-300" />
-                  <p className="font-semibold text-slate-600">No products selected to print.</p>
+                  <p className="font-semibold text-slate-600">No products selected.</p>
                   <p className="text-[11px] text-slate-400 mt-1">Check the product boxes on the left to add barcode labels.</p>
                 </div>
               ) : (
-                <div 
-                  id="barcode-printable-area"
-                  className={`bg-white shadow-lg p-4 rounded border border-slate-300 w-full max-w-[650px] ${
-                    labelSize === 'small' 
-                      ? 'grid grid-cols-3 sm:grid-cols-4 gap-2' 
-                      : labelSize === 'standard' 
-                        ? 'grid grid-cols-2 sm:grid-cols-3 gap-2.5' 
-                        : labelSize === 'large' 
-                          ? 'grid grid-cols-1 sm:grid-cols-2 gap-3' 
-                          : 'grid grid-cols-3 gap-2'
-                  }`}
-                >
+                <div className="flex flex-wrap gap-3 justify-center items-start">
                   {printItemsList.map((item, idx) => {
-                    const codeVal = item.product.barcode || item.product.sku || '000000';
-
+                    const codeVal = normalizeBarcodeValue(item.product.barcode || item.product.sku || '000000', barcodeType);
                     return (
                       <div
                         key={idx}
-                        className="bg-white border border-slate-900/80 p-2 rounded flex flex-col items-center justify-between text-center select-none shadow-2xs overflow-hidden"
-                        style={{
-                          minHeight: labelSize === 'small' ? '90px' : labelSize === 'large' ? '140px' : '110px'
-                        }}
+                        className="bg-white border border-slate-400 rounded shadow-xs flex flex-col items-center justify-center text-center select-none overflow-hidden p-1.5"
+                        style={{ width: previewW, height: previewH }}
                       >
-                        {/* Header Store Name */}
                         {showStoreName && (
-                          <span className="text-[8px] font-extrabold uppercase tracking-wider text-slate-700 border-b border-slate-200 pb-0.5 w-full truncate">
+                          <span className="text-[7px] font-extrabold uppercase tracking-wider text-slate-700 border-b border-slate-200 pb-0.5 w-full truncate">
                             {storeName}
                           </span>
                         )}
-
-                        {/* Product Title */}
                         {showProductName && (
-                          <p className="font-extrabold text-[10px] text-slate-900 leading-tight my-1 line-clamp-2 w-full px-1">
+                          <p className="font-extrabold text-[8px] text-slate-900 leading-tight line-clamp-2 w-full px-0.5 my-0.5">
                             {item.product.name}
                           </p>
                         )}
-
-                        {/* Barcode Graphic */}
-                        <div className="w-full my-0.5 px-1">
-                          <BarcodeSVG
-                            value={codeVal}
-                            height={labelSize === 'small' ? 30 : labelSize === 'large' ? 50 : 38}
-                            showValue={showCodeText}
-                          />
+                        <div className="w-full my-0.5 px-0.5">
+                          <BarcodeSVG value={codeVal} height={Math.max(12, previewH * 0.35)} showValue={showCodeText} />
                         </div>
-
-                        {/* Price Tag Footer */}
                         {showPrice && (
-                          <div className="w-full flex items-center justify-center bg-slate-900 text-white rounded py-0.5 px-1 mt-1">
-                            <span className="font-extrabold font-mono text-[11px] leading-none">
-                              ${Number(item.product.price).toFixed(2)}
+                          <div className="w-full flex items-center justify-center bg-slate-900 text-white rounded py-0.5 px-1 mt-0.5">
+                            <span className="font-extrabold font-mono text-[8px] leading-none">
+                              {item.product.price.toLocaleString()} {currencySymbol}
                             </span>
                           </div>
                         )}
@@ -687,51 +597,32 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
                 </div>
               )}
             </div>
-
           </div>
         </div>
 
         {/* MODAL FOOTER */}
         <div className="p-3.5 bg-slate-50 border-t border-slate-200 flex justify-between items-center text-xs">
           <span className="text-slate-500 font-medium">
-            Total Labels to Print: <strong className="text-slate-900 font-bold">{totalLabels}</strong>
+            Total Labels: <strong className="text-slate-900 font-bold">{totalLabels}</strong>
           </span>
 
           <div className="flex items-center space-x-2">
             <button
               onClick={onClose}
-              className="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold rounded-xl transition-colors"
+              className="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold rounded-xl transition-colors cursor-pointer"
             >
               Cancel
             </button>
 
-            {/* Browser Print */}
-            <button
-              onClick={handlePrint}
-              disabled={totalLabels === 0}
-              className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-xs transition-all flex items-center space-x-1.5 disabled:opacity-50"
-            >
-              <Printer className="w-4 h-4" />
-              <span>Print {totalLabels} Labels</span>
-            </button>
-
-            {/* Bluetooth Print */}
             {btAvailable && (
               <button
                 onClick={handleBtPrint}
                 disabled={totalLabels === 0 || !btConnected || btPrinting}
-                className="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-xs transition-all flex items-center space-x-1.5 disabled:opacity-50"
+                className="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-xs transition-all flex items-center space-x-1.5 disabled:opacity-50 cursor-pointer"
               >
-                {btPrinting ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                  <Bluetooth className="w-4 h-4" />
-                )}
+                {btPrinting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Printer className="w-4 h-4" />}
                 <span>
-                  {btPrinting
-                    ? `Printing ${btProgress.current}/${btProgress.total}`
-                    : `BT Print ${totalLabels} Labels`
-                  }
+                  {btPrinting ? `Printing ${btProgress.current}/${btProgress.total}` : `Print ${totalLabels} Labels`}
                 </span>
               </button>
             )}
@@ -739,36 +630,6 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
         </div>
 
       </div>
-
-      {/* PRINT MEDIA STYLES (ONLY PRINTS THE BARCODE PRINTABLE AREA) */}
-      <style>{`
-        @media print {
-          body * {
-            visibility: hidden !important;
-          }
-          #barcode-printable-area, #barcode-printable-area * {
-            visibility: visible !important;
-          }
-          #barcode-printable-area {
-            position: absolute !important;
-            left: 0 !important;
-            top: 0 !important;
-            width: 100% !important;
-            max-width: 100% !important;
-            margin: 0 !important;
-            padding: 10px !important;
-            box-shadow: none !important;
-            border: none !important;
-            background: white !important;
-            grid-template-columns: repeat(3, 1fr) !important;
-            gap: 8px !important;
-          }
-          @page {
-            size: auto;
-            margin: 5mm;
-          }
-        }
-      `}</style>
     </div>
   );
 };

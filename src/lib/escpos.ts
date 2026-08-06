@@ -117,10 +117,10 @@ export function barcode(
   data: string,
   type: BarcodeType = 'CODE39',
   height: number = 50, // barcode bar height in dots (default ~50 dots for 58mm printers)
-  hriPosition: 1 | 2 | 3 = 3, // HRI text position: 1=above, 2=below, 3=both, 0=none
+  hriPosition: 0 | 1 | 2 | 3 = 3, // HRI text position: 0=none, 1=above, 2=below, 3=both
 ): Uint8Array {
   const typeMap: Record<BarcodeType, number> = {
-    UPC_A: 0, UPC_E: 1, EAN13: 2, EAN8: 3,
+    UPCA: 0, UPCE: 1, EAN13: 2, EAN8: 3,
     ITF: 4, CODE93: 5, CODE128: 6, CODE39: 7,
   };
 
@@ -271,5 +271,183 @@ export function buildMultiLabel(labels: LabelOptions[]): Uint8Array {
     init(),
     setCodePage('CP437'),
     ...labels.map(l => buildLabel(l)),
+  );
+}
+
+// ── mm-aware thermal label builder ───────────────────────────────────────────
+
+export interface ThermalLabelOptions {
+  storeName: string;
+  productName: string;
+  barcodeValue: string;
+  price: number;
+  showStoreName?: boolean;
+  showProductName?: boolean;
+  showPrice?: boolean;
+  showBarcodeText?: boolean;
+  currencySymbol?: string;
+  /** Physical paper width in mm (58 or 80). Determines printable width. */
+  paperWidthMm?: number;
+  /** Desired label width in mm (clamped to the paper's printable width). */
+  labelWidthMm?: number;
+  /** Desired label height (length) in mm. Drives paper feed before cutting. */
+  labelHeightMm?: number;
+  barcodeType?: BarcodeType;
+  /** Barcode bar height in mm. */
+  barcodeHeightMm?: number;
+  cutMode?: 'full' | 'partial';
+}
+
+const DOTS_PER_MM = 8; // 203 dpi
+const FONT_A_CHAR_DOTS = 12; // width of one font-A character
+const FONT_A_LINE_DOTS = 24; // height of one font-A text line
+const PRINTER_MARGIN_MM = 5; // printable area leaves ~5mm on each edge
+
+function printableDotsForPaper(paperWidthMm: number): number {
+  const printableMm = Math.max(paperWidthMm - PRINTER_MARGIN_MM * 2, 10);
+  return Math.round(printableMm * DOTS_PER_MM);
+}
+
+/** Wrap text by words into lines of at most maxChars characters. */
+function wrapLabelText(text: string, maxChars: number): string[] {
+  const words = text.split(/\s+/).filter(Boolean);
+  const lines: string[] = [];
+  let cur = '';
+  for (const w of words) {
+    const candidate = cur ? `${cur} ${w}` : w;
+    if (candidate.length <= maxChars) {
+      cur = candidate;
+    } else {
+      if (cur) lines.push(cur);
+      if (w.length > maxChars) {
+        let rest = w;
+        while (rest.length > maxChars) {
+          lines.push(rest.slice(0, maxChars));
+          rest = rest.slice(maxChars);
+        }
+        cur = rest;
+      } else {
+        cur = w;
+      }
+    }
+  }
+  if (cur) lines.push(cur);
+  return lines.length ? lines : [text.slice(0, maxChars)];
+}
+
+/**
+ * Coerce a product barcode/SKU into something the chosen barcode type can
+ * actually encode. Fixed-length numeric types are padded/truncated to digits.
+ */
+export function normalizeBarcodeValue(value: string, type: BarcodeType): string {
+  const digits = value.replace(/\D/g, '');
+  switch (type) {
+    case 'EAN13': return digits.slice(0, 13).padStart(13, '0');
+    case 'EAN8': return digits.slice(0, 8).padStart(8, '0');
+    case 'UPCA': return digits.slice(0, 12).padStart(12, '0');
+    case 'UPCE': return digits.slice(0, 8).padStart(8, '0');
+    case 'ITF': {
+      const even = digits.length % 2 === 0 ? digits : digits.slice(0, -1);
+      return even || '0000';
+    }
+    default: {
+      const clean = (value || '000000').toUpperCase().replace(/[^A-Z0-9\-\.\ \/\+%]/g, '');
+      return clean || '000000';
+    }
+  }
+}
+
+/**
+ * Build a complete ESC/POS sequence for ONE self-adhesive thermal label sized
+ * in millimetres. Computes the printable character grid from the requested
+ * width, wraps/truncates text to fit, accounts for the barcode + HRI height,
+ * then feeds the remaining paper so each label comes out at labelHeightMm.
+ */
+export function buildThermalLabel(opts: ThermalLabelOptions): Uint8Array {
+  const {
+    storeName = '',
+    productName = '',
+    barcodeValue = '000000',
+    price = 0,
+    showStoreName = true,
+    showProductName = true,
+    showPrice = true,
+    showBarcodeText = true,
+    currencySymbol = 'Ks',
+    paperWidthMm = 58,
+    labelWidthMm = 50,
+    labelHeightMm = 25,
+    barcodeType = 'CODE128',
+    barcodeHeightMm = 10,
+    cutMode = 'full',
+  } = opts;
+
+  const printableDots = printableDotsForPaper(paperWidthMm);
+  const labelWidthDots = Math.min(Math.max(Math.round(labelWidthMm * DOTS_PER_MM), 1), printableDots);
+  const labelHeightDots = Math.max(Math.round(labelHeightMm * DOTS_PER_MM), 24);
+  const charsPerLine = Math.max(Math.floor(labelWidthDots / FONT_A_CHAR_DOTS), 4);
+
+  const cmds: Uint8Array[] = [];
+  cmds.push(resetFormat());
+  cmds.push(new Uint8Array([0x1b, 0x61, 1])); // ESC a 1 → center
+
+  let usedDots = 0;
+
+  // Store / header text
+  if (showStoreName && storeName) {
+    const line = storeName.length > charsPerLine ? `${storeName.slice(0, charsPerLine - 1)}…` : storeName;
+    cmds.push(text(line, { align: 'center', bold: true, width: 1, height: 1 }));
+    usedDots += FONT_A_LINE_DOTS;
+  }
+
+  // Product name (wrapped; limited by remaining vertical space)
+  if (showProductName && productName) {
+    const barcodeDots = Math.max(Math.round(barcodeHeightMm * DOTS_PER_MM), 20);
+    const hriDots = showBarcodeText ? FONT_A_LINE_DOTS : 0;
+    const priceDots = showPrice ? FONT_A_LINE_DOTS : 0;
+    const fixedDots = (showStoreName && storeName ? FONT_A_LINE_DOTS : 0) + barcodeDots + hriDots + priceDots;
+    const remainingDots = Math.max(labelHeightDots - fixedDots, 0);
+    const maxLines = Math.max(Math.floor(remainingDots / FONT_A_LINE_DOTS), 1);
+
+    let lines = wrapLabelText(productName, charsPerLine);
+    if (lines.length > maxLines) {
+      lines = lines.slice(0, maxLines);
+      if (lines[maxLines - 1].length >= charsPerLine) {
+        lines[maxLines - 1] = `${lines[maxLines - 1].slice(0, charsPerLine - 1)}…`;
+      }
+    }
+    for (const line of lines) {
+      cmds.push(text(line, { align: 'center', bold: true, width: 1, height: 1 }));
+    }
+    usedDots += lines.length * FONT_A_LINE_DOTS;
+  }
+
+  // Barcode (printer-native engine)
+  const barcodeHeightDots = Math.max(Math.round(barcodeHeightMm * DOTS_PER_MM), 20);
+  cmds.push(barcode(normalizeBarcodeValue(barcodeValue, barcodeType), barcodeType, barcodeHeightDots, showBarcodeText ? 2 : 0));
+  usedDots += barcodeHeightDots + (showBarcodeText ? FONT_A_LINE_DOTS : 0);
+
+  // Price footer
+  if (showPrice) {
+    const priceStr = `${Number(price).toLocaleString(undefined, { maximumFractionDigits: 0 })} ${currencySymbol}`.trim();
+    const fits = priceStr.length * 24 <= labelWidthDots;
+    cmds.push(text(priceStr, { align: 'center', bold: true, width: fits ? 2 : 1, height: 1 }));
+    usedDots += FONT_A_LINE_DOTS;
+  }
+
+  // Feed to the requested label height, then cut
+  const remainingDots = Math.max(labelHeightDots - usedDots, 0);
+  if (remainingDots > 0) cmds.push(feedDots(remainingDots));
+  cmds.push(cutMode === 'partial' ? partialCut() : cut());
+
+  return concat(...cmds);
+}
+
+/** Build ESC/POS for many thermal labels (init + codepage once, then each label). */
+export function buildThermalLabels(labels: ThermalLabelOptions[]): Uint8Array {
+  return concat(
+    init(),
+    setCodePage('CP437'),
+    ...labels.map(l => buildThermalLabel(l)),
   );
 }

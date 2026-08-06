@@ -1309,16 +1309,17 @@ export const dbService = {
 
           if (items && items.length > 0) {
             for (const item of items) {
-              await supabase.rpc('increment_stock', {
+              const { error: rpcErr } = await supabase.rpc('increment_stock', {
                 p_product_id: item.product_id,
                 p_quantity: item.quantity
-              }).then(() => {}).catch(() => {
+              });
+              if (rpcErr) {
                 supabase.from('products').select('stock').eq('id', item.product_id).single().then(({ data }) => {
                   if (data) {
                     supabase.from('products').update({ stock: data.stock + item.quantity }).eq('id', item.product_id);
                   }
                 });
-              });
+              }
 
               await supabase.from('inventory_transactions').insert({
                 id: generateId(),
