@@ -9,7 +9,7 @@ import BarcodeSVG from './BarcodeSVG';
 import * as printerBridge from '../lib/printerBridge';
 import {
   buildThermalLabel, init as escInit, setCodePage,
-  BarcodeType, normalizeBarcodeValue, getPrintableMm,
+  BarcodeType, normalizeBarcodeValue, getPrintableMm, testPrint,
 } from '../lib/escpos';
 
 interface BarcodePrintModalProps {
@@ -69,7 +69,7 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
   const [labelHeight, setLabelHeight] = useState('25');
   const [barcodeHeight, setBarcodeHeight] = useState('10');
   const [barcodeType, setBarcodeType] = useState<BarcodeType>('CODE39');
-  const [cutMode, setCutMode] = useState<'full' | 'partial'>('full');
+  const [cutMode, setCutMode] = useState<'off' | 'full' | 'partial'>('off');
 
   // ── Printer state (native SPP in Android shell, Web BT in browser) ────────
   const isNative = printerBridge.isNativeShell();
@@ -171,6 +171,7 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
     setBtProgress({ current: 0, total: printItemsList.length });
 
     try {
+      await new Promise(r => setTimeout(r, 400));
       await printerBridge.send(escInit());
       await printerBridge.send(setCodePage('CP437'));
 
@@ -193,6 +194,16 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
       setBtProgress({ current: 0, total: 0 });
     }
   }, [printItemsList, labelOptionsFor, btPrinting]);
+
+  const handleTestPrint = useCallback(async () => {
+    if (!printerBridge.isConnected() || btPrinting) return;
+    setBtError(null);
+    try {
+      await printerBridge.send(testPrint());
+    } catch (err: any) {
+      setBtError(err?.message || 'Test print failed');
+    }
+  }, [btPrinting]);
 
   if (!isOpen) return null;
 
@@ -442,11 +453,14 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
                     Cut Mode
                   </label>
                   <div className="flex gap-1.5 text-xs">
-                    <button onClick={() => setCutMode('full')} className={segBtn(cutMode === 'full')}>
-                      <span className="inline-flex items-center justify-center gap-1"><Scissors className="w-3 h-3" />Full</span>
+                    <button onClick={() => setCutMode('off')} className={segBtn(cutMode === 'off')}>
+                      <span className="inline-flex items-center justify-center gap-1"><Scissors className="w-3 h-3" />Off</span>
                     </button>
                     <button onClick={() => setCutMode('partial')} className={segBtn(cutMode === 'partial')}>
                       <span className="inline-flex items-center justify-center gap-1"><Scissors className="w-3 h-3" />Partial</span>
+                    </button>
+                    <button onClick={() => setCutMode('full')} className={segBtn(cutMode === 'full')}>
+                      <span className="inline-flex items-center justify-center gap-1"><Scissors className="w-3 h-3" />Full</span>
                     </button>
                   </div>
                 </div>
@@ -534,14 +548,25 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
               </div>
 
               {btAvailable && (
-                <button
-                  onClick={handleBtPrint}
-                  disabled={totalLabels === 0 || !btConnected || btPrinting}
-                  className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-lg shadow-xs transition-colors flex items-center space-x-1.5 disabled:opacity-50 cursor-pointer"
-                >
-                  {btPrinting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Bluetooth className="w-3.5 h-3.5" />}
-                  <span>{btPrinting ? `${btProgress.current}/${btProgress.total}` : 'BT Print'}</span>
-                </button>
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={handleTestPrint}
+                    disabled={!btConnected || btPrinting}
+                    className="px-3 py-1.5 bg-slate-600 hover:bg-slate-700 text-white font-bold text-xs rounded-lg shadow-xs transition-colors flex items-center space-x-1.5 disabled:opacity-50 cursor-pointer"
+                    title="Print a plain test receipt (no barcode/cut) to verify the connection"
+                  >
+                    <Printer className="w-3.5 h-3.5" />
+                    <span>Test Print</span>
+                  </button>
+                  <button
+                    onClick={handleBtPrint}
+                    disabled={totalLabels === 0 || !btConnected || btPrinting}
+                    className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-lg shadow-xs transition-colors flex items-center space-x-1.5 disabled:opacity-50 cursor-pointer"
+                  >
+                    {btPrinting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Bluetooth className="w-3.5 h-3.5" />}
+                    <span>{btPrinting ? `${btProgress.current}/${btProgress.total}` : 'BT Print'}</span>
+                  </button>
+                </div>
               )}
             </div>
 

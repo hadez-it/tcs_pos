@@ -296,7 +296,7 @@ export interface ThermalLabelOptions {
   barcodeType?: BarcodeType;
   /** Barcode bar height in mm. */
   barcodeHeightMm?: number;
-  cutMode?: 'full' | 'partial';
+  cutMode?: 'off' | 'full' | 'partial';
 }
 
 const DOTS_PER_MM = 8; // 203 dpi
@@ -407,9 +407,9 @@ export function buildThermalLabel(opts: ThermalLabelOptions): Uint8Array {
     paperWidthMm = 58,
     labelWidthMm = 50,
     labelHeightMm = 25,
-    barcodeType = 'CODE128',
+    barcodeType = 'CODE39',
     barcodeHeightMm = 10,
-    cutMode = 'full',
+    cutMode = 'off',
   } = opts;
 
   const printableDots = printableDotsForPaper(paperWidthMm);
@@ -467,10 +467,15 @@ export function buildThermalLabel(opts: ThermalLabelOptions): Uint8Array {
     usedDots += FONT_A_LINE_DOTS;
   }
 
-  // Feed to the requested label height, then cut
+  // Feed to the requested label height (line feeds first — most compatible —
+  // then a small dot feed for the remainder), then cut if requested.
   const remainingDots = Math.max(labelHeightDots - usedDots, 0);
-  if (remainingDots > 0) cmds.push(feedDots(remainingDots));
-  cmds.push(cutMode === 'partial' ? partialCut() : cut());
+  const feedLines = Math.floor(remainingDots / FONT_A_LINE_DOTS);
+  const feedRemainder = remainingDots % FONT_A_LINE_DOTS;
+  if (feedLines > 0) cmds.push(feed(feedLines));
+  if (feedRemainder > 0) cmds.push(feedDots(feedRemainder));
+  if (cutMode === 'partial') cmds.push(partialCut());
+  else if (cutMode === 'full') cmds.push(cut());
 
   return concat(...cmds);
 }
@@ -481,5 +486,21 @@ export function buildThermalLabels(labels: ThermalLabelOptions[]): Uint8Array {
     init(),
     setCodePage('CP437'),
     ...labels.map(l => buildThermalLabel(l)),
+  );
+}
+
+/**
+ * Minimal, dependency-light ESC/POS job used to verify the printer + Bluetooth
+ * connection actually print. No barcode, no cut, no font scaling.
+ */
+export function testPrint(): Uint8Array {
+  return concat(
+    init(),
+    setCodePage('CP437'),
+    resetFormat(),
+    text('MiBayate Printer Test', { align: 'center', bold: true, width: 1, height: 1 }),
+    text('If you can read this,', { align: 'center', width: 1, height: 1 }),
+    text('ESC/POS printing works.', { align: 'center', width: 1, height: 1 }),
+    feed(4),
   );
 }
