@@ -28,6 +28,11 @@ Guidance for AI coding agents working in this repository: a web-based point-of-s
 - **Tests**: none. There is no test runner configured (no Vitest/Jest/Playwright).
   Do not write or assume tests exist. To verify changes, run `npm run lint`
   (`tsc --noEmit`) and `npm run build`.
+- **Capacitor / Android wrapper** (for native SPP printing to classic-Bluetooth
+  printers like the Rongta RPP02N): `npm run cap:android` = build + `cap sync android`.
+  `npx cap add android` regenerates the `android/` project (gitignored). The final
+  APK must be built in Android Studio (this machine has no Android SDK). Do not edit
+  `android/` by hand; regenerate + sync instead.
 
 ## Layout / Key Files
 
@@ -36,6 +41,9 @@ Guidance for AI coding agents working in this repository: a web-based point-of-s
 - `src/types.ts` — shared TypeScript types (Product, Sale, CashierProfile, Transaction,
   CashFlowEntry, Branch, BusinessProfile, etc.).
 - `src/lib/escpos.ts`, `src/lib/bluetoothPrinter.ts` — thermal/bluetooth printing.
+- `src/lib/printerBridge.ts` — unified printer access. Uses the Capacitor SPP plugin
+  (`@shoerofi/capacitor-bluetooth-serial`) in the Android shell to talk to the paired
+  printer by MAC address (no chooser), and falls back to Web Bluetooth in the browser.
 - `src/components/` — one file per surface/modal: `OwnerDashboard.tsx`, `CashierDashboard.tsx`,
   `CsvImportModal.tsx`, `QuickRestockModal.tsx`, `BarcodePrintModal.tsx`, `Auth.tsx`, etc.
 - `src/utils/format.ts` — currency/number formatting.

@@ -6,3 +6,5 @@ coverage/
 *.log
 .env*
 !.env.example
+# Capacitor native Android project (regenerate with: npx cap add android)
+android/

@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
   Printer, Tag, Receipt, Bluetooth, BluetoothOff, Loader2, CheckCircle2,
-  AlertCircle, Save, X, RefreshCw, Cable, Radio, Info
+  AlertCircle, Save, X, RefreshCw, Cable, Radio, Info, Smartphone, ChevronDown
 } from 'lucide-react';
-import * as bluetoothPrinter from '../lib/bluetoothPrinter';
+import * as printerBridge from '../lib/printerBridge';
 import { buildLabel, text, separator, feed, cut, init as escInit, setCodePage } from '../lib/escpos';
 import { useToast } from '../utils/toast';
 
@@ -39,28 +39,55 @@ export const PrinterSettings: React.FC<PrinterSettingsProps> = ({ storeName }) =
   const [barcodeName, setBarcodeName] = useState(() => loadAssignedName(BARCODE_KEY));
   const [slipName, setSlipName] = useState(() => loadAssignedName(SLIP_KEY));
 
-  // ── Live Web Bluetooth connection state (singleton) ───────────────────────
-  const [btAvailable] = useState(() => bluetoothPrinter.isWebBluetoothAvailable());
-  const [btConnected, setBtConnected] = useState(() => bluetoothPrinter.isConnected());
-  const [printerName, setPrinterName] = useState(() => bluetoothPrinter.getPrinterName());
+  // ── Unified bridge (native SPP in the Android shell, Web BT in browser) ───
+  const isNative = printerBridge.isNativeShell();
+  const [btAvailable] = useState(() => printerBridge.isBluetoothAvailable());
+  const [btConnected, setBtConnected] = useState(() => printerBridge.isConnected());
+  const [printerName, setPrinterName] = useState(() => printerBridge.getDeviceName());
   const [connectingRole, setConnectingRole] = useState<PrinterRole | null>(null);
   const [testingRole, setTestingRole] = useState<PrinterRole | null>(null);
   const [btError, setBtError] = useState<string | null>(null);
 
+  // Native: list the phone's already-paired Bluetooth devices (no scanning).
+  const [pairedDevices, setPairedDevices] = useState<printerBridge.PairedPrinter[]>([]);
+  const [selectedAddress, setSelectedAddress] = useState('');
+  const [loadingDevices, setLoadingDevices] = useState(isNative);
+
   useEffect(() => {
-    bluetoothPrinter.onDisconnect(() => {
+    printerBridge.onDisconnect(() => {
       setBtConnected(false);
       setPrinterName('');
     });
-    return () => bluetoothPrinter.offDisconnect();
+    return () => printerBridge.offDisconnect();
   }, []);
+
+  const refreshPairedDevices = useCallback(async () => {
+    if (!isNative) return;
+    setLoadingDevices(true);
+    try {
+      const devs = await printerBridge.getPairedPrinters();
+      setPairedDevices(devs);
+      if (devs.length > 0 && !selectedAddress) {
+        setSelectedAddress(devs[0].address);
+      }
+    } catch {
+      setBtError('Could not read paired devices. Check Bluetooth permissions.');
+    } finally {
+      setLoadingDevices(false);
+    }
+  }, [isNative, selectedAddress]);
+
+  useEffect(() => {
+    void refreshPairedDevices();
+  }, [refreshPairedDevices]);
 
   const handleConnect = async (role: PrinterRole) => {
     if (connectingRole) return;
     setBtError(null);
     setConnectingRole(role);
     try {
-      const name = await bluetoothPrinter.connect();
+      const device = pairedDevices.find(d => d.address === selectedAddress);
+      const name = await printerBridge.connect(device);
       setBtConnected(true);
       setPrinterName(name);
       setBtError(null);
@@ -74,8 +101,8 @@ export const PrinterSettings: React.FC<PrinterSettingsProps> = ({ storeName }) =
     }
   };
 
-  const handleDisconnect = () => {
-    bluetoothPrinter.disconnect();
+  const handleDisconnect = async () => {
+    await printerBridge.disconnect();
     setBtConnected(false);
     setPrinterName('');
   };
@@ -93,15 +120,15 @@ export const PrinterSettings: React.FC<PrinterSettingsProps> = ({ storeName }) =
   };
 
   const handleTestPrint = useCallback(async (role: PrinterRole) => {
-    if (!bluetoothPrinter.isConnected() || testingRole) return;
+    if (!printerBridge.isConnected() || testingRole) return;
     setTestingRole(role);
     setBtError(null);
     try {
-      await bluetoothPrinter.send(escInit());
-      await bluetoothPrinter.send(setCodePage('CP437'));
+      await printerBridge.send(escInit());
+      await printerBridge.send(setCodePage('CP437'));
 
       if (role === 'barcode') {
-        await bluetoothPrinter.send(buildLabel({
+        await printerBridge.send(buildLabel({
           storeName: storeName || 'My Store',
           productName: 'Test Product',
           barcodeValue: '0123456789012',
@@ -123,7 +150,7 @@ export const PrinterSettings: React.FC<PrinterSettingsProps> = ({ storeName }) =
           cut(),
         ];
         for (const r of rows) {
-          await bluetoothPrinter.send(r);
+          await printerBridge.send(r);
           await new Promise(res => setTimeout(res, 60));
         }
       }
@@ -131,7 +158,7 @@ export const PrinterSettings: React.FC<PrinterSettingsProps> = ({ storeName }) =
       toast(`${role === 'barcode' ? 'Barcode' : 'Slip'} test printed.`, 'success');
     } catch (err: any) {
       setBtError(err?.message || 'Test print failed. Check printer connection.');
-      if (!bluetoothPrinter.isConnected()) {
+      if (!printerBridge.isConnected()) {
         setBtConnected(false);
         setPrinterName('');
       }
@@ -195,7 +222,7 @@ export const PrinterSettings: React.FC<PrinterSettingsProps> = ({ storeName }) =
             {!btAvailable ? (
               <span className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-amber-500/15 border border-amber-400/40 text-amber-200 text-xs font-bold">
                 <Radio className="w-4 h-4" />
-                Web Bluetooth unavailable
+                {isNative ? 'Bluetooth unavailable' : 'Web Bluetooth unavailable'}
               </span>
             ) : btConnected ? (
               <span className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-emerald-500/15 border border-emerald-400/40 text-emerald-200 text-xs font-bold max-w-[220px]">
@@ -226,7 +253,9 @@ export const PrinterSettings: React.FC<PrinterSettingsProps> = ({ storeName }) =
         <div className="flex flex-col sm:flex-row sm:items-center gap-2 px-1">
           <div className="flex items-center gap-2 text-[11px] text-slate-500 font-semibold">
             <Cable className="w-3.5 h-3.5" />
-            Current live connection is shared across both printers. Connect a device, then assign it below.
+            {isNative
+              ? 'This is a native Android build — connect straight to your already-paired printer. No chooser needed.'
+              : 'Current live connection is shared across both printers. Connect a device, then assign it below.'}
           </div>
           {btConnected && (
             <button
@@ -236,6 +265,81 @@ export const PrinterSettings: React.FC<PrinterSettingsProps> = ({ storeName }) =
               <BluetoothOff className="w-3.5 h-3.5" />
               Disconnect
             </button>
+          )}
+        </div>
+      )}
+
+      {/* Native: picker of the phone's already-paired Bluetooth printers */}
+      {isNative && (
+        <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-5 space-y-4">
+          <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
+            <Smartphone className="w-5 h-5 text-indigo-600" />
+            <div>
+              <h4 className="font-extrabold text-slate-900 text-sm">Your paired printers</h4>
+              <p className="text-[11px] text-slate-400">Devices already paired with this phone via Android Bluetooth</p>
+            </div>
+            <button
+              onClick={() => void refreshPairedDevices()}
+              disabled={loadingDevices}
+              className="ml-auto inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-100 border border-slate-200 rounded-xl font-bold text-[11px] text-slate-600 transition-all cursor-pointer disabled:opacity-50 active:scale-95"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${loadingDevices ? 'animate-spin' : ''}`} />
+              Refresh
+            </button>
+          </div>
+
+          {loadingDevices ? (
+            <div className="flex items-center justify-center gap-2 py-6 text-xs text-slate-400">
+              <Loader2 className="w-4 h-4 animate-spin" />
+              Reading paired devices…
+            </div>
+          ) : pairedDevices.length === 0 ? (
+            <div className="py-6 text-center">
+              <BluetoothOff className="w-8 h-8 mx-auto mb-2 text-slate-300" />
+              <p className="text-xs font-semibold text-slate-600">No paired printers found.</p>
+              <p className="text-[11px] text-slate-400 mt-1">
+                Pair your printer first in Android Settings → Bluetooth, then tap Refresh.
+              </p>
+            </div>
+          ) : (
+            <div className="flex flex-col sm:flex-row gap-3">
+              <div className="relative flex-1">
+                <select
+                  value={selectedAddress}
+                  onChange={(e) => setSelectedAddress(e.target.value)}
+                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:border-indigo-500 appearance-none pr-9 cursor-pointer"
+                >
+                  {pairedDevices.map(d => (
+                    <option key={d.address} value={d.address}>
+                      {d.name} · {d.address}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+              </div>
+              {!btConnected ? (
+                <button
+                  onClick={() => handleConnect('slip')}
+                  disabled={!!connectingRole}
+                  className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-md transition-all active:scale-95 disabled:opacity-50 cursor-pointer"
+                >
+                  {connectingRole ? (
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  ) : (
+                    <Bluetooth className="w-3.5 h-3.5" />
+                  )}
+                  Connect
+                </button>
+              ) : (
+                <button
+                  onClick={handleDisconnect}
+                  className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-white border border-red-200 text-red-600 text-xs font-bold rounded-xl transition-all active:scale-95 cursor-pointer"
+                >
+                  <BluetoothOff className="w-3.5 h-3.5" />
+                  Disconnect
+                </button>
+              )}
+            </div>
           )}
         </div>
       )}
@@ -387,11 +491,23 @@ export const PrinterSettings: React.FC<PrinterSettingsProps> = ({ storeName }) =
           <h5 className="font-extrabold text-slate-900 text-sm">Pairing & usage tips</h5>
         </div>
         <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-[11px] text-slate-600 leading-relaxed list-disc list-inside">
-          <li>Web Bluetooth needs Chrome/Edge on Android with an HTTPS connection.</li>
-          <li>Choose the matching device from the system picker when it appears.</li>
-          <li>Only one printer stays actively connected at a time on this device.</li>
-          <li>Assignments persist locally, so you always know which printer is which.</li>
-          <li>Use <strong>Test</strong> to confirm spacing before a real print run.</li>
+          {isNative ? (
+            <>
+              <li>Pair the RPP02N in Android Settings → Bluetooth before using this app.</li>
+              <li>"Refresh" reloads the phone's paired devices — no device chooser needed.</li>
+              <li>Only one printer stays actively connected at a time on this device.</li>
+              <li>Assignments persist locally, so you always know which printer is which.</li>
+              <li>Use <strong>Test</strong> to confirm spacing before a real print run.</li>
+            </>
+          ) : (
+            <>
+              <li>Web Bluetooth needs Chrome/Edge on Android with an HTTPS connection.</li>
+              <li>Choose the matching device from the system picker when it appears.</li>
+              <li>Only one printer stays actively connected at a time on this device.</li>
+              <li>Assignments persist locally, so you always know which printer is which.</li>
+              <li>Use <strong>Test</strong> to confirm spacing before a real print run.</li>
+            </>
+          )}
         </ul>
       </div>
     </div>

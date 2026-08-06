@@ -5,6 +5,9 @@ import {defineConfig} from 'vite';
 
 export default defineConfig(() => {
   return {
+    // Relative asset paths so the built app loads correctly when served by the
+    // Capacitor native shell (https://localhost/android scheme).
+    base: './',
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {

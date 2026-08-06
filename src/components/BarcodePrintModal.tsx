@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import { Product, Branch } from '../types';
 import BarcodeSVG from './BarcodeSVG';
-import * as bluetoothPrinter from '../lib/bluetoothPrinter';
+import * as printerBridge from '../lib/printerBridge';
 import { buildLabel, init as escInit, setCodePage } from '../lib/escpos';
 
 interface BarcodePrintModalProps {
@@ -54,14 +54,18 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
   // 'small' = 38x25mm, 'standard' = 50x25mm, 'large' = 60x40mm, 'a4' = A4 sheet grid
   const [labelSize, setLabelSize] = useState<'small' | 'standard' | 'large' | 'a4'>('standard');
 
-  // ── Bluetooth Printer State ──────────────────────────────────────────────
-  const [btAvailable] = useState(() => bluetoothPrinter.isWebBluetoothAvailable());
-  const [btConnected, setBtConnected] = useState(() => bluetoothPrinter.isConnected());
-  const [printerName, setPrinterName] = useState(() => bluetoothPrinter.getPrinterName());
+  // ── Printer State (native SPP in Android shell, Web BT in browser) ────────
+  const isNative = printerBridge.isNativeShell();
+  const [btAvailable] = useState(() => printerBridge.isBluetoothAvailable());
+  const [btConnected, setBtConnected] = useState(() => printerBridge.isConnected());
+  const [printerName, setPrinterName] = useState(() => printerBridge.getDeviceName());
   const [btConnecting, setBtConnecting] = useState(false);
   const [btPrinting, setBtPrinting] = useState(false);
   const [btProgress, setBtProgress] = useState({ current: 0, total: 0 });
   const [btError, setBtError] = useState<string | null>(null);
+  // Native: picking from the phone's already-paired printers (no chooser).
+  const [pairedDevices, setPairedDevices] = useState<printerBridge.PairedPrinter[]>([]);
+  const [selectedAddress, setSelectedAddress] = useState('');
 
   // Compute print items list early (needed by handleBtPrint)
   const printItemsList: Array<{ product: Product; labelIndex: number }> = [];
@@ -78,21 +82,29 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
   // Listen for printer disconnect events
   useEffect(() => {
     if (!isOpen) return;
-    bluetoothPrinter.onDisconnect(() => {
+    if (isNative) {
+      // Load the phone's paired printers so the user can pick one directly.
+      printerBridge.getPairedPrinters().then(devs => {
+        setPairedDevices(devs);
+        if (devs.length > 0) setSelectedAddress(devs[0].address);
+      }).catch(() => {});
+    }
+    printerBridge.onDisconnect(() => {
       setBtConnected(false);
       setPrinterName('');
     });
     return () => {
-      bluetoothPrinter.offDisconnect();
+      printerBridge.offDisconnect();
     };
-  }, [isOpen]);
+  }, [isOpen, isNative]);
 
   const handleConnectPrinter = useCallback(async () => {
     if (btConnecting) return;
     setBtError(null);
     setBtConnecting(true);
     try {
-      const name = await bluetoothPrinter.connect();
+      const device = pairedDevices.find(d => d.address === selectedAddress);
+      const name = await printerBridge.connect(device);
       setBtConnected(true);
       setPrinterName(name);
       setBtError(null);
@@ -105,16 +117,16 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
     } finally {
       setBtConnecting(false);
     }
-  }, [btConnecting]);
+  }, [btConnecting, pairedDevices, selectedAddress]);
 
-  const handleDisconnectPrinter = useCallback(() => {
-    bluetoothPrinter.disconnect();
+  const handleDisconnectPrinter = useCallback(async () => {
+    await printerBridge.disconnect();
     setBtConnected(false);
     setPrinterName('');
   }, []);
 
   const handleBtPrint = useCallback(async () => {
-    if (!bluetoothPrinter.isConnected() || printItemsList.length === 0 || btPrinting) return;
+    if (!printerBridge.isConnected() || printItemsList.length === 0 || btPrinting) return;
 
     setBtPrinting(true);
     setBtError(null);
@@ -122,8 +134,8 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
 
     try {
       // Send init command first
-      await bluetoothPrinter.send(escInit());
-      await bluetoothPrinter.send(setCodePage('CP437'));
+      await printerBridge.send(escInit());
+      await printerBridge.send(setCodePage('CP437'));
 
       // Send each label
       for (let i = 0; i < printItemsList.length; i++) {
@@ -142,7 +154,7 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
           currencySymbol: '$',
         });
 
-        await bluetoothPrinter.send(labelData);
+        await printerBridge.send(labelData);
         setBtProgress({ current: i + 1, total: printItemsList.length });
 
         // Brief delay between labels to let printer process
@@ -153,7 +165,7 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
     } catch (err: any) {
       setBtError(err?.message || 'Print failed. Check printer connection.');
       // If connection was lost, update state
-      if (!bluetoothPrinter.isConnected()) {
+      if (!printerBridge.isConnected()) {
         setBtConnected(false);
         setPrinterName('');
       }
@@ -263,18 +275,31 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
                     </button>
                   </>
                 ) : (
-                  <button
-                    onClick={handleConnectPrinter}
-                    disabled={btConnecting}
-                    className="px-2.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-[10px] rounded-lg shadow-xs transition-all flex items-center space-x-1 disabled:opacity-50"
-                  >
-                    {btConnecting ? (
-                      <Loader2 className="w-3 h-3 animate-spin" />
-                    ) : (
-                      <Bluetooth className="w-3 h-3" />
+                  <>
+                    {isNative && pairedDevices.length > 0 && (
+                      <select
+                        value={selectedAddress}
+                        onChange={(e) => setSelectedAddress(e.target.value)}
+                        className="px-2 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-blue-500 max-w-[140px] cursor-pointer"
+                      >
+                        {pairedDevices.map(d => (
+                          <option key={d.address} value={d.address}>{d.name}</option>
+                        ))}
+                      </select>
                     )}
-                    <span>{btConnecting ? 'Connecting...' : 'Connect Printer'}</span>
-                  </button>
+                    <button
+                      onClick={handleConnectPrinter}
+                      disabled={btConnecting}
+                      className="px-2.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-[10px] rounded-lg shadow-xs transition-all flex items-center space-x-1 disabled:opacity-50"
+                    >
+                      {btConnecting ? (
+                        <Loader2 className="w-3 h-3 animate-spin" />
+                      ) : (
+                        <Bluetooth className="w-3 h-3" />
+                      )}
+                      <span>{btConnecting ? 'Connecting...' : 'Connect Printer'}</span>
+                    </button>
+                  </>
                 )}
               </div>
             )}
