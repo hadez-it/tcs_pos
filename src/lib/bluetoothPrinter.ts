@@ -22,9 +22,17 @@ const SPP_UUID = '00001101-0000-1000-8000-00805f9b34fb';
 
 // Generic serial / SPP fallback services many cheap printers use
 const FALLBACK_SERVICES = [
-  SERIAL_PORT_SERVICE,
-  '0000fee7-0000-1000-8000-00805f9b34fb', // Common for Chinese BLE printers
-  '6e400001-b5a3-f393-e0a9-e50e24dcca9e', // Nordic UART (used by some)
+  SERIAL_PORT_SERVICE,                       // Bluetooth SPP (when exposed over GATT)
+  '0000fee7-0000-1000-8000-00805f9b34fb',    // Common Chinese BLE printers
+  '6e400001-b5a3-f393-e0a9-e50e24dcca9e',    // Nordic UART
+  '0000ff00-0000-1000-8000-00805f9b34fb',    // 0xFF00 (Xprinter / Rongta / 58mm)
+  '0000ffe0-0000-1000-8000-00805f9b34fb',    // 0xFFE0
+  '0000ffe5-0000-1000-8000-00805f9b34fb',    // 0xFFE5
+  '0000fff0-0000-1000-8000-00805f9b34fb',    // 0xFFF0
+  '0000ff10-0000-1000-8000-00805f9b34fb',    // 0xFF10
+  '0000ff20-0000-1000-8000-00805f9b34fb',    // 0xFF20
+  '0000fff5-0000-1000-8000-00805f9b34fb',    // 0xFFF5
+  '0000ffe7-0000-1000-8000-00805f9b34fb',    // 0xFFE7
 ];
 
 // ── Singleton state ──────────────────────────────────────────────────────────
@@ -118,17 +126,24 @@ export async function connect(): Promise<string> {
     return null;
   };
 
+  // Diagnostics: collect the services/characteristics we actually see so a
+  // failure is actionable (the exact service UUID can be added above).
+  const seen: string[] = [];
+
   try {
     const services = await server.getPrimaryServices();
     for (const service of services) {
       try {
         const chars = await service.getCharacteristics();
+        for (const c of chars) {
+          seen.push(`${service.uuid}:${c.uuid}${c.properties.write ? '(w)' : c.properties.writeWithoutResponse ? '(wnr)' : ''}`);
+        }
         characteristic = findWritable(chars);
-        if (characteristic) break;
       } catch {
         // Skip services that error out — e.g. unreadable/unsupported.
         continue;
       }
+      if (characteristic) break;
     }
   } catch {
     // getPrimaryServices() unsupported on this platform — fall back to known UUIDs.
@@ -141,6 +156,11 @@ export async function connect(): Promise<string> {
         const service = await server.getPrimaryService(serviceUuid);
         const chars = await service.getCharacteristics();
         characteristic = findWritable(chars);
+        if (!characteristic) {
+          for (const c of chars) {
+            seen.push(`${service.uuid}:${c.uuid}${c.properties.write ? '(w)' : c.properties.writeWithoutResponse ? '(wnr)' : ''}`);
+          }
+        }
       } catch {
         // Service not found, try next
         continue;
@@ -151,9 +171,14 @@ export async function connect(): Promise<string> {
 
   if (!characteristic) {
     server.disconnect();
+    const detail = seen.length
+      ? ` Seen: ${[...new Set(seen)].join(', ')}.`
+      : ' No services were accessible.';
+    console.warn('Web Bluetooth: no writable characteristic found.', detail);
     throw new Error(
-      'Could not find a writable characteristic. ' +
-      'Your printer may not be a supported ESC/POS printer.'
+      'Could not find a writable characteristic on "' + (device.name || 'printer') + '".' +
+      detail +
+      ' Please share this message so we can add the exact service UUID for your printer.'
     );
   }
 
