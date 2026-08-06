@@ -105,25 +105,47 @@ export async function connect(): Promise<string> {
   // Connect to GATT server
   const server = await device.gatt.connect();
 
-  // Try to get the serial port service
+  // Find a writable characteristic. Prefer scanning every accessible service so
+  // printers that expose their data pipe on a non-standard service still work.
   let characteristic: BluetoothRemoteGATTCharacteristic | null = null;
 
-  // Try each possible service UUID
-  for (const serviceUuid of [SERIAL_PORT_SERVICE, ...FALLBACK_SERVICES]) {
-    try {
-      const service = await server.getPrimaryService(serviceUuid);
-      // Look for a writable characteristic
-      const chars = await service.getCharacteristics();
-      for (const c of chars) {
-        if (c.properties.write || c.properties.writeWithoutResponse) {
-          characteristic = c;
-          break;
-        }
+  const findWritable = (chars: BluetoothRemoteGATTCharacteristic[]) => {
+    for (const c of chars) {
+      if (c.properties.write || c.properties.writeWithoutResponse) {
+        return c;
+      }
+    }
+    return null;
+  };
+
+  try {
+    const services = await server.getPrimaryServices();
+    for (const service of services) {
+      try {
+        const chars = await service.getCharacteristics();
+        characteristic = findWritable(chars);
+        if (characteristic) break;
+      } catch {
+        // Skip services that error out — e.g. unreadable/unsupported.
+        continue;
+      }
+    }
+  } catch {
+    // getPrimaryServices() unsupported on this platform — fall back to known UUIDs.
+  }
+
+  // Fallback: probe the known ESC/POS serial services directly.
+  if (!characteristic) {
+    for (const serviceUuid of [SERIAL_PORT_SERVICE, ...FALLBACK_SERVICES]) {
+      try {
+        const service = await server.getPrimaryService(serviceUuid);
+        const chars = await service.getCharacteristics();
+        characteristic = findWritable(chars);
+      } catch {
+        // Service not found, try next
+        continue;
       }
       if (characteristic) break;
-    } catch {
-      // Service not found, try next
-      continue;
     }
   }
 
