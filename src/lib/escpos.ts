@@ -455,7 +455,7 @@ export function buildThermalLabel(opts: ThermalLabelOptions): Uint8Array {
   // Barcode (printer-native engine), module width chosen to fit the label width
   const barcodeHeightDots = Math.max(Math.round(barcodeHeightMm * DOTS_PER_MM), 20);
   const barcodeData = normalizeBarcodeValue(barcodeValue, barcodeType);
-  const moduleWidth = Math.min(Math.max(Math.floor(labelWidthDots / estimateBarcodeModules(barcodeData, barcodeType)), 1), 4);
+  const moduleWidth = Math.min(Math.max(Math.floor(labelWidthDots / estimateBarcodeModules(barcodeData, barcodeType)), 2), 4);
   cmds.push(barcode(barcodeData, barcodeType, barcodeHeightDots, showBarcodeText ? 2 : 0, moduleWidth));
   usedDots += barcodeHeightDots + (showBarcodeText ? FONT_A_LINE_DOTS : 0);
 

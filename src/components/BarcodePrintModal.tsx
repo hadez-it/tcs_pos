@@ -68,7 +68,7 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
   const [labelWidth, setLabelWidth] = useState('32');
   const [labelHeight, setLabelHeight] = useState('25');
   const [barcodeHeight, setBarcodeHeight] = useState('10');
-  const [barcodeType, setBarcodeType] = useState<BarcodeType>('CODE128');
+  const [barcodeType, setBarcodeType] = useState<BarcodeType>('CODE39');
   const [cutMode, setCutMode] = useState<'full' | 'partial'>('full');
 
   // ── Printer state (native SPP in Android shell, Web BT in browser) ────────
