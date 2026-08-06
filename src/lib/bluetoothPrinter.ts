@@ -83,27 +83,17 @@ export function offDisconnect(): void {
 export async function connect(): Promise<string> {
   let device: BluetoothDevice;
 
-  try {
-    // Try with serial port service filter first (works for most ESC/POS printers)
-    device = await (navigator as any).bluetooth.requestDevice({
-      filters: [
-        { services: [SERIAL_PORT_SERVICE] },
-      ],
-      optionalServices: [
-        SERIAL_PORT_SERVICE,
-        ...FALLBACK_SERVICES,
-      ],
-    });
-  } catch {
-    // Fallback: show all devices (some printers don't advertise serial service)
-    device = await (navigator as any).bluetooth.requestDevice({
-      acceptAllDevices: true,
-      optionalServices: [
-        SERIAL_PORT_SERVICE,
-        ...FALLBACK_SERVICES,
-      ],
-    });
-  }
+  // Single requestDevice call. Calling requestDevice twice in the same gesture
+  // consumes user activation, which Chrome rejects with a "user gesture" error.
+  // acceptAllDevices + optionalServices is both reliable for printers that don't
+  // advertise the serial service and keeps this as one user-gesture request.
+  device = await (navigator as any).bluetooth.requestDevice({
+    acceptAllDevices: true,
+    optionalServices: [
+      SERIAL_PORT_SERVICE,
+      ...FALLBACK_SERVICES,
+    ],
+  });
 
   if (!device.gatt) {
     throw new Error('Device does not support GATT');
