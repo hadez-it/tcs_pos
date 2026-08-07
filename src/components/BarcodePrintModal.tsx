@@ -18,6 +18,7 @@ interface BarcodePrintModalProps {
   onClose: () => void;
   selectedProductId?: string | null;
   currencySymbol?: string;
+  businessName?: string;
 }
 
 const BARCODE_TYPES: { value: BarcodeType; label: string }[] = [
@@ -43,9 +44,10 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
   onClose,
   selectedProductId,
   currencySymbol = 'Ks',
+  businessName,
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [storeName, setStoreName] = useState('My Retail Store');
+  const [storeName, setStoreName] = useState(businessName || 'My Retail Store');
 
   const [selectedProducts, setSelectedProducts] = useState<{ [id: string]: number }>(() => {
     const initialMap: { [id: string]: number } = {};

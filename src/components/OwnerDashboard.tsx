@@ -4207,6 +4207,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
         products={products}
         selectedProductId={barcodeProductId}
         currencySymbol={businessProfile.currency || 'Ks'}
+        businessName={businessProfile.name}
       />
 
       {/* CASH FLOW ADD / EDIT ENTRY MODAL */}
