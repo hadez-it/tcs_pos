@@ -63,6 +63,9 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
   const [showPrice, setShowPrice] = useState(true);
   const [showCodeText, setShowCodeText] = useState(true);
 
+  // ── Paper mode: sticker labels vs continuous receipt ───────────────────────
+  const [paperMode, setPaperMode] = useState<'sticker' | 'receipt'>('sticker');
+
   // ── Custom paper size (mm) ──────────────────────────────────────────────────
   const [paperWidth, setPaperWidth] = useState<'32' | '58' | '80'>('32');
   const [labelWidth, setLabelWidth] = useState('32');
@@ -70,6 +73,8 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
   const [barcodeHeight, setBarcodeHeight] = useState('10');
   const [barcodeType, setBarcodeType] = useState<BarcodeType>('CODE39');
   const [cutMode, setCutMode] = useState<'off' | 'full' | 'partial'>('off');
+  const [labelGap, setLabelGap] = useState('3');
+  const [feedOffset, setFeedOffset] = useState('0');
 
   // ── Printer state (native SPP in Android shell, Web BT in browser) ────────
   const isNative = printerBridge.isNativeShell();
@@ -87,8 +92,10 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
   const effPaperWidth = paperWidth === '80' ? 80 : paperWidth === '58' ? 58 : 32;
   const printableMm = getPrintableMm(effPaperWidth);
   const effLabelWidth = clamp(parseMm(labelWidth) || effPaperWidth, 5, 80);
-  const effLabelHeight = clamp(parseMm(labelHeight) || 25, 8, 300);
+  const effLabelHeight = clamp(parseMm(labelHeight) || 30, 8, 300);
   const effBarcodeHeight = clamp(parseMm(barcodeHeight) || 10, 3, Math.min(effLabelHeight * 0.8, 40));
+  const effLabelGap = clamp(parseMm(labelGap) || 3, 2, 10);
+  const effFeedOffset = clamp(parseMm(feedOffset) || 0, -10, 10);
 
   const printItemsList: Array<{ product: Product; labelIndex: number }> = [];
   Object.entries(selectedProducts).forEach(([prodId, rawQty]) => {
@@ -160,7 +167,10 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
     labelHeightMm: effLabelHeight,
     barcodeType,
     barcodeHeightMm: effBarcodeHeight,
-    cutMode,
+    cutMode: paperMode === 'sticker' ? 'off' : cutMode,
+    paperMode,
+    labelGapMm: effLabelGap,
+    feedOffsetMm: effFeedOffset,
   });
 
   const handleBtPrint = useCallback(async () => {
@@ -347,54 +357,99 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
           {/* LEFT PANEL */}
           <div className="lg:col-span-5 flex flex-col overflow-y-auto p-4 space-y-4 bg-slate-50/50">
 
-            {/* LABEL SIZE (MM) */}
-            <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-2xs space-y-3">
-              <div className="flex items-center gap-1.5 text-xs font-bold text-slate-800">
-                <Ruler className="w-4 h-4 text-indigo-600" />
-                <span>Custom Label Size</span>
-                <span className="text-[10px] font-semibold text-slate-400">({printableMm}mm printable)</span>
-              </div>
+             {/* LABEL SIZE (MM) */}
+             <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-2xs space-y-3">
+               <div className="flex items-center gap-1.5 text-xs font-bold text-slate-800">
+                 <Ruler className="w-4 h-4 text-indigo-600" />
+                 <span>Label Size</span>
+                 <span className="text-[10px] font-semibold text-slate-400">({printableMm}mm printable)</span>
+               </div>
 
-              <div>
-                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
-                  Paper Width
-                </label>
-                <div className="flex gap-1.5 text-xs">
-                  <button onClick={() => setPaperWidth('32')} className={segBtn(paperWidth === '32')}>32mm</button>
-                  <button onClick={() => setPaperWidth('58')} className={segBtn(paperWidth === '58')}>58mm</button>
-                  <button onClick={() => setPaperWidth('80')} className={segBtn(paperWidth === '80')}>80mm</button>
-                </div>
-              </div>
+               {/* Paper mode: sticker vs receipt */}
+               <div>
+                 <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
+                   Paper Type
+                 </label>
+                 <div className="flex gap-1.5 text-xs">
+                   <button onClick={() => setPaperMode('sticker')} className={segBtn(paperMode === 'sticker')}>
+                     <span className="inline-flex items-center justify-center gap-1"><Tag className="w-3 h-3" />Sticker Labels</span>
+                   </button>
+                   <button onClick={() => setPaperMode('receipt')} className={segBtn(paperMode === 'receipt')}>
+                     <span className="inline-flex items-center justify-center gap-1"><Printer className="w-3 h-3" />Receipt Roll</span>
+                   </button>
+                 </div>
+               </div>
 
-              <div className="grid grid-cols-3 gap-2">
-                <div>
-                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
-                    Width (mm)
-                  </label>
-                  <input type="number" min={5} max={80} value={labelWidth}
-                    onChange={e => setLabelWidth(e.target.value)} className={numInputClass} />
-                </div>
-                <div>
-                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
-                    Height (mm)
-                  </label>
-                  <input type="number" min={8} max={300} value={labelHeight}
-                    onChange={e => setLabelHeight(e.target.value)} className={numInputClass} />
-                </div>
-                <div>
-                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
-                    Barcode H (mm)
-                  </label>
-                  <input type="number" min={3} max={40} value={barcodeHeight}
-                    onChange={e => setBarcodeHeight(e.target.value)} className={numInputClass} />
-                </div>
-              </div>
+               <div>
+                 <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
+                   Paper Width
+                 </label>
+                 <div className="flex gap-1.5 text-xs">
+                   <button onClick={() => setPaperWidth('32')} className={segBtn(paperWidth === '32')}>32mm</button>
+                   <button onClick={() => setPaperWidth('58')} className={segBtn(paperWidth === '58')}>58mm</button>
+                   <button onClick={() => setPaperWidth('80')} className={segBtn(paperWidth === '80')}>80mm</button>
+                 </div>
+               </div>
 
-              <p className="text-[10px] text-slate-400 font-medium leading-relaxed">
-                Label: {effLabelWidth.toFixed(0)} × {effLabelHeight.toFixed(0)}mm
-                {effLabelWidth > printableMm && <span className="text-amber-600 font-bold"> — printable width {printableMm}mm</span>}
-              </p>
-            </div>
+               <div className="grid grid-cols-3 gap-2">
+                 <div>
+                   <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
+                     Width (mm)
+                   </label>
+                   <input type="number" min={5} max={80} value={labelWidth}
+                     onChange={e => setLabelWidth(e.target.value)} className={numInputClass} />
+                 </div>
+                 <div>
+                   <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
+                     Height (mm)
+                   </label>
+                   <input type="number" min={8} max={300} value={labelHeight}
+                     onChange={e => setLabelHeight(e.target.value)} className={numInputClass} />
+                 </div>
+                 <div>
+                   <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
+                     Barcode H (mm)
+                   </label>
+                   <input type="number" min={3} max={40} value={barcodeHeight}
+                     onChange={e => setBarcodeHeight(e.target.value)} className={numInputClass} />
+                 </div>
+               </div>
+
+               {/* Sticker-only: gap + feed offset calibration */}
+               {paperMode === 'sticker' && (
+                 <div className="grid grid-cols-2 gap-2">
+                   <div>
+                     <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
+                       Label Gap (mm)
+                     </label>
+                     <input type="number" min={2} max={10} step={0.5} value={labelGap}
+                       onChange={e => setLabelGap(e.target.value)} className={numInputClass} />
+                   </div>
+                   <div>
+                     <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
+                       Feed Offset (mm)
+                     </label>
+                     <input type="number" min={-10} max={10} step={0.5} value={feedOffset}
+                       onChange={e => setFeedOffset(e.target.value)} className={numInputClass} />
+                   </div>
+                 </div>
+               )}
+
+               <p className="text-[10px] text-slate-400 font-medium leading-relaxed">
+                 {paperMode === 'sticker' ? (
+                   <>Label: {effLabelWidth.toFixed(0)} × {effLabelHeight.toFixed(0)}mm · gap {effLabelGap.toFixed(1)}mm · feed {effLabelHeight + effLabelGap + effFeedOffset > 0 ? (effLabelHeight + effLabelGap + effFeedOffset).toFixed(1) : '—'}mm total</>
+                 ) : (
+                   <>Label: {effLabelWidth.toFixed(0)} × {effLabelHeight.toFixed(0)}mm</>
+                 )}
+                 {effLabelWidth > printableMm && <span className="text-amber-600 font-bold"> — printable width {printableMm}mm</span>}
+               </p>
+
+               {paperMode === 'sticker' && (
+                 <p className="text-[10px] text-indigo-500 font-medium leading-relaxed">
+                   Set the height to match your sticker length (e.g. 30mm). The printer feeds one full label + gap so the next sticker is ready at the print head.
+                 </p>
+               )}
+             </div>
 
             {/* LABEL DESIGN */}
             <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-2xs space-y-3">
@@ -436,35 +491,43 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
               </div>
 
               <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
-                    Barcode Format
-                  </label>
-                  <select
-                    value={barcodeType}
-                    onChange={e => setBarcodeType(e.target.value as BarcodeType)}
-                    className="w-full px-2 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-800 focus:outline-none focus:border-indigo-500 cursor-pointer"
-                  >
-                    {BARCODE_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
-                  </select>
-                </div>
-                <div>
-                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
-                    Cut Mode
-                  </label>
-                  <div className="flex gap-1.5 text-xs">
-                    <button onClick={() => setCutMode('off')} className={segBtn(cutMode === 'off')}>
-                      <span className="inline-flex items-center justify-center gap-1"><Scissors className="w-3 h-3" />Off</span>
-                    </button>
-                    <button onClick={() => setCutMode('partial')} className={segBtn(cutMode === 'partial')}>
-                      <span className="inline-flex items-center justify-center gap-1"><Scissors className="w-3 h-3" />Partial</span>
-                    </button>
-                    <button onClick={() => setCutMode('full')} className={segBtn(cutMode === 'full')}>
-                      <span className="inline-flex items-center justify-center gap-1"><Scissors className="w-3 h-3" />Full</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
+                 <div>
+                   <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
+                     Barcode Format
+                   </label>
+                   <select
+                     value={barcodeType}
+                     onChange={e => setBarcodeType(e.target.value as BarcodeType)}
+                     className="w-full px-2 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-800 focus:outline-none focus:border-indigo-500 cursor-pointer"
+                   >
+                     {BARCODE_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
+                   </select>
+                 </div>
+                 {paperMode === 'receipt' ? (
+                   <div>
+                     <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
+                       Cut Mode
+                     </label>
+                     <div className="flex gap-1.5 text-xs">
+                       <button onClick={() => setCutMode('off')} className={segBtn(cutMode === 'off')}>
+                         <span className="inline-flex items-center justify-center gap-1"><Scissors className="w-3 h-3" />Off</span>
+                       </button>
+                       <button onClick={() => setCutMode('partial')} className={segBtn(cutMode === 'partial')}>
+                         <span className="inline-flex items-center justify-center gap-1"><Scissors className="w-3 h-3" />Partial</span>
+                       </button>
+                       <button onClick={() => setCutMode('full')} className={segBtn(cutMode === 'full')}>
+                         <span className="inline-flex items-center justify-center gap-1"><Scissors className="w-3 h-3" />Full</span>
+                       </button>
+                     </div>
+                   </div>
+                 ) : (
+                   <div className="flex items-end">
+                     <p className="text-[10px] text-slate-400 font-medium">
+                       Auto-feed: full label + gap
+                     </p>
+                   </div>
+                 )}
+               </div>
             </div>
 
             {/* PRODUCT SELECTION */}

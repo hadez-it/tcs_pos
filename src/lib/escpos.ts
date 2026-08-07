@@ -297,6 +297,17 @@ export interface ThermalLabelOptions {
   /** Barcode bar height in mm. */
   barcodeHeightMm?: number;
   cutMode?: 'off' | 'full' | 'partial';
+  /**
+   * Paper mode. Receipt = continuous paper (feeds by content height).
+   * Sticker = self-adhesive labels (feeds full label length + gap so the
+   * next label is positioned at the print head). Sticker mode also
+   * disables the auto-cut command, which label printers do not have.
+   */
+  paperMode?: 'receipt' | 'sticker';
+  /** Gap between sticker labels in mm (default 3mm). Drives feed-to-next. */
+  labelGapMm?: number;
+  /** Fine-tune feed distance in mm (positive feeds more, negative less). */
+  feedOffsetMm?: number;
 }
 
 const DOTS_PER_MM = 8; // 203 dpi
@@ -406,12 +417,16 @@ export function buildThermalLabel(opts: ThermalLabelOptions): Uint8Array {
     currencySymbol = 'Ks',
     paperWidthMm = 58,
     labelWidthMm = 50,
-    labelHeightMm = 25,
+    labelHeightMm = 30,
     barcodeType = 'CODE39',
     barcodeHeightMm = 10,
     cutMode = 'off',
+    paperMode = 'sticker',
+    labelGapMm = 3,
+    feedOffsetMm = 0,
   } = opts;
 
+  const isSticker = paperMode === 'sticker';
   const printableDots = printableDotsForPaper(paperWidthMm);
   const labelWidthDots = Math.min(Math.max(Math.round(labelWidthMm * DOTS_PER_MM), 1), printableDots);
   const labelHeightDots = Math.max(Math.round(labelHeightMm * DOTS_PER_MM), 24);
@@ -467,15 +482,32 @@ export function buildThermalLabel(opts: ThermalLabelOptions): Uint8Array {
     usedDots += FONT_A_LINE_DOTS;
   }
 
-  // Feed to the requested label height (line feeds first — most compatible —
-  // then a small dot feed for the remainder), then cut if requested.
-  const remainingDots = Math.max(labelHeightDots - usedDots, 0);
-  const feedLines = Math.floor(remainingDots / FONT_A_LINE_DOTS);
-  const feedRemainder = remainingDots % FONT_A_LINE_DOTS;
-  if (feedLines > 0) cmds.push(feed(feedLines));
-  if (feedRemainder > 0) cmds.push(feedDots(feedRemainder));
-  if (cutMode === 'partial') cmds.push(partialCut());
-  else if (cutMode === 'full') cmds.push(cut());
+  // ── Paper feed ─────────────────────────────────────────────────────────────
+  // Sticker (self-adhesive) labels: the printer must advance by the FULL label
+  // length + the gap between labels so the next label is positioned at the
+  // print head. Feeding only the "remaining" content height leaves the peel-off
+  // label stuck mid-way and the next print lands on the gap. Label printers
+  // have no auto-cutter, so the cut command is suppressed.
+  // Receipt (continuous) paper: feed only enough to clear the content, then
+  // optionally cut.
+  if (isSticker) {
+    const feedDotsTotal = Math.max(
+      Math.round((labelHeightMm + labelGapMm + feedOffsetMm) * DOTS_PER_MM),
+      0,
+    );
+    const feedLines = Math.floor(feedDotsTotal / FONT_A_LINE_DOTS);
+    const feedRemainder = feedDotsTotal % FONT_A_LINE_DOTS;
+    if (feedLines > 0) cmds.push(feed(feedLines));
+    if (feedRemainder > 0) cmds.push(feedDots(feedRemainder));
+  } else {
+    const remainingDots = Math.max(labelHeightDots - usedDots, 0);
+    const feedLines = Math.floor(remainingDots / FONT_A_LINE_DOTS);
+    const feedRemainder = remainingDots % FONT_A_LINE_DOTS;
+    if (feedLines > 0) cmds.push(feed(feedLines));
+    if (feedRemainder > 0) cmds.push(feedDots(feedRemainder));
+    if (cutMode === 'partial') cmds.push(partialCut());
+    else if (cutMode === 'full') cmds.push(cut());
+  }
 
   return concat(...cmds);
 }
