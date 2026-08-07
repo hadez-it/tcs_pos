@@ -199,14 +199,14 @@ export const PrinterSettings: React.FC<PrinterSettingsProps> = ({ storeName }) =
   return (
     <div className="space-y-6 max-w-6xl mx-auto">
       {/* Header Banner */}
-      <div className="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white p-6 sm:p-7 rounded-2xl shadow-lg border border-slate-800 relative overflow-hidden">
+      <div className="bg-gradient-to-br from-slate-900 via-gray-950 to-slate-900 text-white p-6 sm:p-7 rounded-2xl shadow-lg border border-slate-800 relative overflow-hidden">
         {/* Decorative mesh / glow accents */}
-        <div className="pointer-events-none absolute -top-20 -right-16 w-64 h-64 rounded-full bg-indigo-500/20 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-24 -left-10 w-72 h-72 rounded-full bg-violet-500/10 blur-3xl" />
+        <div className="pointer-events-none absolute -top-20 -right-16 w-64 h-64 rounded-full bg-black/20 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-24 -left-10 w-72 h-72 rounded-full bg-black/10 blur-3xl" />
 
         <div className="relative flex flex-col lg:flex-row lg:items-center justify-between gap-5">
           <div className="space-y-1">
-            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-indigo-500/20 text-indigo-200 text-xs font-bold border border-indigo-400/30">
+            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-black/20 text-gray-300 text-xs font-bold border border-gray-400/30">
               <Printer className="w-3.5 h-3.5" />
               <span>Devices & Peripherals</span>
             </div>
@@ -220,12 +220,12 @@ export const PrinterSettings: React.FC<PrinterSettingsProps> = ({ storeName }) =
           {/* Live connection status cluster */}
           <div className="flex flex-wrap items-center gap-2">
             {!btAvailable ? (
-              <span className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-amber-500/15 border border-amber-400/40 text-amber-200 text-xs font-bold">
+              <span className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-black/15 border border-gray-400/40 text-gray-300 text-xs font-bold">
                 <Radio className="w-4 h-4" />
                 {isNative ? 'Bluetooth unavailable' : 'Web Bluetooth unavailable'}
               </span>
             ) : btConnected ? (
-              <span className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-emerald-500/15 border border-emerald-400/40 text-emerald-200 text-xs font-bold max-w-[220px]">
+              <span className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-black/15 border border-gray-400/40 text-gray-300 text-xs font-bold max-w-[220px]">
                 <CheckCircle2 className="w-4 h-4 shrink-0" />
                 <span className="truncate">{printerName}</span>
               </span>
@@ -273,7 +273,7 @@ export const PrinterSettings: React.FC<PrinterSettingsProps> = ({ storeName }) =
       {isNative && (
         <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-5 space-y-4">
           <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
-            <Smartphone className="w-5 h-5 text-indigo-600" />
+            <Smartphone className="w-5 h-5 text-gray-900" />
             <div>
               <h4 className="font-extrabold text-slate-900 text-sm">Your paired printers</h4>
               <p className="text-[11px] text-slate-400">Devices already paired with this phone via Android Bluetooth</p>
@@ -307,7 +307,7 @@ export const PrinterSettings: React.FC<PrinterSettingsProps> = ({ storeName }) =
                 <select
                   value={selectedAddress}
                   onChange={(e) => setSelectedAddress(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:border-indigo-500 appearance-none pr-9 cursor-pointer"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:border-gray-900 appearance-none pr-9 cursor-pointer"
                 >
                   {pairedDevices.map(d => (
                     <option key={d.address} value={d.address}>
@@ -321,7 +321,7 @@ export const PrinterSettings: React.FC<PrinterSettingsProps> = ({ storeName }) =
                 <button
                   onClick={() => handleConnect('slip')}
                   disabled={!!connectingRole}
-                  className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-md transition-all active:scale-95 disabled:opacity-50 cursor-pointer"
+                  className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-black hover:bg-gray-800 text-white text-xs font-bold rounded-xl shadow-md transition-all active:scale-95 disabled:opacity-50 cursor-pointer"
                 >
                   {connectingRole ? (
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -347,10 +347,10 @@ export const PrinterSettings: React.FC<PrinterSettingsProps> = ({ storeName }) =
       {/* Printer Role Cards */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         {roleSpecs.map((spec) => {
-          const accentText = spec.accent === 'indigo' ? 'text-indigo-600' : 'text-emerald-600';
-          const accentBg = spec.accent === 'indigo' ? 'bg-indigo-600' : 'bg-emerald-600';
-          const accentSoft = spec.accent === 'indigo' ? 'bg-indigo-50 border-indigo-200 text-indigo-700' : 'bg-emerald-50 border-emerald-200 text-emerald-700';
-          const accentRing = spec.accent === 'indigo' ? 'focus:border-indigo-500' : 'focus:border-emerald-500';
+          const accentText = spec.accent === 'indigo' ? 'text-gray-900' : 'text-gray-900';
+          const accentBg = spec.accent === 'indigo' ? 'bg-black' : 'bg-black';
+          const accentSoft = spec.accent === 'indigo' ? 'bg-gray-50 border-gray-200 text-gray-900' : 'bg-gray-50 border-gray-200 text-gray-900';
+          const accentRing = spec.accent === 'indigo' ? 'focus:border-gray-900' : 'focus:border-gray-900';
           const hasAssigned = !!spec.assignedName;
           const connectedMatches = btConnected && printerName === spec.assignedName;
 
@@ -408,7 +408,7 @@ export const PrinterSettings: React.FC<PrinterSettingsProps> = ({ storeName }) =
                 <div className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 p-3">
                   <div className="flex items-center gap-2.5 min-w-0">
                     {btConnected ? (
-                      <span className={`w-2 h-2 rounded-full bg-emerald-500 animate-pulse-soft shrink-0`} />
+                      <span className={`w-2 h-2 rounded-full bg-black animate-pulse-soft shrink-0`} />
                     ) : (
                       <span className="w-2 h-2 rounded-full bg-slate-300 shrink-0" />
                     )}
@@ -423,7 +423,7 @@ export const PrinterSettings: React.FC<PrinterSettingsProps> = ({ storeName }) =
                 </div>
 
                 {connectedMatches ? (
-                  <p className="text-[11px] text-emerald-700 flex items-center gap-1.5 font-semibold">
+                  <p className="text-[11px] text-gray-900 flex items-center gap-1.5 font-semibold">
                     <CheckCircle2 className="w-3.5 h-3.5" />
                     This printer is using the {spec.label}.
                   </p>
@@ -487,7 +487,7 @@ export const PrinterSettings: React.FC<PrinterSettingsProps> = ({ storeName }) =
       {/* Tips card */}
       <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-5">
         <div className="flex items-center gap-2 mb-3">
-          <RefreshCw className="w-4 h-4 text-indigo-500" />
+          <RefreshCw className="w-4 h-4 text-gray-500" />
           <h5 className="font-extrabold text-slate-900 text-sm">Pairing & usage tips</h5>
         </div>
         <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-[11px] text-slate-600 leading-relaxed list-disc list-inside">

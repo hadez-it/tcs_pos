@@ -52,7 +52,7 @@ export default function Auth({ onLoginSuccess }: AuthProps) {
   };
 
   return (
-    <div className="h-full w-full bg-gradient-to-br from-indigo-600 via-indigo-700 to-violet-800 flex flex-col overflow-hidden">
+    <div className="h-full w-full bg-gradient-to-br from-gray-700 via-gray-800 to-gray-800 flex flex-col overflow-hidden">
       {/* Android status bar spacer */}
       <div className="safe-area-top" />
 
@@ -73,10 +73,10 @@ export default function Auth({ onLoginSuccess }: AuthProps) {
             <div className="flex items-center gap-1.5 mt-0.5">
               <span
                 className={`w-1.5 h-1.5 rounded-full animate-pulse-soft ${
-                  isSupabaseConfigured ? 'bg-emerald-400' : 'bg-amber-400'
+                  isSupabaseConfigured ? 'bg-gray-400' : 'bg-gray-400'
                 }`}
               />
-              <span className="text-[10px] font-bold text-indigo-100/80">
+              <span className="text-[10px] font-bold text-gray-300/80">
                 {isSupabaseConfigured ? 'Connected to Cloud' : 'Offline Mode'}
               </span>
             </div>
@@ -159,7 +159,7 @@ export default function Auth({ onLoginSuccess }: AuthProps) {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full flex items-center justify-center gap-2.5 py-4 px-6 bg-gradient-to-r from-indigo-600 to-indigo-700 active:from-indigo-800 active:to-indigo-900 text-white rounded-2xl font-bold text-[15px] shadow-lg shadow-indigo-600/25 transition-all disabled:opacity-60 cursor-pointer active-scale mt-1"
+              className="w-full flex items-center justify-center gap-2.5 py-4 px-6 bg-gradient-to-r from-gray-700 to-gray-800 active:from-gray-800 active:to-gray-950 text-white rounded-2xl font-bold text-[15px] shadow-lg shadow-black/25 transition-all disabled:opacity-60 cursor-pointer active-scale mt-1"
             >
               {isLoading ? (
                 <>

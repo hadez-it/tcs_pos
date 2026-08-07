@@ -42,7 +42,7 @@ export default function OfflineSyncBar() {
     <div className="w-full bg-slate-900 text-white px-3 py-1.5 text-xs font-medium flex items-center justify-between border-b border-slate-800">
       <div className="flex items-center space-x-2">
         {!isOnline && (
-          <div className="flex items-center space-x-1.5 text-amber-400 animate-pulse">
+          <div className="flex items-center space-x-1.5 text-gray-400 animate-pulse">
             <WifiOff className="w-3.5 h-3.5" />
             <span className="font-semibold text-[11px]">Offline Mode (Local Storage Active)</span>
           </div>
@@ -60,7 +60,7 @@ export default function OfflineSyncBar() {
       </div>
 
       {!isOnline && (
-        <span className="text-[10px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded border border-amber-500/30 font-mono shrink-0">
+        <span className="text-[10px] bg-black/20 text-gray-300 px-2 py-0.5 rounded border border-gray-900/30 font-mono shrink-0">
           Auto Sync on Reconnect
         </span>
       )}

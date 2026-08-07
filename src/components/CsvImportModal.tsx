@@ -252,7 +252,7 @@ gamdvdstpnrqlk,R33 135w QC Adaptor ခေါင်းလွတ်,null,အား
         {/* HEADER */}
         <div className="p-4 sm:p-5 border-b border-slate-200 flex justify-between items-center bg-slate-50/80">
           <div className="flex items-center space-x-3">
-            <div className="p-2.5 bg-emerald-600 text-white rounded-xl shadow-xs">
+            <div className="p-2.5 bg-black text-white rounded-xl shadow-xs">
               <FileSpreadsheet className="w-5 h-5" />
             </div>
             <div>
@@ -270,7 +270,7 @@ gamdvdstpnrqlk,R33 135w QC Adaptor ခေါင်းလွတ်,null,အား
               onClick={handleDownloadSampleCsv}
               className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs rounded-xl border border-slate-200 transition-colors flex items-center space-x-1.5"
             >
-              <Download className="w-3.5 h-3.5 text-emerald-600" />
+              <Download className="w-3.5 h-3.5 text-gray-900" />
               <span>Download Sample CSV</span>
             </button>
             <button
@@ -295,7 +295,7 @@ gamdvdstpnrqlk,R33 135w QC Adaptor ခေါင်းလွတ်,null,အား
                 setSelectedBranchId(e.target.value);
                 setSelectedBranchName(b?.name || e.target.value);
               }}
-              className="flex-1 px-3 py-2 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+              className="flex-1 px-3 py-2 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-black/20 focus:border-gray-900"
             >
               <option value="" disabled>Select a branch to import into...</option>
               {branches.map(b => (
@@ -311,10 +311,10 @@ gamdvdstpnrqlk,R33 135w QC Adaptor ခေါင်းလွတ်,null,အား
             onDrop={handleDrop}
             className={`border-2 border-dashed rounded-2xl p-6 text-center transition-all cursor-pointer ${
               dragOver
-                ? 'border-emerald-500 bg-emerald-50/50 scale-[1.005]'
+                ? 'border-gray-900 bg-gray-50/50 scale-[1.005]'
                 : file
-                  ? 'border-emerald-300 bg-emerald-50/20'
-                  : 'border-slate-300 hover:border-emerald-400 bg-slate-50/50 hover:bg-slate-50'
+                  ? 'border-gray-300 bg-gray-50/20'
+                  : 'border-slate-300 hover:border-gray-400 bg-slate-50/50 hover:bg-slate-50'
             }`}
           >
             <input
@@ -325,7 +325,7 @@ gamdvdstpnrqlk,R33 135w QC Adaptor ခေါင်းလွတ်,null,အား
               id="csv-file-input"
             />
             <label htmlFor="csv-file-input" className="cursor-pointer block">
-              <div className="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-3 shadow-xs">
+              <div className="w-12 h-12 rounded-full bg-gray-100 text-gray-900 flex items-center justify-center mx-auto mb-3 shadow-xs">
                 <Upload className="w-6 h-6" />
               </div>
               <p className="font-extrabold text-slate-900 text-sm mb-1">
@@ -350,7 +350,7 @@ gamdvdstpnrqlk,R33 135w QC Adaptor ခေါင်းလွတ်,null,အား
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-extrabold text-slate-900 flex items-center gap-1.5">
-                  <CheckCircle className="w-4 h-4 text-emerald-600" />
+                  <CheckCircle className="w-4 h-4 text-gray-900" />
                   <span>Parsed {parsedItems.length} Products for Import</span>
                 </span>
                 <span className="text-[11px] text-slate-500">
@@ -388,15 +388,15 @@ gamdvdstpnrqlk,R33 135w QC Adaptor ခေါင်းလွတ်,null,အား
                         <td className="p-2.5 text-slate-600 border-r border-slate-100 truncate max-w-[150px]">{item.description || '-'}</td>
                         <td className="p-2.5 text-slate-700 border-r border-slate-100 font-semibold">{item.category}</td>
                         <td className="p-2.5 text-center border-r border-slate-100 font-mono text-[10px]">
-                          <span className={item.use_stock ? 'text-emerald-600 font-bold' : 'text-slate-400'}>
+                          <span className={item.use_stock ? 'text-gray-900 font-bold' : 'text-slate-400'}>
                             {item.use_stock ? 'true' : 'false'}
                           </span>
                         </td>
                         <td className="p-2.5 text-right font-mono text-slate-600 border-r border-slate-100">{item.cost}</td>
                         <td className="p-2.5 text-center font-mono border-r border-slate-100">{item.unit_amount || 1}</td>
                         <td className="p-2.5 text-right font-mono font-bold text-slate-900 border-r border-slate-100">{item.price}</td>
-                        <td className="p-2.5 text-center font-bold text-indigo-700 border-r border-slate-100">{item.unit_name}</td>
-                        <td className="p-2.5 text-center font-mono font-bold text-emerald-700 border-r border-slate-100">{item.stock}</td>
+                        <td className="p-2.5 text-center font-bold text-gray-900 border-r border-slate-100">{item.unit_name}</td>
+                        <td className="p-2.5 text-center font-mono font-bold text-gray-900 border-r border-slate-100">{item.stock}</td>
                         <td className="p-2.5 text-slate-500 border-r border-slate-100">{item.price_variant || '-'}</td>
                         <td className="p-2.5 text-slate-500 border-r border-slate-100">{item.expiry_date || '-'}</td>
                         <td className="p-2.5 text-slate-500 border-r border-slate-100 whitespace-nowrap">{item.updated_at || '-'}</td>
@@ -428,7 +428,7 @@ gamdvdstpnrqlk,R33 135w QC Adaptor ခေါင်းလွတ်,null,အား
             <button
               onClick={handleConfirmImport}
               disabled={parsedItems.length === 0 || isProcessing || !selectedBranchId}
-              className="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-xs transition-all flex items-center space-x-1.5 disabled:opacity-50"
+              className="px-5 py-2 bg-black hover:bg-gray-800 text-white font-bold rounded-xl shadow-xs transition-all flex items-center space-x-1.5 disabled:opacity-50"
             >
               {isProcessing ? (
                 <>

@@ -269,11 +269,11 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
 
   const totalLabels = printItemsList.length;
 
-  const numInputClass = "w-full px-2 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-800 focus:outline-none focus:border-indigo-500";
+  const numInputClass = "w-full px-2 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-800 focus:outline-none focus:border-gray-900";
   const segBtn = (active: boolean) =>
     `flex-1 px-2 py-1.5 rounded-lg border font-bold text-[11px] transition-all text-center cursor-pointer ${
       active
-        ? 'bg-indigo-50 border-indigo-500 text-indigo-700 shadow-2xs'
+        ? 'bg-gray-50 border-gray-900 text-gray-900 shadow-2xs'
         : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
     }`;
 
@@ -288,7 +288,7 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
         {/* MODAL HEADER */}
         <div className="p-4 sm:p-5 border-b border-slate-200 flex justify-between items-center bg-slate-50/80">
           <div className="flex items-center space-x-3">
-            <div className="p-2.5 bg-indigo-600 text-white rounded-xl shadow-xs">
+            <div className="p-2.5 bg-black text-white rounded-xl shadow-xs">
               <Printer className="w-5 h-5" />
             </div>
             <div>
@@ -306,7 +306,7 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
               <div className="flex items-center space-x-1.5 mr-1">
                 {btConnected ? (
                   <>
-                    <div className="flex items-center space-x-1 px-2 py-1 bg-emerald-50 border border-emerald-200 rounded-lg text-[10px] font-bold text-emerald-700">
+                    <div className="flex items-center space-x-1 px-2 py-1 bg-gray-50 border border-gray-200 rounded-lg text-[10px] font-bold text-gray-900">
                       <CheckCircle2 className="w-3 h-3" />
                       <span className="max-w-[100px] truncate">{printerName}</span>
                     </div>
@@ -324,7 +324,7 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
                       <select
                         value={selectedAddress}
                         onChange={(e) => setSelectedAddress(e.target.value)}
-                        className="px-2 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-blue-500 max-w-[140px] cursor-pointer"
+                        className="px-2 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900 max-w-[140px] cursor-pointer"
                       >
                         {pairedDevices.map(d => (
                           <option key={d.address} value={d.address}>{d.name}</option>
@@ -334,7 +334,7 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
                     <button
                       onClick={handleConnectPrinter}
                       disabled={btConnecting}
-                      className="px-2.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-[10px] rounded-lg shadow-xs transition-all flex items-center space-x-1 disabled:opacity-50 cursor-pointer"
+                      className="px-2.5 py-1.5 bg-black hover:bg-gray-800 text-white font-bold text-[10px] rounded-lg shadow-xs transition-all flex items-center space-x-1 disabled:opacity-50 cursor-pointer"
                     >
                       {btConnecting ? <Loader2 className="w-3 h-3 animate-spin" /> : <Bluetooth className="w-3 h-3" />}
                       <span>{btConnecting ? 'Connecting...' : 'Connect Printer'}</span>
@@ -362,7 +362,7 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
              {/* LABEL SIZE (MM) */}
              <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-2xs space-y-3">
                <div className="flex items-center gap-1.5 text-xs font-bold text-slate-800">
-                 <Ruler className="w-4 h-4 text-indigo-600" />
+                 <Ruler className="w-4 h-4 text-gray-900" />
                  <span>Label Size</span>
                  <span className="text-[10px] font-semibold text-slate-400">({printableMm}mm printable)</span>
                </div>
@@ -443,11 +443,11 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
                  ) : (
                    <>Label: {effLabelWidth.toFixed(0)} × {effLabelHeight.toFixed(0)}mm</>
                  )}
-                 {effLabelWidth > printableMm && <span className="text-amber-600 font-bold"> — printable width {printableMm}mm</span>}
+                 {effLabelWidth > printableMm && <span className="text-gray-900 font-bold"> — printable width {printableMm}mm</span>}
                </p>
 
                {paperMode === 'sticker' && (
-                 <p className="text-[10px] text-indigo-500 font-medium leading-relaxed">
+                 <p className="text-[10px] text-gray-500 font-medium leading-relaxed">
                    Set the height to match your sticker length (e.g. 30mm). The printer feeds one full label + gap so the next sticker is ready at the print head.
                  </p>
                )}
@@ -456,7 +456,7 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
             {/* LABEL DESIGN */}
             <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-2xs space-y-3">
               <div className="flex items-center gap-1.5 text-xs font-bold text-slate-800">
-                <Settings2 className="w-4 h-4 text-indigo-600" />
+                <Settings2 className="w-4 h-4 text-gray-900" />
                 <span>Label Design</span>
               </div>
 
@@ -469,25 +469,25 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
                   value={storeName}
                   onChange={e => setStoreName(e.target.value)}
                   placeholder="Store or Branch Name"
-                  className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-800 focus:outline-none focus:border-indigo-500"
+                  className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-800 focus:outline-none focus:border-gray-900"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-2 text-[11px] font-medium text-slate-700">
                 <label className="flex items-center space-x-2 cursor-pointer">
-                  <input type="checkbox" checked={showStoreName} onChange={e => setShowStoreName(e.target.checked)} className="rounded text-indigo-600 focus:ring-indigo-500" />
+                  <input type="checkbox" checked={showStoreName} onChange={e => setShowStoreName(e.target.checked)} className="rounded text-gray-900 focus:ring-black/20" />
                   <span>Store Name</span>
                 </label>
                 <label className="flex items-center space-x-2 cursor-pointer">
-                  <input type="checkbox" checked={showProductName} onChange={e => setShowProductName(e.target.checked)} className="rounded text-indigo-600 focus:ring-indigo-500" />
+                  <input type="checkbox" checked={showProductName} onChange={e => setShowProductName(e.target.checked)} className="rounded text-gray-900 focus:ring-black/20" />
                   <span>Product Title</span>
                 </label>
                 <label className="flex items-center space-x-2 cursor-pointer">
-                  <input type="checkbox" checked={showPrice} onChange={e => setShowPrice(e.target.checked)} className="rounded text-indigo-600 focus:ring-indigo-500" />
+                  <input type="checkbox" checked={showPrice} onChange={e => setShowPrice(e.target.checked)} className="rounded text-gray-900 focus:ring-black/20" />
                   <span>Selling Price</span>
                 </label>
                 <label className="flex items-center space-x-2 cursor-pointer">
-                  <input type="checkbox" checked={showCodeText} onChange={e => setShowCodeText(e.target.checked)} className="rounded text-indigo-600 focus:ring-indigo-500" />
+                  <input type="checkbox" checked={showCodeText} onChange={e => setShowCodeText(e.target.checked)} className="rounded text-gray-900 focus:ring-black/20" />
                   <span>SKU / BC Text</span>
                 </label>
               </div>
@@ -500,7 +500,7 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
                    <select
                      value={barcodeType}
                      onChange={e => setBarcodeType(e.target.value as BarcodeType)}
-                     className="w-full px-2 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-800 focus:outline-none focus:border-indigo-500 cursor-pointer"
+                     className="w-full px-2 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-800 focus:outline-none focus:border-gray-900 cursor-pointer"
                    >
                      {BARCODE_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
                    </select>
@@ -537,7 +537,7 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
               <div className="flex items-center justify-between gap-2 mb-2">
                 <span className="text-xs font-extrabold text-slate-800">Select Products</span>
                 <div className="flex items-center space-x-1.5 text-[10px]">
-                  <button onClick={selectAll} className="text-indigo-600 font-bold hover:underline cursor-pointer">All</button>
+                  <button onClick={selectAll} className="text-gray-900 font-bold hover:underline cursor-pointer">All</button>
                   <span className="text-slate-300">|</span>
                   <button onClick={deselectAll} className="text-slate-500 hover:underline cursor-pointer">None</button>
                   <span className="text-slate-300">|</span>
@@ -552,7 +552,7 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
                   value={searchTerm}
                   onChange={e => setSearchTerm(e.target.value)}
                   placeholder="Filter by name, SKU, barcode..."
-                  className="w-full pl-8 pr-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 focus:outline-none focus:border-indigo-500"
+                  className="w-full pl-8 pr-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 focus:outline-none focus:border-gray-900"
                 />
               </div>
 
@@ -568,12 +568,12 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
                       <div
                         key={prod.id}
                         className={`p-2 rounded-lg border transition-all flex items-center justify-between text-xs ${
-                          isSelected ? 'bg-indigo-50/50 border-indigo-200' : 'bg-white border-slate-100 hover:bg-slate-50'
+                          isSelected ? 'bg-gray-50/50 border-gray-200' : 'bg-white border-slate-100 hover:bg-slate-50'
                         }`}
                       >
                         <div className="flex items-center space-x-2.5 min-w-0 pr-2">
-                          <button onClick={() => toggleSelectProduct(prod.id)} className="text-indigo-600 shrink-0 cursor-pointer">
-                            {isSelected ? <CheckSquare className="w-4 h-4 text-indigo-600" /> : <Square className="w-4 h-4 text-slate-300" />}
+                          <button onClick={() => toggleSelectProduct(prod.id)} className="text-gray-900 shrink-0 cursor-pointer">
+                            {isSelected ? <CheckSquare className="w-4 h-4 text-gray-900" /> : <Square className="w-4 h-4 text-slate-300" />}
                           </button>
                           <div className="min-w-0">
                             <p className="font-bold text-slate-900 truncate text-[11px]">{prod.name}</p>
@@ -606,7 +606,7 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
           <div className="lg:col-span-7 flex flex-col overflow-hidden bg-slate-100/70 p-4">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center space-x-2">
-                <Tag className="w-4 h-4 text-indigo-600" />
+                <Tag className="w-4 h-4 text-gray-900" />
                 <span className="font-extrabold text-slate-900 text-xs sm:text-sm">
                   Preview ({totalLabels} labels · {effLabelWidth.toFixed(0)}×{effLabelHeight.toFixed(0)}mm)
                 </span>
@@ -626,7 +626,7 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
                   <button
                     onClick={handleBtPrint}
                     disabled={totalLabels === 0 || !btConnected || btPrinting}
-                    className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-lg shadow-xs transition-colors flex items-center space-x-1.5 disabled:opacity-50 cursor-pointer"
+                    className="px-3 py-1.5 bg-black hover:bg-gray-800 text-white font-bold text-xs rounded-lg shadow-xs transition-colors flex items-center space-x-1.5 disabled:opacity-50 cursor-pointer"
                   >
                     {btPrinting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Bluetooth className="w-3.5 h-3.5" />}
                     <span>{btPrinting ? `${btProgress.current}/${btProgress.total}` : 'BT Print'}</span>
@@ -709,7 +709,7 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
               <button
                 onClick={handleBtPrint}
                 disabled={totalLabels === 0 || !btConnected || btPrinting}
-                className="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-xs transition-all flex items-center space-x-1.5 disabled:opacity-50 cursor-pointer"
+                className="px-5 py-2 bg-black hover:bg-gray-800 text-white font-bold rounded-xl shadow-xs transition-all flex items-center space-x-1.5 disabled:opacity-50 cursor-pointer"
               >
                 {btPrinting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Printer className="w-4 h-4" />}
                 <span>

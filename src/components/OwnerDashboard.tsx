@@ -1312,7 +1312,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                 className="w-9 h-9 rounded-xl object-cover bg-white border border-slate-200 p-0.5 shadow-sm shrink-0"
               />
             ) : (
-              <div className="w-9 h-9 bg-gradient-to-br from-indigo-500 to-violet-500 rounded-xl flex items-center justify-center font-black text-lg text-white shadow-md shadow-indigo-500/20 shrink-0">
+              <div className="w-9 h-9 bg-gradient-to-br from-gray-700 to-gray-700 rounded-xl flex items-center justify-center font-black text-lg text-white shadow-md shadow-black/20 shrink-0">
                 {businessProfile.name ? businessProfile.name.charAt(0).toUpperCase() : 'M'}
               </div>
             )}
@@ -1333,7 +1333,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                   : activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
               </h1>
               <p className="text-[10px] text-slate-500 font-semibold flex items-center gap-1">
-                <span className={`w-1.5 h-1.5 rounded-full inline-block ${isSupabaseConfigured ? 'bg-emerald-500' : 'bg-amber-500'} animate-pulse-soft`} />
+                <span className={`w-1.5 h-1.5 rounded-full inline-block ${isSupabaseConfigured ? 'bg-black' : 'bg-black'} animate-pulse-soft`} />
                 {isSupabaseConfigured ? 'Cloud Connected' : 'Offline Mode'}
               </p>
             </div>
@@ -1343,7 +1343,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
             {activeTab === 'products' && (
               <button
                 onClick={openNewProductModal}
-                className="inline-flex items-center justify-center p-2.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 active:scale-95 text-white rounded-xl shadow-lg shadow-indigo-600/20 transition-all cursor-pointer shrink-0"
+                className="inline-flex items-center justify-center p-2.5 bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-800 hover:to-gray-800 active:scale-95 text-white rounded-xl shadow-lg shadow-black/20 transition-all cursor-pointer shrink-0"
               >
                 <Plus className="w-4.5 h-4.5" />
               </button>
@@ -1351,7 +1351,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
             {activeTab === 'cashiers' && (
               <button
                 onClick={openNewCashierModal}
-                className="inline-flex items-center justify-center p-2.5 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 active:scale-95 text-white rounded-xl shadow-lg shadow-emerald-600/20 transition-all cursor-pointer shrink-0"
+                className="inline-flex items-center justify-center p-2.5 bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-800 hover:to-gray-800 active:scale-95 text-white rounded-xl shadow-lg shadow-black/20 transition-all cursor-pointer shrink-0"
               >
                 <Plus className="w-4.5 h-4.5" />
               </button>
@@ -1359,7 +1359,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
             {activeTab === 'branches' && (
               <button
                 onClick={openNewBranchModal}
-                className="inline-flex items-center justify-center p-2.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 active:scale-95 text-white rounded-xl shadow-lg shadow-indigo-600/20 transition-all cursor-pointer shrink-0"
+                className="inline-flex items-center justify-center p-2.5 bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-800 hover:to-gray-800 active:scale-95 text-white rounded-xl shadow-lg shadow-black/20 transition-all cursor-pointer shrink-0"
               >
                 <Plus className="w-4.5 h-4.5" />
               </button>
@@ -1367,7 +1367,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
             {activeTab === 'cash-flow' && (
               <button
                 onClick={openNewCashFlowModal}
-                className="inline-flex items-center justify-center p-2.5 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 active:scale-95 text-white rounded-xl shadow-lg shadow-emerald-600/20 transition-all cursor-pointer shrink-0"
+                className="inline-flex items-center justify-center p-2.5 bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-800 hover:to-gray-800 active:scale-95 text-white rounded-xl shadow-lg shadow-black/20 transition-all cursor-pointer shrink-0"
               >
                 <Plus className="w-4.5 h-4.5" />
               </button>
@@ -1390,7 +1390,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="h-9 w-28 bg-slate-200 rounded-xl" />
-                  <div className="h-9 w-32 bg-indigo-200/60 rounded-xl" />
+                  <div className="h-9 w-32 bg-gray-200/60 rounded-xl" />
                 </div>
               </div>
 
@@ -1444,19 +1444,19 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                       <div className="min-w-0">
                         <span className="text-slate-400 text-[9px] sm:text-[10px] uppercase tracking-wider font-bold block truncate">{card.label}</span>
                         <h3 className={`text-sm sm:text-lg md:text-xl font-extrabold mt-1 truncate ${
-                          card.color === 'emerald' ? 'text-emerald-600' : 
+                          card.color === 'emerald' ? 'text-gray-900' : 
                           card.color === 'red' ? 'text-red-600' : 
-                          card.color === 'amber' ? 'text-amber-600' : 
+                          card.color === 'amber' ? 'text-gray-900' : 
                           'text-slate-900'
                         }`}>
                           {card.value}
                         </h3>
                       </div>
                       <div className={`p-2 sm:p-3 rounded-xl shrink-0 ml-1 shadow-sm ${
-                        card.color === 'indigo' ? 'bg-indigo-50 text-indigo-600' :
-                        card.color === 'emerald' ? 'bg-emerald-50 text-emerald-600' :
-                        card.color === 'sky' ? 'bg-sky-50 text-sky-600' :
-                        card.color === 'amber' ? 'bg-amber-50 text-amber-600' :
+                        card.color === 'indigo' ? 'bg-gray-50 text-gray-900' :
+                        card.color === 'emerald' ? 'bg-gray-50 text-gray-900' :
+                        card.color === 'sky' ? 'bg-gray-50 text-gray-900' :
+                        card.color === 'amber' ? 'bg-gray-50 text-gray-900' :
                         'bg-slate-100 text-slate-500'
                       }`}>
                         <card.icon className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -1473,7 +1473,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                       <div>
                         <h4 className="font-bold text-sm text-slate-800 flex items-center gap-2">
                           <span>Daily Sales & Profit Performance</span>
-                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-100/80">
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-gray-50 text-gray-900 border border-gray-100/80">
                             Supabase Realtime
                           </span>
                         </h4>
@@ -1579,7 +1579,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                                 </div>
                                 <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
                                   <div 
-                                    className="bg-indigo-600 h-full rounded-full transition-all duration-500" 
+                                    className="bg-black h-full rounded-full transition-all duration-500" 
                                     style={{ width: `${percent}%` }}
                                   />
                                 </div>
@@ -1593,7 +1593,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                     <div className="border-t border-slate-100 pt-4 mt-4">
                       <div className="flex items-center justify-between text-xs text-slate-500">
                         <span>Low Inventory Alerts:</span>
-                        <span className={`font-bold px-2 py-0.5 rounded ${analytics.lowStockCount > 0 ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-600'}`}>
+                        <span className={`font-bold px-2 py-0.5 rounded ${analytics.lowStockCount > 0 ? 'bg-gray-100 text-gray-900' : 'bg-slate-100 text-slate-600'}`}>
                           {analytics.lowStockCount} items
                         </span>
                       </div>
@@ -1616,7 +1616,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                         {analytics.categorySales.map((cat, idx) => {
                           const totalCatSum = analytics.categorySales.reduce((sum, c) => sum + c.value, 0);
                           const percent = ((cat.value / totalCatSum) * 100).toFixed(1);
-                          const colors = ['bg-indigo-500', 'bg-emerald-500', 'bg-amber-500', 'bg-pink-500', 'bg-teal-500', 'bg-rose-500'];
+                          const colors = ['bg-black', 'bg-black', 'bg-black', 'bg-black', 'bg-black', 'bg-black'];
                           const bgCol = colors[idx % colors.length];
 
                           return (
@@ -1638,12 +1638,12 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                     <div>
                       <div className="flex items-center justify-between mb-4">
                         <h4 className="font-bold text-sm text-slate-800 flex items-center gap-2">
-                          <Users className="w-4 h-4 text-indigo-600" />
+                          <Users className="w-4 h-4 text-gray-900" />
                           <span>Cashier Sales Leaderboard</span>
                         </h4>
                         <button
                           onClick={() => setActiveTab('cashiers')}
-                          className="text-[11px] font-semibold text-indigo-600 hover:text-indigo-800 transition-colors"
+                          className="text-[11px] font-semibold text-gray-900 hover:text-gray-900 transition-colors"
                         >
                           View All →
                         </button>
@@ -1661,7 +1661,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                               <div key={perf.cashier.id} className="p-3 bg-slate-50 rounded-xl border border-slate-100/80 flex items-center justify-between gap-3">
                                 <div className="flex items-center space-x-3 min-w-0">
                                   <span className="text-xs font-bold w-6 text-center text-slate-500 shrink-0">{medal}</span>
-                                  <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 font-bold text-xs flex items-center justify-center shrink-0">
+                                  <div className="w-8 h-8 rounded-full bg-gray-100 text-gray-900 font-bold text-xs flex items-center justify-center shrink-0">
                                     {perf.cashier.name ? perf.cashier.name.split(' ').map(n => n[0]).join('').slice(0, 2) : 'C'}
                                   </div>
                                   <div className="min-w-0">
@@ -1673,7 +1673,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                                 <div className="text-right shrink-0">
                                   <span className="font-extrabold text-slate-900 text-xs block">{formatCurrency(perf.totalRevenue)}</span>
                                   <div className="w-20 bg-slate-200 h-1.5 rounded-full mt-1 overflow-hidden ml-auto">
-                                    <div className="bg-indigo-600 h-full rounded-full" style={{ width: `${percent}%` }} />
+                                    <div className="bg-black h-full rounded-full" style={{ width: `${percent}%` }} />
                                   </div>
                                 </div>
                               </div>
@@ -1723,7 +1723,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                       </button>
                       <button
                         onClick={openNewCashFlowModal}
-                        className="inline-flex items-center justify-center gap-1.5 px-3 py-2 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white font-bold text-[11px] sm:text-xs rounded-xl shadow-lg shadow-emerald-600/20 transition-all cursor-pointer active:scale-95"
+                        className="inline-flex items-center justify-center gap-1.5 px-3 py-2 bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-800 hover:to-gray-800 text-white font-bold text-[11px] sm:text-xs rounded-xl shadow-lg shadow-black/20 transition-all cursor-pointer active:scale-95"
                         title="Add a new income or expense entry"
                       >
                         <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
@@ -1757,7 +1757,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                             onClick={() => setCfRange(val)}
                             className={`flex-1 py-1.5 rounded-lg text-[10px] font-bold transition-all cursor-pointer ${
                               cfRange === val
-                                ? 'bg-white text-indigo-700 shadow-2xs border border-slate-200'
+                                ? 'bg-white text-gray-900 shadow-2xs border border-slate-200'
                                 : 'text-slate-500 hover:text-slate-700'
                             }`}
                           >
@@ -1781,7 +1781,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                             onClick={() => setCfTypeFilter(val)}
                             className={`flex-1 py-1.5 rounded-lg text-[10px] font-bold transition-all cursor-pointer ${
                               cfTypeFilter === val
-                                ? 'bg-white text-indigo-700 shadow-2xs border border-slate-200'
+                                ? 'bg-white text-gray-900 shadow-2xs border border-slate-200'
                                 : 'text-slate-500 hover:text-slate-700'
                             }`}
                           >
@@ -1814,7 +1814,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                           placeholder="Title, category, notes..."
                           value={cfSearch}
                           onChange={(e) => setCfSearch(e.target.value)}
-                          className="w-full pl-9 pr-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-indigo-500 shadow-2xs"
+                          className="w-full pl-9 pr-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-gray-900 shadow-2xs"
                         />
                       </div>
                     </div>
@@ -1833,7 +1833,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                       <div className="min-w-0">
                         <span className="text-slate-400 text-[9px] sm:text-[10px] uppercase tracking-wider font-bold block truncate">{card.label}</span>
                         <h3 className={`text-sm sm:text-lg md:text-xl font-extrabold mt-1 truncate ${
-                          card.color === 'emerald' ? 'text-emerald-600' :
+                          card.color === 'emerald' ? 'text-gray-900' :
                           card.color === 'red' ? 'text-red-600' :
                           'text-slate-900'
                         }`}>
@@ -1842,7 +1842,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                         <p className="text-[9px] sm:text-[10px] text-slate-400 font-medium mt-1 truncate">{card.sub}</p>
                       </div>
                       <div className={`p-2 sm:p-3 rounded-xl shrink-0 ml-1 shadow-sm ${
-                        card.color === 'emerald' ? 'bg-emerald-50 text-emerald-600' :
+                        card.color === 'emerald' ? 'bg-gray-50 text-gray-900' :
                         card.color === 'red' ? 'bg-red-50 text-red-600' :
                         'bg-slate-100 text-slate-500'
                       }`}>
@@ -1947,7 +1947,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                     return (
                       <div key={idx} className="bg-white p-6 rounded-xl border border-slate-200/80 shadow-sm">
                         <h4 className="font-bold text-sm text-slate-800 mb-5 flex items-center gap-2">
-                          {block.type === 'income' ? <ArrowUpRight className="w-4 h-4 text-emerald-500" /> : <ArrowDownLeft className="w-4 h-4 text-red-500" />}
+                          {block.type === 'income' ? <ArrowUpRight className="w-4 h-4 text-gray-500" /> : <ArrowDownLeft className="w-4 h-4 text-red-500" />}
                           <span>{block.title}</span>
                           <span className="ml-auto text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">
                             {formatCurrency(total)}
@@ -1969,7 +1969,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                                   </div>
                                   <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
                                     <div
-                                      className={`${block.accent === 'emerald' ? 'bg-emerald-500' : 'bg-red-500'} h-full rounded-full transition-all duration-500`}
+                                      className={`${block.accent === 'emerald' ? 'bg-black' : 'bg-red-500'} h-full rounded-full transition-all duration-500`}
                                       style={{ width: `${(cat.value / maxVal) * 100}%` }}
                                     />
                                   </div>
@@ -2006,7 +2006,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                       <span>No cash flow records match the current filters.</span>
                       <button
                         onClick={openNewCashFlowModal}
-                        className="mt-2 text-emerald-600 font-bold hover:underline flex items-center gap-1"
+                        className="mt-2 text-gray-900 font-bold hover:underline flex items-center gap-1"
                       >
                         <Plus className="w-4 h-4" />
                         <span>Record your first income or expense</span>
@@ -2025,19 +2025,19 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                                   <h4 className="font-bold text-slate-950 text-xs truncate">{row.title}</h4>
                                   <p className="text-[9px] text-slate-400 font-mono mt-0.5">{new Date(row.created_at).toLocaleString()}</p>
                                 </div>
-                                <span className={`font-mono font-bold text-xs shrink-0 ${row.type === 'income' ? 'text-emerald-600' : 'text-red-600'}`}>
+                                <span className={`font-mono font-bold text-xs shrink-0 ${row.type === 'income' ? 'text-gray-900' : 'text-red-600'}`}>
                                   {row.type === 'income' ? '+' : '−'}{formatCurrency(row.amount)}
                                 </span>
                               </div>
                               <div className="flex flex-wrap items-center gap-1.5">
                                 <span className={`inline-flex px-2 py-0.5 rounded-full text-[8px] font-bold uppercase tracking-wider ${
-                                  row.type === 'income' ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'
+                                  row.type === 'income' ? 'bg-gray-100 text-gray-900' : 'bg-red-100 text-red-800'
                                 }`}>
                                   {row.type}
                                 </span>
                                 <span className="inline-flex px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-[8px] font-bold">{row.category}</span>
                                 {row.source === 'sale' && (
-                                  <span className="inline-flex px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 text-[8px] font-bold">POS Auto</span>
+                                  <span className="inline-flex px-2 py-0.5 rounded-full bg-gray-50 text-gray-900 text-[8px] font-bold">POS Auto</span>
                                 )}
                                 <span className="inline-flex px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 text-[8px] font-bold uppercase">{row.payment_method}</span>
                               </div>
@@ -2049,7 +2049,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                                 <div className="flex items-center justify-end gap-2">
                                   <button
                                     onClick={() => startEditCashFlow(manualEntry)}
-                                    className="p-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 rounded-lg transition-colors flex items-center gap-1 text-[10px] font-bold cursor-pointer"
+                                    className="p-1.5 bg-gray-50 hover:bg-gray-100 text-gray-900 rounded-lg transition-colors flex items-center gap-1 text-[10px] font-bold cursor-pointer"
                                   >
                                     <Edit2 className="w-3 h-3" />
                                     <span>Edit</span>
@@ -2094,12 +2094,12 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                                   </td>
                                   <td className="p-3.5">
                                     <span className={`inline-flex px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider ${
-                                      row.type === 'income' ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'
+                                      row.type === 'income' ? 'bg-gray-100 text-gray-900' : 'bg-red-100 text-red-800'
                                     }`}>
                                       {row.type}
                                     </span>
                                     {row.source === 'sale' && (
-                                      <span className="ml-1.5 inline-flex px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 text-[9px] font-bold">POS Auto</span>
+                                      <span className="ml-1.5 inline-flex px-2 py-0.5 rounded-full bg-gray-50 text-gray-900 text-[9px] font-bold">POS Auto</span>
                                     )}
                                   </td>
                                   <td className="p-3.5 font-semibold text-slate-700">{row.category}</td>
@@ -2107,7 +2107,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                                     <span className="block max-w-[200px] truncate" title={row.title}>{row.title}</span>
                                     {row.notes && <span className="text-[10px] text-slate-400 font-normal italic block max-w-[200px] truncate">{row.notes}</span>}
                                   </td>
-                                  <td className={`p-3.5 text-right font-mono font-bold whitespace-nowrap ${row.type === 'income' ? 'text-emerald-600' : 'text-red-600'}`}>
+                                  <td className={`p-3.5 text-right font-mono font-bold whitespace-nowrap ${row.type === 'income' ? 'text-gray-900' : 'text-red-600'}`}>
                                     {row.type === 'income' ? '+' : '−'}{formatCurrency(row.amount)}
                                   </td>
                                   <td className="p-3.5">
@@ -2121,7 +2121,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                                         <>
                                           <button
                                             onClick={() => startEditCashFlow(manualEntry)}
-                                            className="p-1.5 hover:bg-indigo-50 text-indigo-600 hover:text-indigo-800 rounded transition-colors cursor-pointer"
+                                            className="p-1.5 hover:bg-gray-50 text-gray-900 hover:text-gray-900 rounded transition-colors cursor-pointer"
                                             title="Edit entry"
                                           >
                                             <Edit2 className="w-3.5 h-3.5" />
@@ -2159,10 +2159,10 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                   <div className="grid grid-cols-3 sm:flex sm:items-center sm:justify-end gap-2">
                     <button
                       onClick={() => setShowCsvModal(true)}
-                      className="inline-flex items-center justify-center gap-1.5 px-2.5 sm:px-3.5 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-[11px] sm:text-xs rounded-xl border border-emerald-200/80 transition-all cursor-pointer active:scale-95"
+                      className="inline-flex items-center justify-center gap-1.5 px-2.5 sm:px-3.5 py-2 bg-gray-50 hover:bg-gray-100 text-gray-900 font-bold text-[11px] sm:text-xs rounded-xl border border-gray-200/80 transition-all cursor-pointer active:scale-95"
                       title="Import inventory items from CSV file"
                     >
-                      <FileSpreadsheet className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-600 shrink-0" />
+                      <FileSpreadsheet className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-900 shrink-0" />
                       <span className="truncate">Import CSV</span>
                     </button>
 
@@ -2177,10 +2177,10 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
 
                     <button
                       onClick={() => openBarcodePrintModal()}
-                      className="inline-flex items-center justify-center gap-1.5 px-2.5 sm:px-3.5 py-2 bg-indigo-50/70 hover:bg-indigo-100/80 text-indigo-700 font-bold text-[11px] sm:text-xs rounded-xl border border-indigo-200/70 transition-all cursor-pointer active:scale-95"
+                      className="inline-flex items-center justify-center gap-1.5 px-2.5 sm:px-3.5 py-2 bg-gray-50/70 hover:bg-gray-100/80 text-gray-900 font-bold text-[11px] sm:text-xs rounded-xl border border-gray-200/70 transition-all cursor-pointer active:scale-95"
                       title="Generate and print barcode sticker labels for inventory"
                     >
-                      <Printer className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-indigo-600 shrink-0" />
+                      <Printer className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-900 shrink-0" />
                       <span className="truncate">Barcodes</span>
                     </button>
                   </div>
@@ -2195,7 +2195,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                       placeholder="Search Name, SKU, or Barcode..."
                       value={productSearch}
                       onChange={(e) => setProductSearch(e.target.value)}
-                      className="w-full pl-9 pr-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-indigo-500 shadow-2xs"
+                      className="w-full pl-9 pr-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-gray-900 shadow-2xs"
                     />
                   </div>
 
@@ -2237,7 +2237,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                       <span>No inventory products found matching your search.</span>
                       <button
                         onClick={() => setShowCsvModal(true)}
-                        className="mt-2 text-indigo-600 font-bold hover:underline flex items-center gap-1"
+                        className="mt-2 text-gray-900 font-bold hover:underline flex items-center gap-1"
                       >
                         <FileSpreadsheet className="w-4 h-4" />
                         <span>Import CSV Items</span>
@@ -2278,8 +2278,8 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                                     isOutOfStock 
                                       ? 'text-red-600' 
                                       : isLowStock 
-                                        ? 'text-amber-600' 
-                                        : 'text-emerald-600'
+                                        ? 'text-gray-900' 
+                                        : 'text-gray-900'
                                   }`}>
                                     {prod.stock} {prod.unit_name || 'ခု'}
                                   </span>
@@ -2291,9 +2291,9 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                                   {isOutOfStock ? (
                                     <span className="text-red-600 font-bold">Reorder Immediately</span>
                                   ) : isLowStock ? (
-                                    <span className="text-amber-600">Low (≤{prod.min_stock_level})</span>
+                                    <span className="text-gray-900">Low (≤{prod.min_stock_level})</span>
                                   ) : (
-                                    <span className="text-emerald-600">Stock OK</span>
+                                    <span className="text-gray-900">Stock OK</span>
                                   )}
                                 </div>
 
@@ -2303,19 +2303,19 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                                     className="p-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors flex items-center gap-1 text-[10px] font-bold"
                                     title="Print Barcode Label"
                                   >
-                                    <Printer className="w-3 h-3 text-indigo-600" />
+                                    <Printer className="w-3 h-3 text-gray-900" />
                                     <span>Barcode</span>
                                   </button>
                                   <button
                                     onClick={() => startEditProduct(prod)}
-                                    className="p-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 rounded-lg transition-colors flex items-center gap-1 text-[10px] font-bold"
+                                    className="p-1.5 bg-gray-50 hover:bg-gray-100 text-gray-900 rounded-lg transition-colors flex items-center gap-1 text-[10px] font-bold"
                                   >
                                     <Edit2 className="w-3 h-3" />
                                     <span>Edit</span>
                                   </button>
                                   <button
                                     onClick={() => openQuickRestock(prod)}
-                                    className="p-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-lg transition-colors flex items-center gap-1 text-[10px] font-bold"
+                                    className="p-1.5 bg-gray-50 hover:bg-gray-100 text-gray-900 rounded-lg transition-colors flex items-center gap-1 text-[10px] font-bold"
                                   >
                                     <PackagePlus className="w-3 h-3" />
                                     <span>Restock</span>
@@ -2391,7 +2391,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
 
                                   {/* Use Stock */}
                                   <td className="p-3 text-center border-r border-slate-100 font-mono text-[11px]">
-                                    <span className={prod.use_stock !== false ? 'text-emerald-600 font-bold' : 'text-slate-400'}>
+                                    <span className={prod.use_stock !== false ? 'text-gray-900 font-bold' : 'text-slate-400'}>
                                       {prod.use_stock !== false ? 'true' : 'false'}
                                     </span>
                                   </td>
@@ -2412,7 +2412,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                                   </td>
 
                                   {/* Unit Name */}
-                                  <td className="p-3 text-center font-bold text-indigo-700 border-r border-slate-100">
+                                  <td className="p-3 text-center font-bold text-gray-900 border-r border-slate-100">
                                     {prod.unit_name || 'ခု'}
                                   </td>
 
@@ -2422,8 +2422,8 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                                       isOutOfStock 
                                         ? 'bg-red-100 text-red-800' 
                                         : isLowStock 
-                                          ? 'bg-amber-100 text-amber-800' 
-                                          : 'bg-emerald-100 text-emerald-800'
+                                          ? 'bg-gray-100 text-gray-900' 
+                                          : 'bg-gray-100 text-gray-900'
                                     }`}>
                                       {prod.stock}
                                     </span>
@@ -2457,18 +2457,18 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                                         className="p-1.5 hover:bg-slate-100 text-slate-600 hover:text-slate-900 rounded transition-colors cursor-pointer"
                                         title="Print Barcode Label"
                                       >
-                                        <Printer className="w-3.5 h-3.5 text-indigo-600" />
+                                        <Printer className="w-3.5 h-3.5 text-gray-900" />
                                       </button>
                                       <button
                                         onClick={() => startEditProduct(prod)}
-                                        className="p-1.5 hover:bg-indigo-50 text-indigo-600 hover:text-indigo-800 rounded transition-colors cursor-pointer"
+                                        className="p-1.5 hover:bg-gray-50 text-gray-900 hover:text-gray-900 rounded transition-colors cursor-pointer"
                                         title="Edit Details & Adjust Stock"
                                       >
                                         <Edit2 className="w-3.5 h-3.5" />
                                       </button>
                                       <button
                                         onClick={() => openQuickRestock(prod)}
-                                        className="p-1.5 hover:bg-emerald-50 text-emerald-600 hover:text-emerald-800 rounded transition-colors cursor-pointer"
+                                        className="p-1.5 hover:bg-gray-50 text-gray-900 hover:text-gray-900 rounded transition-colors cursor-pointer"
                                         title="Quick Restock"
                                       >
                                         <PackagePlus className="w-3.5 h-3.5" />
@@ -2523,7 +2523,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                                       onClick={() => setProductPage(item)}
                                       className={`w-8 h-8 rounded-lg font-bold transition-all text-xs cursor-pointer ${
                                         safeProductPage === item
-                                          ? 'bg-indigo-600 text-white shadow-xs'
+                                          ? 'bg-black text-white shadow-xs'
                                           : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200 shadow-2xs'
                                       }`}
                                     >
@@ -2564,7 +2564,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                     placeholder="Search cashier name or email..."
                     value={cashierSearch}
                     onChange={(e) => setCashierSearch(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm font-semibold focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-xs"
+                    className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm font-semibold focus:bg-white focus:outline-none focus:ring-2 focus:ring-black/20 focus:border-gray-900 transition-all shadow-xs"
                   />
                 </div>
 
@@ -2575,7 +2575,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                       <h3 className="text-sm font-bold text-slate-900">Cashier Credentials & Branch Outlets</h3>
                       <p className="text-xs text-slate-500 mt-0.5">Manage cashier login usernames, passwords, and assigned store branches.</p>
                     </div>
-                    <span className="self-start sm:self-auto text-xs font-extrabold text-indigo-600 bg-indigo-50 border border-indigo-100 px-2.5 py-1 rounded-lg">
+                    <span className="self-start sm:self-auto text-xs font-extrabold text-gray-900 bg-gray-50 border border-gray-100 px-2.5 py-1 rounded-lg">
                       {filteredCashiers.length} Accounts
                     </span>
                   </div>
@@ -2591,7 +2591,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                       </div>
                       <button
                         onClick={openNewCashierModal}
-                        className="mt-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs py-2 px-4 rounded-lg flex items-center gap-1.5 transition-all cursor-pointer"
+                        className="mt-2 bg-black hover:bg-gray-800 text-white font-semibold text-xs py-2 px-4 rounded-lg flex items-center gap-1.5 transition-all cursor-pointer"
                       >
                         <Plus className="w-3.5 h-3.5" />
                         <span>Add Cashier Account</span>
@@ -2605,7 +2605,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                           <div key={cashier.id} className="p-4 flex flex-col gap-3 hover:bg-slate-50/60 transition-colors">
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-3">
-                                <div className="w-9 h-9 rounded-full bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-700 font-extrabold text-xs uppercase shrink-0">
+                                <div className="w-9 h-9 rounded-full bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-900 font-extrabold text-xs uppercase shrink-0">
                                   {cashier.name ? cashier.name.split(' ').map(n => n[0]).join('').slice(0, 2) : 'C'}
                                 </div>
                                 <div>
@@ -2613,7 +2613,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                                   <span className="text-[10px] text-slate-400 font-mono">ID: {cashier.id.slice(0, 8)}...</span>
                                 </div>
                               </div>
-                              <span className="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-bold text-[10px] uppercase border border-emerald-100">
+                              <span className="px-2 py-0.5 rounded-full bg-gray-50 text-gray-900 font-bold text-[10px] uppercase border border-gray-100">
                                 {cashier.role || 'cashier'}
                               </span>
                             </div>
@@ -2626,7 +2626,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                               <div className="flex justify-between items-center">
                                 <span className="text-[10px] font-bold text-slate-500 uppercase">Branch</span>
                                 <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white text-slate-700 font-bold text-[11px] border border-slate-200">
-                                  <Building2 className="w-3 h-3 text-indigo-500" />
+                                  <Building2 className="w-3 h-3 text-gray-500" />
                                   <span>{cashier.branch_name || 'All Branches'}</span>
                                 </span>
                               </div>
@@ -2668,7 +2668,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                               <tr key={cashier.id} className="hover:bg-slate-50/60 transition-colors">
                                 <td className="py-3.5 px-4">
                                   <div className="flex items-center gap-3">
-                                    <div className="w-9 h-9 rounded-full bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-700 font-extrabold text-xs uppercase shrink-0">
+                                    <div className="w-9 h-9 rounded-full bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-900 font-extrabold text-xs uppercase shrink-0">
                                       {cashier.name ? cashier.name.split(' ').map(n => n[0]).join('').slice(0, 2) : 'C'}
                                     </div>
                                     <div>
@@ -2682,12 +2682,12 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                                 </td>
                                 <td className="py-3.5 px-4">
                                   <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 font-bold text-[11px] border border-slate-200">
-                                    <Building2 className="w-3 h-3 text-indigo-500" />
+                                    <Building2 className="w-3 h-3 text-gray-500" />
                                     <span>{cashier.branch_name || 'All Branches'}</span>
                                   </span>
                                 </td>
                                 <td className="py-3.5 px-4">
-                                  <span className="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-bold text-[10px] uppercase border border-emerald-100">
+                                  <span className="px-2 py-0.5 rounded-full bg-gray-50 text-gray-900 font-bold text-[10px] uppercase border border-gray-100">
                                     {cashier.role || 'cashier'}
                                   </span>
                                 </td>
@@ -2731,7 +2731,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                       <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Active Staff</span>
                       <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 mt-1">{displayCashiers.length} Cashiers</h3>
                     </div>
-                    <div className="p-2.5 rounded-lg bg-indigo-50 text-indigo-600">
+                    <div className="p-2.5 rounded-lg bg-gray-50 text-gray-900">
                       <Users className="w-5 h-5" />
                     </div>
                   </div>
@@ -2743,10 +2743,10 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                         {topCashierPerf ? topCashierPerf.cashier.name : 'N/A'}
                       </h3>
                       {topCashierPerf && (
-                        <p className="text-[10px] text-emerald-600 font-bold">{formatCurrency(topCashierPerf.totalRevenue)}</p>
+                        <p className="text-[10px] text-gray-900 font-bold">{formatCurrency(topCashierPerf.totalRevenue)}</p>
                       )}
                     </div>
-                    <div className="p-2.5 rounded-lg bg-amber-50 text-amber-600">
+                    <div className="p-2.5 rounded-lg bg-gray-50 text-gray-900">
                       <Award className="w-5 h-5" />
                     </div>
                   </div>
@@ -2754,9 +2754,9 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                   <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-xs flex items-center justify-between">
                     <div>
                       <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Total Staff Revenue</span>
-                      <h3 className="text-sm sm:text-lg font-extrabold text-emerald-600 mt-1">{formatCurrency(totalCashierSalesVolume)}</h3>
+                      <h3 className="text-sm sm:text-lg font-extrabold text-gray-900 mt-1">{formatCurrency(totalCashierSalesVolume)}</h3>
                     </div>
-                    <div className="p-2.5 rounded-lg bg-emerald-50 text-emerald-600">
+                    <div className="p-2.5 rounded-lg bg-gray-50 text-gray-900">
                       <DollarSign className="w-5 h-5" />
                     </div>
                   </div>
@@ -2766,7 +2766,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                       <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">POS Receipts</span>
                       <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 mt-1">{totalCashierTxCount} Orders</h3>
                     </div>
-                    <div className="p-2.5 rounded-lg bg-blue-50 text-blue-600">
+                    <div className="p-2.5 rounded-lg bg-gray-50 text-gray-900">
                       <Receipt className="w-5 h-5" />
                     </div>
                   </div>
@@ -2790,11 +2790,11 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                         const percentOfMax = maxCashierRevenue > 0 ? (item.totalRevenue / maxCashierRevenue) * 100 : 0;
                         const rankLabel = idx === 0 ? '🏆 #1 Top Seller' : idx === 1 ? '🥈 #2 Rank' : idx === 2 ? '🥉 #3 Rank' : `#${idx + 1} Rank`;
                         const rankBg = idx === 0 
-                          ? 'bg-amber-100 text-amber-800 border-amber-200' 
+                          ? 'bg-gray-100 text-gray-900 border-gray-200' 
                           : idx === 1 
                             ? 'bg-slate-200 text-slate-800 border-slate-300' 
                             : idx === 2 
-                              ? 'bg-orange-100 text-orange-800 border-orange-200' 
+                              ? 'bg-gray-100 text-gray-900 border-gray-200' 
                               : 'bg-slate-100 text-slate-600 border-slate-200';
 
                         return (
@@ -2802,7 +2802,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                               {/* Left: Avatar & Info */}
                               <div className="flex items-start sm:items-center space-x-3 min-w-0">
-                                <div className="w-11 h-11 rounded-full bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-700 font-extrabold text-sm uppercase shrink-0 shadow-2xs">
+                                <div className="w-11 h-11 rounded-full bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-900 font-extrabold text-sm uppercase shrink-0 shadow-2xs">
                                   {item.cashier.name ? item.cashier.name.split(' ').map(n => n[0]).join('').slice(0, 2) : 'C'}
                                 </div>
                                 <div className="min-w-0">
@@ -2825,14 +2825,14 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                                   <span className="text-[10px] uppercase tracking-wider font-bold text-slate-400 block">Total Revenue</span>
                                   <span className="font-black text-slate-900 text-base sm:text-lg">{formatCurrency(item.totalRevenue)}</span>
                                   <div className="w-32 bg-slate-100 h-2 rounded-full overflow-hidden mt-1 lg:ml-auto">
-                                    <div className="bg-indigo-600 h-full rounded-full transition-all duration-500" style={{ width: `${percentOfMax}%` }} />
+                                    <div className="bg-black h-full rounded-full transition-all duration-500" style={{ width: `${percentOfMax}%` }} />
                                   </div>
                                 </div>
 
                                 <div className="flex items-center gap-2">
                                   <button
                                     onClick={() => setSelectedCashierForHistory({ cashier: item.cashier, sales: item.sales })}
-                                    className="px-3 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer border border-indigo-100"
+                                    className="px-3 py-2 bg-gray-50 hover:bg-gray-100 text-gray-900 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer border border-gray-100"
                                     title="View receipt history for this cashier"
                                   >
                                     <Eye className="w-3.5 h-3.5" />
@@ -2883,7 +2883,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                       placeholder="Filter by product, action, or staff..."
                       value={txSearch}
                       onChange={(e) => setTxSearch(e.target.value)}
-                      className="w-full pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-900 focus:outline-none focus:border-indigo-500 focus:bg-white"
+                      className="w-full pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-900 focus:outline-none focus:border-gray-900 focus:bg-white"
                     />
                   </div>
                 </div>
@@ -2908,10 +2908,10 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                                 </span>
                                 <span className={`inline-flex px-2 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider ${
                                   tx.type === 'stock-in'
-                                    ? 'bg-blue-100 text-blue-800'
+                                    ? 'bg-gray-100 text-gray-900'
                                     : tx.type === 'sale'
-                                      ? 'bg-emerald-100 text-emerald-800'
-                                      : 'bg-amber-100 text-amber-800'
+                                      ? 'bg-gray-100 text-gray-900'
+                                      : 'bg-gray-100 text-gray-900'
                                 }`}>
                                   {tx.type}
                                 </span>
@@ -2920,7 +2920,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                               <div className="flex justify-between items-start">
                                 <h4 className="font-bold text-slate-900 text-xs">{tx.product_name}</h4>
                                 <span className={`font-mono font-bold text-xs shrink-0 ${
-                                  isAdd ? 'text-blue-600' : isSub ? 'text-amber-600' : 'text-slate-600'
+                                  isAdd ? 'text-gray-900' : isSub ? 'text-gray-900' : 'text-slate-600'
                                 }`}>
                                   {isAdd ? '+' : '-'}{tx.quantity} units
                                 </span>
@@ -2962,17 +2962,17 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                                   <td className="p-4">
                                     <span className={`inline-flex px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider ${
                                       tx.type === 'stock-in'
-                                        ? 'bg-blue-100 text-blue-800'
+                                        ? 'bg-gray-100 text-gray-900'
                                         : tx.type === 'sale'
-                                          ? 'bg-emerald-100 text-emerald-800'
-                                          : 'bg-amber-100 text-amber-800'
+                                          ? 'bg-gray-100 text-gray-900'
+                                          : 'bg-gray-100 text-gray-900'
                                     }`}>
                                       {tx.type}
                                     </span>
                                   </td>
                                   <td className="p-4 text-center">
                                     <span className={`font-mono font-bold ${
-                                      isAdd ? 'text-blue-600' : isSub ? 'text-amber-600' : 'text-slate-600'
+                                      isAdd ? 'text-gray-900' : isSub ? 'text-gray-900' : 'text-slate-600'
                                     }`}>
                                       {isAdd ? '+' : '-'}{tx.quantity} units
                                     </span>
@@ -3022,10 +3022,10 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                                 </span>
                                 <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold flex items-center gap-1 ${
                                   branch.is_active 
-                                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' 
+                                    ? 'bg-gray-50 text-gray-900 border border-gray-100' 
                                     : 'bg-slate-100 text-slate-500 border border-slate-200'
                                 }`}>
-                                  <span className={`w-1.5 h-1.5 rounded-full ${branch.is_active ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'}`} />
+                                  <span className={`w-1.5 h-1.5 rounded-full ${branch.is_active ? 'bg-black animate-pulse' : 'bg-slate-400'}`} />
                                   <span>{branch.is_active ? 'Active' : 'Inactive'}</span>
                                 </span>
                               </div>
@@ -3033,7 +3033,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                               <div className="flex items-center gap-1">
                                 <button
                                   onClick={() => startEditBranch(branch)}
-                                  className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-slate-50 rounded-lg transition-colors"
+                                  className="p-1.5 text-slate-400 hover:text-gray-900 hover:bg-slate-50 rounded-lg transition-colors"
                                   title="Edit Branch"
                                 >
                                   <Edit2 className="w-3.5 h-3.5" />
@@ -3074,7 +3074,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                             </div>
                             <div className="bg-slate-50 p-2 rounded-lg border border-slate-100">
                               <span className="text-[9px] text-slate-400 uppercase font-bold block">Branch Sales</span>
-                              <span className="text-xs font-bold text-indigo-600">{formatCurrency(branchRevenue)}</span>
+                              <span className="text-xs font-bold text-gray-900">{formatCurrency(branchRevenue)}</span>
                             </div>
                           </div>
                         </div>
@@ -3089,9 +3089,9 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
             {activeTab === 'settings' && (
               <div className="space-y-6 max-w-6xl mx-auto">
                 {/* Header Banner */}
-                <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white p-6 rounded-2xl shadow-lg border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="bg-gradient-to-r from-slate-900 via-gray-950 to-slate-900 text-white p-6 rounded-2xl shadow-lg border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div className="space-y-1">
-                    <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-xs font-bold border border-indigo-400/30">
+                    <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-black/20 text-gray-300 text-xs font-bold border border-gray-400/30">
                       <Store className="w-3.5 h-3.5" />
                       <span>Store Identity & Branding</span>
                     </div>
@@ -3110,15 +3110,15 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                     }}
                     className="self-start md:self-auto px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl font-bold text-xs transition-colors flex items-center gap-1.5 border border-slate-700 cursor-pointer"
                   >
-                    <RefreshCw className="w-3.5 h-3.5 text-indigo-400" />
+                    <RefreshCw className="w-3.5 h-3.5 text-gray-400" />
                     <span>Reset Changes</span>
                   </button>
                 </div>
 
                 {/* Notifications */}
                 {businessSuccessMsg && (
-                  <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-800 text-xs font-bold flex items-center gap-2 shadow-xs animate-fade-in">
-                    <CheckCircle className="w-5 h-5 text-emerald-600 shrink-0" />
+                  <div className="p-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 text-xs font-bold flex items-center gap-2 shadow-xs animate-fade-in">
+                    <CheckCircle className="w-5 h-5 text-gray-900 shrink-0" />
                     <span>{businessSuccessMsg}</span>
                   </div>
                 )}
@@ -3136,7 +3136,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                     {/* Card 1: Store Name & Logo */}
                     <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-5 sm:p-6 space-y-5">
                       <div className="border-b border-slate-100 pb-3 flex items-center gap-2">
-                        <Building2 className="w-5 h-5 text-indigo-600" />
+                        <Building2 className="w-5 h-5 text-gray-900" />
                         <div>
                           <h4 className="font-extrabold text-slate-900 text-sm">Business Identity & Branding</h4>
                           <p className="text-[11px] text-slate-400">Set your store's display name, slogan, and logo image</p>
@@ -3154,7 +3154,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                           value={businessForm.name}
                           onChange={(e) => setBusinessForm({ ...businessForm, name: e.target.value })}
                           placeholder="e.g. RetailHub Supermart"
-                          className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-bold text-xs text-slate-900 focus:outline-none focus:border-indigo-600 focus:bg-white transition-all"
+                          className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-bold text-xs text-slate-900 focus:outline-none focus:border-gray-900 focus:bg-white transition-all"
                         />
                       </div>
 
@@ -3168,7 +3168,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                           value={businessForm.tagline || ''}
                           onChange={(e) => setBusinessForm({ ...businessForm, tagline: e.target.value })}
                           placeholder="e.g. Quality Everyday Groceries & Mart"
-                          className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-medium text-xs text-slate-900 focus:outline-none focus:border-indigo-600 focus:bg-white transition-all"
+                          className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-medium text-xs text-slate-900 focus:outline-none focus:border-gray-900 focus:bg-white transition-all"
                         />
                       </div>
 
@@ -3198,7 +3198,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                           <div className="flex-1 space-y-2 text-center sm:text-left w-full">
                             <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
                               {/* Upload File Button */}
-                              <label className="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+                              <label className="px-3.5 py-2 bg-black hover:bg-gray-800 text-white font-bold text-xs rounded-xl shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer">
                                 <Upload className="w-3.5 h-3.5" />
                                 <span>Upload Image File</span>
                                 <input
@@ -3236,7 +3236,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                             value={businessForm.logo_url || ''}
                             onChange={(e) => setBusinessForm({ ...businessForm, logo_url: e.target.value })}
                             placeholder="https://example.com/logo.png"
-                            className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono text-slate-800 focus:outline-none focus:border-indigo-600 focus:bg-white"
+                            className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono text-slate-800 focus:outline-none focus:border-gray-900 focus:bg-white"
                           />
                         </div>
 
@@ -3247,10 +3247,10 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                           </label>
                           <div className="grid grid-cols-4 gap-2">
                             {[
-                              { label: 'Shop Blue', icon: '🛍️', bg: 'bg-blue-500' },
-                              { label: 'Cart Emerald', icon: '🛒', bg: 'bg-emerald-500' },
-                              { label: 'Mart Amber', icon: '🏪', bg: 'bg-amber-500' },
-                              { label: 'Store Purple', icon: '✨', bg: 'bg-indigo-600' }
+                              { label: 'Shop Blue', icon: '🛍️', bg: 'bg-black' },
+                              { label: 'Cart Emerald', icon: '🛒', bg: 'bg-black' },
+                              { label: 'Mart Amber', icon: '🏪', bg: 'bg-black' },
+                              { label: 'Store Purple', icon: '✨', bg: 'bg-black' }
                             ].map((preset, idx) => {
                               const svgData = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="%234F46E5"/><text x="50" y="60" font-size="45" text-anchor="middle" fill="white">${preset.icon}</text></svg>`;
                               return (
@@ -3258,7 +3258,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                                   key={idx}
                                   type="button"
                                   onClick={() => setBusinessForm({ ...businessForm, logo_url: svgData })}
-                                  className="p-2 border border-slate-200 hover:border-indigo-500 bg-slate-50 rounded-xl flex flex-col items-center text-center transition-all cursor-pointer group"
+                                  className="p-2 border border-slate-200 hover:border-gray-900 bg-slate-50 rounded-xl flex flex-col items-center text-center transition-all cursor-pointer group"
                                 >
                                   <span className="text-xl group-hover:scale-110 transition-transform">{preset.icon}</span>
                                   <span className="text-[9px] font-bold text-slate-600 mt-1">{preset.label}</span>
@@ -3273,7 +3273,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                     {/* Card 2: Contact & Receipt Options */}
                     <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-5 sm:p-6 space-y-4">
                       <div className="border-b border-slate-100 pb-3 flex items-center gap-2">
-                        <Receipt className="w-5 h-5 text-indigo-600" />
+                        <Receipt className="w-5 h-5 text-gray-900" />
                         <div>
                           <h4 className="font-extrabold text-slate-900 text-sm">Receipt & Contact Details</h4>
                           <p className="text-[11px] text-slate-400">Configure store contact information and receipt details</p>
@@ -3290,7 +3290,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                             value={businessForm.phone || ''}
                             onChange={(e) => setBusinessForm({ ...businessForm, phone: e.target.value })}
                             placeholder="+95 9 123 456 789"
-                            className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-medium text-xs text-slate-900 focus:outline-none focus:border-indigo-600"
+                            className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-medium text-xs text-slate-900 focus:outline-none focus:border-gray-900"
                           />
                         </div>
 
@@ -3303,7 +3303,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                             value={businessForm.email || ''}
                             onChange={(e) => setBusinessForm({ ...businessForm, email: e.target.value })}
                             placeholder="info@yourshop.com"
-                            className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-medium text-xs text-slate-900 focus:outline-none focus:border-indigo-600"
+                            className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-medium text-xs text-slate-900 focus:outline-none focus:border-gray-900"
                           />
                         </div>
                       </div>
@@ -3317,7 +3317,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                           value={businessForm.address || ''}
                           onChange={(e) => setBusinessForm({ ...businessForm, address: e.target.value })}
                           placeholder="No. 123 Main Road, Yangon, Myanmar"
-                          className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-medium text-xs text-slate-900 focus:outline-none focus:border-indigo-600"
+                          className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-medium text-xs text-slate-900 focus:outline-none focus:border-gray-900"
                         />
                       </div>
 
@@ -3331,7 +3331,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                             value={businessForm.currency || 'Ks'}
                             onChange={(e) => setBusinessForm({ ...businessForm, currency: e.target.value })}
                             placeholder="Ks, $, MMK"
-                            className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-bold text-xs text-slate-900 focus:outline-none focus:border-indigo-600"
+                            className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-bold text-xs text-slate-900 focus:outline-none focus:border-gray-900"
                           />
                         </div>
 
@@ -3346,7 +3346,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                             step="0.1"
                             value={businessForm.tax_rate ?? 5}
                             onChange={(e) => setBusinessForm({ ...businessForm, tax_rate: parseFloat(e.target.value) || 0 })}
-                            className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-bold text-xs text-slate-900 focus:outline-none focus:border-indigo-600"
+                            className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-bold text-xs text-slate-900 focus:outline-none focus:border-gray-900"
                           />
                         </div>
                       </div>
@@ -3360,7 +3360,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                           value={businessForm.receipt_footer || ''}
                           onChange={(e) => setBusinessForm({ ...businessForm, receipt_footer: e.target.value })}
                           placeholder="Thank you for shopping with us! Please come again."
-                          className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-medium text-xs text-slate-900 focus:outline-none focus:border-indigo-600 resize-none"
+                          className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-medium text-xs text-slate-900 focus:outline-none focus:border-gray-900 resize-none"
                         />
                       </div>
                     </div>
@@ -3370,7 +3370,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                       <button
                         type="submit"
                         disabled={businessSaving}
-                        className="w-full sm:w-auto px-6 py-3 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-xl font-bold text-xs transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer"
+                        className="w-full sm:w-auto px-6 py-3 bg-black hover:bg-gray-800 disabled:opacity-50 text-white rounded-xl font-bold text-xs transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer"
                       >
                         {businessSaving ? (
                           <>
@@ -3393,10 +3393,10 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                     <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-5 space-y-4 sticky top-24">
                       <div className="border-b border-slate-100 pb-3 flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <Eye className="w-4 h-4 text-indigo-600" />
+                          <Eye className="w-4 h-4 text-gray-900" />
                           <h4 className="font-extrabold text-slate-900 text-xs">Live Receipt Preview</h4>
                         </div>
-                        <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 font-bold text-[9px] rounded-full uppercase">
+                        <span className="px-2 py-0.5 bg-gray-50 text-gray-900 font-bold text-[9px] rounded-full uppercase">
                           Real-Time POS
                         </span>
                       </div>
@@ -3413,7 +3413,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                                 className="w-12 h-12 object-contain mx-auto rounded-lg mb-1"
                               />
                             ) : (
-                              <div className="w-10 h-10 bg-indigo-600 text-white font-black text-lg rounded-xl flex items-center justify-center mx-auto shadow-xs mb-1">
+                              <div className="w-10 h-10 bg-black text-white font-black text-lg rounded-xl flex items-center justify-center mx-auto shadow-xs mb-1">
                                 {businessForm.name ? businessForm.name.charAt(0).toUpperCase() : 'R'}
                               </div>
                             )}
@@ -3477,7 +3477,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                             </div>
                             <div className="flex justify-between font-black text-slate-900 text-xs pt-1 border-t border-dotted border-slate-300">
                               <span>TOTAL DUE:</span>
-                              <span className="text-indigo-600">20,000 {businessForm.currency || 'Ks'}</span>
+                              <span className="text-gray-900">20,000 {businessForm.currency || 'Ks'}</span>
                             </div>
                           </div>
 
@@ -3495,13 +3495,13 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                     <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-5 space-y-4">
                       <div className="border-b border-slate-100 pb-3 flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <Database className="w-4 h-4 text-emerald-600" />
+                          <Database className="w-4 h-4 text-gray-900" />
                           <div>
                             <h4 className="font-extrabold text-slate-900 text-xs">Supabase Database Setup</h4>
                             <p className="text-[10px] text-slate-400">Run this SQL in your Supabase SQL Editor</p>
                           </div>
                         </div>
-                        <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold ${isSupabaseConfigured ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'}`}>
+                        <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold ${isSupabaseConfigured ? 'bg-gray-50 text-gray-900' : 'bg-gray-50 text-gray-900'}`}>
                           {isSupabaseConfigured ? 'Connected' : 'Not Connected'}
                         </span>
                       </div>
@@ -3510,8 +3510,8 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                         onClick={handleCopySql}
                         className={`w-full px-4 py-3 rounded-xl text-xs font-extrabold transition-all flex items-center justify-center gap-2 shadow-sm ${
                           copiedSql
-                            ? 'bg-emerald-600 text-white'
-                            : 'bg-indigo-600 hover:bg-indigo-700 text-white'
+                            ? 'bg-black text-white'
+                            : 'bg-black hover:bg-gray-800 text-white'
                         }`}
                       >
                         {copiedSql ? <CheckCircle className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
@@ -3541,7 +3541,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
           <div className="bg-white rounded-2xl shadow-premium-xl border border-slate-100 max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden animate-scale-in">
             <div className="p-5 border-b border-slate-200 flex justify-between items-center bg-slate-50/80">
               <h3 className="font-extrabold text-slate-900 flex items-center space-x-2 text-sm sm:text-base">
-                <Package className="w-5 h-5 text-indigo-600" />
+                <Package className="w-5 h-5 text-gray-900" />
                 <span>{editingProduct ? 'Edit Product Schema Details' : 'Register New Product'}</span>
               </h3>
               <button
@@ -3561,16 +3561,16 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                   </div>
                 )}
                 {formSuccess && (
-                  <div className="p-3 bg-emerald-50 border border-emerald-100 rounded-xl text-xs text-emerald-700 flex items-start space-x-1.5">
-                    <CheckCircle className="w-4 h-4 shrink-0 mt-0.5 text-emerald-500" />
+                  <div className="p-3 bg-gray-50 border border-gray-100 rounded-xl text-xs text-gray-900 flex items-start space-x-1.5">
+                    <CheckCircle className="w-4 h-4 shrink-0 mt-0.5 text-gray-500" />
                     <span>{formSuccess}</span>
                   </div>
                 )}
 
                 {/* SECTION 1: BASIC INFORMATION */}
                 <div className="space-y-3">
-                  <div className="flex items-center gap-1.5 text-indigo-900 font-bold text-[11px] uppercase tracking-wider border-b border-slate-100 pb-1">
-                    <Tag className="w-3.5 h-3.5 text-indigo-600" />
+                  <div className="flex items-center gap-1.5 text-gray-900 font-bold text-[11px] uppercase tracking-wider border-b border-slate-100 pb-1">
+                    <Tag className="w-3.5 h-3.5 text-gray-900" />
                     <span>1. Product Identification & Metadata</span>
                   </div>
 
@@ -3583,7 +3583,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                         value={productForm.name}
                         onChange={(e) => setProductForm({ ...productForm, name: e.target.value })}
                         placeholder="e.g. Organic Whole Milk 1L"
-                        className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500 font-medium"
+                        className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-gray-900 font-medium"
                       />
                     </div>
 
@@ -3591,7 +3591,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                       <label className="flex items-center justify-between text-[10px] font-bold text-slate-600 uppercase tracking-wider mb-1">
                         <span>SKU Identifier *</span>
                         {!editingProduct && (
-                          <span className="text-indigo-500 normal-case tracking-normal font-semibold">Auto-generated</span>
+                          <span className="text-gray-500 normal-case tracking-normal font-semibold">Auto-generated</span>
                         )}
                       </label>
                       <input
@@ -3601,7 +3601,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                         value={isGeneratingCodes && !productForm.sku ? 'Generating…' : productForm.sku}
                         onChange={(e) => setProductForm({ ...productForm, sku: e.target.value })}
                         placeholder="MILK-ORG-1L"
-                        className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500 disabled:opacity-50 font-mono font-bold text-indigo-900 uppercase"
+                        className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-gray-900 disabled:opacity-50 font-mono font-bold text-gray-900 uppercase"
                       />
                     </div>
 
@@ -3609,7 +3609,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                       <label className="flex items-center justify-between text-[10px] font-bold text-slate-600 uppercase tracking-wider mb-1">
                         <span>Barcode Number</span>
                         {!editingProduct && (
-                          <span className="text-indigo-500 normal-case tracking-normal font-semibold">Sequential</span>
+                          <span className="text-gray-500 normal-case tracking-normal font-semibold">Sequential</span>
                         )}
                       </label>
                       <div className="flex items-center gap-2">
@@ -3618,7 +3618,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                           value={isGeneratingCodes && !productForm.barcode ? 'Generating…' : productForm.barcode}
                           onChange={(e) => setProductForm({ ...productForm, barcode: e.target.value })}
                           placeholder="e.g. 000123"
-                          className="flex-1 min-w-0 p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500 font-mono"
+                          className="flex-1 min-w-0 p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-gray-900 font-mono"
                         />
                         {!editingProduct && (
                           <button
@@ -3626,7 +3626,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                             onClick={fillGeneratedCodes}
                             disabled={isGeneratingCodes}
                             title="Generate a fresh SKU and the next available barcode"
-                            className="p-2.5 shrink-0 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 border border-slate-200 rounded-xl transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="p-2.5 shrink-0 text-slate-500 hover:text-gray-900 hover:bg-gray-50 border border-slate-200 rounded-xl transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                           >
                             <RefreshCw className={`w-4 h-4 ${isGeneratingCodes ? 'animate-spin' : ''}`} />
                           </button>
@@ -3653,7 +3653,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                         value={productForm.price_variant}
                         onChange={(e) => setProductForm({ ...productForm, price_variant: e.target.value })}
                         placeholder="Standard, Retail, Wholesale, VIP"
-                        className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500 font-medium"
+                        className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-gray-900 font-medium"
                       />
                     </div>
 
@@ -3665,7 +3665,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                           value={productForm.image}
                           onChange={(e) => setProductForm({ ...productForm, image: e.target.value })}
                           placeholder="https://images.unsplash.com/... or image path"
-                          className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500 font-mono text-[11px]"
+                          className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-gray-900 font-mono text-[11px]"
                         />
                         {productForm.image && (
                           <div className="w-10 h-10 rounded-lg overflow-hidden border border-slate-200 shrink-0 bg-slate-100 flex items-center justify-center">
@@ -3682,7 +3682,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                         value={productForm.description}
                         onChange={(e) => setProductForm({ ...productForm, description: e.target.value })}
                         placeholder="Provide additional details, brand notes, or specs..."
-                        className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500 font-medium resize-none"
+                        className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-gray-900 font-medium resize-none"
                       />
                     </div>
                   </div>
@@ -3690,8 +3690,8 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
 
                 {/* SECTION 2: PRICING & UNITS */}
                 <div className="space-y-3">
-                  <div className="flex items-center gap-1.5 text-indigo-900 font-bold text-[11px] uppercase tracking-wider border-b border-slate-100 pb-1">
-                    <DollarSign className="w-3.5 h-3.5 text-emerald-600" />
+                  <div className="flex items-center gap-1.5 text-gray-900 font-bold text-[11px] uppercase tracking-wider border-b border-slate-100 pb-1">
+                    <DollarSign className="w-3.5 h-3.5 text-gray-900" />
                     <span>2. Pricing & Packaging Unit Specifications</span>
                   </div>
 
@@ -3706,7 +3706,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                         value={productForm.cost}
                         onChange={(e) => setProductForm({ ...productForm, cost: e.target.value })}
                         placeholder="0.00"
-                        className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500 font-bold text-amber-900"
+                        className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-gray-900 font-bold text-gray-900"
                       />
                     </div>
 
@@ -3720,7 +3720,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                         value={productForm.price}
                         onChange={(e) => setProductForm({ ...productForm, price: e.target.value })}
                         placeholder="0.00"
-                        className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500 font-black text-emerald-700"
+                        className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-gray-900 font-black text-gray-900"
                       />
                     </div>
 
@@ -3733,7 +3733,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                         value={productForm.unit_amount}
                         onChange={(e) => setProductForm({ ...productForm, unit_amount: e.target.value })}
                         placeholder="1"
-                        className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500 font-bold"
+                        className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-gray-900 font-bold"
                       />
                     </div>
 
@@ -3744,7 +3744,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                         value={productForm.unit_name}
                         onChange={(e) => setProductForm({ ...productForm, unit_name: e.target.value })}
                         placeholder="pcs, box, kg, bottle, pack"
-                        className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500 font-bold"
+                        className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-gray-900 font-bold"
                       />
                     </div>
                   </div>
@@ -3753,8 +3753,8 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                 {/* SECTION 3: INVENTORY TRACKING & OUTLET */}
                 <div className="space-y-3">
                   <div className="flex items-center justify-between border-b border-slate-100 pb-1">
-                    <div className="flex items-center gap-1.5 text-indigo-900 font-bold text-[11px] uppercase tracking-wider">
-                      <Layers className="w-3.5 h-3.5 text-indigo-600" />
+                    <div className="flex items-center gap-1.5 text-gray-900 font-bold text-[11px] uppercase tracking-wider">
+                      <Layers className="w-3.5 h-3.5 text-gray-900" />
                       <span>3. Inventory Stock Control & Store Outlet</span>
                     </div>
 
@@ -3763,7 +3763,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                         type="checkbox"
                         checked={productForm.use_stock}
                         onChange={(e) => setProductForm({ ...productForm, use_stock: e.target.checked })}
-                        className="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 border-slate-300 cursor-pointer"
+                        className="w-4 h-4 rounded text-gray-900 focus:ring-black/20 border-slate-300 cursor-pointer"
                       />
                       <span className="text-xs font-bold text-slate-700">Track Stock Inventory</span>
                     </label>
@@ -3780,7 +3780,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                         value={productForm.stock}
                         onChange={(e) => setProductForm({ ...productForm, stock: e.target.value })}
                         placeholder="0"
-                        className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500 disabled:opacity-50 font-bold"
+                        className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-gray-900 disabled:opacity-50 font-bold"
                       />
                     </div>
 
@@ -3793,7 +3793,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                         value={productForm.min_stock_level}
                         onChange={(e) => setProductForm({ ...productForm, min_stock_level: e.target.value })}
                         placeholder="5"
-                        className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500 font-medium"
+                        className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-gray-900 font-medium"
                       />
                     </div>
 
@@ -3803,7 +3803,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                         type="date"
                         value={productForm.expiry_date}
                         onChange={(e) => setProductForm({ ...productForm, expiry_date: e.target.value })}
-                        className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500 font-medium"
+                        className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-gray-900 font-medium"
                       />
                     </div>
 
@@ -3812,7 +3812,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                       <select
                         value={productForm.branch_id}
                         onChange={(e) => setProductForm({ ...productForm, branch_id: e.target.value })}
-                        className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500 font-medium"
+                        className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-gray-900 font-medium"
                       >
                         <option value="">🏢 Global Inventory / All Store Outlets</option>
                         {branches.map(b => (
@@ -3839,7 +3839,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                 <button
                   type="submit"
                   disabled={isSubmitting || isGeneratingCodes}
-                  className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs font-extrabold rounded-xl transition-all shadow-md cursor-pointer flex items-center gap-1.5"
+                  className="px-5 py-2.5 bg-black hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs font-extrabold rounded-xl transition-all shadow-md cursor-pointer flex items-center gap-1.5"
                 >
                   {isSubmitting ? (
                     <>
@@ -3865,7 +3865,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
           <div className="bg-white rounded-2xl shadow-premium-xl border border-slate-100 max-w-md w-full max-h-[90vh] overflow-y-auto animate-scale-in">
             <div className="p-5 border-b border-slate-100 flex justify-between items-center">
               <div className="flex items-center space-x-2">
-                <div className="p-2 bg-indigo-50 rounded-lg text-indigo-600">
+                <div className="p-2 bg-gray-50 rounded-lg text-gray-900">
                   {editingCashier ? <Edit2 className="w-5 h-5" /> : <UserPlus className="w-5 h-5" />}
                 </div>
                 <div>
@@ -3889,8 +3889,8 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                 </div>
               )}
               {formSuccess && (
-                <div className="p-3 bg-emerald-50 border border-emerald-100 rounded-lg text-xs text-emerald-700 flex items-start space-x-1.5">
-                  <CheckCircle className="w-4 h-4 shrink-0 mt-0.5 text-emerald-500" />
+                <div className="p-3 bg-gray-50 border border-gray-100 rounded-lg text-xs text-gray-900 flex items-start space-x-1.5">
+                  <CheckCircle className="w-4 h-4 shrink-0 mt-0.5 text-gray-500" />
                   <span>{formSuccess}</span>
                 </div>
               )}
@@ -3903,7 +3903,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                   value={cashierForm.name}
                   onChange={(e) => setCashierForm({ ...cashierForm, name: e.target.value })}
                   placeholder="e.g. John Doe"
-                  className="w-full p-2.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-indigo-500 font-medium"
+                  className="w-full p-2.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-gray-900 font-medium"
                 />
               </div>
 
@@ -3916,7 +3916,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                     value={cashierForm.email}
                     onChange={(e) => setCashierForm({ ...cashierForm, email: e.target.value })}
                     placeholder="e.g. cashier1"
-                    className="w-full p-2.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-indigo-500 font-medium"
+                    className="w-full p-2.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-gray-900 font-medium"
                   />
                   {!cashierForm.email.includes('@') && cashierForm.email.trim() !== '' && (
                     <span className="absolute inset-y-0 right-3 flex items-center text-[10px] text-slate-400 font-medium">
@@ -3934,7 +3934,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                   value={cashierForm.password}
                   onChange={(e) => setCashierForm({ ...cashierForm, password: e.target.value })}
                   placeholder={editingCashier ? "Leave blank to keep current" : "Minimum 6 characters"}
-                  className="w-full p-2.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-indigo-500 font-medium"
+                  className="w-full p-2.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-gray-900 font-medium"
                 />
               </div>
 
@@ -3943,7 +3943,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                 <select
                   value={cashierForm.branch_id}
                   onChange={(e) => setCashierForm({ ...cashierForm, branch_id: e.target.value })}
-                  className="w-full p-2.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-indigo-500 font-medium"
+                  className="w-full p-2.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-gray-900 font-medium"
                 >
                   <option value="">🏢 Unassigned / Global</option>
                   {branches.map(b => (
@@ -3954,11 +3954,11 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                 </select>
               </div>
 
-              <div className="p-3 bg-indigo-50/60 border border-indigo-100/80 rounded-lg text-[11px] text-indigo-900 space-y-1">
-                <p className="font-bold flex items-center gap-1 text-indigo-950">
+              <div className="p-3 bg-gray-50/60 border border-gray-100/80 rounded-lg text-[11px] text-gray-900 space-y-1">
+                <p className="font-bold flex items-center gap-1 text-gray-900">
                   <span>🔑 Staff Login Info</span>
                 </p>
-                <p className="text-[10px] text-indigo-600/90">{editingCashier ? 'Update the cashier login credentials.' : 'The cashier will use their email and this custom password to log in.'}</p>
+                <p className="text-[10px] text-gray-900/90">{editingCashier ? 'Update the cashier login credentials.' : 'The cashier will use their email and this custom password to log in.'}</p>
               </div>
 
               <div className="pt-3 flex justify-end space-x-2.5 border-t border-slate-100">
@@ -3973,7 +3973,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs font-semibold rounded-lg transition-colors shadow-sm flex items-center gap-1.5"
+                  className="px-4 py-2 bg-black hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs font-semibold rounded-lg transition-colors shadow-sm flex items-center gap-1.5"
                 >
                   {isSubmitting ? (
                     <>
@@ -3999,7 +3999,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
           <div className="bg-white rounded-2xl shadow-premium-xl border border-slate-100 max-w-md w-full max-h-[90vh] overflow-y-auto animate-scale-in">
             <div className="p-5 border-b border-slate-100 flex justify-between items-center">
               <div className="flex items-center space-x-2">
-                <div className="p-2 bg-indigo-50 rounded-lg text-indigo-600">
+                <div className="p-2 bg-gray-50 rounded-lg text-gray-900">
                   <Building2 className="w-5 h-5" />
                 </div>
                 <div>
@@ -4023,8 +4023,8 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                 </div>
               )}
               {formSuccess && (
-                <div className="p-3 bg-emerald-50 border border-emerald-100 rounded-lg text-xs text-emerald-700 flex items-start space-x-1.5">
-                  <CheckCircle className="w-4 h-4 shrink-0 mt-0.5 text-emerald-500" />
+                <div className="p-3 bg-gray-50 border border-gray-100 rounded-lg text-xs text-gray-900 flex items-start space-x-1.5">
+                  <CheckCircle className="w-4 h-4 shrink-0 mt-0.5 text-gray-500" />
                   <span>{formSuccess}</span>
                 </div>
               )}
@@ -4037,7 +4037,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                   value={branchForm.name}
                   onChange={(e) => setBranchForm({ ...branchForm, name: e.target.value })}
                   placeholder="e.g. Mandalay City Mall Branch"
-                  className="w-full p-2.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-indigo-500 font-medium"
+                  className="w-full p-2.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-gray-900 font-medium"
                 />
               </div>
 
@@ -4049,7 +4049,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                   value={branchForm.code}
                   onChange={(e) => setBranchForm({ ...branchForm, code: e.target.value })}
                   placeholder="e.g. MDY-02"
-                  className="w-full p-2.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-indigo-500 font-medium uppercase"
+                  className="w-full p-2.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-gray-900 font-medium uppercase"
                 />
               </div>
 
@@ -4061,7 +4061,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                   value={branchForm.address}
                   onChange={(e) => setBranchForm({ ...branchForm, address: e.target.value })}
                   placeholder="Street address, Township, City"
-                  className="w-full p-2.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-indigo-500 font-medium"
+                  className="w-full p-2.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-gray-900 font-medium"
                 />
               </div>
 
@@ -4074,7 +4074,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                     value={branchForm.phone}
                     onChange={(e) => setBranchForm({ ...branchForm, phone: e.target.value })}
                     placeholder="09-12345678"
-                    className="w-full p-2.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-indigo-500 font-medium"
+                    className="w-full p-2.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-gray-900 font-medium"
                   />
                 </div>
                 <div>
@@ -4084,7 +4084,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                     value={branchForm.manager_name}
                     onChange={(e) => setBranchForm({ ...branchForm, manager_name: e.target.value })}
                     placeholder="e.g. U Zaw Zaw"
-                    className="w-full p-2.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-indigo-500 font-medium"
+                    className="w-full p-2.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-gray-900 font-medium"
                   />
                 </div>
               </div>
@@ -4101,7 +4101,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs font-semibold rounded-lg transition-colors shadow-sm flex items-center gap-1.5"
+                  className="px-4 py-2 bg-black hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs font-semibold rounded-lg transition-colors shadow-sm flex items-center gap-1.5"
                 >
                   {isSubmitting ? (
                     <>
@@ -4127,7 +4127,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
           <div className="bg-white rounded-2xl shadow-premium-xl border border-slate-100 max-w-lg w-full max-h-[85vh] flex flex-col overflow-hidden animate-scale-in">
             <div className="p-4 sm:p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
               <div className="flex items-center space-x-2.5">
-                <div className="p-2 bg-indigo-600 rounded-xl text-white shadow-xs">
+                <div className="p-2 bg-black rounded-xl text-white shadow-xs">
                   <Database className="w-5 h-5" />
                 </div>
                 <div>
@@ -4144,14 +4144,14 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
             </div>
 
             <div className="p-4 sm:p-5 overflow-y-auto space-y-4 text-xs">
-              <div className="p-3 bg-indigo-50/80 border border-indigo-100 rounded-xl space-y-1.5 text-indigo-950">
-                <p className="font-bold text-xs flex items-center gap-1.5 text-indigo-900">
-                  <Shield className="w-4 h-4 text-indigo-600 shrink-0" />
+              <div className="p-3 bg-gray-50/80 border border-gray-100 rounded-xl space-y-1.5 text-gray-900">
+                <p className="font-bold text-xs flex items-center gap-1.5 text-gray-900">
+                  <Shield className="w-4 h-4 text-gray-900 shrink-0" />
                   <span>How to apply to Supabase:</span>
                 </p>
-                <ol className="list-decimal list-inside space-y-1 text-[11px] text-indigo-900 font-medium leading-relaxed pl-1">
+                <ol className="list-decimal list-inside space-y-1 text-[11px] text-gray-900 font-medium leading-relaxed pl-1">
                   <li>Tap <strong>1-Tap Copy SQL</strong> or <strong>Download SQL File</strong> below.</li>
-                  <li>Open your <strong>Supabase Dashboard</strong> in browser: <a href="https://supabase.com/dashboard" target="_blank" rel="noreferrer" className="underline font-bold text-indigo-700">supabase.com/dashboard</a></li>
+                  <li>Open your <strong>Supabase Dashboard</strong> in browser: <a href="https://supabase.com/dashboard" target="_blank" rel="noreferrer" className="underline font-bold text-gray-900">supabase.com/dashboard</a></li>
                   <li>Navigate to your project &apos;s <strong>SQL Editor</strong> tab (left sidebar icon with `&gt;_`).</li>
                   <li>Paste this SQL code and tap <strong>Run</strong> (or press Ctrl/Cmd+Enter).</li>
                 </ol>
@@ -4164,8 +4164,8 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                     onClick={handleCopySql}
                     className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 shadow-2xs ${
                       copiedSql
-                        ? 'bg-emerald-600 text-white'
-                        : 'bg-indigo-600 hover:bg-indigo-700 text-white'
+                        ? 'bg-black text-white'
+                        : 'bg-black hover:bg-gray-800 text-white'
                     }`}
                   >
                     {copiedSql ? <CheckCircle className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
@@ -4216,7 +4216,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
           <div className="bg-white rounded-2xl shadow-premium-xl border border-slate-100 max-w-xl w-full max-h-[92vh] flex flex-col overflow-hidden animate-scale-in">
             <div className="p-5 border-b border-slate-200 flex justify-between items-center bg-slate-50/80">
               <h3 className="font-extrabold text-slate-900 flex items-center space-x-2 text-sm sm:text-base">
-                <Wallet className="w-5 h-5 text-emerald-600" />
+                <Wallet className="w-5 h-5 text-gray-900" />
                 <span>{editingCashFlow ? 'Edit Cash Flow Entry' : 'Record Cash Flow Entry'}</span>
               </h3>
               <button
@@ -4236,8 +4236,8 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                   </div>
                 )}
                 {cfFormSuccess && (
-                  <div className="p-3 bg-emerald-50 border border-emerald-100 rounded-xl text-xs text-emerald-700 flex items-start space-x-1.5">
-                    <CheckCircle className="w-4 h-4 shrink-0 mt-0.5 text-emerald-500" />
+                  <div className="p-3 bg-gray-50 border border-gray-100 rounded-xl text-xs text-gray-900 flex items-start space-x-1.5">
+                    <CheckCircle className="w-4 h-4 shrink-0 mt-0.5 text-gray-500" />
                     <span>{cfFormSuccess}</span>
                   </div>
                 )}
@@ -4251,7 +4251,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                       onClick={() => setCfForm(prev => ({ ...prev, type: 'income' }))}
                       className={`py-2.5 rounded-xl border-2 font-bold text-sm flex items-center justify-center gap-2 transition-all cursor-pointer ${
                         cfForm.type === 'income'
-                          ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
+                          ? 'border-gray-900 bg-gray-50 text-gray-900'
                           : 'border-slate-200 bg-white text-slate-400 hover:border-slate-300'
                       }`}
                     >
@@ -4282,7 +4282,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                       value={cfForm.title}
                       onChange={(e) => setCfForm({ ...cfForm, title: e.target.value })}
                       placeholder={cfForm.type === 'income' ? 'e.g. Shop rental income' : 'e.g. Monthly electricity bill'}
-                      className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500 font-medium"
+                      className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-gray-900 font-medium"
                     />
                   </div>
 
@@ -4297,7 +4297,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                       onChange={(e) => setCfForm({ ...cfForm, amount: e.target.value })}
                       placeholder="0"
                       className={`w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none font-bold font-mono ${
-                        cfForm.type === 'income' ? 'text-emerald-700 focus:border-emerald-500' : 'text-red-700 focus:border-red-500'
+                        cfForm.type === 'income' ? 'text-gray-900 focus:border-gray-900' : 'text-red-700 focus:border-red-500'
                       }`}
                     />
                   </div>
@@ -4308,7 +4308,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                       type="datetime-local"
                       value={cfForm.date}
                       onChange={(e) => setCfForm({ ...cfForm, date: e.target.value })}
-                      className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500 font-mono text-[11px]"
+                      className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-gray-900 font-mono text-[11px]"
                     />
                   </div>
 
@@ -4321,7 +4321,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                       value={cfForm.category}
                       onChange={(e) => setCfForm({ ...cfForm, category: e.target.value })}
                       placeholder="Select or type a category..."
-                      className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500 font-medium"
+                      className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-gray-900 font-medium"
                     />
                     <datalist id="cf-category-options">
                       {(cfForm.type === 'income' ? INCOME_CATEGORIES : EXPENSE_CATEGORIES).map(cat => (
@@ -4340,7 +4340,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                           onClick={() => setCfForm(prev => ({ ...prev, payment_method: method }))}
                           className={`py-2 rounded-lg border text-[9px] font-bold uppercase transition-all cursor-pointer ${
                             cfForm.payment_method === method
-                              ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
+                              ? 'border-gray-900 bg-gray-50 text-gray-900'
                               : 'border-slate-200 bg-white text-slate-400 hover:border-slate-300'
                           }`}
                         >
@@ -4355,7 +4355,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                     <select
                       value={cfForm.branch_id}
                       onChange={(e) => setCfForm({ ...cfForm, branch_id: e.target.value })}
-                      className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500 font-medium"
+                      className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-gray-900 font-medium"
                     >
                       <option value="">All / Head Office</option>
                       {branches.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
@@ -4369,7 +4369,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                       value={cfForm.notes}
                       onChange={(e) => setCfForm({ ...cfForm, notes: e.target.value })}
                       placeholder="Optional reference, receipt number, or extra detail..."
-                      className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500 font-medium resize-none"
+                      className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-gray-900 font-medium resize-none"
                     />
                   </div>
                 </div>
@@ -4387,7 +4387,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                 <button
                   type="submit"
                   disabled={isCfSubmitting}
-                  className="px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white font-bold rounded-xl shadow-lg shadow-emerald-600/20 transition-all disabled:opacity-50 cursor-pointer flex items-center gap-1.5"
+                  className="px-5 py-2.5 bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-800 hover:to-gray-800 text-white font-bold rounded-xl shadow-lg shadow-black/20 transition-all disabled:opacity-50 cursor-pointer flex items-center gap-1.5"
                 >
                   {isCfSubmitting ? (
                     <span>Saving...</span>
@@ -4460,7 +4460,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
             {/* Modal Header */}
             <div className="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50/80">
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 rounded-full bg-indigo-100 text-indigo-700 font-extrabold flex items-center justify-center text-sm">
+                <div className="w-10 h-10 rounded-full bg-gray-100 text-gray-900 font-extrabold flex items-center justify-center text-sm">
                   {selectedCashierForHistory.cashier.name ? selectedCashierForHistory.cashier.name.split(' ').map(n => n[0]).join('').slice(0, 2) : 'C'}
                 </div>
                 <div>
@@ -4491,13 +4491,13 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                   <div key={sale.id} className="p-4 bg-white rounded-xl border border-slate-200/80 shadow-2xs space-y-2.5">
                     <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-2.5">
                       <div className="flex items-center gap-2">
-                        <span className="font-mono font-bold text-xs text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-100">
+                        <span className="font-mono font-bold text-xs text-gray-900 bg-gray-50 px-2 py-0.5 rounded border border-gray-100">
                           {sale.id}
                         </span>
                         <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded border ${
-                          sale.payment_method === 'cash' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
-                          sale.payment_method === 'card' ? 'bg-blue-50 text-blue-700 border-blue-200' :
-                          'bg-purple-50 text-purple-700 border-purple-200'
+                          sale.payment_method === 'cash' ? 'bg-gray-50 text-gray-900 border-gray-200' :
+                          sale.payment_method === 'card' ? 'bg-gray-50 text-gray-900 border-gray-200' :
+                          'bg-gray-50 text-gray-900 border-gray-200'
                         }`}>
                           {sale.payment_method}
                         </span>
@@ -4571,11 +4571,11 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
               key={tab}
               onClick={() => handleTabSwitch(tab)}
               className={`flex-1 flex flex-col items-center justify-center gap-1 cursor-pointer nav-item-tap relative ${
-                activeTab === tab ? 'text-indigo-600' : 'text-slate-500'
+                activeTab === tab ? 'text-gray-900' : 'text-slate-500'
               }`}
             >
               {activeTab === tab && (
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-12 h-0.5 bg-indigo-600 rounded-full" />
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-12 h-0.5 bg-black rounded-full" />
               )}
               {tab === 'overview' && <TrendingUp className="w-5 h-5" />}
               {tab === 'products' && <Package className="w-5 h-5" />}
@@ -4590,11 +4590,11 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
           <button
             onClick={() => setShowMoreMenu(true)}
             className={`flex-1 flex flex-col items-center justify-center gap-1 cursor-pointer nav-item-tap relative ${
-              moreTabs.includes(activeTab as any) ? 'text-indigo-600' : 'text-slate-500'
+              moreTabs.includes(activeTab as any) ? 'text-gray-900' : 'text-slate-500'
             }`}
           >
             {moreTabs.includes(activeTab as any) && (
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-12 h-0.5 bg-indigo-600 rounded-full" />
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-12 h-0.5 bg-black rounded-full" />
             )}
             <Settings className="w-5 h-5" />
             <span className="text-[10px] font-bold">More</span>
@@ -4619,28 +4619,28 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
               <button
                 onClick={() => { handleTabSwitch('staff-performance'); setShowMoreMenu(false); }}
                 className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-bold transition-all cursor-pointer active-scale ${
-                  activeTab === 'staff-performance' ? 'bg-indigo-50 text-indigo-700' : 'text-slate-700 hover:bg-slate-50'
+                  activeTab === 'staff-performance' ? 'bg-gray-50 text-gray-900' : 'text-slate-700 hover:bg-slate-50'
                 }`}
               >
-                <Award className="w-5 h-5 text-indigo-500" />
+                <Award className="w-5 h-5 text-gray-500" />
                 <span>Staff Performance</span>
               </button>
               <button
                 onClick={() => { handleTabSwitch('transactions'); setShowMoreMenu(false); }}
                 className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-bold transition-all cursor-pointer active-scale ${
-                  activeTab === 'transactions' ? 'bg-indigo-50 text-indigo-700' : 'text-slate-700 hover:bg-slate-50'
+                  activeTab === 'transactions' ? 'bg-gray-50 text-gray-900' : 'text-slate-700 hover:bg-slate-50'
                 }`}
               >
-                <Clipboard className="w-5 h-5 text-indigo-500" />
+                <Clipboard className="w-5 h-5 text-gray-500" />
                 <span>Audit Logs & History</span>
               </button>
               <button
                 onClick={() => { handleTabSwitch('settings'); setShowMoreMenu(false); }}
                 className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-bold transition-all cursor-pointer active-scale ${
-                  activeTab === 'settings' ? 'bg-indigo-50 text-indigo-700' : 'text-slate-700 hover:bg-slate-50'
+                  activeTab === 'settings' ? 'bg-gray-50 text-gray-900' : 'text-slate-700 hover:bg-slate-50'
                 }`}
               >
-                <Store className="w-5 h-5 text-indigo-500" />
+                <Store className="w-5 h-5 text-gray-500" />
                 <span>Business & Branding</span>
               </button>
 
@@ -4650,14 +4650,14 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                 onClick={() => { setShowSqlModal(true); setShowMoreMenu(false); }}
                 className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-bold text-slate-700 hover:bg-slate-50 transition-all cursor-pointer active-scale"
               >
-                <Database className="w-5 h-5 text-emerald-500" />
+                <Database className="w-5 h-5 text-gray-500" />
                 <span>Supabase SQL Setup</span>
               </button>
               <button
                 onClick={() => { setShowCsvModal(true); setShowMoreMenu(false); }}
                 className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-bold text-slate-700 hover:bg-slate-50 transition-all cursor-pointer active-scale"
               >
-                <FileSpreadsheet className="w-5 h-5 text-amber-500" />
+                <FileSpreadsheet className="w-5 h-5 text-gray-500" />
                 <span>Import Products CSV</span>
               </button>
 

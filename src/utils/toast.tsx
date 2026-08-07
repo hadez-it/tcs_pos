@@ -33,17 +33,17 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   };
 
   const iconMap: Record<ToastType, ReactNode> = {
-    success: <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0" />,
+    success: <CheckCircle className="w-4 h-4 text-gray-500 shrink-0" />,
     error: <AlertCircle className="w-4 h-4 text-red-500 shrink-0" />,
-    warning: <AlertCircle className="w-4 h-4 text-amber-500 shrink-0" />,
-    info: <Info className="w-4 h-4 text-blue-500 shrink-0" />,
+    warning: <AlertCircle className="w-4 h-4 text-gray-500 shrink-0" />,
+    info: <Info className="w-4 h-4 text-gray-500 shrink-0" />,
   };
 
   const styleMap: Record<ToastType, string> = {
-    success: 'bg-emerald-50/95 border-emerald-200/80 text-emerald-800 shadow-lg shadow-emerald-500/10',
+    success: 'bg-gray-50/95 border-gray-200/80 text-gray-900 shadow-lg shadow-black/10',
     error: 'bg-red-50/95 border-red-200/80 text-red-800 shadow-lg shadow-red-500/10',
-    warning: 'bg-amber-50/95 border-amber-200/80 text-amber-800 shadow-lg shadow-amber-500/10',
-    info: 'bg-blue-50/95 border-blue-200/80 text-blue-800 shadow-lg shadow-blue-500/10',
+    warning: 'bg-gray-50/95 border-gray-200/80 text-gray-900 shadow-lg shadow-black/10',
+    info: 'bg-gray-50/95 border-gray-200/80 text-gray-900 shadow-lg shadow-black/10',
   };
 
   return (

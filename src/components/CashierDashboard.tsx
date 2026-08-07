@@ -255,13 +255,13 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
       <header className="bg-white border-b border-slate-200/80 shrink-0 safe-area-top z-30">
         <div className="flex items-center justify-between px-4 h-14">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-gradient-to-br from-indigo-500 to-violet-500 rounded-xl flex items-center justify-center font-black text-lg text-white shadow-md shadow-indigo-500/20">
+            <div className="w-9 h-9 bg-gradient-to-br from-gray-700 to-gray-700 rounded-xl flex items-center justify-center font-black text-lg text-white shadow-md shadow-black/20">
               M
             </div>
             <div>
               <h1 className="text-sm font-bold text-slate-900 tracking-tight">Mibayate POS</h1>
               <p className="text-[10px] text-slate-500 font-semibold flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse-soft inline-block" />
+                <span className="w-1.5 h-1.5 rounded-full bg-black animate-pulse-soft inline-block" />
                 {user.branch_name || 'Main Store'}
               </p>
             </div>
@@ -269,7 +269,7 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
           <div className="flex items-center gap-2">
             <button 
               onClick={() => { loadProducts(); }} 
-              className="p-2.5 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all cursor-pointer active-scale"
+              className="p-2.5 text-slate-500 hover:text-gray-900 hover:bg-gray-50 rounded-xl transition-all cursor-pointer active-scale"
             >
               <RefreshCw className={`w-4.5 h-4.5 ${isLoading ? 'animate-spin' : ''}`} />
             </button>
@@ -290,7 +290,7 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
                   placeholder="Search products..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-2xl text-sm font-medium text-slate-900 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 transition-all shadow-sm"
+                  className="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-2xl text-sm font-medium text-slate-900 focus:outline-none focus:border-gray-900 focus:ring-2 focus:ring-black/10 transition-all shadow-sm"
                 />
               </div>
               {/* Category Chips - horizontal scroll */}
@@ -318,7 +318,7 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
             <div className="flex-1 overflow-y-auto android-scroll px-3 min-h-0">
               {isLoading ? (
                 <div className="flex flex-col items-center justify-center h-full">
-                  <div className="w-8 h-8 border-[3px] border-indigo-600/20 border-t-indigo-600 rounded-full animate-spin" />
+                  <div className="w-8 h-8 border-[3px] border-gray-900/20 border-t-indigo-600 rounded-full animate-spin" />
                   <span className="text-slate-400 text-xs font-semibold mt-3">Loading inventory...</span>
                 </div>
               ) : filteredProducts.length === 0 ? (
@@ -346,7 +346,7 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
                       >
                         {/* Cart count badge */}
                         {inCartCount > 0 && (
-                          <div className="absolute top-2 right-2 bg-gradient-to-br from-indigo-500 to-violet-500 text-white font-black text-[10px] w-5.5 h-5.5 rounded-full flex items-center justify-center border-2 border-white shadow-md animate-scale-in z-10">
+                          <div className="absolute top-2 right-2 bg-gradient-to-br from-gray-700 to-gray-700 text-white font-black text-[10px] w-5.5 h-5.5 rounded-full flex items-center justify-center border-2 border-white shadow-md animate-scale-in z-10">
                             {inCartCount}
                           </div>
                         )}
@@ -359,7 +359,7 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
                         <div className="flex items-end justify-between mt-3 pt-2.5 border-t border-slate-100">
                           <span className="font-extrabold text-slate-900 text-sm font-mono">{formatCurrency(prod.price)}</span>
                           <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                            isOutOfStock ? 'bg-red-100 text-red-700' : isLowStock ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-slate-600'
+                            isOutOfStock ? 'bg-red-100 text-red-700' : isLowStock ? 'bg-gray-100 text-gray-900' : 'bg-slate-100 text-slate-600'
                           }`}>
                             {isOutOfStock ? 'Sold Out' : `${prod.stock} left`}
                           </span>
@@ -378,7 +378,7 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2">
-                    <History className="w-4 h-4 text-indigo-600" />
+                    <History className="w-4 h-4 text-gray-900" />
                     Sales History
                   </h3>
                   <p className="text-[11px] text-slate-400">Your processed receipts</p>
@@ -391,14 +391,14 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
 
               {isHistoryLoading ? (
                 <div className="flex flex-col items-center justify-center py-16">
-                  <div className="w-8 h-8 border-[3px] border-indigo-600/20 border-t-indigo-600 rounded-full animate-spin" />
+                  <div className="w-8 h-8 border-[3px] border-gray-900/20 border-t-indigo-600 rounded-full animate-spin" />
                   <span className="text-slate-400 text-xs mt-3">Loading...</span>
                 </div>
               ) : salesHistory.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-16 text-slate-400">
                   <FileText className="w-12 h-12 text-slate-200 mb-3" />
                   <p className="text-sm font-semibold">No sales yet</p>
-                  <button onClick={() => setActiveTab('pos')} className="mt-4 px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white rounded-xl text-xs font-bold transition-all shadow-lg shadow-indigo-600/20 cursor-pointer active-scale">
+                  <button onClick={() => setActiveTab('pos')} className="mt-4 px-5 py-2.5 bg-gradient-to-r from-gray-700 to-gray-800 text-white rounded-xl text-xs font-bold transition-all shadow-lg shadow-black/20 cursor-pointer active-scale">
                     Start Selling
                   </button>
                 </div>
@@ -436,7 +436,7 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
                             </>
                           )}
                         </button>
-                        <button onClick={() => { setCompletedSale(sale); setShowReceipt(true); }} className="inline-flex items-center gap-1 px-3 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold rounded-xl text-[11px] transition-all cursor-pointer active-scale">
+                        <button onClick={() => { setCompletedSale(sale); setShowReceipt(true); }} className="inline-flex items-center gap-1 px-3 py-2 bg-gray-50 hover:bg-gray-100 text-gray-900 font-bold rounded-xl text-[11px] transition-all cursor-pointer active-scale">
                           <Printer className="w-3 h-3" />
                           Receipt
                         </button>
@@ -455,13 +455,13 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
         <div className="shrink-0 px-3 pb-3 pt-1 safe-area-bottom bg-gradient-to-t from-slate-50 via-slate-50 to-transparent">
           <button
             onClick={() => setShowCartModal(true)}
-            className="w-full flex items-center justify-between bg-gradient-to-r from-indigo-600 to-indigo-700 active:from-indigo-800 active:to-indigo-900 text-white font-bold px-5 py-3.5 rounded-2xl shadow-lg shadow-indigo-600/30 transition-all cursor-pointer active-scale"
+            className="w-full flex items-center justify-between bg-gradient-to-r from-gray-700 to-gray-800 active:from-gray-800 active:to-gray-950 text-white font-bold px-5 py-3.5 rounded-2xl shadow-lg shadow-black/30 transition-all cursor-pointer active-scale"
           >
             <div className="flex items-center gap-3">
               <div className="relative">
                 <ShoppingCart className="w-5 h-5" />
                 {cartCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-red-500 text-white font-bold text-[9px] w-4.5 h-4.5 rounded-full flex items-center justify-center border-2 border-indigo-600 shadow-sm">
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white font-bold text-[9px] w-4.5 h-4.5 rounded-full flex items-center justify-center border-2 border-gray-900 shadow-sm">
                     {cartCount}
                   </span>
                 )}
@@ -482,11 +482,11 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
           <button
             onClick={() => handleTabSwitch('pos')}
             className={`flex-1 flex flex-col items-center justify-center gap-1 cursor-pointer nav-item-tap relative ${
-              activeTab === 'pos' ? 'text-indigo-600' : 'text-slate-500'
+              activeTab === 'pos' ? 'text-gray-900' : 'text-slate-500'
             }`}
           >
             {activeTab === 'pos' && (
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-16 h-0.5 bg-indigo-600 rounded-full" />
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-16 h-0.5 bg-black rounded-full" />
             )}
             <ShoppingCart className="w-5 h-5" />
             <span className="text-[10px] font-bold">Terminal</span>
@@ -494,11 +494,11 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
           <button
             onClick={() => handleTabSwitch('history')}
             className={`flex-1 flex flex-col items-center justify-center gap-1 cursor-pointer nav-item-tap relative ${
-              activeTab === 'history' ? 'text-indigo-600' : 'text-slate-500'
+              activeTab === 'history' ? 'text-gray-900' : 'text-slate-500'
             }`}
           >
             {activeTab === 'history' && (
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-16 h-0.5 bg-indigo-600 rounded-full" />
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-16 h-0.5 bg-black rounded-full" />
             )}
             <History className="w-5 h-5" />
             <span className="text-[10px] font-bold">History</span>
@@ -527,7 +527,7 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
             {/* Cart Header */}
             <div className="px-4 pb-3 flex items-center justify-between border-b border-slate-100">
               <div className="flex items-center gap-2.5">
-                <ShoppingCart className="w-5 h-5 text-indigo-600" />
+                <ShoppingCart className="w-5 h-5 text-gray-900" />
                 <div>
                   <h4 className="font-bold text-sm text-slate-900">Active Cart</h4>
                   <p className="text-[10px] text-slate-500">{cartCount} items</p>
@@ -540,7 +540,7 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
                   </button>
                 )}
                 {heldCarts.length > 0 && (
-                  <button onClick={() => { setShowCartModal(false); setShowHeldCartsModal(true); }} className="text-[11px] bg-amber-500 hover:bg-amber-600 text-white px-3 py-1.5 rounded-xl font-bold transition-all cursor-pointer active-scale">
+                  <button onClick={() => { setShowCartModal(false); setShowHeldCartsModal(true); }} className="text-[11px] bg-black hover:bg-gray-800 text-white px-3 py-1.5 rounded-xl font-bold transition-all cursor-pointer active-scale">
                     Hold ({heldCarts.length})
                   </button>
                 )}
@@ -632,7 +632,7 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
                     )}
                     <div className="flex justify-between items-center font-bold text-slate-900 pt-2">
                       <span className="text-sm">Total Due</span>
-                      <span className="font-mono text-indigo-600 text-lg">{formatCurrency(totalDue)}</span>
+                      <span className="font-mono text-gray-900 text-lg">{formatCurrency(totalDue)}</span>
                     </div>
                   </div>
 
@@ -646,7 +646,7 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
                           type="button"
                           onClick={() => { setPaymentMethod(method); setCashReceived(''); }}
                           className={`py-3 flex flex-col items-center justify-center rounded-xl transition-all text-xs font-bold cursor-pointer active-scale ${
-                            paymentMethod === method ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-600 hover:text-slate-800'
+                            paymentMethod === method ? 'bg-white text-gray-900 shadow-sm' : 'text-slate-600 hover:text-slate-800'
                           }`}
                         >
                           {method === 'cash' ? <DollarSign className="w-5 h-5 mb-1" /> : method === 'card' ? <CreditCard className="w-5 h-5 mb-1" /> : <Smartphone className="w-5 h-5 mb-1" />}
@@ -675,8 +675,8 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
                       </div>
                       {parseFloat(cashReceived) >= totalDue && (
                         <div className="flex justify-between items-center text-xs font-bold pt-2 border-t border-slate-200/60">
-                          <span className="text-emerald-700">Change</span>
-                          <span className="font-mono text-emerald-700 text-sm">{formatCurrency(parseFloat(cashReceived) - totalDue)}</span>
+                          <span className="text-gray-900">Change</span>
+                          <span className="font-mono text-gray-900 text-sm">{formatCurrency(parseFloat(cashReceived) - totalDue)}</span>
                         </div>
                       )}
                     </div>
@@ -687,7 +687,7 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
 
             {/* Checkout Button */}
             <div className="p-4 border-t border-slate-100 safe-area-bottom bg-white">
-              <button onClick={handleCheckout} disabled={cart.length === 0 || isCheckingOut} className="w-full flex items-center justify-center gap-2.5 py-3.5 px-6 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 disabled:from-slate-300 disabled:to-slate-300 text-white rounded-2xl font-bold text-sm uppercase tracking-wider shadow-lg shadow-indigo-600/25 transition-all disabled:shadow-none disabled:cursor-not-allowed cursor-pointer active-scale">
+              <button onClick={handleCheckout} disabled={cart.length === 0 || isCheckingOut} className="w-full flex items-center justify-center gap-2.5 py-3.5 px-6 bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-800 hover:to-gray-800 disabled:from-slate-300 disabled:to-slate-300 text-white rounded-2xl font-bold text-sm uppercase tracking-wider shadow-lg shadow-black/25 transition-all disabled:shadow-none disabled:cursor-not-allowed cursor-pointer active-scale">
                 {isCheckingOut ? (
                   <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                 ) : (
@@ -711,7 +711,7 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
             </div>
             <div className="px-4 pb-3 flex items-center justify-between border-b border-slate-100">
               <h4 className="font-bold text-sm text-slate-900 flex items-center gap-2">
-                <ShoppingCart className="w-4 h-4 text-amber-500" />
+                <ShoppingCart className="w-4 h-4 text-gray-500" />
                 Held Carts ({heldCarts.length})
               </h4>
               <button onClick={() => setShowHeldCartsModal(false)} className="p-2 text-slate-400 hover:text-slate-600 rounded-xl cursor-pointer">
@@ -738,7 +738,7 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
                         <span className="font-mono text-sm font-bold text-slate-900">{formatCurrency(heldTotal)}</span>
                         <div className="flex items-center gap-2">
                           <button onClick={() => setHeldCarts(prev => prev.filter(c => c.id !== held.id))} className="text-[11px] text-red-500 hover:text-red-700 font-bold px-3 py-1.5 rounded-xl hover:bg-red-50 cursor-pointer active-scale">Discard</button>
-                          <button onClick={() => handleRecallCart(held)} className="text-[11px] bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white px-3.5 py-1.5 rounded-xl font-bold transition-all cursor-pointer active-scale">Recall</button>
+                          <button onClick={() => handleRecallCart(held)} className="text-[11px] bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-800 hover:to-gray-800 text-white px-3.5 py-1.5 rounded-xl font-bold transition-all cursor-pointer active-scale">Recall</button>
                         </div>
                       </div>
                     </div>
@@ -757,9 +757,9 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
             <div className="pt-3 pb-2">
               <div className="pull-indicator" />
             </div>
-            <div className="bg-gradient-to-r from-indigo-600 to-violet-600 text-white px-5 py-3 flex justify-between items-center">
+            <div className="bg-gradient-to-r from-gray-700 to-gray-700 text-white px-5 py-3 flex justify-between items-center">
               <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-indigo-200" />
+                <Sparkles className="w-4 h-4 text-gray-300" />
                 <span className="font-bold text-sm">Sale Complete!</span>
               </div>
               <button onClick={() => { setShowReceipt(false); setCompletedSale(null); }} className="text-white/70 hover:text-white cursor-pointer p-1">
@@ -772,7 +772,7 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
                   {businessProfile.logo_url ? (
                     <img src={businessProfile.logo_url} alt="Logo" className="w-14 h-14 object-contain mx-auto rounded-xl mb-1" />
                   ) : (
-                    <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-violet-500 text-white font-black text-xl rounded-2xl flex items-center justify-center mx-auto shadow-lg shadow-indigo-500/20 mb-1">
+                    <div className="w-12 h-12 bg-gradient-to-br from-gray-700 to-gray-700 text-white font-black text-xl rounded-2xl flex items-center justify-center mx-auto shadow-lg shadow-black/20 mb-1">
                       {businessProfile.name ? businessProfile.name.charAt(0).toUpperCase() : 'M'}
                     </div>
                   )}
@@ -780,7 +780,7 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
                     {businessProfile.name || 'RETAIL SHOP'}
                   </h4>
                   {businessProfile.tagline && <p className="text-[10px] font-sans font-medium text-slate-500">{businessProfile.tagline}</p>}
-                  <p className="text-[11px] font-bold text-indigo-700 bg-indigo-50/80 px-2.5 py-0.5 rounded-lg border border-indigo-100 inline-block">
+                  <p className="text-[11px] font-bold text-gray-900 bg-gray-50/80 px-2.5 py-0.5 rounded-lg border border-gray-100 inline-block">
                     {completedSale.branch_name || user.branch_name || 'Main Store'}
                   </p>
                 </div>
@@ -825,7 +825,7 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
                   )}
                   <div className="flex justify-between font-black text-slate-900 text-sm border-t border-dotted border-slate-300 pt-2">
                     <span>TOTAL</span>
-                    <span className="font-mono text-indigo-700">{formatCurrency(completedSale.total_amount)}</span>
+                    <span className="font-mono text-gray-900">{formatCurrency(completedSale.total_amount)}</span>
                   </div>
                 </div>
 
@@ -848,7 +848,7 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
                 <Printer className="w-4 h-4" />
                 Print
               </button>
-              <button type="button" onClick={() => { setShowReceipt(false); setCompletedSale(null); }} className="flex-1 inline-flex items-center justify-center gap-2 py-3 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white rounded-2xl font-bold text-sm transition-all shadow-lg shadow-indigo-600/20 cursor-pointer active-scale">
+              <button type="button" onClick={() => { setShowReceipt(false); setCompletedSale(null); }} className="flex-1 inline-flex items-center justify-center gap-2 py-3 bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-800 hover:to-gray-800 text-white rounded-2xl font-bold text-sm transition-all shadow-lg shadow-black/20 cursor-pointer active-scale">
                 <Check className="w-4 h-4" />
                 New Sale
               </button>
