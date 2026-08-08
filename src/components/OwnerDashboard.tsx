@@ -3389,31 +3389,67 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                           />
                         </div>
 
-                        {/* Preset Sample Logos */}
+                        {/* Preset Sample Vector Logos (Monochrome Black & White) */}
                         <div className="pt-2">
                           <label className="block text-[11px] font-bold text-slate-600 mb-2">
-                            Quick Sample Vector Logos:
+                            Quick Sample Vector Logos (Black & White Theme):
                           </label>
-                          <div className="grid grid-cols-4 gap-2">
+                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                             {[
-                              { label: 'Shop Blue', icon: '🛍️', bg: 'bg-black' },
-                              { label: 'Cart Emerald', icon: '🛒', bg: 'bg-black' },
-                              { label: 'Mart Amber', icon: '🏪', bg: 'bg-black' },
-                              { label: 'Store Purple', icon: '✨', bg: 'bg-black' }
-                            ].map((preset, idx) => {
-                              const svgData = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="%234F46E5"/><text x="50" y="60" font-size="45" text-anchor="middle" fill="white">${preset.icon}</text></svg>`;
-                              return (
-                                <button
-                                  key={idx}
-                                  type="button"
-                                  onClick={() => setBusinessForm({ ...businessForm, logo_url: svgData })}
-                                  className="p-2 border border-slate-200 hover:border-gray-900 bg-slate-50 rounded-xl flex flex-col items-center text-center transition-all cursor-pointer group"
-                                >
-                                  <span className="text-xl group-hover:scale-110 transition-transform">{preset.icon}</span>
-                                  <span className="text-[9px] font-bold text-slate-600 mt-1">{preset.label}</span>
-                                </button>
-                              );
-                            })}
+                              {
+                                label: 'Retail Store',
+                                desc: 'Storefront',
+                                svg: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" rx="24" fill="%2309090b"/><path d="M25 40 L50 25 L75 40 V75 H25 Z M35 75 V52 H65 V75" fill="none" stroke="white" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><rect x="42" y="58" width="16" height="17" fill="white" rx="2"/></svg>`
+                              },
+                              {
+                                label: 'Smart Barcode',
+                                desc: 'Scanner POS',
+                                svg: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="96" height="96" x="2" y="2" rx="24" fill="white" stroke="%2309090b" stroke-width="4"/><path d="M25 30 V70 M34 30 V70 M40 30 V70 M52 30 V70 M60 30 V70 M68 30 V70 M75 30 V70" stroke="%2309090b" stroke-width="5" stroke-linecap="round"/><path d="M20 50 H80" stroke="%2309090b" stroke-width="4" stroke-dasharray="4 4"/></svg>`
+                              },
+                              {
+                                label: 'Shopping Bag',
+                                desc: 'Boutique',
+                                svg: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" rx="24" fill="%2309090b"/><path d="M30 40 H70 L75 80 H25 Z" fill="none" stroke="white" stroke-width="6" stroke-linejoin="round"/><path d="M40 40 V30 C40 24.5 44.5 20 50 20 C55.5 20 60 24.5 60 30 V40" fill="none" stroke="white" stroke-width="6" stroke-linecap="round"/></svg>`
+                              },
+                              {
+                                label: 'MB Badge',
+                                desc: 'Minimal Crest',
+                                svg: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="96" height="96" x="2" y="2" rx="24" fill="%2309090b"/><text x="50" y="66" font-family="sans-serif" font-weight="900" font-size="42" text-anchor="middle" fill="white" letter-spacing="-2">MB</text><circle cx="50" cy="50" r="42" fill="none" stroke="white" stroke-width="3" stroke-dasharray="8 6"/></svg>`
+                              },
+                              {
+                                label: 'Price Tag',
+                                desc: 'Discount & Sale',
+                                svg: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="96" height="96" x="2" y="2" rx="24" fill="white" stroke="%2309090b" stroke-width="4"/><path d="M30 55 L55 30 H75 V50 L50 75 Z" fill="%2309090b" stroke="%2309090b" stroke-width="4" stroke-linejoin="round"/><circle cx="65" cy="40" r="4" fill="white"/></svg>`
+                              },
+                              {
+                                label: 'Crown Luxury',
+                                desc: 'Premium Store',
+                                svg: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" rx="24" fill="%2309090b"/><path d="M25 70 L20 35 L38 52 L50 25 L62 52 L80 35 L75 70 Z" fill="white" stroke="white" stroke-width="4" stroke-linejoin="round"/><rect x="25" y="74" width="50" height="6" fill="white" rx="3"/></svg>`
+                              },
+                              {
+                                label: 'Fast Cart',
+                                desc: 'Supermarket',
+                                svg: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="96" height="96" x="2" y="2" rx="24" fill="white" stroke="%2309090b" stroke-width="4"/><path d="M22 30 H32 L42 62 H72 L78 38 H35" fill="none" stroke="%2309090b" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="45" cy="74" r="6" fill="%2309090b"/><circle cx="68" cy="74" r="6" fill="%2309090b"/></svg>`
+                              },
+                              {
+                                label: 'Eco Shop',
+                                desc: 'Organic Mart',
+                                svg: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" rx="24" fill="%2309090b"/><path d="M50 20 C30 20 25 45 50 75 C75 45 70 20 50 20 Z" fill="none" stroke="white" stroke-width="6" stroke-linejoin="round"/><path d="M50 20 V75" stroke="white" stroke-width="4"/></svg>`
+                              }
+                            ].map((preset, idx) => (
+                              <button
+                                key={idx}
+                                type="button"
+                                onClick={() => setBusinessForm({ ...businessForm, logo_url: preset.svg })}
+                                className="p-2 border border-slate-200 hover:border-black bg-white rounded-xl flex items-center gap-2.5 text-left transition-all cursor-pointer group hover:shadow-xs"
+                              >
+                                <img src={preset.svg} alt={preset.label} className="w-9 h-9 rounded-lg object-contain shrink-0 group-hover:scale-105 transition-transform" />
+                                <div className="min-w-0 flex-1">
+                                  <span className="block text-[10px] font-extrabold text-slate-900 truncate leading-tight">{preset.label}</span>
+                                  <span className="block text-[9px] font-medium text-slate-400 truncate">{preset.desc}</span>
+                                </div>
+                              </button>
+                            ))}
                           </div>
                         </div>
                       </div>
