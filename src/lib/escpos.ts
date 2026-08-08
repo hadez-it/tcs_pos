@@ -617,20 +617,22 @@ export function buildThermalLabel(opts: ThermalLabelOptions): Uint8Array {
   }
 
   // ── Paper feed ─────────────────────────────────────────────────────────────
-  // Sticker (self-adhesive) labels: the printer must advance by the FULL label
-  // length + the gap between labels so the next label is positioned at the
-  // print head. Feeding only the "remaining" content height leaves the peel-off
-  // label stuck mid-way and the next print lands on the gap. Label printers
-  // have no auto-cutter, so the cut command is suppressed.
+  // Sticker (self-adhesive) labels: the label's pitch (label height + gap +
+  // offset) is the TOTAL distance the paper must move per label. The content
+  // already advanced `usedDots` as it was printed, so only the difference is
+  // fed here — otherwise every label over-feeds by the content height and the
+  // next print drifts across the label boundary. Label printers have no
+  // auto-cutter, so the cut command is suppressed.
   // Receipt (continuous) paper: feed only enough to clear the content, then
   // optionally cut.
   if (isSticker) {
-    const feedDotsTotal = Math.max(
+    const pitchDots = Math.max(
       Math.round((labelHeightMm + labelGapMm + feedOffsetMm) * DOTS_PER_MM),
       0,
     );
-    const feedLines = Math.floor(feedDotsTotal / FONT_A_LINE_DOTS);
-    const feedRemainder = feedDotsTotal % FONT_A_LINE_DOTS;
+    const remainingDots = Math.max(pitchDots - usedDots, 0);
+    const feedLines = Math.floor(remainingDots / FONT_A_LINE_DOTS);
+    const feedRemainder = remainingDots % FONT_A_LINE_DOTS;
     if (feedLines > 0) cmds.push(feed(feedLines));
     if (feedRemainder > 0) cmds.push(feedDots(feedRemainder));
   } else {
