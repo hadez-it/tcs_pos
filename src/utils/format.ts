@@ -17,3 +17,8 @@ export const formatTime = (dateStr: string): string => {
 export const generateId = (): string => {
   return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 };
+
+export const formatDisplayEmail = (email?: string): string => {
+  if (!email) return '';
+  return email.replace(/@pos\.com$/i, '');
+};

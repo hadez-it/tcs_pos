@@ -12,7 +12,7 @@ import {
 } from 'recharts';
 import { dbService, isSupabaseConfigured, DEFAULT_BUSINESS_PROFILE, formatEmailWithDefaultDomain } from '../lib/supabase';
 import { Product, SaleWithItems, UserProfile, InventoryTransaction, SalesAnalytics, Branch, BusinessProfile, CashFlowEntry, CashFlowType, PaymentMethod } from '../types';
-import { formatCurrency } from '../utils/format';
+import { formatCurrency, formatDisplayEmail } from '../utils/format';
 import { useToast } from '../utils/toast';
 import { useBackDismiss, useBackTabHistory } from '../lib/backNavigation';
 import { SUPABASE_SCHEMA_SQL } from '../data/schemaSql';
@@ -2819,7 +2819,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                             <div className="bg-slate-50 rounded-lg p-3 border border-slate-100 flex flex-col gap-2">
                               <div className="flex justify-between items-center">
                                 <span className="text-[10px] font-bold text-slate-500 uppercase">Username / Email</span>
-                                <span className="font-mono text-slate-700 font-medium text-xs truncate max-w-[180px]">{cashier.email}</span>
+                                <span className="font-mono text-slate-700 font-medium text-xs truncate max-w-[180px]">{formatDisplayEmail(cashier.email)}</span>
                               </div>
                               <div className="flex justify-between items-center">
                                 <span className="text-[10px] font-bold text-slate-500 uppercase">Branch</span>
@@ -2876,7 +2876,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                                   </div>
                                 </td>
                                 <td className="py-3.5 px-4 font-mono text-slate-700 font-medium">
-                                  {cashier.email}
+                                  {formatDisplayEmail(cashier.email)}
                                 </td>
                                 <td className="py-3.5 px-4">
                                   <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 font-bold text-[11px] border border-slate-200">
@@ -3093,7 +3093,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                                       📍 {item.cashier.branch_name || 'Global'}
                                     </span>
                                   </div>
-                                  <p className="text-xs text-slate-500 font-mono mt-0.5 truncate">{item.cashier.email}</p>
+                                  <p className="text-xs text-slate-500 font-mono mt-0.5 truncate">{formatDisplayEmail(item.cashier.email)}</p>
                                 </div>
                               </div>
 
@@ -4241,11 +4241,6 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                     placeholder="e.g. cashier1"
                     className="w-full p-2.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-gray-900 font-medium"
                   />
-                  {!cashierForm.email.includes('@') && cashierForm.email.trim() !== '' && (
-                    <span className="absolute inset-y-0 right-3 flex items-center text-[10px] text-slate-400 font-medium">
-                      @pos.com
-                    </span>
-                  )}
                 </div>
               </div>
 
@@ -4801,7 +4796,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                     Sales History — {selectedCashierForHistory.cashier.name}
                   </h3>
                   <p className="text-xs text-slate-500 font-mono">
-                    {selectedCashierForHistory.cashier.email} • {selectedCashierForHistory.sales.length} Total Receipts Handled
+                    {formatDisplayEmail(selectedCashierForHistory.cashier.email)} • {selectedCashierForHistory.sales.length} Total Receipts Handled
                   </p>
                 </div>
               </div>

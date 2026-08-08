@@ -118,13 +118,8 @@ export default function Auth({ onLoginSuccess }: AuthProps) {
                   autoCapitalize="none"
                   autoCorrect="off"
                   spellCheck={false}
-                  className="android-input w-full pl-11 pr-24 text-[15px] text-slate-900 placeholder-slate-400"
+                  className="android-input w-full pl-11 pr-4 text-[15px] text-slate-900 placeholder-slate-400"
                 />
-                {email.trim() !== '' && !email.includes('@') && (
-                  <span className="absolute inset-y-0 right-4 flex items-center text-[11px] text-slate-400 font-semibold pointer-events-none">
-                    @pos.com
-                  </span>
-                )}
               </div>
             </div>
 
