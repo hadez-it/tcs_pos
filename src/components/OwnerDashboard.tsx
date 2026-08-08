@@ -2779,13 +2779,13 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                   </div>
 
                   {filteredCashiers.length === 0 ? (
-                    <div className="text-center py-16 text-slate-400 text-xs flex flex-col items-center justify-center space-y-3">
-                      <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
+                    <div className="text-center py-16 text-slate-400 text-xs flex flex-col items-center justify-center space-y-3 bg-white rounded-2xl border border-slate-200">
+                      <div className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-400">
                         <Users className="w-6 h-6" />
                       </div>
                       <div>
-                        <p className="font-semibold text-slate-700 text-sm">No Cashiers Found</p>
-                        <p className="text-slate-400 text-xs mt-0.5">No cashier accounts match your search or filter criteria.</p>
+                        <p className="font-semibold text-slate-700 text-sm">No Staff Accounts Found</p>
+                        <p className="text-slate-400 text-xs mt-0.5">Try a different search term or branch filter.</p>
                       </div>
                       <button
                         onClick={openNewCashierModal}
@@ -2796,124 +2796,62 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                       </button>
                     </div>
                   ) : (
-                    <>
-                      {/* Mobile Card View */}
-                      <div className="block sm:hidden divide-y divide-slate-100">
-                        {filteredCashiers.map((cashier) => (
-                          <div key={cashier.id} className="p-4 flex flex-col gap-3 hover:bg-slate-50/60 transition-colors">
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-3">
-                                <div className="w-9 h-9 rounded-full bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-900 font-extrabold text-xs uppercase shrink-0">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                      {filteredCashiers.map((cashier) => (
+                        <div key={cashier.id} className="bg-white rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-all p-5 flex flex-col justify-between space-y-4">
+                          <div className="space-y-3">
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="flex items-center gap-3 min-w-0">
+                                <div className="w-12 h-12 rounded-2xl bg-black text-white font-extrabold text-base flex items-center justify-center uppercase shrink-0 shadow-xs">
                                   {cashier.name ? cashier.name.split(' ').map(n => n[0]).join('').slice(0, 2) : 'C'}
                                 </div>
-                                <div>
-                                  <span className="font-bold text-slate-900 block">{cashier.name}</span>
-                                  <span className="text-[10px] text-slate-400 font-mono">ID: {cashier.id.slice(0, 8)}...</span>
+                                <div className="min-w-0">
+                                  <h4 className="font-extrabold text-slate-900 text-base truncate">{cashier.name}</h4>
+                                  <p className="text-xs text-slate-400 font-mono truncate">{formatDisplayEmail(cashier.email)}</p>
                                 </div>
                               </div>
-                              <span className="px-2 py-0.5 rounded-full bg-gray-50 text-gray-900 font-bold text-[10px] uppercase border border-gray-100">
+                              <span className="px-2.5 py-1 rounded-full bg-slate-100 text-slate-800 font-extrabold text-[10px] uppercase tracking-wider border border-slate-200 shrink-0">
                                 {cashier.role || 'cashier'}
                               </span>
                             </div>
-                            
-                            <div className="bg-slate-50 rounded-lg p-3 border border-slate-100 flex flex-col gap-2">
+
+                            <div className="bg-slate-50 p-3 rounded-xl border border-slate-200/60 space-y-2 text-xs">
                               <div className="flex justify-between items-center">
-                                <span className="text-[10px] font-bold text-slate-500 uppercase">Username / Email</span>
-                                <span className="font-mono text-slate-700 font-medium text-xs truncate max-w-[180px]">{formatDisplayEmail(cashier.email)}</span>
-                              </div>
-                              <div className="flex justify-between items-center">
-                                <span className="text-[10px] font-bold text-slate-500 uppercase">Branch</span>
-                                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white text-slate-700 font-bold text-[11px] border border-slate-200">
-                                  <Building2 className="w-3 h-3 text-gray-500" />
+                                <span className="text-[10px] font-bold text-slate-400 uppercase">Assigned Branch</span>
+                                <span className="inline-flex items-center gap-1 text-slate-800 font-bold text-xs">
+                                  <Building2 className="w-3.5 h-3.5 text-slate-500" />
                                   <span>{cashier.branch_name || 'All Branches'}</span>
                                 </span>
                               </div>
-                            </div>
-                            
-                            <div className="flex items-center justify-end gap-2 pt-1">
-                              <button
-                                onClick={() => startEditCashier(cashier)}
-                                className="flex-1 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer"
-                              >
-                                <Edit2 className="w-3.5 h-3.5 text-slate-600" />
-                                <span>Edit Account</span>
-                              </button>
-                              <button
-                                onClick={() => triggerDeleteCashier(cashier.id, cashier.name)}
-                                className="px-3 py-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg transition-colors font-bold text-xs border border-red-100 cursor-pointer flex items-center justify-center"
-                              >
-                                <Trash2 className="w-3.5 h-3.5" />
-                              </button>
+                              <div className="flex justify-between items-center">
+                                <span className="text-[10px] font-bold text-slate-400 uppercase">Account Status</span>
+                                <span className="inline-flex items-center gap-1 text-gray-900 font-bold text-[11px]">
+                                  <span className="w-2 h-2 rounded-full bg-black animate-pulse-soft" />
+                                  <span>Active</span>
+                                </span>
+                              </div>
                             </div>
                           </div>
-                        ))}
-                      </div>
 
-                      {/* Desktop Table View */}
-                      <div className="hidden sm:block overflow-x-auto">
-                        <table className="w-full text-left border-collapse">
-                          <thead>
-                            <tr className="bg-slate-50/80 text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200">
-                              <th className="py-3 px-4">Cashier Name</th>
-                              <th className="py-3 px-4">Username / Email</th>
-                              <th className="py-3 px-4">Assigned Branch</th>
-                              <th className="py-3 px-4">Role</th>
-                              <th className="py-3 px-4 text-right">Actions</th>
-                            </tr>
-                          </thead>
-                          <tbody className="divide-y divide-slate-100 text-xs">
-                            {filteredCashiers.map((cashier) => (
-                              <tr key={cashier.id} className="hover:bg-slate-50/60 transition-colors">
-                                <td className="py-3.5 px-4">
-                                  <div className="flex items-center gap-3">
-                                    <div className="w-9 h-9 rounded-full bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-900 font-extrabold text-xs uppercase shrink-0">
-                                      {cashier.name ? cashier.name.split(' ').map(n => n[0]).join('').slice(0, 2) : 'C'}
-                                    </div>
-                                    <div>
-                                      <span className="font-bold text-slate-900 block">{cashier.name}</span>
-                                      <span className="text-[10px] text-slate-400 font-mono">ID: {cashier.id.slice(0, 8)}...</span>
-                                    </div>
-                                  </div>
-                                </td>
-                                <td className="py-3.5 px-4 font-mono text-slate-700 font-medium">
-                                  {formatDisplayEmail(cashier.email)}
-                                </td>
-                                <td className="py-3.5 px-4">
-                                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 font-bold text-[11px] border border-slate-200">
-                                    <Building2 className="w-3 h-3 text-gray-500" />
-                                    <span>{cashier.branch_name || 'All Branches'}</span>
-                                  </span>
-                                </td>
-                                <td className="py-3.5 px-4">
-                                  <span className="px-2 py-0.5 rounded-full bg-gray-50 text-gray-900 font-bold text-[10px] uppercase border border-gray-100">
-                                    {cashier.role || 'cashier'}
-                                  </span>
-                                </td>
-                                <td className="py-3.5 px-4 text-right">
-                                  <div className="flex items-center justify-end gap-1.5">
-                                    <button
-                                      onClick={() => startEditCashier(cashier)}
-                                      className="p-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors font-bold text-xs flex items-center gap-1 cursor-pointer"
-                                      title="Edit Cashier Username, Password or Branch"
-                                    >
-                                      <Edit2 className="w-3.5 h-3.5 text-slate-600" />
-                                      <span className="hidden sm:inline">Edit Account</span>
-                                    </button>
-                                    <button
-                                      onClick={() => triggerDeleteCashier(cashier.id, cashier.name)}
-                                      className="p-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg transition-colors font-bold text-xs border border-red-100 cursor-pointer"
-                                      title="Revoke Cashier Account"
-                                    >
-                                      <Trash2 className="w-3.5 h-3.5" />
-                                    </button>
-                                  </div>
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    </>
+                          <div className="pt-2 border-t border-slate-100 flex items-center gap-2">
+                            <button
+                              onClick={() => startEditCashier(cashier)}
+                              className="flex-1 py-2.5 bg-black hover:bg-gray-800 text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
+                            >
+                              <Edit2 className="w-4 h-4" />
+                              <span>Edit Account</span>
+                            </button>
+                            <button
+                              onClick={() => triggerDeleteCashier(cashier.id, cashier.name)}
+                              className="p-2.5 bg-red-50 hover:bg-red-100 text-red-600 rounded-xl transition-all font-bold text-xs cursor-pointer border border-red-100"
+                              title="Revoke Staff Account"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   )}
                 </div>
               </div>
@@ -3050,103 +2988,99 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                   </div>
                 </div>
 
-                {/* Main Cashier List & Sales Performance Table */}
-                <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-                  {cashierPerformanceList.length === 0 ? (
-                    <div className="text-center py-16 text-slate-400 text-xs flex flex-col items-center justify-center space-y-3">
-                      <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
-                        <Award className="w-6 h-6" />
-                      </div>
-                      <div>
-                        <p className="font-semibold text-slate-700 text-sm">No Performance Metrics Recorded</p>
-                        <p className="text-slate-400 text-xs mt-0.5">No registered cashiers or sales activity match the current branch filter.</p>
-                      </div>
+                {/* Minimalist Grid Cards View for Staff Performance */}
+                {cashierPerformanceList.length === 0 ? (
+                  <div className="bg-white rounded-2xl border border-slate-200 text-center py-16 text-slate-400 text-xs flex flex-col items-center justify-center space-y-3">
+                    <div className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-400">
+                      <Award className="w-6 h-6" />
                     </div>
-                  ) : (
-                    <div className="divide-y divide-slate-100">
-                      {cashierPerformanceList.map((item, idx) => {
-                        const percentOfMax = maxCashierRevenue > 0 ? (item.totalRevenue / maxCashierRevenue) * 100 : 0;
-                        const rankLabel = idx === 0 ? '🏆 #1 Top Seller' : idx === 1 ? '🥈 #2 Rank' : idx === 2 ? '🥉 #3 Rank' : `#${idx + 1} Rank`;
-                        const rankBg = idx === 0 
-                          ? 'bg-gray-100 text-gray-900 border-gray-200' 
-                          : idx === 1 
-                            ? 'bg-slate-200 text-slate-800 border-slate-300' 
-                            : idx === 2 
-                              ? 'bg-gray-100 text-gray-900 border-gray-200' 
-                              : 'bg-slate-100 text-slate-600 border-slate-200';
-
-                        return (
-                          <div key={item.cashier.id} className="p-4 sm:p-5 hover:bg-slate-50/60 transition-all space-y-4">
-                            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-                              {/* Left: Avatar & Info */}
-                              <div className="flex items-start sm:items-center space-x-3 min-w-0">
-                                <div className="w-11 h-11 rounded-full bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-900 font-extrabold text-sm uppercase shrink-0 shadow-2xs">
+                    <div>
+                      <p className="font-semibold text-slate-700 text-sm">No Performance Metrics Recorded</p>
+                      <p className="text-slate-400 text-xs mt-0.5">No registered cashiers or sales activity match the current filters.</p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                    {cashierPerformanceList.map((item, idx) => {
+                      const percentOfMax = maxCashierRevenue > 0 ? (item.totalRevenue / maxCashierRevenue) * 100 : 0;
+                      const rankBadge = idx === 0 ? '🏆 #1 Top Seller' : idx === 1 ? '🥈 #2 Rank' : idx === 2 ? '🥉 #3 Rank' : `#${idx + 1} Rank`;
+                      
+                      return (
+                        <div key={item.cashier.id} className="bg-white rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-all p-5 flex flex-col justify-between space-y-4">
+                          <div className="space-y-3">
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="flex items-center gap-3 min-w-0">
+                                <div className="w-12 h-12 rounded-2xl bg-black text-white font-extrabold text-base flex items-center justify-center uppercase shrink-0 shadow-xs">
                                   {item.cashier.name ? item.cashier.name.split(' ').map(n => n[0]).join('').slice(0, 2) : 'C'}
                                 </div>
                                 <div className="min-w-0">
-                                  <div className="flex flex-wrap items-center gap-2">
-                                    <h4 className="font-extrabold text-slate-900 text-sm sm:text-base truncate">{item.cashier.name}</h4>
-                                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${rankBg}`}>
-                                      {rankLabel}
-                                    </span>
-                                    <span className="bg-slate-100 text-slate-700 text-[10px] font-bold px-2 py-0.5 rounded border border-slate-200 shrink-0">
-                                      📍 {item.cashier.branch_name || 'Global'}
-                                    </span>
-                                  </div>
-                                  <p className="text-xs text-slate-500 font-mono mt-0.5 truncate">{formatDisplayEmail(item.cashier.email)}</p>
-                                </div>
-                              </div>
-
-                              {/* Right: Revenue Stats & Actions */}
-                              <div className="flex flex-wrap items-center justify-between lg:justify-end gap-3 pt-2 lg:pt-0 border-t lg:border-0 border-slate-100">
-                                <div className="text-left lg:text-right">
-                                  <span className="text-[10px] uppercase tracking-wider font-bold text-slate-400 block">Total Revenue</span>
-                                  <span className="font-black text-slate-900 text-base sm:text-lg">{formatCurrency(item.totalRevenue)}</span>
-                                  <div className="w-32 bg-slate-100 h-2 rounded-full overflow-hidden mt-1 lg:ml-auto">
-                                    <div className="bg-black h-full rounded-full transition-all duration-500" style={{ width: `${percentOfMax}%` }} />
-                                  </div>
-                                </div>
-
-                                <div className="flex items-center gap-2">
-                                  <button
-                                    onClick={() => setSelectedCashierForHistory({ cashier: item.cashier, sales: item.sales })}
-                                    className="px-3 py-2 bg-gray-50 hover:bg-gray-100 text-gray-900 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer border border-gray-100"
-                                    title="View receipt history for this cashier"
-                                  >
-                                    <Eye className="w-3.5 h-3.5" />
-                                    <span>Sales Receipts ({item.totalTransactions})</span>
-                                  </button>
+                                  <h4 className="font-extrabold text-slate-900 text-base truncate">{item.cashier.name}</h4>
+                                  <p className="text-xs text-slate-400 font-mono truncate">{formatDisplayEmail(item.cashier.email)}</p>
                                 </div>
                               </div>
                             </div>
 
-                            {/* Detailed Performance Metrics Bar */}
-                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-slate-50/80 p-3 rounded-xl border border-slate-200/60 text-xs">
-                              <div>
-                                <span className="text-[10px] text-slate-400 font-semibold block">Total Sales Count</span>
-                                <span className="font-bold text-slate-800">{item.totalTransactions} Transactions</span>
-                              </div>
-                              <div>
-                                <span className="text-[10px] text-slate-400 font-semibold block">Items Sold Volume</span>
-                                <span className="font-bold text-slate-800">{item.totalItemsSold} Units</span>
-                              </div>
-                              <div>
-                                <span className="text-[10px] text-slate-400 font-semibold block">Avg Receipt Value</span>
-                                <span className="font-bold text-slate-800">{formatCurrency(item.avgReceipt)}</span>
-                              </div>
-                              <div>
-                                <span className="text-[10px] text-slate-400 font-semibold block">Last Active Sale</span>
-                                <span className="font-bold text-slate-800 font-mono text-[11px]">
-                                  {item.lastActive ? new Date(item.lastActive).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ' ' + new Date(item.lastActive).toLocaleDateString() : 'No sales recorded'}
-                                </span>
-                              </div>
+                            <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                              <span className="bg-black text-white text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase tracking-wider">
+                                {rankBadge}
+                              </span>
+                              <span className="bg-slate-100 text-slate-700 text-[10px] font-bold px-2.5 py-1 rounded-full border border-slate-200 flex items-center gap-1">
+                                <Building2 className="w-3 h-3 text-slate-500" />
+                                <span>{item.cashier.branch_name || 'All Branches'}</span>
+                              </span>
                             </div>
                           </div>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
+
+                          <div className="space-y-1.5 pt-2 border-t border-slate-100">
+                            <div className="flex justify-between items-center text-xs">
+                              <span className="text-[10px] uppercase font-extrabold text-slate-400 tracking-wider">Revenue Contribution</span>
+                              <span className="font-mono font-bold text-slate-900">{Math.round(percentOfMax)}% of Peak</span>
+                            </div>
+                            <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                              <div className="bg-black h-full rounded-full transition-all duration-500" style={{ width: `${percentOfMax}%` }} />
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-2 bg-slate-50 p-3 rounded-xl border border-slate-200/60 text-xs">
+                            <div>
+                              <span className="text-[9px] uppercase font-bold text-slate-400 block">Total Revenue</span>
+                              <span className="font-black text-slate-900 text-sm font-mono">{formatCurrency(item.totalRevenue)}</span>
+                            </div>
+                            <div>
+                              <span className="text-[9px] uppercase font-bold text-slate-400 block">Receipts</span>
+                              <span className="font-bold text-slate-800 text-sm">{item.totalTransactions} Orders</span>
+                            </div>
+                            <div>
+                              <span className="text-[9px] uppercase font-bold text-slate-400 block">Avg Receipt</span>
+                              <span className="font-bold text-slate-800 text-xs font-mono">{formatCurrency(item.avgReceipt)}</span>
+                            </div>
+                            <div>
+                              <span className="text-[9px] uppercase font-bold text-slate-400 block">Units Sold</span>
+                              <span className="font-bold text-slate-800 text-xs">{item.totalItemsSold} Items</span>
+                            </div>
+                          </div>
+
+                          <div className="pt-2 border-t border-slate-100 flex items-center gap-2">
+                            <button
+                              onClick={() => setSelectedCashierForHistory({ cashier: item.cashier, sales: item.sales })}
+                              className="flex-1 py-2.5 bg-black hover:bg-gray-800 text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
+                            >
+                              <Eye className="w-4 h-4" />
+                              <span>View Receipts ({item.totalTransactions})</span>
+                            </button>
+                            <button
+                              onClick={() => startEditCashier(item.cashier)}
+                              className="p-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition-all font-bold text-xs cursor-pointer border border-slate-200"
+                              title="Edit Staff Account"
+                            >
+                              <Edit2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             )}
 
