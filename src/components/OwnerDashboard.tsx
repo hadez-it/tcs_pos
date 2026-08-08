@@ -44,6 +44,10 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isTabChanging, setIsTabChanging] = useState(false);
 
+  const [perfStartDate, setPerfStartDate] = useState('');
+  const [perfEndDate, setPerfEndDate] = useState('');
+  const [perfDatePreset, setPerfDatePreset] = useState<'all' | 'prev-month' | 'this-month' | 'next-month' | 'custom'>('all');
+
   // Business Profile & Branding State
   const [businessProfile, setBusinessProfile] = useState<BusinessProfile>(DEFAULT_BUSINESS_PROFILE);
   const [businessForm, setBusinessForm] = useState<BusinessProfile>(DEFAULT_BUSINESS_PROFILE);
@@ -885,10 +889,64 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
     }
   };
 
-  // Cashier Sales Performance Metrics Calculation
+  const handlePerfMonthPreset = (preset: 'all' | 'prev-month' | 'this-month' | 'next-month') => {
+    setPerfDatePreset(preset);
+    if (preset === 'all') {
+      setPerfStartDate('');
+      setPerfEndDate('');
+      return;
+    }
+    const now = new Date();
+    let year = now.getFullYear();
+    let month = now.getMonth();
+
+    if (preset === 'prev-month') {
+      month -= 1;
+      if (month < 0) {
+        month = 11;
+        year -= 1;
+      }
+    } else if (preset === 'next-month') {
+      month += 1;
+      if (month > 11) {
+        month = 0;
+        year += 1;
+      }
+    }
+
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+
+    const formatISO = (d: Date) => {
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const dd = String(d.getDate()).padStart(2, '0');
+      return `${yyyy}-${mm}-${dd}`;
+    };
+
+    setPerfStartDate(formatISO(firstDay));
+    setPerfEndDate(formatISO(lastDay));
+  };
+
+  const filteredSalesForPerformance = useMemo(() => {
+    return displaySales.filter(s => {
+      if (!s.created_at) return true;
+      const saleDate = new Date(s.created_at);
+      if (perfStartDate) {
+        const start = new Date(`${perfStartDate}T00:00:00`);
+        if (saleDate < start) return false;
+      }
+      if (perfEndDate) {
+        const end = new Date(`${perfEndDate}T23:59:59.999`);
+        if (saleDate > end) return false;
+      }
+      return true;
+    });
+  }, [displaySales, perfStartDate, perfEndDate]);
+
   const cashierPerformanceList = useMemo(() => {
     return displayCashiers.map(cashier => {
-      const cashierSales = displaySales.filter(s => 
+      const cashierSales = filteredSalesForPerformance.filter(s => 
         (s.cashier_id && s.cashier_id === cashier.id) ||
         (s.cashier_name && s.cashier_name.trim().toLowerCase() === cashier.name.trim().toLowerCase())
       );
@@ -912,7 +970,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
         sales: sortedSales
       };
     }).sort((a, b) => b.totalRevenue - a.totalRevenue);
-  }, [displayCashiers, displaySales]);
+  }, [displayCashiers, filteredSalesForPerformance]);
 
   const topCashierPerf = cashierPerformanceList.length > 0 ? cashierPerformanceList[0] : null;
   const maxCashierRevenue = topCashierPerf && topCashierPerf.totalRevenue > 0 ? topCashierPerf.totalRevenue : 1;
@@ -2861,9 +2919,93 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
               </div>
             )}
 
-            {/* STAFF PERFORMANCE ANALYTICS TAB */}
             {activeTab === 'staff-performance' && (
               <div className="space-y-6">
+                <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="text-xs font-bold text-slate-700 flex items-center gap-1.5 mr-1">
+                      <Calendar className="w-4 h-4 text-gray-900" />
+                      Date Shortcuts:
+                    </span>
+                    <button
+                      onClick={() => handlePerfMonthPreset('prev-month')}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                        perfDatePreset === 'prev-month'
+                          ? 'bg-black text-white shadow-xs'
+                          : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                      }`}
+                    >
+                      Prev Month
+                    </button>
+                    <button
+                      onClick={() => handlePerfMonthPreset('this-month')}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                        perfDatePreset === 'this-month'
+                          ? 'bg-black text-white shadow-xs'
+                          : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                      }`}
+                    >
+                      This Month
+                    </button>
+                    <button
+                      onClick={() => handlePerfMonthPreset('next-month')}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                        perfDatePreset === 'next-month'
+                          ? 'bg-black text-white shadow-xs'
+                          : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                      }`}
+                    >
+                      Next Month
+                    </button>
+                    <button
+                      onClick={() => handlePerfMonthPreset('all')}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                        perfDatePreset === 'all'
+                          ? 'bg-black text-white shadow-xs'
+                          : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                      }`}
+                    >
+                      All Time
+                    </button>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-2">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[10px] font-bold text-slate-400 uppercase">From</span>
+                      <input
+                        type="date"
+                        value={perfStartDate}
+                        onChange={(e) => {
+                          setPerfStartDate(e.target.value);
+                          setPerfDatePreset('custom');
+                        }}
+                        className="px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:border-gray-900"
+                      />
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[10px] font-bold text-slate-400 uppercase">To</span>
+                      <input
+                        type="date"
+                        value={perfEndDate}
+                        onChange={(e) => {
+                          setPerfEndDate(e.target.value);
+                          setPerfDatePreset('custom');
+                        }}
+                        className="px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:border-gray-900"
+                      />
+                    </div>
+                    {(perfStartDate || perfEndDate) && (
+                      <button
+                        onClick={() => handlePerfMonthPreset('all')}
+                        className="p-1.5 text-slate-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors cursor-pointer"
+                        title="Clear Date Filters"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
+                </div>
+
                 {/* Summary KPI Cards for Cashier Performance */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
                   <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-xs flex items-center justify-between">
