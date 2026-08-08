@@ -155,6 +155,127 @@ export function barcode(
   return concat(...cmds);
 }
 
+// ── Raster barcode (self-rendered, most compatible) ──────────────────────────
+
+// CODE39 character patterns (n = narrow 1 unit, w = wide 3 units).
+// Each char is 9 elements (5 bars, 4 spaces); inter-char gap is 1 narrow unit.
+const CODE39_PATTERNS: Record<string, string> = {
+  '0': 'nnnwwnwnn',
+  '1': 'wnnwnnnnw',
+  '2': 'nnwwnnnnw',
+  '3': 'wnwwnnnnn',
+  '4': 'nnnwwnnnw',
+  '5': 'wnnwwnnnn',
+  '6': 'nnwwwnnnn',
+  '7': 'nnnwnnwnw',
+  '8': 'wnnwnnwnn',
+  '9': 'nnwwnnwnn',
+  'A': 'wnnnnwnnw',
+  'B': 'nnwnnwnnw',
+  'C': 'wnwnnwnnn',
+  'D': 'nnnnwwnnw',
+  'E': 'wnnnwwnnn',
+  'F': 'nnwnwwnnn',
+  'G': 'nnnnnwwnw',
+  'H': 'wnnnnwwnn',
+  'I': 'nnwnnwwnn',
+  'J': 'nnnnwwwnn',
+  'K': 'wnnnnnnnw',
+  'L': 'nnwnnnnnw',
+  'M': 'wnwnnnnnn',
+  'N': 'nnnnwnnnw',
+  'O': 'wnnnwnnnn',
+  'P': 'nnwnwnnnn',
+  'Q': 'nnnnnnwnw',
+  'R': 'wnnnnnwnn',
+  'S': 'nnwnnnwnn',
+  'T': 'nnnnwnwnn',
+  'U': 'wwnnnnnnw',
+  'V': 'nwwnnnnnw',
+  'W': 'wwwnnnnnn',
+  'X': 'nwnnwnnnw',
+  'Y': 'wwnnwnnnn',
+  'Z': 'nwwnwnnnn',
+  '-': 'nwnnnnwnw',
+  '.': 'wwnnnnwnn',
+  ' ': 'nwwnnnwnn',
+  '$': 'nwnwnwnnn',
+  '/': 'nwnwnnnwn',
+  '+': 'nwnnnwnwn',
+  '%': 'nnnwnwnwn',
+  '*': 'nwnnwwwnn',
+};
+
+/**
+ * Build a monochrome bit-image raster for the GS v 0 command.
+ * Each column is a boolean (true = print a dot); every raster row is vertical
+ * bars so all rows share the same column data.
+ */
+export function rasterBarcode(
+  value: string,
+  heightDots: number,
+  maxWidthDots: number,
+): Uint8Array {
+  const cleanVal = (value || '000000').toUpperCase().replace(/[^A-Z0-9\-\.\ \$\/\+\%]/g, '');
+  const text = `*${cleanVal || '000000'}*`;
+
+  const elements: Array<{ isBar: boolean; units: number }> = [];
+  let totalUnits = 0;
+  for (let i = 0; i < text.length; i++) {
+    const pattern = CODE39_PATTERNS[text[i]] || CODE39_PATTERNS['0'];
+    for (let p = 0; p < pattern.length; p++) {
+      const isBar = p % 2 === 0;
+      const units = pattern[p] === 'w' ? 3 : 1;
+      elements.push({ isBar, units });
+      totalUnits += units;
+    }
+    if (i < text.length - 1) {
+      elements.push({ isBar: false, units: 1 });
+      totalUnits += 1;
+    }
+  }
+
+  const quiet = 10;
+  const moduleW = Math.max(1, Math.min(2, Math.floor(maxWidthDots / (totalUnits + quiet * 2))));
+  const widthDots = (totalUnits + quiet * 2) * moduleW;
+
+  const columns: boolean[] = new Array(widthDots).fill(false);
+  let x = quiet * moduleW;
+  for (const el of elements) {
+    for (let i = 0; i < el.units * moduleW; i++) {
+      columns[x++] = el.isBar;
+    }
+  }
+
+  const bytesPerLine = Math.ceil(widthDots / 8);
+  const bitmap = new Uint8Array(bytesPerLine * heightDots);
+  for (let y = 0; y < heightDots; y++) {
+    for (let c = 0; c < widthDots; c++) {
+      if (columns[c]) {
+        bitmap[y * bytesPerLine + (c >> 3)] |= 0x80 >> (c % 8);
+      }
+    }
+  }
+
+  const xL = bytesPerLine & 0xff;
+  const xH = (bytesPerLine >> 8) & 0xff;
+  const yL = heightDots & 0xff;
+  const yH = (heightDots >> 8) & 0xff;
+
+  // GS v 0 m xL xH yL yH d1...dk (m = 0 normal)
+  return concat(new Uint8Array([0x1d, 0x76, 0x30, 0, xL, xH, yL, yH]), bitmap);
+}
+
+/** Advance paper exactly past a raster image printed by GS v 0. */
+export function feedRaster(n: number): Uint8Array {
+  const lines = Math.floor(n / FONT_A_LINE_DOTS);
+  const rem = n % FONT_A_LINE_DOTS;
+  return concat(
+    lines > 0 ? feed(lines) : new Uint8Array(0),
+    rem > 0 ? feedDots(rem) : new Uint8Array(0),
+  );
+}
+
 // ── Paper control ────────────────────────────────────────────────────────────
 
 /** Feed paper by n lines */
@@ -467,12 +588,25 @@ export function buildThermalLabel(opts: ThermalLabelOptions): Uint8Array {
     usedDots += lines.length * FONT_A_LINE_DOTS;
   }
 
-  // Barcode (printer-native engine), module width chosen to fit the label width
+  // Barcode. CODE39 is rendered client-side as a raster bitmap (GS v 0) so it
+  // prints on any thermal printer, even ones whose native GS k engine fails
+  // silently (the common "blank barcode" cause). Other symbologies fall back to
+  // the printer's native engine.
   const barcodeHeightDots = Math.max(Math.round(barcodeHeightMm * DOTS_PER_MM), 20);
   const barcodeData = normalizeBarcodeValue(barcodeValue, barcodeType);
-  const moduleWidth = Math.min(Math.max(Math.floor(labelWidthDots / estimateBarcodeModules(barcodeData, barcodeType)), 2), 4);
-  cmds.push(barcode(barcodeData, barcodeType, barcodeHeightDots, showBarcodeText ? 2 : 0, moduleWidth));
-  usedDots += barcodeHeightDots + (showBarcodeText ? FONT_A_LINE_DOTS : 0);
+  if (barcodeType === 'CODE39') {
+    cmds.push(rasterBarcode(barcodeData, barcodeHeightDots, labelWidthDots));
+    cmds.push(feedRaster(barcodeHeightDots));
+    if (showBarcodeText) {
+      cmds.push(text(barcodeData, { align: 'center', bold: false, width: 1, height: 1 }));
+      usedDots += FONT_A_LINE_DOTS;
+    }
+  } else {
+    const moduleWidth = Math.min(Math.max(Math.floor(labelWidthDots / estimateBarcodeModules(barcodeData, barcodeType)), 2), 4);
+    cmds.push(barcode(barcodeData, barcodeType, barcodeHeightDots, showBarcodeText ? 2 : 0, moduleWidth));
+    if (showBarcodeText) usedDots += FONT_A_LINE_DOTS;
+  }
+  usedDots += barcodeHeightDots;
 
   // Price footer
   if (showPrice) {
