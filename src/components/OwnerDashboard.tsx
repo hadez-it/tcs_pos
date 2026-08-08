@@ -17,6 +17,8 @@ import { useToast } from '../utils/toast';
 import { useBackDismiss, useBackTabHistory } from '../lib/backNavigation';
 import { SUPABASE_SCHEMA_SQL } from '../data/schemaSql';
 import BarcodePrintModal from './BarcodePrintModal';
+import SingleLabelModal from './SingleLabelModal';
+import LabelGeneratorTab from './LabelGeneratorTab';
 import CsvImportModal from './CsvImportModal';
 import SearchableCategorySelect from './SearchableCategorySelect';
 import QuickRestockModal from './QuickRestockModal';
@@ -36,7 +38,9 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
   const [branches, setBranches] = useState<Branch[]>([]);
   const [selectedBranchId, setSelectedBranchId] = useState<string>('all');
   const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'cashiers' | 'staff-performance' | 'transactions' | 'branches' | 'settings' | 'cash-flow'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'cashiers' | 'staff-performance' | 'transactions' | 'branches' | 'settings' | 'cash-flow' | 'label-generator'>('overview');
+  const [selectedSingleProduct, setSelectedSingleProduct] = useState<Product | null>(null);
+  const [showSingleLabelModal, setShowSingleLabelModal] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isTabChanging, setIsTabChanging] = useState(false);
 
@@ -75,7 +79,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
   const INCOME_CATEGORIES = ['POS Sales', 'Investment', 'Loan Received', 'Other Income'];
   const EXPENSE_CATEGORIES = ['Inventory / Stock', 'Rent', 'Salaries', 'Utilities', 'Transport', 'Supplies', 'Marketing', 'Repairs', 'Other Expense'];
 
-  const handleTabSwitch = (tab: 'overview' | 'products' | 'cashiers' | 'staff-performance' | 'transactions' | 'branches' | 'settings' | 'cash-flow') => {
+  const handleTabSwitch = (tab: 'overview' | 'products' | 'cashiers' | 'staff-performance' | 'transactions' | 'branches' | 'settings' | 'cash-flow' | 'label-generator') => {
     // 1. Immediately close sidebar drawer for zero-lag menu response
     setIsSidebarOpen(false);
 
@@ -1280,7 +1284,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
   const [showMoreMenu, setShowMoreMenu] = useState(false);
 
   const mainTabs = ['overview', 'products', 'cashiers', 'cash-flow', 'branches'] as const;
-  const moreTabs = ['staff-performance', 'transactions', 'settings'] as const;
+  const moreTabs = ['staff-performance', 'transactions', 'settings', 'label-generator'] as const;
 
   // Back button: each surface pops in the reverse order it was opened, so a
   // delete confirmation raised from inside a modal closes before that modal.
@@ -1289,6 +1293,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
   useBackDismiss(showCashierModal, () => setShowCashierModal(false));
   useBackDismiss(showBranchModal, () => setShowBranchModal(false));
   useBackDismiss(showBarcodeModal, () => setShowBarcodeModal(false));
+  useBackDismiss(showSingleLabelModal, () => setShowSingleLabelModal(false));
   useBackDismiss(showSqlModal, () => setShowSqlModal(false));
   useBackDismiss(showCsvModal, () => setShowCsvModal(false));
   useBackDismiss(restockProduct !== null, () => setRestockProduct(null));
@@ -1330,6 +1335,8 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                   ? 'Audit Logs'
                   : activeTab === 'cash-flow'
                   ? 'Cash Flow'
+                  : activeTab === 'label-generator'
+                  ? 'Label Designer'
                   : activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
               </h1>
               <p className="text-[10px] text-slate-500 font-semibold flex items-center gap-1">
@@ -2174,15 +2181,6 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                       <Download className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-500 shrink-0" />
                       <span className="truncate">Export CSV</span>
                     </button>
-
-                    <button
-                      onClick={() => openBarcodePrintModal()}
-                      className="inline-flex items-center justify-center gap-1.5 px-2.5 sm:px-3.5 py-2 bg-gray-50/70 hover:bg-gray-100/80 text-gray-900 font-bold text-[11px] sm:text-xs rounded-xl border border-gray-200/70 transition-all cursor-pointer active:scale-95"
-                      title="Generate and print barcode sticker labels for inventory"
-                    >
-                      <Printer className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-900 shrink-0" />
-                      <span className="truncate">Barcodes</span>
-                    </button>
                   </div>
                 </div>
 
@@ -2299,7 +2297,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
 
                                 <div className="flex items-center space-x-1.5">
                                   <button
-                                    onClick={() => openBarcodePrintModal(prod.id)}
+                                    onClick={() => { setSelectedSingleProduct(prod); setShowSingleLabelModal(true); }}
                                     className="p-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors flex items-center gap-1 text-[10px] font-bold"
                                     title="Print Barcode Label"
                                   >
@@ -2453,7 +2451,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                                   <td className="p-3 text-center">
                                     <div className="flex items-center justify-center space-x-1">
                                       <button
-                                        onClick={() => openBarcodePrintModal(prod.id)}
+                                        onClick={() => { setSelectedSingleProduct(prod); setShowSingleLabelModal(true); }}
                                         className="p-1.5 hover:bg-slate-100 text-slate-600 hover:text-slate-900 rounded transition-colors cursor-pointer"
                                         title="Print Barcode Label"
                                       >
@@ -3083,6 +3081,15 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                   </div>
                 )}
               </div>
+            )}
+
+            {/* LABEL GENERATOR & DESIGNER TAB */}
+            {activeTab === 'label-generator' && (
+              <LabelGeneratorTab
+                products={products}
+                currencySymbol={businessProfile.currency || 'Ks'}
+                businessName={businessProfile.name}
+              />
             )}
 
             {/* BUSINESS PROFILE & BRANDING SETTINGS TAB */}
@@ -4210,6 +4217,16 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
         businessName={businessProfile.name}
       />
 
+      {/* SINGLE ITEM LABEL PREVIEW MODAL */}
+      <SingleLabelModal
+        isOpen={showSingleLabelModal}
+        onClose={() => setShowSingleLabelModal(false)}
+        product={selectedSingleProduct}
+        currencySymbol={businessProfile.currency || 'Ks'}
+        businessName={businessProfile.name}
+        onOpenDesigner={() => handleTabSwitch('label-generator')}
+      />
+
       {/* CASH FLOW ADD / EDIT ENTRY MODAL */}
       {showCashFlowModal && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
@@ -4642,6 +4659,16 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
               >
                 <Store className="w-5 h-5 text-gray-500" />
                 <span>Business & Branding</span>
+              </button>
+
+              <button
+                onClick={() => { handleTabSwitch('label-generator'); setShowMoreMenu(false); }}
+                className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-bold transition-all cursor-pointer active-scale ${
+                  activeTab === 'label-generator' ? 'bg-gray-50 text-gray-900' : 'text-slate-700 hover:bg-slate-50'
+                }`}
+              >
+                <Printer className="w-5 h-5 text-gray-500" />
+                <span>Label Generator & Printer</span>
               </button>
 
               <div className="border-t border-slate-100 my-2" />

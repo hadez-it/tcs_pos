@@ -127,3 +127,33 @@ export interface SalesAnalytics {
   categorySales: { category: string; value: number }[];
   topProducts: { name: string; quantity: number; revenue: number }[];
 }
+
+export interface LabelConfig {
+  paperMode: 'sticker' | 'receipt';
+  paperWidth: '32' | '58' | '80';
+  labelWidth: string;
+  labelHeight: string;
+  barcodeWidth: string;
+  barcodeHeight: string;
+  barcodeType: 'CODE39' | 'CODE128' | 'EAN13' | 'EAN8' | 'UPCA' | 'UPCE' | 'ITF' | 'CODE93';
+  cutMode: 'off' | 'full' | 'partial';
+  labelGap: string;
+  feedOffset: string;
+  showStoreName: boolean;
+  showProductName: boolean;
+  showPrice: boolean;
+  showCodeText: boolean;
+  storeName: string;
+  customLayout: boolean;
+  layoutXY: {
+    store: { x: string; y: string };
+    product: { x: string; y: string };
+    barcode: { x: string; y: string };
+    price: { x: string; y: string };
+  };
+  fontSize: {
+    store: 1 | 2;
+    product: 1 | 2;
+    price: 1 | 2;
+  };
+}
