@@ -56,12 +56,30 @@ export const SingleLabelModal: React.FC<SingleLabelModalProps> = ({
     if (!isOpen) return;
     setConfig(loadLabelConfig(businessName));
     setQuantity(1);
+
+    const last = printerBridge.getLastPrinter();
+    if (last?.address) {
+      setSelectedAddress(last.address);
+    }
+
     if (isNative) {
       printerBridge.getPairedPrinters().then(devs => {
         setPairedDevices(devs);
-        if (devs.length > 0) setSelectedAddress(devs[0].address);
+        if (devs.length > 0 && !last?.address) {
+          setSelectedAddress(devs[0].address);
+        }
       }).catch(() => {});
+
+      if (!printerBridge.isConnected()) {
+        printerBridge.autoConnectLastPrinter().then(name => {
+          if (name) {
+            setBtConnected(true);
+            setPrinterName(name);
+          }
+        }).catch(() => {});
+      }
     }
+
     printerBridge.onDisconnect(() => {
       setBtConnected(false);
       setPrinterName('');

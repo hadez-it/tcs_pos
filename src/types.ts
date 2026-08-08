@@ -156,4 +156,6 @@ export interface LabelConfig {
     product: 1 | 2;
     price: 1 | 2;
   };
+  lastPrinterAddress?: string;
+  lastPrinterName?: string;
 }

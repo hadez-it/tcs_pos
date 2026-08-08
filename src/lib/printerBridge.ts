@@ -86,9 +86,9 @@ export async function connect(device?: PairedPrinter): Promise<string> {
     nativeConnected = true;
     nativeAddress = device.address;
     nativeName = device.name;
+    saveLastPrinter(device.address, device.name);
     return nativeName;
   }
-  // Fallback: Web Bluetooth chooser.
   const name = await webBt.connect();
   return name;
 }
@@ -158,10 +158,36 @@ export async function disconnect(): Promise<void> {
   webBt.disconnect();
 }
 
-// ── Helpers ──────────────────────────────────────────────────────────────────
+const LAST_PRINTER_KEY = 'retail_shop_last_printer';
 
-// Map each byte (0-255) to a single char so the plugin's ISO-8859-1 charset
-// writes them as raw bytes (safe for binary ESC/POS data).
+export function saveLastPrinter(address: string, name: string): void {
+  try {
+    localStorage.setItem(LAST_PRINTER_KEY, JSON.stringify({ address, name }));
+  } catch {}
+}
+
+export function getLastPrinter(): { address: string; name: string } | null {
+  try {
+    const raw = localStorage.getItem(LAST_PRINTER_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch {}
+  return null;
+}
+
+export async function autoConnectLastPrinter(): Promise<string | null> {
+  if (!isNativeMode() || nativeConnected) return null;
+  const last = getLastPrinter();
+  if (!last || !last.address) return null;
+  try {
+    const paired = await getPairedPrinters();
+    const found = paired.find(p => p.address === last.address);
+    if (found) {
+      return await connect(found);
+    }
+  } catch {}
+  return null;
+}
+
 function bytesToLatin1(bytes: Uint8Array): string {
   let s = '';
   const chunk = 8192;

@@ -76,12 +76,29 @@ export const LabelGeneratorTab: React.FC<LabelGeneratorTabProps> = ({
   } | null>(null);
 
   useEffect(() => {
+    const last = printerBridge.getLastPrinter();
+    if (last?.address) {
+      setSelectedAddress(last.address);
+    }
+
     if (isNative) {
       printerBridge.getPairedPrinters().then(devs => {
         setPairedDevices(devs);
-        if (devs.length > 0) setSelectedAddress(devs[0].address);
+        if (devs.length > 0 && !last?.address) {
+          setSelectedAddress(devs[0].address);
+        }
       }).catch(() => {});
+
+      if (!printerBridge.isConnected()) {
+        printerBridge.autoConnectLastPrinter().then(name => {
+          if (name) {
+            setBtConnected(true);
+            setPrinterName(name);
+          }
+        }).catch(() => {});
+      }
     }
+
     printerBridge.onDisconnect(() => {
       setBtConnected(false);
       setPrinterName('');
@@ -97,6 +114,16 @@ export const LabelGeneratorTab: React.FC<LabelGeneratorTabProps> = ({
       saveLabelConfig(next);
       return next;
     });
+  };
+
+  const handleSaveSettings = () => {
+    saveLabelConfig(config);
+    if (selectedAddress) {
+      const dev = pairedDevices.find(d => d.address === selectedAddress);
+      printerBridge.saveLastPrinter(selectedAddress, dev?.name || printerName || selectedAddress);
+    }
+    setSaveToast(true);
+    setTimeout(() => setSaveToast(false), 3000);
   };
 
   const handleResetDefaults = () => {
@@ -432,8 +459,23 @@ export const LabelGeneratorTab: React.FC<LabelGeneratorTabProps> = ({
             <RefreshCw className="w-3.5 h-3.5" />
             <span>Reset Defaults</span>
           </button>
+          <button
+            onClick={handleSaveSettings}
+            className="px-4 py-2 bg-black hover:bg-gray-800 text-white text-xs font-bold rounded-xl shadow-xs transition-all cursor-pointer flex items-center gap-1.5 active:scale-95"
+            title="Save printer and label layout settings to local storage"
+          >
+            <Save className="w-4 h-4" />
+            <span>Save Settings</span>
+          </button>
         </div>
       </div>
+
+      {saveToast && (
+        <div className="px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl flex items-center space-x-2 text-xs text-gray-900 font-bold shadow-xs animate-fade-in">
+          <CheckCircle2 className="w-4 h-4 text-gray-900 shrink-0" />
+          <span>Printer and label layout settings saved successfully!</span>
+        </div>
+      )}
 
       {btError && (
         <div className="px-4 py-3 bg-red-50 border border-red-200 rounded-xl flex items-center space-x-2 text-xs text-red-700">
