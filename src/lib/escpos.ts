@@ -102,14 +102,15 @@ export function separator(char: string = '-', width: number = 32): Uint8Array {
 
 /**
  * Print a barcode using the printer's native barcode engine.
- * GS k m d1...dk NUL   (type 0 = CODE39)
- * GS k m n d1...dk      (type 65 = CODE39, type 73 = CODE128)
+ * GS k m d1...dk NUL   (m=0..8, NUL-terminated, function A)
+ * GS k m n d1...dk      (m=65..73, length-prefixed, function B)
  *
- * Barcode types:
- *   0  = UPC-A      4  = ITF       65 = CODE39
- *   1  = UPC-E      5  = CODE93    73 = CODE128
- *   2  = EAN13      6  = CODE128   72 = CODE128 AUTO
- *   3  = EAN8
+ * Barcode types (ESC/POS function A):
+ *   0 = UPC-A      4 = CODE39
+ *   1 = UPC-E      5 = ITF
+ *   2 = EAN13      7 = CODE93
+ *   3 = EAN8       8 = CODE128
+ * Function B codes are function A + 65, so CODE39 = 69 and CODE128 = 73.
  */
 export type BarcodeType = 'CODE39' | 'CODE128' | 'EAN13' | 'EAN8' | 'UPCA' | 'UPCE' | 'ITF' | 'CODE93';
 
@@ -122,13 +123,12 @@ export function barcode(
 ): Uint8Array {
   const typeMap: Record<BarcodeType, number> = {
     UPCA: 0, UPCE: 1, EAN13: 2, EAN8: 3,
-    ITF: 4, CODE93: 5, CODE128: 6, CODE39: 7,
+    CODE39: 4, ITF: 5, CODE93: 7, CODE128: 8,
   };
 
-  // For GS k commands, we use the "function B" variants:
-  // GS k m d1...dk 0   (m=0..6, NUL-terminated)
+  // For GS k commands, we use the "function B" variants (length-prefixed):
+  // GS k m d1...dk 0   (m=0..8, NUL-terminated)
   // GS k m n d1...dk   (m=65..73, length-prefixed)
-  const m = typeMap[type]; // 0-6
   const mB = typeMap[type] + 65; // 65-73 for function B
 
   const dataBytes = strToBytes(data);
