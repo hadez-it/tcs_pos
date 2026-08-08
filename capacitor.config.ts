@@ -4,9 +4,11 @@ const config: CapacitorConfig = {
   appId: 'com.mibayate.pos',
   appName: 'MiBayate POS',
   webDir: 'dist',
+  server: {
+    url: 'https://mibayate-pos.vercel.app/',
+    cleartext: true,
+  },
   android: {
-    // Capacitor v6 serves the app over https://localhost by default, which the
-    // SPP plugin needs for a stable WebView origin.
     allowMixedContent: true,
   },
 };
