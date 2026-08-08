@@ -82,20 +82,20 @@ export default function PullToRefresh({ onRefresh, children }: PullToRefreshProp
   return (
     <div className="relative w-full h-full">
       {(pullDistance > 0 || isRefreshing) && (
-        <div
-          className="fixed top-3 left-1/2 -translate-x-1/2 z-50 transition-transform duration-75 pointer-events-none"
-          style={{
-            transform: `translate(-50%, ${Math.min(pullDistance, 70)}px)`
-          }}
-        >
-          <div className="bg-black text-white px-3.5 py-2 rounded-full shadow-xl border border-slate-700 flex items-center gap-2 text-xs font-bold">
+        <div className="fixed inset-x-0 top-3 flex justify-center z-50 pointer-events-none">
+          <div
+            className="bg-black text-white px-4 py-2 rounded-full shadow-2xl border border-slate-700 flex items-center justify-center gap-2 text-xs font-bold text-center transition-transform duration-75"
+            style={{
+              transform: `translateY(${Math.min(pullDistance, 70)}px)`
+            }}
+          >
             <RefreshCw
-              className={`w-4 h-4 text-white ${isRefreshing ? 'animate-spin' : ''}`}
+              className={`w-4 h-4 text-white shrink-0 ${isRefreshing ? 'animate-spin' : ''}`}
               style={{
                 transform: !isRefreshing ? `rotate(${pullDistance * 3}deg)` : undefined
               }}
             />
-            <span>
+            <span className="text-center">
               {isRefreshing
                 ? 'Reloading...'
                 : pullDistance >= 70
