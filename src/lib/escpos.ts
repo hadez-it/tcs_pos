@@ -485,7 +485,7 @@ export interface ThermalLabelOptions {
 export interface ThermalLabelLayout {
   storeName?: LabelPosition;
   productName?: LabelPosition;
-  barcode?: { xMm: number; yMm: number };
+  barcode?: { xMm: number; yMm: number; widthMm?: number; heightMm?: number };
   price?: LabelPosition;
 }
 
@@ -796,23 +796,26 @@ function buildCustomThermalLabel(opts: ThermalLabelOptions): Uint8Array {
 
   if (layout?.barcode) {
     const p = layout.barcode;
-    const maxWDots = Math.max(labelWidthDots - mmToDots(p.xMm), mmToDots(8));
+    const maxBcWMm = p.widthMm ? Math.min(p.widthMm, effLabelWidthMm - p.xMm) : effLabelWidthMm - p.xMm;
+    const maxWDots = Math.max(mmToDots(maxBcWMm), mmToDots(8));
+    const bcHeightMm = p.heightMm ? Math.min(p.heightMm, labelHeightMm - p.yMm) : barcodeHeightMm;
+    const bcHeightDots = Math.max(Math.round(bcHeightMm * DOTS_PER_MM), 20);
     const parts: Uint8Array[] = [];
     if (barcodeType === 'CODE39') {
       parts.push(setAbsoluteX(mmToDots(p.xMm)));
-      parts.push(rasterBarcode(barcodeData, barcodeHeightDots, maxWDots));
+      parts.push(rasterBarcode(barcodeData, bcHeightDots, maxWDots));
       if (showBarcodeText) {
-        parts.push(feedRaster(barcodeHeightDots));
+        parts.push(feedRaster(bcHeightDots));
         parts.push(absoluteTextLines([barcodeData], mmToDots(p.xMm), 1, false));
       }
     } else {
       const moduleWidth = Math.min(Math.max(Math.floor(maxWDots / estimateBarcodeModules(barcodeData, barcodeType)), 2), 4);
       parts.push(setAbsoluteX(mmToDots(p.xMm)));
-      parts.push(barcode(barcodeData, barcodeType, barcodeHeightDots, showBarcodeText ? 2 : 0, moduleWidth));
+      parts.push(barcode(barcodeData, barcodeType, bcHeightDots, showBarcodeText ? 2 : 0, moduleWidth));
     }
     els.push({
       yDots: mmToDots(p.yMm),
-      heightDots: barcodeHeightDots + (showBarcodeText ? FONT_A_LINE_DOTS : 0),
+      heightDots: bcHeightDots + (showBarcodeText ? FONT_A_LINE_DOTS : 0),
       emit: () => concat(...parts),
     });
   }

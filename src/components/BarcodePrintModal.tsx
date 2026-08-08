@@ -72,6 +72,7 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
   const [paperWidth, setPaperWidth] = useState<'32' | '58' | '80'>('80');
   const [labelWidth, setLabelWidth] = useState('80');
   const [labelHeight, setLabelHeight] = useState('30');
+  const [barcodeWidth, setBarcodeWidth] = useState('80');
   const [barcodeHeight, setBarcodeHeight] = useState('10');
   const [barcodeType, setBarcodeType] = useState<BarcodeType>('CODE39');
   const [cutMode, setCutMode] = useState<'off' | 'full' | 'partial'>('off');
@@ -93,6 +94,22 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
     store: 1, product: 1, price: 2,
   });
 
+  const [dragState, setDragState] = useState<{
+    type: 'move-barcode' | 'resize-barcode-e' | 'resize-barcode-s' | 'resize-barcode-se' | 'move-store' | 'move-product' | 'move-price';
+    startX: number;
+    startY: number;
+    initialX: number;
+    initialY: number;
+    initialW: number;
+    initialH: number;
+    initialStoreX: number;
+    initialStoreY: number;
+    initialProdX: number;
+    initialProdY: number;
+    initialPriceX: number;
+    initialPriceY: number;
+  } | null>(null);
+
   // ── Printer state (native SPP in Android shell, Web BT in browser) ────────
   const isNative = printerBridge.isNativeShell();
   const [btAvailable] = useState(() => printerBridge.isBluetoothAvailable());
@@ -110,17 +127,30 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
   const printableMm = getPrintableMm(effPaperWidth);
   const effLabelWidth = clamp(parseMm(labelWidth) || effPaperWidth, 5, 80);
   const effLabelHeight = clamp(parseMm(labelHeight) || 30, 8, 300);
-  const effBarcodeHeight = clamp(parseMm(barcodeHeight) || 10, 3, Math.min(effLabelHeight * 0.8, 40));
+
+  const rawBcW = parseMm(barcodeWidth) || effLabelWidth;
+  const effBarcodeWidth = clamp(rawBcW, 10, effLabelWidth);
+
+  const rawBcH = parseMm(barcodeHeight) || 10;
+  const effBarcodeHeight = clamp(rawBcH, 3, effLabelHeight);
+
+  const rawBcX = parseMm(layoutXY.barcode.x) || 0;
+  const effBarcodeX = clamp(rawBcX, 0, Math.max(0, effLabelWidth - effBarcodeWidth));
+
+  const rawBcY = parseMm(layoutXY.barcode.y) || 0;
+  const effBarcodeY = clamp(rawBcY, 0, Math.max(0, effLabelHeight - effBarcodeHeight));
+
   const effLabelGap = clamp(parseMm(labelGap) || 3, 2, 10);
   const effFeedOffset = clamp(parseMm(feedOffset) || 0, -10, 10);
 
-  const effLayoutX = (k: keyof typeof layoutXY) => clamp(parseMm(layoutXY[k].x) || 0, 0, effLabelWidth);
-  const effLayoutY = (k: keyof typeof layoutXY) => clamp(parseMm(layoutXY[k].y) || 0, 0, effLabelHeight);
+  const effLayoutX = (k: 'store' | 'product' | 'price') => clamp(parseMm(layoutXY[k].x) || 0, 0, Math.max(0, effLabelWidth - 5));
+  const effLayoutY = (k: 'store' | 'product' | 'price') => clamp(parseMm(layoutXY[k].y) || 0, 0, Math.max(0, effLabelHeight - 3));
+
   const layoutForPrint = customLayout
     ? {
         storeName: showStoreName ? { xMm: effLayoutX('store'), yMm: effLayoutY('store'), size: fontSize.store } : undefined,
         productName: showProductName ? { xMm: effLayoutX('product'), yMm: effLayoutY('product'), size: fontSize.product } : undefined,
-        barcode: { xMm: effLayoutX('barcode'), yMm: effLayoutY('barcode') },
+        barcode: { xMm: effBarcodeX, yMm: effBarcodeY, widthMm: effBarcodeWidth, heightMm: effBarcodeHeight },
         price: showPrice ? { xMm: effLayoutX('price'), yMm: effLayoutY('price'), size: fontSize.price } : undefined,
       }
     : undefined;
@@ -180,6 +210,89 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
     setPrinterName('');
   }, []);
 
+  const previewScale = Math.min(240 / effLabelWidth, 5);
+  const previewW = Math.round(effLabelWidth * previewScale);
+  const previewH = Math.round(effLabelHeight * previewScale);
+
+  const handlePointerDown = (
+    e: React.PointerEvent,
+    type: 'move-barcode' | 'resize-barcode-e' | 'resize-barcode-s' | 'resize-barcode-se' | 'move-store' | 'move-product' | 'move-price'
+  ) => {
+    e.preventDefault();
+    e.stopPropagation();
+    try {
+      (e.target as HTMLElement).setPointerCapture(e.pointerId);
+    } catch {}
+    setDragState({
+      type,
+      startX: e.clientX,
+      startY: e.clientY,
+      initialX: effBarcodeX,
+      initialY: effBarcodeY,
+      initialW: effBarcodeWidth,
+      initialH: effBarcodeHeight,
+      initialStoreX: effLayoutX('store'),
+      initialStoreY: effLayoutY('store'),
+      initialProdX: effLayoutX('product'),
+      initialProdY: effLayoutY('product'),
+      initialPriceX: effLayoutX('price'),
+      initialPriceY: effLayoutY('price'),
+    });
+  };
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (!dragState) return;
+    const dxMm = (e.clientX - dragState.startX) / previewScale;
+    const dyMm = (e.clientY - dragState.startY) / previewScale;
+
+    if (dragState.type === 'move-barcode') {
+      const maxW = effBarcodeWidth;
+      const maxH = effBarcodeHeight;
+      const newX = clamp(dragState.initialX + dxMm, 0, Math.max(0, effLabelWidth - maxW));
+      const newY = clamp(dragState.initialY + dyMm, 0, Math.max(0, effLabelHeight - maxH));
+      setLayoutXY(prev => ({
+        ...prev,
+        barcode: { x: newX.toFixed(1), y: newY.toFixed(1) }
+      }));
+    } else if (dragState.type === 'resize-barcode-e') {
+      const maxW = Math.max(10, effLabelWidth - effBarcodeX);
+      const newW = clamp(dragState.initialW + dxMm, 10, maxW);
+      setBarcodeWidth(newW.toFixed(1));
+    } else if (dragState.type === 'resize-barcode-s') {
+      const maxH = Math.max(3, effLabelHeight - effBarcodeY);
+      const newH = clamp(dragState.initialH + dyMm, 3, maxH);
+      setBarcodeHeight(newH.toFixed(1));
+    } else if (dragState.type === 'resize-barcode-se') {
+      const maxW = Math.max(10, effLabelWidth - effBarcodeX);
+      const maxH = Math.max(3, effLabelHeight - effBarcodeY);
+      const newW = clamp(dragState.initialW + dxMm, 10, maxW);
+      const newH = clamp(dragState.initialH + dyMm, 3, maxH);
+      setBarcodeWidth(newW.toFixed(1));
+      setBarcodeHeight(newH.toFixed(1));
+    } else if (dragState.type === 'move-store') {
+      const newX = clamp(dragState.initialStoreX + dxMm, 0, Math.max(0, effLabelWidth - 5));
+      const newY = clamp(dragState.initialStoreY + dyMm, 0, Math.max(0, effLabelHeight - 3));
+      setLayoutXY(prev => ({ ...prev, store: { x: newX.toFixed(1), y: newY.toFixed(1) } }));
+    } else if (dragState.type === 'move-product') {
+      const newX = clamp(dragState.initialProdX + dxMm, 0, Math.max(0, effLabelWidth - 5));
+      const newY = clamp(dragState.initialProdY + dyMm, 0, Math.max(0, effLabelHeight - 3));
+      setLayoutXY(prev => ({ ...prev, product: { x: newX.toFixed(1), y: newY.toFixed(1) } }));
+    } else if (dragState.type === 'move-price') {
+      const newX = clamp(dragState.initialPriceX + dxMm, 0, Math.max(0, effLabelWidth - 5));
+      const newY = clamp(dragState.initialPriceY + dyMm, 0, Math.max(0, effLabelHeight - 3));
+      setLayoutXY(prev => ({ ...prev, price: { x: newX.toFixed(1), y: newY.toFixed(1) } }));
+    }
+  };
+
+  const handlePointerUp = (e: React.PointerEvent) => {
+    if (dragState) {
+      try {
+        (e.target as HTMLElement).releasePointerCapture(e.pointerId);
+      } catch {}
+      setDragState(null);
+    }
+  };
+
   const labelOptionsFor = (product: Product) => ({
     storeName,
     productName: product.name,
@@ -194,6 +307,7 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
     labelWidthMm: effLabelWidth,
     labelHeightMm: effLabelHeight,
     barcodeType,
+    barcodeWidthMm: effBarcodeWidth,
     barcodeHeightMm: effBarcodeHeight,
     cutMode: paperMode === 'sticker' ? 'off' : cutMode,
     paperMode,
@@ -314,10 +428,6 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
         : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
     }`;
 
-  const previewScale = Math.min(240 / effLabelWidth, 5);
-  const previewW = Math.round(effLabelWidth * previewScale);
-  const previewH = Math.round(effLabelHeight * previewScale);
-
   return (
     <div className="fixed inset-0 bg-slate-900/70 z-50 flex items-center justify-center p-2 sm:p-4 backdrop-blur-xs transition-opacity animate-fade-in">
       <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-5xl max-h-[92vh] flex flex-col overflow-hidden">
@@ -424,32 +534,39 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
                    Paper Width
                  </label>
                   <div className="flex gap-1.5 text-xs">
-                    <button onClick={() => { setPaperWidth('32'); setLabelWidth('32'); }} className={segBtn(paperWidth === '32')}>32mm</button>
-                    <button onClick={() => { setPaperWidth('58'); setLabelWidth('58'); }} className={segBtn(paperWidth === '58')}>58mm</button>
-                    <button onClick={() => { setPaperWidth('80'); setLabelWidth('80'); }} className={segBtn(paperWidth === '80')}>80mm</button>
+                    <button onClick={() => { setPaperWidth('32'); setLabelWidth('32'); setBarcodeWidth('32'); }} className={segBtn(paperWidth === '32')}>32mm</button>
+                    <button onClick={() => { setPaperWidth('58'); setLabelWidth('58'); setBarcodeWidth('58'); }} className={segBtn(paperWidth === '58')}>58mm</button>
+                    <button onClick={() => { setPaperWidth('80'); setLabelWidth('80'); setBarcodeWidth('80'); }} className={segBtn(paperWidth === '80')}>80mm</button>
                   </div>
                </div>
 
-               <div className="grid grid-cols-3 gap-2">
+               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                  <div>
                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
-                     Width (mm)
+                     Label W (mm)
                    </label>
                    <input type="number" min={5} max={80} value={labelWidth}
                      onChange={e => setLabelWidth(e.target.value)} className={numInputClass} />
                  </div>
                  <div>
                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
-                     Height (mm)
+                     Label H (mm)
                    </label>
                    <input type="number" min={8} max={300} value={labelHeight}
                      onChange={e => setLabelHeight(e.target.value)} className={numInputClass} />
                  </div>
                  <div>
                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
-                     Barcode H (mm)
+                     BC Box W (mm)
                    </label>
-                   <input type="number" min={3} max={40} value={barcodeHeight}
+                   <input type="number" min={10} max={effLabelWidth} value={barcodeWidth}
+                     onChange={e => setBarcodeWidth(e.target.value)} className={numInputClass} />
+                 </div>
+                 <div>
+                   <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
+                     BC Box H (mm)
+                   </label>
+                   <input type="number" min={3} max={effLabelHeight} value={barcodeHeight}
                      onChange={e => setBarcodeHeight(e.target.value)} className={numInputClass} />
                  </div>
                </div>
@@ -476,9 +593,9 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
 
                <p className="text-[10px] text-slate-400 font-medium leading-relaxed">
                  {paperMode === 'sticker' ? (
-                   <>Label: {effLabelWidth.toFixed(0)} × {effLabelHeight.toFixed(0)}mm · gap {effLabelGap.toFixed(1)}mm · feed {effLabelHeight + effLabelGap + effFeedOffset > 0 ? (effLabelHeight + effLabelGap + effFeedOffset).toFixed(1) : '—'}mm total</>
+                   <>Label: {effLabelWidth.toFixed(0)} × {effLabelHeight.toFixed(0)}mm · BC Box: {effBarcodeWidth.toFixed(0)} × {effBarcodeHeight.toFixed(0)}mm · gap {effLabelGap.toFixed(1)}mm · feed {effLabelHeight + effLabelGap + effFeedOffset > 0 ? (effLabelHeight + effLabelGap + effFeedOffset).toFixed(1) : '—'}mm total</>
                  ) : (
-                   <>Label: {effLabelWidth.toFixed(0)} × {effLabelHeight.toFixed(0)}mm</>
+                   <>Label: {effLabelWidth.toFixed(0)} × {effLabelHeight.toFixed(0)}mm · BC Box: {effBarcodeWidth.toFixed(0)} × {effBarcodeHeight.toFixed(0)}mm</>
                  )}
                  {effLabelWidth > printableMm && <span className="text-gray-900 font-bold"> — printable width {printableMm}mm</span>}
                </p>
@@ -533,36 +650,75 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
               <div className="border border-slate-200 rounded-lg p-2.5 space-y-2">
                 <label className="flex items-center space-x-2 cursor-pointer">
                   <input type="checkbox" checked={customLayout} onChange={e => setCustomLayout(e.target.checked)} className="rounded text-gray-900 focus:ring-black/20" />
-                  <span className="text-[11px] font-bold text-slate-800">Custom X/Y Position</span>
+                  <span className="text-[11px] font-bold text-slate-800">Custom X/Y Position & Barcode Resizing</span>
                 </label>
                 {customLayout && (
                   <>
                     <p className="text-[10px] text-slate-400 font-medium">
-                      Position each element in mm from the top-left corner of the label. X = from left edge, Y = from top edge.
+                      Drag elements directly on the preview card to position or resize them, or edit coordinates below. Barcode box fits strictly within paper edges.
                     </p>
-                    <div className="grid grid-cols-[1fr_52px_52px_52px] gap-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-                      <span>Element</span><span>X mm</span><span>Y mm</span><span>Size</span>
-                      {([['store', 'Store Name'], ['product', 'Product'], ['barcode', 'Barcode'], ['price', 'Price']] as const).map(([key, name]) => (
-                        <div key={key} className="contents">
-                          <span className="text-slate-700 normal-case font-semibold self-center">{name}</span>
-                          <input type="number" step={0.5} min={0} max={effLabelWidth} value={layoutXY[key].x}
-                            onChange={e => setLayoutXY(prev => ({ ...prev, [key]: { ...prev[key], x: e.target.value } }))}
-                            className="w-full px-1 py-1 bg-slate-50 border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
-                          <input type="number" step={0.5} min={0} max={effLabelHeight} value={layoutXY[key].y}
-                            onChange={e => setLayoutXY(prev => ({ ...prev, [key]: { ...prev[key], y: e.target.value } }))}
-                            className="w-full px-1 py-1 bg-slate-50 border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
-                          {key !== 'barcode' ? (
-                            <select value={fontSize[key as 'store' | 'product' | 'price']}
-                              onChange={e => setFontSize(prev => ({ ...prev, [key]: Number(e.target.value) as 1 | 2 }))}
-                              className="w-full px-1 py-1 bg-slate-50 border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900 cursor-pointer">
-                              <option value={1}>1x</option>
-                              <option value={2}>2x</option>
-                            </select>
-                          ) : (
-                            <span className="text-[9px] text-slate-400 self-center">H set above</span>
-                          )}
-                        </div>
-                      ))}
+                    <div className="grid grid-cols-[1fr_48px_48px_48px_48px] gap-1 text-[10px] font-bold text-slate-500 uppercase tracking-wider items-center">
+                      <span>Element</span><span>X mm</span><span>Y mm</span><span>W mm</span><span>H / Size</span>
+                      
+                      {/* Store */}
+                      <span className="text-slate-700 normal-case font-semibold">Store</span>
+                      <input type="number" step={0.5} min={0} max={Math.max(0, effLabelWidth - 5)} value={layoutXY.store.x}
+                        onChange={e => setLayoutXY(prev => ({ ...prev, store: { ...prev.store, x: e.target.value } }))}
+                        className="w-full px-1 py-1 bg-slate-50 border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
+                      <input type="number" step={0.5} min={0} max={Math.max(0, effLabelHeight - 3)} value={layoutXY.store.y}
+                        onChange={e => setLayoutXY(prev => ({ ...prev, store: { ...prev.store, y: e.target.value } }))}
+                        className="w-full px-1 py-1 bg-slate-50 border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
+                      <span className="text-[9px] text-slate-400 text-center">—</span>
+                      <select value={fontSize.store} onChange={e => setFontSize(prev => ({ ...prev, store: Number(e.target.value) as 1 | 2 }))}
+                        className="w-full px-1 py-1 bg-slate-50 border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900 cursor-pointer">
+                        <option value={1}>1x</option>
+                        <option value={2}>2x</option>
+                      </select>
+
+                      {/* Product */}
+                      <span className="text-slate-700 normal-case font-semibold">Product</span>
+                      <input type="number" step={0.5} min={0} max={Math.max(0, effLabelWidth - 5)} value={layoutXY.product.x}
+                        onChange={e => setLayoutXY(prev => ({ ...prev, product: { ...prev.product, x: e.target.value } }))}
+                        className="w-full px-1 py-1 bg-slate-50 border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
+                      <input type="number" step={0.5} min={0} max={Math.max(0, effLabelHeight - 3)} value={layoutXY.product.y}
+                        onChange={e => setLayoutXY(prev => ({ ...prev, product: { ...prev.product, y: e.target.value } }))}
+                        className="w-full px-1 py-1 bg-slate-50 border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
+                      <span className="text-[9px] text-slate-400 text-center">—</span>
+                      <select value={fontSize.product} onChange={e => setFontSize(prev => ({ ...prev, product: Number(e.target.value) as 1 | 2 }))}
+                        className="w-full px-1 py-1 bg-slate-50 border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900 cursor-pointer">
+                        <option value={1}>1x</option>
+                        <option value={2}>2x</option>
+                      </select>
+
+                      {/* Barcode Box */}
+                      <span className="text-slate-900 normal-case font-extrabold">Barcode</span>
+                      <input type="number" step={0.5} min={0} max={Math.max(0, effLabelWidth - effBarcodeWidth)} value={layoutXY.barcode.x}
+                        onChange={e => setLayoutXY(prev => ({ ...prev, barcode: { ...prev.barcode, x: e.target.value } }))}
+                        className="w-full px-1 py-1 bg-slate-50 border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
+                      <input type="number" step={0.5} min={0} max={Math.max(0, effLabelHeight - effBarcodeHeight)} value={layoutXY.barcode.y}
+                        onChange={e => setLayoutXY(prev => ({ ...prev, barcode: { ...prev.barcode, y: e.target.value } }))}
+                        className="w-full px-1 py-1 bg-slate-50 border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
+                      <input type="number" step={0.5} min={10} max={effLabelWidth} value={barcodeWidth}
+                        onChange={e => setBarcodeWidth(e.target.value)}
+                        className="w-full px-1 py-1 bg-slate-50 border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
+                      <input type="number" step={0.5} min={3} max={effLabelHeight} value={barcodeHeight}
+                        onChange={e => setBarcodeHeight(e.target.value)}
+                        className="w-full px-1 py-1 bg-slate-50 border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
+
+                      {/* Price */}
+                      <span className="text-slate-700 normal-case font-semibold">Price</span>
+                      <input type="number" step={0.5} min={0} max={Math.max(0, effLabelWidth - 5)} value={layoutXY.price.x}
+                        onChange={e => setLayoutXY(prev => ({ ...prev, price: { ...prev.price, x: e.target.value } }))}
+                        className="w-full px-1 py-1 bg-slate-50 border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
+                      <input type="number" step={0.5} min={0} max={Math.max(0, effLabelHeight - 3)} value={layoutXY.price.y}
+                        onChange={e => setLayoutXY(prev => ({ ...prev, price: { ...prev.price, y: e.target.value } }))}
+                        className="w-full px-1 py-1 bg-slate-50 border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
+                      <span className="text-[9px] text-slate-400 text-center">—</span>
+                      <select value={fontSize.price} onChange={e => setFontSize(prev => ({ ...prev, price: Number(e.target.value) as 1 | 2 }))}
+                        className="w-full px-1 py-1 bg-slate-50 border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900 cursor-pointer">
+                        <option value={1}>1x</option>
+                        <option value={2}>2x</option>
+                      </select>
                     </div>
                   </>
                 )}
@@ -742,38 +898,109 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
                   {printItemsList.map((item, idx) => {
                     const codeVal = normalizeBarcodeValue(item.product.barcode || item.product.sku || '000000', barcodeType);
                     if (customLayout) {
+                      const bcW = Math.max(12, effBarcodeWidth * previewScale);
                       const bcH = Math.max(12, effBarcodeHeight * previewScale);
+                      const bcX = effBarcodeX * previewScale;
+                      const bcY = effBarcodeY * previewScale;
+
                       return (
                         <div
                           key={idx}
-                          className="bg-white border border-slate-400 rounded shadow-xs select-none overflow-hidden"
-                          style={{ width: previewW, height: previewH, position: 'relative' }}
+                          className="bg-white border border-slate-400 rounded shadow-xs select-none overflow-hidden touch-none relative"
+                          style={{ width: previewW, height: previewH }}
                         >
                           {showStoreName && (
-                            <div className="absolute font-extrabold uppercase text-slate-700 truncate"
-                              style={{ left: effLayoutX('store') * previewScale, top: effLayoutY('store') * previewScale, width: Math.max(10, (effLabelWidth - effLayoutX('store')) * previewScale), fontSize: 8 * fontSize.store }}>
+                            <div
+                              className="absolute font-extrabold uppercase text-slate-700 truncate cursor-move hover:ring-1 hover:ring-slate-400 p-0.5 rounded"
+                              style={{
+                                left: effLayoutX('store') * previewScale,
+                                top: effLayoutY('store') * previewScale,
+                                width: Math.max(10, (effLabelWidth - effLayoutX('store')) * previewScale),
+                                fontSize: 8 * fontSize.store,
+                              }}
+                              onPointerDown={(e) => handlePointerDown(e, 'move-store')}
+                              onPointerMove={handlePointerMove}
+                              onPointerUp={handlePointerUp}
+                            >
                               {storeName}
                             </div>
                           )}
+
                           {showProductName && (
-                            <p className="absolute font-extrabold text-slate-900 leading-tight truncate"
-                              style={{ left: effLayoutX('product') * previewScale, top: effLayoutY('product') * previewScale, width: Math.max(10, (effLabelWidth - effLayoutX('product')) * previewScale), fontSize: 8 * fontSize.product }}>
+                            <p
+                              className="absolute font-extrabold text-slate-900 leading-tight truncate cursor-move hover:ring-1 hover:ring-slate-400 p-0.5 rounded"
+                              style={{
+                                left: effLayoutX('product') * previewScale,
+                                top: effLayoutY('product') * previewScale,
+                                width: Math.max(10, (effLabelWidth - effLayoutX('product')) * previewScale),
+                                fontSize: 8 * fontSize.product,
+                              }}
+                              onPointerDown={(e) => handlePointerDown(e, 'move-product')}
+                              onPointerMove={handlePointerMove}
+                              onPointerUp={handlePointerUp}
+                            >
                               {item.product.name}
                             </p>
                           )}
-                          <div className="absolute" style={{ left: effLayoutX('barcode') * previewScale, top: effLayoutY('barcode') * previewScale, width: Math.max(12, (effLabelWidth - effLayoutX('barcode')) * previewScale) }}>
-                            <BarcodeSVG value={codeVal} height={bcH} showValue={false} />
-                          </div>
-                          {showCodeText && (
-                            <div className="absolute font-mono font-bold text-slate-800 text-center truncate"
-                              style={{ left: effLayoutX('barcode') * previewScale, top: (effLayoutY('barcode') + effBarcodeHeight) * previewScale, width: Math.max(12, (effLabelWidth - effLayoutX('barcode')) * previewScale), fontSize: 7 }}>
-                              {codeVal}
+
+                          {/* BARCODE BOX WITH DRAG & RESIZE HANDLES */}
+                          <div
+                            className="absolute border border-dashed border-slate-900 bg-slate-900/5 group flex flex-col items-center justify-between rounded cursor-move select-none p-0.5"
+                            style={{ left: bcX, top: bcY, width: bcW, height: bcH }}
+                            onPointerDown={(e) => handlePointerDown(e, 'move-barcode')}
+                            onPointerMove={handlePointerMove}
+                            onPointerUp={handlePointerUp}
+                            title={`Drag box to move, handles to resize (${effBarcodeWidth.toFixed(1)}×${effBarcodeHeight.toFixed(1)}mm)`}
+                          >
+                            <div className="w-full h-full flex flex-col items-center justify-center overflow-hidden pointer-events-none">
+                              <BarcodeSVG value={codeVal} height={Math.max(8, bcH - (showCodeText ? 10 : 2))} showValue={false} />
+                              {showCodeText && (
+                                <div className="font-mono font-bold text-slate-900 text-center truncate w-full" style={{ fontSize: Math.max(6, Math.min(10, bcH * 0.25)) }}>
+                                  {codeVal}
+                                </div>
+                              )}
                             </div>
-                          )}
+
+                            {/* Resize Handle: East (Width) */}
+                            <div
+                              className="absolute -right-1 top-1/2 -translate-y-1/2 w-2 h-4 bg-slate-900 border border-white rounded-2xs cursor-ew-resize opacity-80 hover:opacity-100 z-10"
+                              title="Resize Barcode Width"
+                              onPointerDown={(e) => handlePointerDown(e, 'resize-barcode-e')}
+                              onPointerMove={handlePointerMove}
+                              onPointerUp={handlePointerUp}
+                            />
+                            {/* Resize Handle: South (Height) */}
+                            <div
+                              className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-2 bg-slate-900 border border-white rounded-2xs cursor-ns-resize opacity-80 hover:opacity-100 z-10"
+                              title="Resize Barcode Height"
+                              onPointerDown={(e) => handlePointerDown(e, 'resize-barcode-s')}
+                              onPointerMove={handlePointerMove}
+                              onPointerUp={handlePointerUp}
+                            />
+                            {/* Resize Handle: South-East (Width & Height) */}
+                            <div
+                              className="absolute -bottom-1 -right-1 w-2.5 h-2.5 bg-black border border-white rounded-2xs cursor-nwse-resize opacity-90 hover:opacity-100 z-10"
+                              title="Resize Barcode Box"
+                              onPointerDown={(e) => handlePointerDown(e, 'resize-barcode-se')}
+                              onPointerMove={handlePointerMove}
+                              onPointerUp={handlePointerUp}
+                            />
+                          </div>
+
                           {showPrice && (
-                            <div className="absolute bg-slate-900 text-white rounded flex items-center justify-center"
-                              style={{ left: effLayoutX('price') * previewScale, top: effLayoutY('price') * previewScale, width: Math.max(12, (effLabelWidth - effLayoutX('price')) * previewScale), fontSize: Math.max(7, 4 * fontSize.price) }}>
-                              <span className="font-extrabold font-mono px-1">
+                            <div
+                              className="absolute bg-slate-900 text-white rounded flex items-center justify-center cursor-move p-0.5"
+                              style={{
+                                left: effLayoutX('price') * previewScale,
+                                top: effLayoutY('price') * previewScale,
+                                width: Math.max(12, (effLabelWidth - effLayoutX('price')) * previewScale),
+                                fontSize: Math.max(7, 4 * fontSize.price),
+                              }}
+                              onPointerDown={(e) => handlePointerDown(e, 'move-price')}
+                              onPointerMove={handlePointerMove}
+                              onPointerUp={handlePointerUp}
+                            >
+                              <span className="font-extrabold font-mono px-1 truncate">
                                 {item.product.price.toLocaleString()} {currencySymbol}
                               </span>
                             </div>
@@ -797,8 +1024,8 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
                             {item.product.name}
                           </p>
                         )}
-                        <div className="w-full my-0.5 px-0.5">
-                          <BarcodeSVG value={codeVal} height={Math.max(12, previewH * 0.35)} showValue={showCodeText} />
+                        <div className="my-0.5 px-0.5 flex items-center justify-center overflow-hidden" style={{ width: effBarcodeWidth * previewScale, height: effBarcodeHeight * previewScale }}>
+                          <BarcodeSVG value={codeVal} height={Math.max(10, effBarcodeHeight * previewScale - (showCodeText ? 10 : 0))} showValue={showCodeText} />
                         </div>
                         {showPrice && (
                           <div className="w-full flex items-center justify-center bg-slate-900 text-white rounded py-0.5 px-1 mt-0.5">
