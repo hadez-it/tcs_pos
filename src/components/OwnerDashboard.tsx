@@ -1305,83 +1305,225 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
   useBackTabHistory(activeTab, setActiveTab, 'overview');
 
   return (
-    <div className="h-full w-full bg-gradient-to-br from-slate-50 to-slate-100/80 flex flex-col select-none overflow-hidden">
-      {/* Top App Bar - Android Material Design */}
-      <header className="bg-white border-b border-slate-200/80 shrink-0 safe-area-top z-30">
-        <div className="flex items-center justify-between px-4 h-14">
-          <div className="flex items-center gap-3">
-            {businessProfile.logo_url ? (
-              <img
-                src={businessProfile.logo_url}
-                alt="Logo"
-                className="w-9 h-9 rounded-xl object-cover bg-white border border-slate-200 p-0.5 shadow-sm shrink-0"
-              />
-            ) : (
-              <div className="w-9 h-9 bg-gradient-to-br from-gray-700 to-gray-700 rounded-xl flex items-center justify-center font-black text-lg text-white shadow-md shadow-black/20 shrink-0">
-                {businessProfile.name ? businessProfile.name.charAt(0).toUpperCase() : 'M'}
-              </div>
-            )}
-            <div className="min-w-0">
-              <h1 className="text-sm font-bold text-slate-900 truncate">
-                {activeTab === 'overview'
-                  ? 'Dashboard'
-                  : activeTab === 'cashiers'
-                  ? 'Cashiers'
-                  : activeTab === 'staff-performance'
-                  ? 'Staff'
-                  : activeTab === 'settings'
-                  ? 'Branding'
-                  : activeTab === 'transactions'
-                  ? 'Audit Logs'
-                  : activeTab === 'cash-flow'
-                  ? 'Cash Flow'
-                  : activeTab === 'label-generator'
-                  ? 'Label Designer'
-                  : activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
-              </h1>
-              <p className="text-[10px] text-slate-500 font-semibold flex items-center gap-1">
-                <span className={`w-1.5 h-1.5 rounded-full inline-block ${isSupabaseConfigured ? 'bg-black' : 'bg-black'} animate-pulse-soft`} />
-                {isSupabaseConfigured ? 'Cloud Connected' : 'Offline Mode'}
-              </p>
+    <div className="h-full w-full bg-gradient-to-br from-slate-50 to-slate-100/80 flex flex-col lg:flex-row select-none overflow-hidden">
+
+      {/* DESKTOP LEFT SIDEBAR NAVIGATION */}
+      <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:shrink-0 bg-white border-r border-slate-200 z-30 overflow-y-auto">
+        <div className="p-5 border-b border-slate-100 flex items-center space-x-3">
+          {businessProfile.logo_url ? (
+            <img
+              src={businessProfile.logo_url}
+              alt="Logo"
+              className="w-10 h-10 rounded-xl object-cover border border-slate-200 p-0.5 shadow-xs shrink-0"
+            />
+          ) : (
+            <div className="w-10 h-10 bg-black text-white rounded-xl flex items-center justify-center font-black text-xl shadow-xs shrink-0">
+              {businessProfile.name ? businessProfile.name.charAt(0).toUpperCase() : 'M'}
+            </div>
+          )}
+          <div className="min-w-0 flex-1">
+            <h2 className="font-extrabold text-slate-900 text-sm truncate">{businessProfile.name || 'MiBayate POS'}</h2>
+            <p className="text-[10px] text-slate-500 font-semibold flex items-center gap-1">
+              <span className={`w-1.5 h-1.5 rounded-full inline-block ${isSupabaseConfigured ? 'bg-black' : 'bg-black'} animate-pulse-soft`} />
+              {isSupabaseConfigured ? 'Cloud Connected' : 'Offline Mode'}
+            </p>
+          </div>
+        </div>
+
+        <div className="p-3 space-y-5 flex-1">
+          <div>
+            <p className="px-3 text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-2">Main Menu</p>
+            <div className="space-y-1">
+              <button onClick={() => handleTabSwitch('overview')} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeTab === 'overview' ? 'bg-black text-white shadow-xs' : 'text-slate-700 hover:bg-slate-100'}`}>
+                <TrendingUp className="w-4 h-4" /><span>Dashboard</span>
+              </button>
+              <button onClick={() => handleTabSwitch('products')} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeTab === 'products' ? 'bg-black text-white shadow-xs' : 'text-slate-700 hover:bg-slate-100'}`}>
+                <Package className="w-4 h-4" /><span>Products Catalog</span>
+              </button>
+              <button onClick={() => handleTabSwitch('cashiers')} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeTab === 'cashiers' ? 'bg-black text-white shadow-xs' : 'text-slate-700 hover:bg-slate-100'}`}>
+                <Users className="w-4 h-4" /><span>Staff & Cashiers</span>
+              </button>
+              <button onClick={() => handleTabSwitch('cash-flow')} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeTab === 'cash-flow' ? 'bg-black text-white shadow-xs' : 'text-slate-700 hover:bg-slate-100'}`}>
+                <Wallet className="w-4 h-4" /><span>Cash Flow</span>
+              </button>
+              <button onClick={() => handleTabSwitch('branches')} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeTab === 'branches' ? 'bg-black text-white shadow-xs' : 'text-slate-700 hover:bg-slate-100'}`}>
+                <Building2 className="w-4 h-4" /><span>Stores & Branches</span>
+              </button>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            {activeTab === 'products' && (
-              <button
-                onClick={openNewProductModal}
-                className="inline-flex items-center justify-center p-2.5 bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-800 hover:to-gray-800 active:scale-95 text-white rounded-xl shadow-lg shadow-black/20 transition-all cursor-pointer shrink-0"
+          <div>
+            <p className="px-3 text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-2">Management</p>
+            <div className="space-y-1">
+              <button onClick={() => handleTabSwitch('staff-performance')} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeTab === 'staff-performance' ? 'bg-black text-white shadow-xs' : 'text-slate-700 hover:bg-slate-100'}`}>
+                <Award className="w-4 h-4" /><span>Staff Performance</span>
+              </button>
+              <button onClick={() => handleTabSwitch('transactions')} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeTab === 'transactions' ? 'bg-black text-white shadow-xs' : 'text-slate-700 hover:bg-slate-100'}`}>
+                <Clipboard className="w-4 h-4" /><span>Audit Logs & History</span>
+              </button>
+              <button onClick={() => handleTabSwitch('settings')} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeTab === 'settings' ? 'bg-black text-white shadow-xs' : 'text-slate-700 hover:bg-slate-100'}`}>
+                <Store className="w-4 h-4" /><span>Business & Branding</span>
+              </button>
+              <button onClick={() => handleTabSwitch('label-generator')} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeTab === 'label-generator' ? 'bg-black text-white shadow-xs' : 'text-slate-700 hover:bg-slate-100'}`}>
+                <Printer className="w-4 h-4" /><span>Label Generator</span>
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <p className="px-3 text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-2">Data & Setup</p>
+            <div className="space-y-1">
+              <button onClick={() => setShowSqlModal(true)} className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-100 transition-all cursor-pointer">
+                <Database className="w-4 h-4 text-slate-500" /><span>Supabase SQL Setup</span>
+              </button>
+              <button onClick={() => setShowCsvModal(true)} className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-100 transition-all cursor-pointer">
+                <FileSpreadsheet className="w-4 h-4 text-slate-500" /><span>Import Products CSV</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="p-3 border-t border-slate-100 bg-slate-50/50 flex items-center justify-between">
+          <div className="min-w-0">
+            <p className="text-xs font-extrabold text-slate-900 truncate">{user.name}</p>
+            <p className="text-[10px] font-bold text-slate-400 capitalize">{user.role}</p>
+          </div>
+          <button onClick={() => { if (confirm('Are you sure you want to log out?')) onLogout(); }} className="p-2 text-slate-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors cursor-pointer" title="Log out">
+            <LogOut className="w-4 h-4" />
+          </button>
+        </div>
+      </aside>
+
+      {/* RIGHT MAIN CONTENT CONTAINER */}
+      <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
+        {/* Mobile Header (Hidden on Desktop) */}
+        <header className="lg:hidden bg-white border-b border-slate-200/80 shrink-0 safe-area-top z-30">
+          <div className="flex items-center justify-between px-4 h-14">
+            <div className="flex items-center gap-3">
+              {businessProfile.logo_url ? (
+                <img
+                  src={businessProfile.logo_url}
+                  alt="Logo"
+                  className="w-9 h-9 rounded-xl object-cover bg-white border border-slate-200 p-0.5 shadow-xs shrink-0"
+                />
+              ) : (
+                <div className="w-9 h-9 bg-black text-white rounded-xl flex items-center justify-center font-black text-lg shadow-md shrink-0">
+                  {businessProfile.name ? businessProfile.name.charAt(0).toUpperCase() : 'M'}
+                </div>
+              )}
+              <div className="min-w-0">
+                <h1 className="text-sm font-bold text-slate-900 truncate">
+                  {activeTab === 'overview'
+                    ? 'Dashboard'
+                    : activeTab === 'cashiers'
+                    ? 'Cashiers'
+                    : activeTab === 'staff-performance'
+                    ? 'Staff'
+                    : activeTab === 'settings'
+                    ? 'Branding'
+                    : activeTab === 'transactions'
+                    ? 'Audit Logs'
+                    : activeTab === 'cash-flow'
+                    ? 'Cash Flow'
+                    : activeTab === 'label-generator'
+                    ? 'Label Designer'
+                    : activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
+                </h1>
+                <p className="text-[10px] text-slate-500 font-semibold flex items-center gap-1">
+                  <span className={`w-1.5 h-1.5 rounded-full inline-block ${isSupabaseConfigured ? 'bg-black' : 'bg-black'} animate-pulse-soft`} />
+                  {isSupabaseConfigured ? 'Cloud Connected' : 'Offline Mode'}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              {activeTab === 'products' && (
+                <button onClick={openNewProductModal} className="p-2 bg-black hover:bg-gray-800 text-white rounded-xl shadow-xs transition-all cursor-pointer">
+                  <Plus className="w-4.5 h-4.5" />
+                </button>
+              )}
+              {activeTab === 'cashiers' && (
+                <button onClick={openNewCashierModal} className="p-2 bg-black hover:bg-gray-800 text-white rounded-xl shadow-xs transition-all cursor-pointer">
+                  <Plus className="w-4.5 h-4.5" />
+                </button>
+              )}
+              {activeTab === 'branches' && (
+                <button onClick={openNewBranchModal} className="p-2 bg-black hover:bg-gray-800 text-white rounded-xl shadow-xs transition-all cursor-pointer">
+                  <Plus className="w-4.5 h-4.5" />
+                </button>
+              )}
+              {activeTab === 'cash-flow' && (
+                <button onClick={openNewCashFlowModal} className="p-2 bg-black hover:bg-gray-800 text-white rounded-xl shadow-xs transition-all cursor-pointer">
+                  <Plus className="w-4.5 h-4.5" />
+                </button>
+              )}
+            </div>
+          </div>
+        </header>
+
+        {/* Desktop Header Top Bar (Hidden on Mobile) */}
+        <header className="hidden lg:flex items-center justify-between px-6 h-16 bg-white border-b border-slate-200 shrink-0 z-20">
+          <div>
+            <h1 className="text-base font-extrabold text-slate-900 tracking-tight">
+              {activeTab === 'overview'
+                ? 'Overview Analytics'
+                : activeTab === 'products'
+                ? 'Products Inventory'
+                : activeTab === 'cashiers'
+                ? 'Staff & Cashier Accounts'
+                : activeTab === 'staff-performance'
+                ? 'Staff Performance & Metrics'
+                : activeTab === 'settings'
+                ? 'Business Identity & Branding'
+                : activeTab === 'transactions'
+                ? 'Audit Logs & Transactions'
+                : activeTab === 'cash-flow'
+                ? 'Cash Flow Ledger'
+                : activeTab === 'label-generator'
+                ? 'Label Generator & Layout Designer'
+                : activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
+            </h1>
+            <p className="text-xs text-slate-500 font-medium">
+              Managing {businessProfile.name || 'Retail POS System'}
+            </p>
+          </div>
+
+          <div className="flex items-center space-x-3">
+            {branches.length > 0 && (
+              <select
+                value={selectedBranchId}
+                onChange={e => setSelectedBranchId(e.target.value)}
+                className="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:border-gray-900 cursor-pointer"
               >
-                <Plus className="w-4.5 h-4.5" />
+                <option value="all">All Store Branches</option>
+                {branches.map(b => (
+                  <option key={b.id} value={b.id}>{b.name}</option>
+                ))}
+              </select>
+            )}
+
+            {activeTab === 'products' && (
+              <button onClick={openNewProductModal} className="px-4 py-2 bg-black hover:bg-gray-800 text-white font-bold text-xs rounded-xl shadow-xs transition-all flex items-center space-x-1.5 cursor-pointer">
+                <Plus className="w-4 h-4" /><span>Add Product</span>
               </button>
             )}
             {activeTab === 'cashiers' && (
-              <button
-                onClick={openNewCashierModal}
-                className="inline-flex items-center justify-center p-2.5 bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-800 hover:to-gray-800 active:scale-95 text-white rounded-xl shadow-lg shadow-black/20 transition-all cursor-pointer shrink-0"
-              >
-                <Plus className="w-4.5 h-4.5" />
+              <button onClick={openNewCashierModal} className="px-4 py-2 bg-black hover:bg-gray-800 text-white font-bold text-xs rounded-xl shadow-xs transition-all flex items-center space-x-1.5 cursor-pointer">
+                <Plus className="w-4 h-4" /><span>Add Staff Member</span>
               </button>
             )}
             {activeTab === 'branches' && (
-              <button
-                onClick={openNewBranchModal}
-                className="inline-flex items-center justify-center p-2.5 bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-800 hover:to-gray-800 active:scale-95 text-white rounded-xl shadow-lg shadow-black/20 transition-all cursor-pointer shrink-0"
-              >
-                <Plus className="w-4.5 h-4.5" />
+              <button onClick={openNewBranchModal} className="px-4 py-2 bg-black hover:bg-gray-800 text-white font-bold text-xs rounded-xl shadow-xs transition-all flex items-center space-x-1.5 cursor-pointer">
+                <Plus className="w-4 h-4" /><span>Add Store Branch</span>
               </button>
             )}
             {activeTab === 'cash-flow' && (
-              <button
-                onClick={openNewCashFlowModal}
-                className="inline-flex items-center justify-center p-2.5 bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-800 hover:to-gray-800 active:scale-95 text-white rounded-xl shadow-lg shadow-black/20 transition-all cursor-pointer shrink-0"
-              >
-                <Plus className="w-4.5 h-4.5" />
+              <button onClick={openNewCashFlowModal} className="px-4 py-2 bg-black hover:bg-gray-800 text-white font-bold text-xs rounded-xl shadow-xs transition-all flex items-center space-x-1.5 cursor-pointer">
+                <Plus className="w-4 h-4" /><span>Add Entry</span>
               </button>
             )}
           </div>
-        </div>
-      </header>
+        </header>
 
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col min-h-0 overflow-hidden">
@@ -4580,8 +4722,8 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
         onRestock={handleQuickRestock}
       />
 
-      {/* Bottom Navigation Bar - Android Material Design */}
-      <nav className="bg-white border-t border-slate-200/80 shrink-0 safe-area-bottom z-40">
+      {/* Bottom Navigation Bar - Android Material Design (Hidden on Desktop) */}
+      <nav className="bg-white border-t border-slate-200/80 shrink-0 safe-area-bottom z-40 lg:hidden">
         <div className="flex items-stretch h-16">
           {mainTabs.map((tab) => (
             <button
@@ -4619,9 +4761,9 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
         </div>
       </nav>
 
-      {/* More Menu Bottom Sheet */}
+      {/* More Menu Bottom Sheet (Hidden on Desktop) */}
       {showMoreMenu && (
-        <div className="bottom-sheet-overlay" onClick={() => setShowMoreMenu(false)}>
+        <div className="bottom-sheet-overlay lg:hidden" onClick={() => setShowMoreMenu(false)}>
           <div className="bottom-sheet" onClick={(e) => e.stopPropagation()}>
             <div className="pt-3 pb-2">
               <div className="pull-indicator" />
@@ -4701,6 +4843,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }
