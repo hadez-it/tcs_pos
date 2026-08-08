@@ -12,11 +12,8 @@ import OfflineSyncBar from './components/OfflineSyncBar';
 import Auth from './components/Auth';
 import OwnerDashboard from './components/OwnerDashboard';
 import CashierDashboard from './components/CashierDashboard';
+import PullToRefresh from './components/PullToRefresh';
 
-/**
- * Lives inside ToastProvider so the "press back again to exit" hint can use the
- * app's own toast styling instead of a native dialog.
- */
 function ExitPrompt() {
   const { toast } = useToast();
 
@@ -78,17 +75,19 @@ export default function App() {
   return (
     <ToastProvider>
       <ExitPrompt />
-      <div className="h-full w-full flex flex-col bg-slate-50 text-slate-900 select-none overflow-hidden">
-        <OfflineSyncBar />
-        <SetupBanner />
-        {!currentUser ? (
-          <Auth onLoginSuccess={handleLoginSuccess} />
-        ) : currentUser.role === 'owner' ? (
-          <OwnerDashboard user={currentUser} onLogout={handleLogout} />
-        ) : (
-          <CashierDashboard user={currentUser} onLogout={handleLogout} />
-        )}
-      </div>
+      <PullToRefresh>
+        <div className="h-full w-full flex flex-col bg-slate-50 text-slate-900 select-none overflow-hidden">
+          <OfflineSyncBar />
+          <SetupBanner />
+          {!currentUser ? (
+            <Auth onLoginSuccess={handleLoginSuccess} />
+          ) : currentUser.role === 'owner' ? (
+            <OwnerDashboard user={currentUser} onLogout={handleLogout} />
+          ) : (
+            <CashierDashboard user={currentUser} onLogout={handleLogout} />
+          )}
+        </div>
+      </PullToRefresh>
     </ToastProvider>
   );
 }
