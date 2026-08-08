@@ -276,6 +276,35 @@ export function feedRaster(n: number): Uint8Array {
   );
 }
 
+/** Set absolute horizontal print position in dots from the left margin. */
+function setAbsoluteX(dots: number): Uint8Array {
+  const n = Math.max(0, Math.round(dots)) & 0xffff;
+  return new Uint8Array([0x1b, 0x24, n & 0xff, (n >> 8) & 0xff]); // ESC $ nL nH
+}
+
+/** Print one or more text lines at an absolute (x, y) position. */
+function absoluteTextLines(
+  lines: string[],
+  xDots: number,
+  size: 1 | 2,
+  bold: boolean,
+): Uint8Array {
+  const parts: Uint8Array[] = [];
+  const scale = size === 2 ? 8 : 0; // GS ! upper nibble = height scale
+  for (const line of lines) {
+    parts.push(setAbsoluteX(xDots));
+    parts.push(new Uint8Array([0x1b, 0x45, bold ? 1 : 0]));
+    parts.push(new Uint8Array([0x1d, 0x21, scale]));
+    parts.push(strToBytes(line));
+    parts.push(new Uint8Array([0x0a]));
+  }
+  return concat(...parts);
+}
+
+function mmToDots(mm: number): number {
+  return Math.round(mm * DOTS_PER_MM);
+}
+
 // ── Paper control ────────────────────────────────────────────────────────────
 
 /** Feed paper by n lines */
@@ -444,6 +473,29 @@ export interface ThermalLabelOptions {
   labelGapMm?: number;
   /** Fine-tune feed distance in mm (positive feeds more, negative less). */
   feedOffsetMm?: number;
+  /**
+   * Optional absolute-position layout. When provided, each element with a
+   * position is placed at (xMm, yMm) from the top-left of the label using
+   * ESC $ / ESC J absolute moves instead of the stacked layout. Elements
+   * without a position are skipped.
+   */
+  layout?: ThermalLabelLayout;
+}
+
+export interface ThermalLabelLayout {
+  storeName?: LabelPosition;
+  productName?: LabelPosition;
+  barcode?: { xMm: number; yMm: number };
+  price?: LabelPosition;
+}
+
+export interface LabelPosition {
+  /** mm from the left edge of the label. */
+  xMm: number;
+  /** mm from the top edge of the label. */
+  yMm: number;
+  /** Text scale: 1 = normal, 2 = double size. */
+  size?: 1 | 2;
 }
 
 const DOTS_PER_MM = 8; // 203 dpi
@@ -568,9 +620,16 @@ export function buildThermalLabel(opts: ThermalLabelOptions): Uint8Array {
   const labelHeightDots = Math.max(Math.round(labelHeightMm * DOTS_PER_MM), 24);
   const charsPerLine = Math.max(Math.floor(labelWidthDots / FONT_A_CHAR_DOTS), 4);
 
+  const layout = opts.layout;
+  const hasCustomLayout = !!(layout && (layout.storeName || layout.productName || layout.barcode || layout.price));
+
   const cmds: Uint8Array[] = [];
   cmds.push(resetFormat());
   cmds.push(new Uint8Array([0x1b, 0x61, 1])); // ESC a 1 → center
+
+  if (hasCustomLayout) {
+    return buildCustomThermalLabel(opts);
+  }
 
   let usedDots = 0;
 
@@ -659,6 +718,135 @@ export function buildThermalLabel(opts: ThermalLabelOptions): Uint8Array {
     if (cutMode === 'partial') cmds.push(partialCut());
     else if (cutMode === 'full') cmds.push(cut());
   }
+
+  return concat(...cmds);
+}
+
+/**
+ * Build a label using absolute (x, y) element positions. Each element listed
+ * in `opts.layout` is moved to its coordinate with ESC $ (horizontal) and a
+ * dot feed (vertical); elements are rendered top-to-bottom.
+ */
+function buildCustomThermalLabel(opts: ThermalLabelOptions): Uint8Array {
+  const {
+    storeName = '',
+    productName = '',
+    barcodeValue = '000000',
+    price = 0,
+    showStoreName = true,
+    showProductName = true,
+    showPrice = true,
+    showBarcodeText = true,
+    currencySymbol = 'Ks',
+    paperWidthMm = 58,
+    labelWidthMm = 50,
+    labelHeightMm = 30,
+    barcodeType = 'CODE39',
+    barcodeHeightMm = 10,
+    paperMode = 'sticker',
+    labelGapMm = 3,
+    feedOffsetMm = 0,
+    layout,
+  } = opts;
+
+  const printableMm = getPrintableMm(paperWidthMm);
+  const effLabelWidthMm = Math.min(labelWidthMm, printableMm);
+  const labelWidthDots = Math.max(Math.round(effLabelWidthMm * DOTS_PER_MM), 1);
+  const labelHeightDots = Math.max(Math.round(labelHeightMm * DOTS_PER_MM), 24);
+  const barcodeHeightDots = Math.max(Math.round(barcodeHeightMm * DOTS_PER_MM), 20);
+  const barcodeData = normalizeBarcodeValue(barcodeValue, barcodeType);
+
+  const cmds: Uint8Array[] = [];
+  cmds.push(resetFormat());
+  cmds.push(new Uint8Array([0x1b, 0x61, 0])); // left align — X moves are absolute
+
+  interface CustomEl {
+    yDots: number;
+    heightDots: number;
+    emit: () => Uint8Array;
+  }
+  const els: CustomEl[] = [];
+
+  const wrapChars = (xMm: number, size: 1 | 2, widthMm?: number) => {
+    const availDots = Math.max(mmToDots((widthMm ?? effLabelWidthMm) - xMm), mmToDots(4));
+    return Math.max(Math.floor(availDots / (FONT_A_CHAR_DOTS * size)), 1);
+  };
+
+  if (showStoreName && storeName && layout?.storeName) {
+    const p = layout.storeName;
+    const size = p.size ?? 1;
+    const line = storeName.length > wrapChars(p.xMm, size) ? `${storeName.slice(0, wrapChars(p.xMm, size) - 1)}…` : storeName;
+    els.push({
+      yDots: mmToDots(p.yMm),
+      heightDots: FONT_A_LINE_DOTS * size,
+      emit: () => absoluteTextLines([line], mmToDots(p.xMm), size, true),
+    });
+  }
+
+  if (showProductName && productName && layout?.productName) {
+    const p = layout.productName;
+    const size = p.size ?? 1;
+    const lines = wrapLabelText(productName, wrapChars(p.xMm, size));
+    els.push({
+      yDots: mmToDots(p.yMm),
+      heightDots: lines.length * FONT_A_LINE_DOTS * size,
+      emit: () => absoluteTextLines(lines, mmToDots(p.xMm), size, true),
+    });
+  }
+
+  if (layout?.barcode) {
+    const p = layout.barcode;
+    const maxWDots = Math.max(labelWidthDots - mmToDots(p.xMm), mmToDots(8));
+    const parts: Uint8Array[] = [];
+    if (barcodeType === 'CODE39') {
+      parts.push(setAbsoluteX(mmToDots(p.xMm)));
+      parts.push(rasterBarcode(barcodeData, barcodeHeightDots, maxWDots));
+      if (showBarcodeText) {
+        parts.push(feedRaster(barcodeHeightDots));
+        parts.push(absoluteTextLines([barcodeData], mmToDots(p.xMm), 1, false));
+      }
+    } else {
+      const moduleWidth = Math.min(Math.max(Math.floor(maxWDots / estimateBarcodeModules(barcodeData, barcodeType)), 2), 4);
+      parts.push(setAbsoluteX(mmToDots(p.xMm)));
+      parts.push(barcode(barcodeData, barcodeType, barcodeHeightDots, showBarcodeText ? 2 : 0, moduleWidth));
+    }
+    els.push({
+      yDots: mmToDots(p.yMm),
+      heightDots: barcodeHeightDots + (showBarcodeText ? FONT_A_LINE_DOTS : 0),
+      emit: () => concat(...parts),
+    });
+  }
+
+  if (showPrice && layout?.price) {
+    const p = layout.price;
+    const size = p.size ?? 1;
+    const priceStr = `${Number(price).toLocaleString(undefined, { maximumFractionDigits: 0 })} ${currencySymbol}`.trim();
+    els.push({
+      yDots: mmToDots(p.yMm),
+      heightDots: FONT_A_LINE_DOTS * size,
+      emit: () => absoluteTextLines([priceStr], mmToDots(p.xMm), size, true),
+    });
+  }
+
+  // Render top-to-bottom: feed down to each element's Y, set X, print.
+  let cursorY = 0;
+  for (const el of els.sort((a, b) => a.yDots - b.yDots)) {
+    if (el.yDots > cursorY) cmds.push(feedDots(el.yDots - cursorY));
+    else if (el.yDots < cursorY) cmds.push(feedDots(1)); // cannot rewind; slight pad
+    cmds.push(el.emit());
+    cursorY = el.yDots + el.heightDots;
+  }
+
+  // Advance the remaining distance to complete this label pitch.
+  const isSticker = paperMode === 'sticker';
+  const targetDots = isSticker
+    ? Math.max(Math.round((labelHeightMm + labelGapMm + feedOffsetMm) * DOTS_PER_MM), 0)
+    : labelHeightDots;
+  const remainingDots = Math.max(targetDots - cursorY, 0);
+  const feedLines = Math.floor(remainingDots / FONT_A_LINE_DOTS);
+  const feedRemainder = remainingDots % FONT_A_LINE_DOTS;
+  if (feedLines > 0) cmds.push(feed(feedLines));
+  if (feedRemainder > 0) cmds.push(feedDots(feedRemainder));
 
   return concat(...cmds);
 }

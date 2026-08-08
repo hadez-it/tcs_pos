@@ -69,14 +69,29 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
   const [paperMode, setPaperMode] = useState<'sticker' | 'receipt'>('sticker');
 
   // ── Custom paper size (mm) ──────────────────────────────────────────────────
-  const [paperWidth, setPaperWidth] = useState<'32' | '58' | '80'>('32');
-  const [labelWidth, setLabelWidth] = useState('32');
-  const [labelHeight, setLabelHeight] = useState('25');
+  const [paperWidth, setPaperWidth] = useState<'32' | '58' | '80'>('80');
+  const [labelWidth, setLabelWidth] = useState('80');
+  const [labelHeight, setLabelHeight] = useState('30');
   const [barcodeHeight, setBarcodeHeight] = useState('10');
   const [barcodeType, setBarcodeType] = useState<BarcodeType>('CODE39');
   const [cutMode, setCutMode] = useState<'off' | 'full' | 'partial'>('off');
   const [labelGap, setLabelGap] = useState('3');
   const [feedOffset, setFeedOffset] = useState('0');
+
+  // ── Custom X/Y design layout ───────────────────────────────────────────────
+  const [customLayout, setCustomLayout] = useState(false);
+  const [layoutXY, setLayoutXY] = useState<{
+    store: { x: string; y: string }; product: { x: string; y: string };
+    barcode: { x: string; y: string }; price: { x: string; y: string };
+  }>({
+    store: { x: '0', y: '0' },
+    product: { x: '0', y: '6' },
+    barcode: { x: '0', y: '12' },
+    price: { x: '0', y: '24' },
+  });
+  const [fontSize, setFontSize] = useState<{ store: 1 | 2; product: 1 | 2; price: 1 | 2 }>({
+    store: 1, product: 1, price: 2,
+  });
 
   // ── Printer state (native SPP in Android shell, Web BT in browser) ────────
   const isNative = printerBridge.isNativeShell();
@@ -98,6 +113,17 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
   const effBarcodeHeight = clamp(parseMm(barcodeHeight) || 10, 3, Math.min(effLabelHeight * 0.8, 40));
   const effLabelGap = clamp(parseMm(labelGap) || 3, 2, 10);
   const effFeedOffset = clamp(parseMm(feedOffset) || 0, -10, 10);
+
+  const effLayoutX = (k: keyof typeof layoutXY) => clamp(parseMm(layoutXY[k].x) || 0, 0, effLabelWidth);
+  const effLayoutY = (k: keyof typeof layoutXY) => clamp(parseMm(layoutXY[k].y) || 0, 0, effLabelHeight);
+  const layoutForPrint = customLayout
+    ? {
+        storeName: showStoreName ? { xMm: effLayoutX('store'), yMm: effLayoutY('store'), size: fontSize.store } : undefined,
+        productName: showProductName ? { xMm: effLayoutX('product'), yMm: effLayoutY('product'), size: fontSize.product } : undefined,
+        barcode: { xMm: effLayoutX('barcode'), yMm: effLayoutY('barcode') },
+        price: showPrice ? { xMm: effLayoutX('price'), yMm: effLayoutY('price'), size: fontSize.price } : undefined,
+      }
+    : undefined;
 
   const printItemsList: Array<{ product: Product; labelIndex: number }> = [];
   Object.entries(selectedProducts).forEach(([prodId, rawQty]) => {
@@ -173,6 +199,7 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
     paperMode,
     labelGapMm: effLabelGap,
     feedOffsetMm: effFeedOffset,
+    layout: layoutForPrint,
   });
 
   const handleBtPrint = useCallback(async () => {
@@ -396,11 +423,11 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
                    Paper Width
                  </label>
-                 <div className="flex gap-1.5 text-xs">
-                   <button onClick={() => setPaperWidth('32')} className={segBtn(paperWidth === '32')}>32mm</button>
-                   <button onClick={() => setPaperWidth('58')} className={segBtn(paperWidth === '58')}>58mm</button>
-                   <button onClick={() => setPaperWidth('80')} className={segBtn(paperWidth === '80')}>80mm</button>
-                 </div>
+                  <div className="flex gap-1.5 text-xs">
+                    <button onClick={() => { setPaperWidth('32'); setLabelWidth('32'); }} className={segBtn(paperWidth === '32')}>32mm</button>
+                    <button onClick={() => { setPaperWidth('58'); setLabelWidth('58'); }} className={segBtn(paperWidth === '58')}>58mm</button>
+                    <button onClick={() => { setPaperWidth('80'); setLabelWidth('80'); }} className={segBtn(paperWidth === '80')}>80mm</button>
+                  </div>
                </div>
 
                <div className="grid grid-cols-3 gap-2">
@@ -500,6 +527,45 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
                   <input type="checkbox" checked={showCodeText} onChange={e => setShowCodeText(e.target.checked)} className="rounded text-gray-900 focus:ring-black/20" />
                   <span>SKU / BC Text</span>
                 </label>
+              </div>
+
+              {/* Custom X/Y positioning */}
+              <div className="border border-slate-200 rounded-lg p-2.5 space-y-2">
+                <label className="flex items-center space-x-2 cursor-pointer">
+                  <input type="checkbox" checked={customLayout} onChange={e => setCustomLayout(e.target.checked)} className="rounded text-gray-900 focus:ring-black/20" />
+                  <span className="text-[11px] font-bold text-slate-800">Custom X/Y Position</span>
+                </label>
+                {customLayout && (
+                  <>
+                    <p className="text-[10px] text-slate-400 font-medium">
+                      Position each element in mm from the top-left corner of the label. X = from left edge, Y = from top edge.
+                    </p>
+                    <div className="grid grid-cols-[1fr_52px_52px_52px] gap-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                      <span>Element</span><span>X mm</span><span>Y mm</span><span>Size</span>
+                      {([['store', 'Store Name'], ['product', 'Product'], ['barcode', 'Barcode'], ['price', 'Price']] as const).map(([key, name]) => (
+                        <div key={key} className="contents">
+                          <span className="text-slate-700 normal-case font-semibold self-center">{name}</span>
+                          <input type="number" step={0.5} min={0} max={effLabelWidth} value={layoutXY[key].x}
+                            onChange={e => setLayoutXY(prev => ({ ...prev, [key]: { ...prev[key], x: e.target.value } }))}
+                            className="w-full px-1 py-1 bg-slate-50 border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
+                          <input type="number" step={0.5} min={0} max={effLabelHeight} value={layoutXY[key].y}
+                            onChange={e => setLayoutXY(prev => ({ ...prev, [key]: { ...prev[key], y: e.target.value } }))}
+                            className="w-full px-1 py-1 bg-slate-50 border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
+                          {key !== 'barcode' ? (
+                            <select value={fontSize[key as 'store' | 'product' | 'price']}
+                              onChange={e => setFontSize(prev => ({ ...prev, [key]: Number(e.target.value) as 1 | 2 }))}
+                              className="w-full px-1 py-1 bg-slate-50 border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900 cursor-pointer">
+                              <option value={1}>1x</option>
+                              <option value={2}>2x</option>
+                            </select>
+                          ) : (
+                            <span className="text-[9px] text-slate-400 self-center">H set above</span>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
               </div>
 
               <div className="grid grid-cols-2 gap-2">
@@ -675,6 +741,46 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
                 <div className="flex flex-wrap gap-3 justify-center items-start">
                   {printItemsList.map((item, idx) => {
                     const codeVal = normalizeBarcodeValue(item.product.barcode || item.product.sku || '000000', barcodeType);
+                    if (customLayout) {
+                      const bcH = Math.max(12, effBarcodeHeight * previewScale);
+                      return (
+                        <div
+                          key={idx}
+                          className="bg-white border border-slate-400 rounded shadow-xs select-none overflow-hidden"
+                          style={{ width: previewW, height: previewH, position: 'relative' }}
+                        >
+                          {showStoreName && (
+                            <div className="absolute font-extrabold uppercase text-slate-700 truncate"
+                              style={{ left: effLayoutX('store') * previewScale, top: effLayoutY('store') * previewScale, width: Math.max(10, (effLabelWidth - effLayoutX('store')) * previewScale), fontSize: 8 * fontSize.store }}>
+                              {storeName}
+                            </div>
+                          )}
+                          {showProductName && (
+                            <p className="absolute font-extrabold text-slate-900 leading-tight truncate"
+                              style={{ left: effLayoutX('product') * previewScale, top: effLayoutY('product') * previewScale, width: Math.max(10, (effLabelWidth - effLayoutX('product')) * previewScale), fontSize: 8 * fontSize.product }}>
+                              {item.product.name}
+                            </p>
+                          )}
+                          <div className="absolute" style={{ left: effLayoutX('barcode') * previewScale, top: effLayoutY('barcode') * previewScale, width: Math.max(12, (effLabelWidth - effLayoutX('barcode')) * previewScale) }}>
+                            <BarcodeSVG value={codeVal} height={bcH} showValue={false} />
+                          </div>
+                          {showCodeText && (
+                            <div className="absolute font-mono font-bold text-slate-800 text-center truncate"
+                              style={{ left: effLayoutX('barcode') * previewScale, top: (effLayoutY('barcode') + effBarcodeHeight) * previewScale, width: Math.max(12, (effLabelWidth - effLayoutX('barcode')) * previewScale), fontSize: 7 }}>
+                              {codeVal}
+                            </div>
+                          )}
+                          {showPrice && (
+                            <div className="absolute bg-slate-900 text-white rounded flex items-center justify-center"
+                              style={{ left: effLayoutX('price') * previewScale, top: effLayoutY('price') * previewScale, width: Math.max(12, (effLabelWidth - effLayoutX('price')) * previewScale), fontSize: Math.max(7, 4 * fontSize.price) }}>
+                              <span className="font-extrabold font-mono px-1">
+                                {item.product.price.toLocaleString()} {currencySymbol}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    }
                     return (
                       <div
                         key={idx}
