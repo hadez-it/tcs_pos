@@ -8,7 +8,7 @@ import { Product } from '../types';
 import BarcodeSVG from './BarcodeSVG';
 import * as printerBridge from '../lib/printerBridge';
 import {
-  buildThermalLabel, init as escInit, setCodePage,
+  buildThermalLabel, init as escInit, setCodePage, feedPitch,
   BarcodeType, normalizeBarcodeValue, getPrintableMm, testPrint,
 } from '../lib/escpos';
 
@@ -216,6 +216,16 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
       setBtError(err?.message || 'Test print failed');
     }
   }, [btPrinting]);
+
+  const handleFeedAlign = useCallback(async () => {
+    if (!printerBridge.isConnected() || btPrinting) return;
+    setBtError(null);
+    try {
+      await printerBridge.send(feedPitch(effLabelHeight, effLabelGap, effFeedOffset));
+    } catch (err: any) {
+      setBtError(err?.message || 'Feed failed');
+    }
+  }, [btPrinting, effLabelHeight, effLabelGap, effFeedOffset]);
 
   if (!isOpen) return null;
 
@@ -448,7 +458,7 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
 
                {paperMode === 'sticker' && (
                  <p className="text-[10px] text-gray-500 font-medium leading-relaxed">
-                   Set the height to match your sticker length (e.g. 30mm). The printer feeds one full label + gap so the next sticker is ready at the print head.
+                   Set the height to match your sticker length (e.g. 25mm). Your printer has no label sensor, so before printing tap <strong>Feed</strong> (top-right) until the top edge of a sticker sits at the print head — this aligns every label.
                  </p>
                )}
              </div>
@@ -622,6 +632,15 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
                   >
                     <Printer className="w-3.5 h-3.5" />
                     <span>Test Print</span>
+                  </button>
+                  <button
+                    onClick={handleFeedAlign}
+                    disabled={!btConnected || btPrinting}
+                    className="px-3 py-1.5 bg-slate-400 hover:bg-slate-500 text-white font-bold text-xs rounded-lg shadow-xs transition-colors flex items-center space-x-1.5 disabled:opacity-50 cursor-pointer"
+                    title="Advance paper by one sticker so you can align the top of a label at the print head"
+                  >
+                    <Ruler className="w-3.5 h-3.5" />
+                    <span>Feed</span>
                   </button>
                   <button
                     onClick={handleBtPrint}

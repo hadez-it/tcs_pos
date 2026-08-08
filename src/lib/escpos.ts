@@ -295,6 +295,21 @@ export function cut(): Uint8Array {
   return new Uint8Array([0x1d, 0x56, 0]); // GS V 0
 }
 
+/**
+ * Feed exactly one sticker pitch (labelHeight + gap + offset) in mm.
+ * Used by the "Feed" button so the user can step the paper one label at a
+ * time and align the top of a sticker at the print head before printing.
+ */
+export function feedPitch(labelHeightMm: number, labelGapMm: number, feedOffsetMm = 0): Uint8Array {
+  const dots = Math.max(Math.round((labelHeightMm + labelGapMm + feedOffsetMm) * DOTS_PER_MM), 0);
+  const lines = Math.floor(dots / FONT_A_LINE_DOTS);
+  const rem = dots % FONT_A_LINE_DOTS;
+  return concat(
+    lines > 0 ? feed(lines) : new Uint8Array(0),
+    rem > 0 ? feedDots(rem) : new Uint8Array(0),
+  );
+}
+
 /** Partial cut (if supported) */
 export function partialCut(): Uint8Array {
   return new Uint8Array([0x1d, 0x56, 1]); // GS V 1
