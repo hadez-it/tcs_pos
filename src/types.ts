@@ -30,6 +30,7 @@ export interface UserProfile {
   email: string;
   name: string;
   role: UserRole;
+  password?: string;
   branch_id?: string;
   branch_name?: string;
   created_at: string;

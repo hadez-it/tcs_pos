@@ -249,7 +249,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
     setEditingCashier(cashier);
     setCashierForm({
       name: cashier.name || '',
-      email: cashier.email || '',
+      email: formatDisplayEmail(cashier.email),
       password: '',
       branch_id: cashier.branch_id || ''
     });
@@ -1198,6 +1198,9 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
           branch_id: cashierForm.branch_id || undefined,
           branch_name: assignedBranch ? assignedBranch.name : undefined
         };
+        if (cashierForm.password) {
+          updates.password = cashierForm.password;
+        }
         await dbService.auth.updateCashier(editingCashier.id, updates);
         setFormSuccess('Cashier credentials updated successfully!');
       } else {
@@ -4165,15 +4168,20 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
               </div>
 
               <div>
-                <label className="block text-[10px] font-bold text-slate-600 uppercase tracking-wider mb-1">Username / Email</label>
+                <label className="block text-[10px] font-bold text-slate-600 uppercase tracking-wider mb-1">Username</label>
                 <div className="relative">
                   <input
                     type="text"
                     required
+                    disabled={!!editingCashier}
                     value={cashierForm.email}
                     onChange={(e) => setCashierForm({ ...cashierForm, email: e.target.value })}
                     placeholder="e.g. cashier1"
-                    className="w-full p-2.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-gray-900 font-medium"
+                    className={`w-full p-2.5 text-xs border rounded-lg focus:outline-none focus:border-gray-900 font-medium ${
+                      editingCashier
+                        ? 'bg-slate-100 border-slate-200 text-slate-400 cursor-not-allowed'
+                        : 'bg-slate-50 border-slate-200 text-slate-900'
+                    }`}
                   />
                 </div>
               </div>
