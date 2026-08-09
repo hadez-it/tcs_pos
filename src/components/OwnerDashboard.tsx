@@ -57,8 +57,10 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
 
   // Cash Flow State
   const [cashFlowEntries, setCashFlowEntries] = useState<CashFlowEntry[]>([]);
-  const [cfRange, setCfRange] = useState<'today' | '7d' | '30d' | 'month' | 'all'>('7d');
+  const [cfRange, setCfRange] = useState<'today' | '7d' | '30d' | 'month' | 'all' | 'custom'>('7d');
   const [cfTypeFilter, setCfTypeFilter] = useState<'all' | 'income' | 'expense'>('all');
+  const [cfStartDate, setCfStartDate] = useState(''); // YYYY-MM-DD
+  const [cfEndDate, setCfEndDate] = useState(''); // YYYY-MM-DD
   const [cfSearch, setCfSearch] = useState('');
   const [cfCategoryFilter, setCfCategoryFilter] = useState('All');
 
@@ -562,6 +564,11 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
         return d.getTime() >= now.getTime() - 29 * 24 * 60 * 60 * 1000;
       case 'month':
         return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
+      case 'custom':
+        if (!cfStartDate || !cfEndDate) return true;
+        const start = new Date(cfStartDate).getTime();
+        const end = new Date(cfEndDate).getTime();
+        return d.getTime() >= start && d.getTime() <= end;
       case 'all':
       default:
         return true;
@@ -1960,7 +1967,8 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                           ['7d', '7 Days'],
                           ['30d', '30 Days'],
                           ['month', 'Month'],
-                          ['all', 'All']
+                          ['all', 'All'],
+                          ['custom', 'Custom']
                         ] as const).map(([val, label]) => (
                           <button
                             key={val}
@@ -1974,6 +1982,24 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                             {label}
                           </button>
                         ))}
+                        {cfRange === 'custom' && (
+                          <div className="flex space-x-2 mt-2 px-2">
+                            <input
+                              type="date"
+                              value={cfStartDate}
+                              onChange={e => setCfStartDate(e.target.value)}
+                              className="flex-1 p-1 border rounded text-xs"
+                              placeholder="Start"
+                            />
+                            <input
+                              type="date"
+                              value={cfEndDate}
+                              onChange={e => setCfEndDate(e.target.value)}
+                              className="flex-1 p-1 border rounded text-xs"
+                              placeholder="End"
+                            />
+                          </div>
+                        )}
                       </div>
                     </div>
 
