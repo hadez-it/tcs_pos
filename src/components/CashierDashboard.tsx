@@ -1,15 +1,16 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useBackDismiss, useBackTabHistory } from '../lib/backNavigation';
 import { 
   Search, ShoppingCart, LogOut, RefreshCw, User, ShoppingBag, 
   Minus, Plus, Trash2, DollarSign, CreditCard, Smartphone, Check, 
-  FileText, Tag, ArrowRight, Printer, AlertCircle, Sparkles, Filter, ChevronDown, Menu, X, Ban, History
+  FileText, Tag, ArrowRight, Printer, AlertCircle, Sparkles, Filter, ChevronDown, Menu, X, Ban, History, Camera
 } from 'lucide-react';
 import { dbService, DEFAULT_BUSINESS_PROFILE } from '../lib/supabase';
 import { Product, SaleWithItems, UserProfile, BusinessProfile } from '../types';
 import { formatCurrency } from '../utils/format';
 import { useToast } from '../utils/toast';
 import SearchableCategorySelect from './SearchableCategorySelect';
+import BarcodeScannerModal from './BarcodeScannerModal';
 
 interface CashierDashboardProps {
   user: UserProfile;
@@ -68,11 +69,13 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
   const [showCartModal, setShowCartModal] = useState(false);
   const [businessProfile, setBusinessProfile] = useState<BusinessProfile>(DEFAULT_BUSINESS_PROFILE);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
+  const [showScanner, setShowScanner] = useState(false);
 
   // Back button: each surface pops in the reverse order it was opened.
   useBackDismiss(showCartModal, () => setShowCartModal(false));
   useBackDismiss(showHeldCartsModal, () => setShowHeldCartsModal(false));
   useBackDismiss(showReceipt, () => { setShowReceipt(false); setCompletedSale(null); });
+  useBackDismiss(showScanner, () => setShowScanner(false));
 
   const handleTabSwitch = (tab: 'pos' | 'history') => {
     if (tab === activeTab) return;
@@ -161,6 +164,18 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
       return [...prev, { product, quantity: 1 }];
     });
   };
+
+  const handleBarcodeScan = useCallback((barcode: string) => {
+    const match = products.find(p =>
+      p.barcode === barcode || p.sku === barcode
+    );
+    if (match) {
+      addToCart(match);
+      toast(`${match.name} added to cart`, 'success');
+    } else {
+      toast(`No product found for barcode: ${barcode}`, 'error');
+    }
+  }, [products, toast]);
 
   const updateQuantity = (productId: string, delta: number) => {
     setCart(prev => {
@@ -443,15 +458,24 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
             <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
               {/* Search Bar */}
               <div className="px-3 sm:px-4 pt-3 pb-2 shrink-0">
-                <div className="relative">
-                  <Search className="absolute inset-y-0 left-0 pl-4 w-4.5 h-4.5 my-auto text-slate-400 pointer-events-none" />
-                  <input
-                    type="text"
-                    placeholder="Search products by name, SKU, or scan barcode..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-2xl text-sm font-medium text-slate-900 focus:outline-none focus:border-gray-900 focus:ring-2 focus:ring-black/10 transition-all shadow-xs"
-                  />
+                <div className="relative flex gap-2">
+                  <div className="relative flex-1">
+                    <Search className="absolute inset-y-0 left-0 pl-4 w-4.5 h-4.5 my-auto text-slate-400 pointer-events-none" />
+                    <input
+                      type="text"
+                      placeholder="Search products by name, SKU, or barcode..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-2xl text-sm font-medium text-slate-900 focus:outline-none focus:border-gray-900 focus:ring-2 focus:ring-black/10 transition-all shadow-xs"
+                    />
+                  </div>
+                  <button
+                    onClick={() => setShowScanner(true)}
+                    className="shrink-0 w-[46px] h-[46px] bg-black hover:bg-gray-800 text-white rounded-2xl flex items-center justify-center transition-all cursor-pointer active-scale shadow-lg shadow-black/20"
+                    title="Scan barcode with camera"
+                  >
+                    <Camera className="w-5 h-5" />
+                  </button>
                 </div>
                 {/* Category Chips */}
                 <div className="flex gap-2 mt-3 overflow-x-auto android-scroll pb-1 -mx-1 px-1">
@@ -907,6 +931,12 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
           </div>
         </div>
       )}
+
+      <BarcodeScannerModal
+        isOpen={showScanner}
+        onClose={() => setShowScanner(false)}
+        onScan={handleBarcodeScan}
+      />
     </div>
   );
 }
