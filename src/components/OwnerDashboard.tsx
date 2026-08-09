@@ -1959,48 +1959,54 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                     }}
                   >
                     {/* Date Range Segmented Control */}
-                    <div>
-                      <span className="text-[9px] font-bold text-slate-500 uppercase tracking-wider mb-1.5 block">Period</span>
-                      <div className="flex items-center bg-slate-100 rounded-xl p-1 gap-0.5">
-                        {([
-                          ['today', 'Today'],
-                          ['7d', '7 Days'],
-                          ['30d', '30 Days'],
-                          ['month', 'Month'],
-                          ['all', 'All'],
-                          ['custom', 'Custom']
-                        ] as const).map(([val, label]) => (
-                          <button
-                            key={val}
-                            onClick={() => setCfRange(val)}
-                            className={`flex-1 py-1.5 rounded-lg text-[10px] font-bold transition-all cursor-pointer ${
-                              cfRange === val
-                                ? 'bg-white text-gray-900 shadow-2xs border border-slate-200'
-                                : 'text-slate-500 hover:text-slate-700'
-                            }`}
-                          >
-                            {label}
-                          </button>
-                        ))}
-                        {cfRange === 'custom' && (
-                          <div className="flex space-x-2 mt-2 px-2">
+                    <div className="flex flex-col gap-2">
+                      <div>
+                        <span className="text-[9px] font-bold text-slate-500 uppercase tracking-wider mb-1.5 block">Period</span>
+                        <div className="flex items-center bg-slate-100 rounded-xl p-1 gap-0.5">
+                          {([
+                            ['today', 'Today'],
+                            ['7d', '7 Days'],
+                            ['30d', '30 Days'],
+                            ['month', 'Month'],
+                            ['all', 'All'],
+                            ['custom', 'Custom']
+                          ] as const).map(([val, label]) => (
+                            <button
+                              key={val}
+                              onClick={() => setCfRange(val)}
+                              className={`flex-1 py-1.5 rounded-lg text-[10px] font-bold transition-all cursor-pointer ${
+                                cfRange === val
+                                  ? 'bg-white text-gray-900 shadow-2xs border border-slate-200'
+                                  : 'text-slate-500 hover:text-slate-700'
+                              }`}
+                            >
+                              {label}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                      {cfRange === 'custom' && (
+                        <div className="flex items-center gap-2">
+                          <div className="flex-1 flex items-center gap-1.5">
+                            <span className="text-[10px] font-bold text-slate-400 uppercase">From</span>
                             <input
                               type="date"
                               value={cfStartDate}
                               onChange={e => setCfStartDate(e.target.value)}
-                              className="flex-1 p-1 border rounded text-xs"
-                              placeholder="Start"
+                              className="w-full px-2 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:border-gray-900"
                             />
+                          </div>
+                          <div className="flex-1 flex items-center gap-1.5">
+                            <span className="text-[10px] font-bold text-slate-400 uppercase">To</span>
                             <input
                               type="date"
                               value={cfEndDate}
                               onChange={e => setCfEndDate(e.target.value)}
-                              className="flex-1 p-1 border rounded text-xs"
-                              placeholder="End"
+                              className="w-full px-2 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:border-gray-900"
                             />
                           </div>
-                        )}
-                      </div>
+                        </div>
+                      )}
                     </div>
 
                     {/* Type Filter */}
