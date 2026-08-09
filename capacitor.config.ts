@@ -4,10 +4,6 @@ const config: CapacitorConfig = {
   appId: 'com.mibayate.pos',
   appName: 'MiBayate POS',
   webDir: 'dist',
-  server: {
-    url: 'https://mibayate-pos.vercel.app/',
-    cleartext: true,
-  },
   android: {
     allowMixedContent: true,
   },
