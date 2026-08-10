@@ -8,3 +8,8 @@ coverage/
 !.env.example
 # Capacitor native Android project (regenerate with: npx cap add android)
 android/
+
+# Machine-specific graphify sidecars
+graphify-out/.graphify_python
+graphify-out/.graphify_root
+
