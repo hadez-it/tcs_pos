@@ -3,8 +3,8 @@ import { SaleWithItems, Branch, UserProfile } from '../types';
 import { formatCurrency } from '../utils/format';
 import { 
   Receipt, Filter, ChevronDown, ChevronUp, Search, 
-  Building2, Users, Calendar, ShoppingBag, X, RotateCcw, 
-  CreditCard, Wallet, Banknote, User, ChevronRight, TrendingUp
+  Building2, Users, Calendar, X, RotateCcw, 
+  CreditCard, Wallet, Banknote, User
 } from 'lucide-react';
 
 interface SaleReportTabProps {
@@ -92,13 +92,7 @@ export default function SaleReportTab({ sales, branches, cashiers, currency }: S
     return filteredSales.reduce((sum, s) => sum + s.total_amount, 0);
   }, [filteredSales]);
 
-  const avgOrderValue = useMemo(() => {
-    return filteredSales.length > 0 ? totalAmount / filteredSales.length : 0;
-  }, [filteredSales, totalAmount]);
 
-  const totalItemsSold = useMemo(() => {
-    return filteredSales.reduce((sum, s) => sum + (s.items?.reduce((iSum, item) => iSum + item.quantity, 0) || 0), 0);
-  }, [filteredSales]);
 
   const toggleExpand = (id: string) => {
     setExpandedSaleId(prev => prev === id ? null : id);
@@ -147,40 +141,7 @@ export default function SaleReportTab({ sales, branches, cashiers, currency }: S
         </button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between">
-          <div>
-            <p className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider">Total Sales</p>
-            <h3 className="text-lg sm:text-xl font-black text-gray-900 mt-0.5">{formatCurrency(totalAmount)}</h3>
-            <p className="text-[10px] text-slate-400 mt-0.5">{totalItemsSold} items sold total</p>
-          </div>
-          <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-800">
-            <TrendingUp className="w-5 h-5" />
-          </div>
-        </div>
 
-        <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between">
-          <div>
-            <p className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider">Transactions</p>
-            <h3 className="text-lg sm:text-xl font-black text-gray-900 mt-0.5">{filteredSales.length}</h3>
-            <p className="text-[10px] text-slate-400 mt-0.5">Completed orders</p>
-          </div>
-          <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-800">
-            <Receipt className="w-5 h-5" />
-          </div>
-        </div>
-
-        <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between">
-          <div>
-            <p className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider">Avg Order Value</p>
-            <h3 className="text-lg sm:text-xl font-black text-gray-900 mt-0.5">{formatCurrency(avgOrderValue)}</h3>
-            <p className="text-[10px] text-slate-400 mt-0.5">Per receipt average</p>
-          </div>
-          <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-800">
-            <ShoppingBag className="w-5 h-5" />
-          </div>
-        </div>
-      </div>
 
       {showFilters && (
         <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-xs space-y-4">
