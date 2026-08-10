@@ -456,9 +456,9 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
         {activeTab === 'pos' ? (
           <>
             <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
-              {/* Search Bar */}
-              <div className="px-3 sm:px-4 pt-3 pb-2 shrink-0">
-                <div className="relative flex gap-2">
+              {/* Search Bar & Category Dropdown */}
+              <div className="px-3 sm:px-4 pt-3 pb-2 shrink-0 space-y-2.5">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <div className="relative flex-1">
                     <Search className="absolute inset-y-0 left-0 pl-4 w-4.5 h-4.5 my-auto text-slate-400 pointer-events-none" />
                     <input
@@ -466,19 +466,33 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
                       placeholder="Search products by name, SKU, or barcode..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-2xl text-sm font-medium text-slate-900 focus:outline-none focus:border-gray-900 focus:ring-2 focus:ring-black/10 transition-all shadow-xs"
+                      className="w-full pl-11 pr-4 py-2.5 bg-white border border-slate-200 rounded-2xl text-sm font-medium text-slate-900 focus:outline-none focus:border-gray-900 focus:ring-2 focus:ring-black/10 transition-all shadow-xs"
                     />
                   </div>
-                  <button
-                    onClick={() => setShowScanner(true)}
-                    className="shrink-0 w-[46px] h-[46px] bg-black hover:bg-gray-800 text-white rounded-2xl flex items-center justify-center transition-all cursor-pointer active-scale shadow-lg shadow-black/20"
-                    title="Scan barcode with camera"
-                  >
-                    <Camera className="w-5 h-5" />
-                  </button>
+
+                  <div className="flex gap-2 shrink-0">
+                    <SearchableCategorySelect
+                      options={categoryOptions}
+                      value={selectedCategory}
+                      onChange={(cat) => setSelectedCategory(cat)}
+                      placeholder="All Categories"
+                      allLabel="All Categories"
+                      allowCreate={false}
+                      className="flex-1 sm:w-56 shrink-0"
+                    />
+
+                    <button
+                      onClick={() => setShowScanner(true)}
+                      className="shrink-0 w-[42px] h-[42px] bg-black hover:bg-gray-800 text-white rounded-xl flex items-center justify-center transition-all cursor-pointer active-scale shadow-xs"
+                      title="Scan barcode with camera"
+                    >
+                      <Camera className="w-5 h-5" />
+                    </button>
+                  </div>
                 </div>
-                {/* Category Chips */}
-                <div className="flex gap-2 mt-3 overflow-x-auto android-scroll pb-1 -mx-1 px-1">
+
+                {/* Quick Category Chips */}
+                <div className="flex gap-2 overflow-x-auto android-scroll pb-1 -mx-1 px-1">
                   {categoryOptions.map((cat) => (
                     <button
                       key={cat.value}
@@ -502,7 +516,7 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
               <div className="flex-1 overflow-y-auto android-scroll px-3 sm:px-4 min-h-0">
                 {isLoading ? (
                   <div className="flex flex-col items-center justify-center h-full">
-                    <div className="w-8 h-8 border-[3px] border-gray-900/20 border-t-indigo-600 rounded-full animate-spin" />
+                    <div className="w-8 h-8 border-[3px] border-gray-900/20 border-t-gray-900 rounded-full animate-spin" />
                     <span className="text-slate-400 text-xs font-semibold mt-3">Loading inventory...</span>
                   </div>
                 ) : filteredProducts.length === 0 ? (
@@ -608,7 +622,7 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
 
               {isHistoryLoading ? (
                 <div className="flex flex-col items-center justify-center py-16">
-                  <div className="w-8 h-8 border-[3px] border-gray-900/20 border-t-indigo-600 rounded-full animate-spin" />
+                  <div className="w-8 h-8 border-[3px] border-gray-900/20 border-t-gray-900 rounded-full animate-spin" />
                   <span className="text-slate-400 text-xs mt-3">Loading sales...</span>
                 </div>
               ) : salesHistory.length === 0 ? (

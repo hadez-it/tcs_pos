@@ -15,7 +15,7 @@
   --color-android-surface: #ffffff;
   --color-android-background: #f1f5f9;
   --color-android-nav: #1e293b;
-  --color-android-nav-active: #6366f1;
+  --color-android-nav-active: #000000;
   --color-android-status: #1e1b4b;
 
   --glass-bg: rgba(255, 255, 255, 0.7);
@@ -367,7 +367,7 @@
   display: flex;
   align-items: center;
   padding-right: 16px;
-  background: #6366f1;
+  background: #000000;
   color: white;
   font-size: 12px;
   font-weight: 700;
@@ -388,8 +388,8 @@
   }
 
   .android-input:focus {
-    border-color: #6366f1;
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    border-color: #000000;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
     background: white;
   }
 }
@@ -411,9 +411,9 @@
 }
 
 .android-chip.active {
-  background: #6366f1;
+  background: #000000;
   color: white;
-  border-color: #6366f1;
+  border-color: #000000;
 }
 
 /* Card elevation for Android Material */

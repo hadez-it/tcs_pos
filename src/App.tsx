@@ -64,7 +64,7 @@ export default function App() {
   if (isInitializing) {
     return (
       <div className="h-full w-full bg-slate-50 flex flex-col items-center justify-center font-sans">
-        <div className="w-12 h-12 border-4 border-slate-900/10 border-t-indigo-600 rounded-full animate-spin" />
+        <div className="w-12 h-12 border-4 border-slate-900/10 border-t-gray-900 rounded-full animate-spin" />
         <span className="text-slate-500 text-xs font-bold mt-4 tracking-wider uppercase">
           Loading...
         </span>
