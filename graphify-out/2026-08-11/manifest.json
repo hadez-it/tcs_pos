@@ -30,13 +30,13 @@
     "semantic_hash": "1e27e12ec86594a876800e6ca1e33d0a"
   },
   "src/components/BarcodePrintModal.tsx": {
-    "mtime": 1786423544.3256793,
-    "ast_hash": "25057ccd58a78755e132689a1a3e8dd7",
+    "mtime": 1786424054.7646904,
+    "ast_hash": "35729d02fcdde3def64202a82c59133d",
     "semantic_hash": ""
   },
   "src/components/BarcodeSVG.tsx": {
-    "mtime": 1786423459.6996775,
-    "ast_hash": "0c7b4ed1257171fbc7d0ea9745d4f7da",
+    "mtime": 1786424012.2196896,
+    "ast_hash": "fe79677da8a7a61d5d1db6d9ad108fc4",
     "semantic_hash": ""
   },
   "src/components/BarcodeScannerModal.tsx": {
@@ -55,8 +55,8 @@
     "semantic_hash": "2205be830ccbead0ca572cbf1c72554a"
   },
   "src/components/LabelGeneratorTab.tsx": {
-    "mtime": 1786423509.3446784,
-    "ast_hash": "78dca63805b7f57e6ba7d4755980a429",
+    "mtime": 1786424049.1046903,
+    "ast_hash": "64a538b91b99aa0c4d6a85863205d231",
     "semantic_hash": ""
   },
   "src/components/OfflineSyncBar.tsx": {

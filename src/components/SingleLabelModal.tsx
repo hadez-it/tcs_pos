@@ -116,37 +116,43 @@ export const SingleLabelModal: React.FC<SingleLabelModalProps> = ({
 
   if (!isOpen || !product) return null;
 
-  const effPaperWidth = config.paperWidth === '80' ? 80 : config.paperWidth === '58' ? 58 : 32;
+  const effPaperWidth = clamp(parseMm(config.paperWidth) || 80, 15, 300);
   const printableMm = getPrintableMm(effPaperWidth);
-  const effLabelWidth = clamp(parseMm(config.labelWidth) || effPaperWidth, 5, 80);
+  const effLabelWidth = clamp(parseMm(config.labelWidth) || effPaperWidth, 5, effPaperWidth);
   const effLabelHeight = clamp(parseMm(config.labelHeight) || 30, 8, 300);
 
-  const rawBcW = parseMm(config.barcodeWidth) || effLabelWidth;
-  const effBarcodeWidth = clamp(rawBcW, 10, effLabelWidth);
+  const effElemX = (k: 'store' | 'product' | 'barcode' | 'price') =>
+    clamp(parseMm(config.layoutXY[k].x) || 0, 0, Math.max(0, effLabelWidth - 5));
 
-  const rawBcH = parseMm(config.barcodeHeight) || 10;
-  const effBarcodeHeight = clamp(rawBcH, 3, effLabelHeight);
+  const effElemY = (k: 'store' | 'product' | 'barcode' | 'price') =>
+    clamp(parseMm(config.layoutXY[k].y) || 0, 0, Math.max(0, effLabelHeight - 3));
 
-  const rawBcX = parseMm(config.layoutXY.barcode.x) || 0;
-  const effBarcodeX = clamp(rawBcX, 0, Math.max(0, effLabelWidth - effBarcodeWidth));
+  const effElemW = (k: 'store' | 'product' | 'barcode' | 'price') => {
+    const raw = parseMm(config.layoutXY[k].w);
+    const defaultW = k === 'barcode' ? (parseMm(config.barcodeWidth) || Math.max(10, effLabelWidth - 4)) : Math.max(5, effLabelWidth - effElemX(k));
+    return clamp(raw || defaultW, 5, Math.max(5, effLabelWidth - effElemX(k)));
+  };
 
-  const rawBcY = parseMm(config.layoutXY.barcode.y) || 0;
-  const effBarcodeY = clamp(rawBcY, 0, Math.max(0, effLabelHeight - effBarcodeHeight));
+  const effElemH = (k: 'store' | 'product' | 'barcode' | 'price') => {
+    const raw = parseMm(config.layoutXY[k].h);
+    const defaultH = k === 'barcode' ? (parseMm(config.barcodeHeight) || 10) : (k === 'price' ? 5 : 4);
+    return clamp(raw || defaultH, 2, Math.max(2, effLabelHeight - effElemY(k)));
+  };
+
+  const effBarcodeWidth = effElemW('barcode');
+  const effBarcodeHeight = effElemH('barcode');
+  const effBarcodeX = effElemX('barcode');
+  const effBarcodeY = effElemY('barcode');
 
   const effLabelGap = clamp(parseMm(config.labelGap) || 3, 2, 10);
   const effFeedOffset = clamp(parseMm(config.feedOffset) || 0, -10, 10);
 
-  const effLayoutX = (k: 'store' | 'product' | 'price') => clamp(parseMm(config.layoutXY[k].x) || 0, 0, Math.max(0, effLabelWidth - 5));
-  const effLayoutY = (k: 'store' | 'product' | 'price') => clamp(parseMm(config.layoutXY[k].y) || 0, 0, Math.max(0, effLabelHeight - 3));
-
-  const layoutForPrint = config.customLayout
-    ? {
-        storeName: config.showStoreName ? { xMm: effLayoutX('store'), yMm: effLayoutY('store'), size: config.fontSize.store } : undefined,
-        productName: config.showProductName ? { xMm: effLayoutX('product'), yMm: effLayoutY('product'), size: config.fontSize.product } : undefined,
-        barcode: { xMm: effBarcodeX, yMm: effBarcodeY, widthMm: effBarcodeWidth, heightMm: effBarcodeHeight },
-        price: config.showPrice ? { xMm: effLayoutX('price'), yMm: effLayoutY('price'), size: config.fontSize.price } : undefined,
-      }
-    : undefined;
+  const layoutForPrint = {
+    storeName: config.showStoreName ? { xMm: effElemX('store'), yMm: effElemY('store'), widthMm: effElemW('store'), heightMm: effElemH('store'), size: config.fontSize.store as 1 | 2 } : undefined,
+    productName: config.showProductName ? { xMm: effElemX('product'), yMm: effElemY('product'), widthMm: effElemW('product'), heightMm: effElemH('product'), size: config.fontSize.product as 1 | 2 } : undefined,
+    barcode: { xMm: effBarcodeX, yMm: effBarcodeY, widthMm: effBarcodeWidth, heightMm: effBarcodeHeight },
+    price: config.showPrice ? { xMm: effElemX('price'), yMm: effElemY('price'), widthMm: effElemW('price'), heightMm: effElemH('price'), size: config.fontSize.price as 1 | 2 } : undefined,
+  };
 
   const labelOptions = {
     storeName: config.storeName || businessName || 'My Retail Store',
@@ -222,7 +228,7 @@ export const SingleLabelModal: React.FC<SingleLabelModalProps> = ({
     }
   };
 
-  const previewScale = Math.min(260 / effLabelWidth, 6);
+  const previewScale = Math.min(280 / effLabelWidth, 6);
   const previewW = Math.round(effLabelWidth * previewScale);
   const previewH = Math.round(effLabelHeight * previewScale);
   const codeVal = normalizeBarcodeValue(product.barcode || product.sku || '000000', 'CODE128');
@@ -323,103 +329,102 @@ export const SingleLabelModal: React.FC<SingleLabelModalProps> = ({
               Configured Label Preview ({effLabelWidth.toFixed(0)} × {effLabelHeight.toFixed(0)}mm)
             </p>
 
-            {config.customLayout ? (
-              <div
-                className="bg-white border border-slate-400 rounded shadow-sm select-none overflow-hidden relative"
-                style={{ width: previewW, height: previewH }}
-              >
-                {config.showStoreName && (
-                  <div
-                    className="absolute font-extrabold uppercase text-slate-700 truncate p-0.5"
-                    style={{
-                      left: effLayoutX('store') * previewScale,
-                      top: effLayoutY('store') * previewScale,
-                      width: Math.max(10, (effLabelWidth - effLayoutX('store')) * previewScale),
-                      fontSize: 8 * config.fontSize.store,
-                    }}
+            <div
+              className="bg-white border border-slate-400 rounded shadow-xs select-none overflow-hidden relative"
+              style={{ width: previewW, height: previewH }}
+            >
+              {/* Store Name Element */}
+              {config.showStoreName && (
+                <div
+                  className="absolute flex items-center justify-center p-0.5"
+                  style={{
+                    left: effElemX('store') * previewScale,
+                    top: effElemY('store') * previewScale,
+                    width: effElemW('store') * previewScale,
+                    height: effElemH('store') * previewScale,
+                  }}
+                >
+                  <span
+                    className="font-extrabold uppercase text-slate-800 truncate w-full text-center pointer-events-none"
+                    style={{ fontSize: Math.max(6, Math.min(26, effElemH('store') * previewScale * 0.75)) }}
                   >
                     {config.storeName || businessName || 'My Store'}
-                  </div>
-                )}
+                  </span>
+                </div>
+              )}
 
-                {config.showProductName && (
+              {/* Product Title Element */}
+              {config.showProductName && (
+                <div
+                  className="absolute flex items-center justify-center p-0.5"
+                  style={{
+                    left: effElemX('product') * previewScale,
+                    top: effElemY('product') * previewScale,
+                    width: effElemW('product') * previewScale,
+                    height: effElemH('product') * previewScale,
+                  }}
+                >
                   <p
-                    className="absolute font-extrabold text-slate-900 leading-tight truncate p-0.5"
-                    style={{
-                      left: effLayoutX('product') * previewScale,
-                      top: effLayoutY('product') * previewScale,
-                      width: Math.max(10, (effLabelWidth - effLayoutX('product')) * previewScale),
-                      fontSize: 8 * config.fontSize.product,
-                    }}
+                    className="font-extrabold text-slate-900 leading-tight line-clamp-2 w-full text-center pointer-events-none"
+                    style={{ fontSize: Math.max(6, Math.min(24, effElemH('product') * previewScale * 0.6)) }}
                   >
                     {product.name}
                   </p>
-                )}
+                </div>
+              )}
 
-                <div
-                  className="absolute border border-dashed border-slate-300 bg-slate-900/5 flex flex-col items-center justify-center rounded p-0.5 overflow-hidden pointer-events-none"
-                  style={{
-                    left: effBarcodeX * previewScale,
-                    top: effBarcodeY * previewScale,
-                    width: effBarcodeWidth * previewScale,
-                    height: effBarcodeHeight * previewScale,
-                  }}
-                >
-                  <BarcodeSVG value={codeVal} height={Math.max(8, effBarcodeHeight * previewScale - (config.showCodeText ? 10 : 2))} showValue={false} />
+              {/* Barcode Box Element */}
+              <div
+                className="absolute flex flex-col items-center justify-between p-0.5 overflow-hidden"
+                style={{
+                  left: effBarcodeX * previewScale,
+                  top: effBarcodeY * previewScale,
+                  width: effBarcodeWidth * previewScale,
+                  height: effBarcodeHeight * previewScale,
+                }}
+              >
+                <div className="w-full h-full flex flex-col items-center justify-between overflow-hidden pointer-events-none min-h-0">
+                  <BarcodeSVG
+                    value={codeVal}
+                    height={Math.max(10, Math.round(effBarcodeHeight * previewScale - (config.showCodeText ? 10 : 0)))}
+                    showValue={false}
+                    className="w-full flex-1 min-h-0"
+                  />
                   {config.showCodeText && (
-                    <div className="font-mono font-bold text-slate-900 text-center truncate w-full text-[8px]">
+                    <div
+                      className="font-mono font-bold text-slate-900 text-center truncate w-full shrink-0 leading-tight mt-0.5"
+                      style={{ fontSize: Math.max(6, Math.min(14, effBarcodeHeight * previewScale * 0.22)) }}
+                    >
                       {codeVal}
                     </div>
                   )}
                 </div>
+              </div>
 
-                {config.showPrice && (
-                  <div
-                    className="absolute bg-slate-900 text-white rounded flex items-center justify-center p-0.5"
-                    style={{
-                      left: effLayoutX('price') * previewScale,
-                      top: effLayoutY('price') * previewScale,
-                      width: Math.max(12, (effLabelWidth - effLayoutX('price')) * previewScale),
-                      fontSize: Math.max(7, 4 * config.fontSize.price),
-                    }}
+              {/* Price Box Element */}
+              {config.showPrice && (
+                <div
+                  className="absolute bg-slate-900 text-white rounded flex items-center justify-center p-0.5"
+                  style={{
+                    left: effElemX('price') * previewScale,
+                    top: effElemY('price') * previewScale,
+                    width: effElemW('price') * previewScale,
+                    height: effElemH('price') * previewScale,
+                  }}
+                >
+                  <span
+                    className="font-extrabold font-mono px-1 truncate pointer-events-none"
+                    style={{ fontSize: Math.max(6, Math.min(26, effElemH('price') * previewScale * 0.75)) }}
                   >
-                    <span className="font-extrabold font-mono px-1 truncate">
-                      {product.price.toLocaleString()} {currencySymbol}
-                    </span>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div
-                className="bg-white border border-slate-400 rounded shadow-sm flex flex-col items-center justify-center text-center select-none overflow-hidden p-2"
-                style={{ width: previewW, height: previewH }}
-              >
-                {config.showStoreName && (
-                  <span className="text-[8px] font-extrabold uppercase tracking-wider text-slate-700 border-b border-slate-200 pb-0.5 w-full truncate">
-                    {config.storeName || businessName || 'My Store'}
+                    {product.price.toLocaleString()} {currencySymbol}
                   </span>
-                )}
-                {config.showProductName && (
-                  <p className="font-extrabold text-[9px] text-slate-900 leading-tight line-clamp-2 w-full px-0.5 my-0.5">
-                    {product.name}
-                  </p>
-                )}
-                <div className="my-0.5 px-0.5 flex items-center justify-center overflow-hidden" style={{ width: effBarcodeWidth * previewScale, height: effBarcodeHeight * previewScale }}>
-                  <BarcodeSVG value={codeVal} height={Math.max(10, effBarcodeHeight * previewScale - (config.showCodeText ? 10 : 0))} showValue={config.showCodeText} />
                 </div>
-                {config.showPrice && (
-                  <div className="w-full flex items-center justify-center bg-slate-900 text-white rounded py-0.5 px-1 mt-0.5">
-                    <span className="font-extrabold font-mono text-[9px] leading-none">
-                      {product.price.toLocaleString()} {currencySymbol}
-                    </span>
-                  </div>
-                )}
-              </div>
-            )}
+              )}
+            </div>
 
             <div className="mt-3 flex items-center justify-between w-full text-[11px] text-slate-500 font-medium">
               <span>SKU / Barcode: <strong className="font-mono text-slate-800">{codeVal}</strong></span>
-              <span>Format: <strong className="font-mono text-slate-800">{config.barcodeType}</strong></span>
+              <span>Format: <strong className="font-mono text-slate-800">CODE 128</strong></span>
             </div>
           </div>
 
