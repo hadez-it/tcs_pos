@@ -6267,7 +6267,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/DeleteRequestsTab.tsx",
-      "source_location": "L253",
+      "source_location": "L249",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_deleterequeststab_deleterequeststab",
@@ -11761,5 +11761,5 @@
       "source_file": "supabase_schema.txt"
     }
   ],
-  "built_at_commit": "4bc7f903b731bc01060232a2e41ff99fd5c8eb80"
+  "built_at_commit": "2ce63deb10c90020c83799a2b9f557f8f3081698"
 }

@@ -18,7 +18,7 @@ export default function DeleteRequestsTab({ user, branches, selectedBranchId, on
   const [sales, setSales] = useState<SaleWithItems[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('all');
+  const [statusFilter, setStatusFilter] = useState<'pending' | 'approved' | 'rejected'>('pending');
   const [expandedRequestId, setExpandedRequestId] = useState<string | null>(null);
 
   const [confirmApproveModal, setConfirmApproveModal] = useState<SaleDeleteRequest | null>(null);
@@ -87,7 +87,7 @@ export default function DeleteRequestsTab({ user, branches, selectedBranchId, on
     return requests.filter(req => {
       if (!req) return false;
       const matchesBranch = selectedBranchId === 'all' || req.branch_id === selectedBranchId;
-      const matchesStatus = statusFilter === 'all' || req.status === statusFilter;
+      const matchesStatus = req.status === statusFilter;
       const q = searchQuery.toLowerCase().trim();
       const cashierName = req.cashier_name || '';
       const saleId = req.sale_id || '';
@@ -102,10 +102,9 @@ export default function DeleteRequestsTab({ user, branches, selectedBranchId, on
   }, [requests, selectedBranchId, statusFilter, searchQuery]);
 
   const counts = useMemo(() => {
-    if (!Array.isArray(requests)) return { total: 0, pending: 0, approved: 0, rejected: 0 };
+    if (!Array.isArray(requests)) return { pending: 0, approved: 0, rejected: 0 };
     const branchReqs = selectedBranchId === 'all' ? requests : requests.filter(r => r && r.branch_id === selectedBranchId);
     return {
-      total: branchReqs.length,
       pending: branchReqs.filter(r => r && r.status === 'pending').length,
       approved: branchReqs.filter(r => r && r.status === 'approved').length,
       rejected: branchReqs.filter(r => r && r.status === 'rejected').length,
@@ -113,83 +112,80 @@ export default function DeleteRequestsTab({ user, branches, selectedBranchId, on
   }, [requests, selectedBranchId]);
 
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
-        <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-premium flex items-center justify-between">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="grid grid-cols-3 gap-2 sm:gap-4">
+        <div className="bg-white p-3 sm:p-4 rounded-2xl border border-slate-200/80 shadow-premium flex items-center justify-between">
           <div>
-            <span className="text-slate-400 text-[10px] uppercase tracking-wider font-bold block">Total Requests</span>
-            <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 mt-1">{counts.total}</h3>
+            <span className="text-slate-400 text-[9px] sm:text-[10px] uppercase tracking-wider font-bold block">Pending</span>
+            <h3 className="text-base sm:text-xl font-extrabold text-slate-900 mt-0.5">{counts.pending}</h3>
           </div>
-          <div className="p-3 bg-slate-100 text-slate-600 rounded-xl">
-            <FileText className="w-5 h-5" />
-          </div>
-        </div>
-
-        <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-premium flex items-center justify-between">
-          <div>
-            <span className="text-slate-400 text-[10px] uppercase tracking-wider font-bold block">Pending Approval</span>
-            <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 mt-1">{counts.pending}</h3>
-          </div>
-          <div className="p-3 bg-slate-100 text-slate-900 rounded-xl relative">
-            <Clock className="w-5 h-5" />
+          <div className="p-2 sm:p-3 bg-slate-100 text-slate-900 rounded-xl relative shrink-0">
+            <Clock className="w-4 h-4 sm:w-5 sm:h-5" />
             {counts.pending > 0 && (
-              <span className="absolute -top-1 -right-1 w-3 h-3 bg-black rounded-full animate-ping" />
+              <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-black rounded-full animate-ping" />
             )}
           </div>
         </div>
 
-        <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-premium flex items-center justify-between">
+        <div className="bg-white p-3 sm:p-4 rounded-2xl border border-slate-200/80 shadow-premium flex items-center justify-between">
           <div>
-            <span className="text-slate-400 text-[10px] uppercase tracking-wider font-bold block">Approved & Restored</span>
-            <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 mt-1">{counts.approved}</h3>
+            <span className="text-slate-400 text-[9px] sm:text-[10px] uppercase tracking-wider font-bold block">Approved</span>
+            <h3 className="text-base sm:text-xl font-extrabold text-slate-900 mt-0.5">{counts.approved}</h3>
           </div>
-          <div className="p-3 bg-slate-100 text-slate-800 rounded-xl">
-            <CheckCircle className="w-5 h-5" />
+          <div className="p-2 sm:p-3 bg-slate-100 text-slate-800 rounded-xl shrink-0">
+            <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
         </div>
 
-        <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-premium flex items-center justify-between">
+        <div className="bg-white p-3 sm:p-4 rounded-2xl border border-slate-200/80 shadow-premium flex items-center justify-between">
           <div>
-            <span className="text-slate-400 text-[10px] uppercase tracking-wider font-bold block">Rejected</span>
-            <h3 className="text-lg sm:text-xl font-extrabold text-red-600 mt-1">{counts.rejected}</h3>
+            <span className="text-slate-400 text-[9px] sm:text-[10px] uppercase tracking-wider font-bold block">Rejected</span>
+            <h3 className="text-base sm:text-xl font-extrabold text-red-600 mt-0.5">{counts.rejected}</h3>
           </div>
-          <div className="p-3 bg-red-50 text-red-600 rounded-xl">
-            <XCircle className="w-5 h-5" />
+          <div className="p-2 sm:p-3 bg-red-50 text-red-600 rounded-xl shrink-0">
+            <XCircle className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
         </div>
       </div>
 
-      <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-premium space-y-4">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="relative w-full sm:w-80">
-            <Search className="absolute inset-y-0 left-0 pl-3.5 w-4 h-4 my-auto text-slate-400 pointer-events-none" />
-            <input
-              type="text"
-              placeholder="Search cashier, sale ID, reason..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-900 focus:outline-none focus:border-gray-900"
-            />
+      <div className="bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 shadow-premium space-y-3.5">
+        <div className="flex flex-col gap-2.5">
+          <div className="flex items-center bg-slate-100 rounded-xl p-1 w-full">
+            {(['pending', 'approved', 'rejected'] as const).map(st => (
+              <button
+                key={st}
+                onClick={() => setStatusFilter(st)}
+                className={`flex-1 py-2 px-2 rounded-lg text-xs font-bold capitalize transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                  statusFilter === st ? 'bg-slate-900 text-white shadow-2xs' : 'text-slate-500 hover:text-slate-800'
+                }`}
+              >
+                <span>{st}</span>
+                {counts[st] > 0 && (
+                  <span className={`px-1.5 py-0.2 rounded-full text-[10px] ${
+                    statusFilter === st ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-700'
+                  }`}>
+                    {counts[st]}
+                  </span>
+                )}
+              </button>
+            ))}
           </div>
 
-          <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
-            <div className="flex items-center bg-slate-100 rounded-xl p-1 gap-1">
-              {(['all', 'pending', 'approved', 'rejected'] as const).map(st => (
-                <button
-                  key={st}
-                  onClick={() => setStatusFilter(st)}
-                  className={`px-3 py-1.5 rounded-lg text-[11px] font-bold capitalize transition-all cursor-pointer ${
-                    statusFilter === st ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-500 hover:text-slate-800'
-                  }`}
-                >
-                  {st} {st === 'pending' && counts.pending > 0 && `(${counts.pending})`}
-                </button>
-              ))}
+          <div className="flex items-center gap-2 w-full">
+            <div className="relative flex-1">
+              <Search className="absolute inset-y-0 left-0 pl-3 w-4 h-4 my-auto text-slate-400 pointer-events-none" />
+              <input
+                type="text"
+                placeholder="Search cashier, sale ID, reason..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-900 focus:outline-none focus:border-slate-900"
+              />
             </div>
 
             <button
               onClick={loadRequestsData}
-              className="p-2 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-xl cursor-pointer"
+              className="p-2 text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl cursor-pointer shrink-0 transition-colors"
               title="Refresh requests"
             >
               <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
@@ -198,15 +194,15 @@ export default function DeleteRequestsTab({ user, branches, selectedBranchId, on
         </div>
 
         {isLoading ? (
-          <div className="flex flex-col items-center justify-center py-16">
-            <div className="w-8 h-8 border-[3px] border-gray-900/20 border-t-gray-900 rounded-full animate-spin" />
-            <span className="text-slate-400 text-xs mt-3">Loading sale delete requests...</span>
+          <div className="flex flex-col items-center justify-center py-12">
+            <div className="w-7 h-7 border-[3px] border-gray-900/20 border-t-gray-900 rounded-full animate-spin" />
+            <span className="text-slate-400 text-xs mt-2.5">Loading delete requests...</span>
           </div>
         ) : filteredRequests.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 text-slate-400">
-            <FileText className="w-12 h-12 text-slate-200 mb-3" />
-            <p className="text-sm font-semibold">No delete requests found</p>
-            <p className="text-xs text-slate-400 mt-1">Cashier deletion requests will appear here for your approval.</p>
+          <div className="flex flex-col items-center justify-center py-12 text-slate-400">
+            <FileText className="w-10 h-10 text-slate-200 mb-2" />
+            <p className="text-sm font-semibold text-slate-600">No {statusFilter} delete requests</p>
+            <p className="text-xs text-slate-400 mt-0.5">Requests matching this filter will show up here.</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -218,88 +214,93 @@ export default function DeleteRequestsTab({ user, branches, selectedBranchId, on
               const saleIdDisplay = req.sale_id ? req.sale_id.slice(0, 8) : 'N/A';
 
               return (
-                <div key={req.id || Math.random().toString()} className="android-card p-4 border border-slate-200/90 rounded-2xl bg-white space-y-3">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                    <div className="flex items-center gap-3">
-                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold shrink-0 ${
+                <div key={req.id || Math.random().toString()} className="android-card p-3.5 sm:p-4 border border-slate-200/90 rounded-2xl bg-white space-y-3">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center font-bold shrink-0 ${
                         req.status === 'pending' ? 'bg-slate-100 text-slate-800' :
                         req.status === 'approved' ? 'bg-slate-900 text-white' :
                         'bg-red-100 text-red-600'
                       }`}>
-                        {req.status === 'pending' ? <Clock className="w-5 h-5" /> :
-                         req.status === 'approved' ? <Check className="w-5 h-5" /> :
-                         <X className="w-5 h-5" />}
+                        {req.status === 'pending' ? <Clock className="w-4 h-4 sm:w-5 sm:h-5" /> :
+                         req.status === 'approved' ? <Check className="w-4 h-4 sm:w-5 sm:h-5" /> :
+                         <X className="w-4 h-4 sm:w-5 sm:h-5" />}
                       </div>
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="font-mono font-bold text-slate-900 text-xs">Sale #{saleIdDisplay}</span>
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <span className="font-mono font-extrabold text-slate-900 text-xs sm:text-sm">Sale #{saleIdDisplay}</span>
                           <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
                             req.status === 'pending' ? 'bg-slate-100 text-slate-800 border border-slate-200' :
                             req.status === 'approved' ? 'bg-slate-900 text-white' :
                             'bg-red-100 text-red-600 border border-red-200'
                           }`}>
-                            {req.status === 'pending' ? 'Pending Approval' :
-                             req.status === 'approved' ? 'Approved & Stock Restored' :
+                            {req.status === 'pending' ? 'Pending' :
+                             req.status === 'approved' ? 'Approved' :
                              'Rejected'}
                           </span>
                         </div>
-                        <p className="text-[11px] text-slate-500 mt-0.5">
-                          Requested by <strong className="text-slate-800">{req.cashier_name || 'Cashier'}</strong> {req.branch_name ? `(${req.branch_name})` : ''} • {req.requested_at ? new Date(req.requested_at).toLocaleString() : ''}
+                        <p className="text-[11px] text-slate-500 mt-0.5 truncate">
+                          Requested by <strong className="text-slate-800">{req.cashier_name || 'Cashier'}</strong> {req.branch_name ? `(${req.branch_name})` : ''}
                         </p>
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100">
-                      <span className="font-mono text-base font-extrabold text-slate-900">{formatCurrency(req.total_amount)}</span>
-                      {req.status === 'pending' && (
-                        <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => setConfirmRejectModal(req)}
-                            className="px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 font-bold text-xs rounded-xl transition-all cursor-pointer"
-                          >
-                            Reject
-                          </button>
-                          <button
-                            onClick={() => setConfirmApproveModal(req)}
-                            className="px-3.5 py-1.5 bg-slate-900 hover:bg-black text-white font-bold text-xs rounded-xl shadow-xs transition-all cursor-pointer"
-                          >
-                            Approve & Restore Stock
-                          </button>
-                        </div>
-                      )}
+                    <div className="text-right shrink-0">
+                      <span className="font-mono text-sm sm:text-base font-extrabold text-slate-900 block">{formatCurrency(req.total_amount)}</span>
+                      <span className="text-[10px] text-slate-400 font-medium block">{req.requested_at ? new Date(req.requested_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}</span>
                     </div>
                   </div>
 
                   {req.reason && (
-                    <div className="p-3 bg-slate-50 rounded-xl border border-slate-100 text-xs">
-                      <span className="font-bold text-slate-700 block mb-0.5">Reason given:</span>
+                    <div className="p-2.5 bg-slate-50 rounded-xl border border-slate-100 text-xs">
+                      <span className="font-bold text-slate-700 block text-[10px] uppercase tracking-wider mb-0.5">Reason:</span>
                       <span className="text-slate-600">{req.reason}</span>
                     </div>
                   )}
 
                   {req.status !== 'pending' && req.reviewed_by && (
-                    <div className="text-[11px] text-slate-400 flex items-center gap-1.5 pt-1">
+                    <div className="text-[11px] text-slate-400 flex items-center gap-1.5 pt-0.5 flex-wrap">
                       <span>Reviewed by <strong className="text-slate-600">{req.reviewed_by}</strong> on {req.reviewed_at ? new Date(req.reviewed_at).toLocaleString() : ''}</span>
                       {req.rejection_reason && <span className="text-red-500 font-semibold">• Reason: {req.rejection_reason}</span>}
                     </div>
                   )}
 
+                  {req.status === 'pending' && (
+                    <div className="flex items-center gap-2 pt-1 border-t border-slate-100">
+                      <button
+                        onClick={() => setConfirmRejectModal(req)}
+                        className="flex-1 py-2.5 bg-red-50 hover:bg-red-100 text-red-600 font-bold text-xs rounded-xl transition-all cursor-pointer text-center"
+                      >
+                        Reject
+                      </button>
+                      <button
+                        onClick={() => setConfirmApproveModal(req)}
+                        className="flex-1 sm:flex-initial py-2.5 px-3 bg-slate-900 hover:bg-black text-white font-bold text-xs rounded-xl shadow-xs transition-all cursor-pointer text-center"
+                      >
+                        Approve & Restore Stock
+                      </button>
+                    </div>
+                  )}
+
                   {saleItems && saleItems.length > 0 && (
-                    <div>
+                    <div className={req.status === 'pending' ? 'pt-0' : 'pt-1 border-t border-slate-100'}>
                       <button
                         onClick={() => setExpandedRequestId(isExpanded ? null : req.id)}
-                        className="text-[11px] font-bold text-slate-600 hover:text-slate-900 flex items-center gap-1 cursor-pointer pt-1"
+                        className="text-[11px] font-bold text-slate-600 hover:text-slate-900 flex items-center justify-between w-full cursor-pointer py-1"
                       >
-                        <span>{isExpanded ? 'Hide' : 'View'} Sale Items ({saleItems.length})</span>
-                        {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                        <span>Sale Items ({saleItems.length})</span>
+                        <div className="flex items-center gap-1">
+                          <span className="text-[10px] text-slate-400">{isExpanded ? 'Hide' : 'Show'}</span>
+                          {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                        </div>
                       </button>
 
                       {isExpanded && (
-                        <div className="mt-2 p-3 bg-slate-50 rounded-xl border border-slate-100 space-y-2 text-xs">
+                        <div className="mt-2 p-2.5 bg-slate-50 rounded-xl border border-slate-100 space-y-2 text-xs">
                           {saleItems.map((item, idx) => (
                             <div key={item.id || idx} className="flex items-center justify-between text-slate-700 font-medium">
                               <span>{item.product_name} <strong className="font-mono text-slate-900">x{item.quantity}</strong></span>
-                              <span className="font-mono">{formatCurrency(item.total)}</span>
+                              <span className="font-mono text-slate-900 font-semibold">{formatCurrency(item.total)}</span>
                             </div>
                           ))}
                         </div>
