@@ -632,7 +632,7 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {salesHistory.map((sale) => {
-                    const existingReq = deleteRequests.find(r => r.sale_id === sale.id);
+                    const existingReq = Array.isArray(deleteRequests) ? deleteRequests.find(r => r && r.sale_id === sale.id) : undefined;
                     return (
                       <div key={sale.id} className="android-card p-4 border border-slate-100 flex flex-col justify-between">
                         <div>

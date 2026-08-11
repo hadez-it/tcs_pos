@@ -33,10 +33,12 @@ export default function DeleteRequestsTab({ user, branches, selectedBranchId, on
         dbService.saleDeleteRequests.getAll(),
         dbService.sales.getAllWithItems()
       ]);
-      setRequests(allReqs);
-      setSales(allSales);
+      setRequests(Array.isArray(allReqs) ? allReqs : []);
+      setSales(Array.isArray(allSales) ? allSales : []);
     } catch (err) {
       console.error('Failed to load delete requests:', err);
+      setRequests([]);
+      setSales([]);
     } finally {
       setIsLoading(false);
     }
@@ -51,7 +53,8 @@ export default function DeleteRequestsTab({ user, branches, selectedBranchId, on
     setIsProcessing(true);
     try {
       await dbService.saleDeleteRequests.approve(confirmApproveModal.id, user.name);
-      toast(`Delete request for Sale #${confirmApproveModal.sale_id.slice(0, 8)} approved and items restored to inventory!`, 'success');
+      const saleIdLabel = confirmApproveModal.sale_id ? confirmApproveModal.sale_id.slice(0, 8) : 'N/A';
+      toast(`Delete request for Sale #${saleIdLabel} approved and items restored to inventory!`, 'success');
       setConfirmApproveModal(null);
       await loadRequestsData();
       if (onDataChanged) onDataChanged();
@@ -80,26 +83,32 @@ export default function DeleteRequestsTab({ user, branches, selectedBranchId, on
   };
 
   const filteredRequests = useMemo(() => {
+    if (!Array.isArray(requests)) return [];
     return requests.filter(req => {
+      if (!req) return false;
       const matchesBranch = selectedBranchId === 'all' || req.branch_id === selectedBranchId;
       const matchesStatus = statusFilter === 'all' || req.status === statusFilter;
       const q = searchQuery.toLowerCase().trim();
+      const cashierName = req.cashier_name || '';
+      const saleId = req.sale_id || '';
+      const reason = req.reason || '';
       const matchesSearch = !q || (
-        req.cashier_name.toLowerCase().includes(q) ||
-        req.sale_id.toLowerCase().includes(q) ||
-        (req.reason && req.reason.toLowerCase().includes(q))
+        cashierName.toLowerCase().includes(q) ||
+        saleId.toLowerCase().includes(q) ||
+        reason.toLowerCase().includes(q)
       );
       return matchesBranch && matchesStatus && matchesSearch;
     });
   }, [requests, selectedBranchId, statusFilter, searchQuery]);
 
   const counts = useMemo(() => {
-    const branchReqs = selectedBranchId === 'all' ? requests : requests.filter(r => r.branch_id === selectedBranchId);
+    if (!Array.isArray(requests)) return { total: 0, pending: 0, approved: 0, rejected: 0 };
+    const branchReqs = selectedBranchId === 'all' ? requests : requests.filter(r => r && r.branch_id === selectedBranchId);
     return {
       total: branchReqs.length,
-      pending: branchReqs.filter(r => r.status === 'pending').length,
-      approved: branchReqs.filter(r => r.status === 'approved').length,
-      rejected: branchReqs.filter(r => r.status === 'rejected').length,
+      pending: branchReqs.filter(r => r && r.status === 'pending').length,
+      approved: branchReqs.filter(r => r && r.status === 'approved').length,
+      rejected: branchReqs.filter(r => r && r.status === 'rejected').length,
     };
   }, [requests, selectedBranchId]);
 
@@ -202,11 +211,14 @@ export default function DeleteRequestsTab({ user, branches, selectedBranchId, on
         ) : (
           <div className="space-y-3">
             {filteredRequests.map((req) => {
-              const matchedSale = sales.find(s => s.id === req.sale_id);
+              if (!req) return null;
+              const matchedSale = req.sale_id && Array.isArray(sales) ? sales.find(s => s && s.id === req.sale_id) : undefined;
+              const saleItems = (matchedSale && matchedSale.items && matchedSale.items.length > 0) ? matchedSale.items : (req.items || []);
               const isExpanded = expandedRequestId === req.id;
+              const saleIdDisplay = req.sale_id ? req.sale_id.slice(0, 8) : 'N/A';
 
               return (
-                <div key={req.id} className="android-card p-4 border border-slate-200/90 rounded-2xl bg-white space-y-3">
+                <div key={req.id || Math.random().toString()} className="android-card p-4 border border-slate-200/90 rounded-2xl bg-white space-y-3">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <div className="flex items-center gap-3">
                       <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold shrink-0 ${
@@ -220,7 +232,7 @@ export default function DeleteRequestsTab({ user, branches, selectedBranchId, on
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="font-mono font-bold text-slate-900 text-xs">Sale #{req.sale_id.slice(0, 8)}</span>
+                          <span className="font-mono font-bold text-slate-900 text-xs">Sale #{saleIdDisplay}</span>
                           <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
                             req.status === 'pending' ? 'bg-slate-100 text-slate-800 border border-slate-200' :
                             req.status === 'approved' ? 'bg-slate-900 text-white' :
@@ -232,7 +244,7 @@ export default function DeleteRequestsTab({ user, branches, selectedBranchId, on
                           </span>
                         </div>
                         <p className="text-[11px] text-slate-500 mt-0.5">
-                          Requested by <strong className="text-slate-800">{req.cashier_name}</strong> {req.branch_name ? `(${req.branch_name})` : ''} • {new Date(req.requested_at).toLocaleString()}
+                          Requested by <strong className="text-slate-800">{req.cashier_name || 'Cashier'}</strong> {req.branch_name ? `(${req.branch_name})` : ''} • {req.requested_at ? new Date(req.requested_at).toLocaleString() : ''}
                         </p>
                       </div>
                     </div>
@@ -272,20 +284,20 @@ export default function DeleteRequestsTab({ user, branches, selectedBranchId, on
                     </div>
                   )}
 
-                  {matchedSale && matchedSale.items && matchedSale.items.length > 0 && (
+                  {saleItems && saleItems.length > 0 && (
                     <div>
                       <button
                         onClick={() => setExpandedRequestId(isExpanded ? null : req.id)}
                         className="text-[11px] font-bold text-slate-600 hover:text-slate-900 flex items-center gap-1 cursor-pointer pt-1"
                       >
-                        <span>{isExpanded ? 'Hide' : 'View'} Sale Items ({matchedSale.items.length})</span>
+                        <span>{isExpanded ? 'Hide' : 'View'} Sale Items ({saleItems.length})</span>
                         {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
                       </button>
 
                       {isExpanded && (
                         <div className="mt-2 p-3 bg-slate-50 rounded-xl border border-slate-100 space-y-2 text-xs">
-                          {matchedSale.items.map((item) => (
-                            <div key={item.id} className="flex items-center justify-between text-slate-700 font-medium">
+                          {saleItems.map((item, idx) => (
+                            <div key={item.id || idx} className="flex items-center justify-between text-slate-700 font-medium">
                               <span>{item.product_name} <strong className="font-mono text-slate-900">x{item.quantity}</strong></span>
                               <span className="font-mono">{formatCurrency(item.total)}</span>
                             </div>
@@ -319,8 +331,8 @@ export default function DeleteRequestsTab({ user, branches, selectedBranchId, on
             </div>
             <div className="p-4 space-y-4">
               <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-1">
-                <p className="font-bold text-slate-900">Sale #{confirmApproveModal.sale_id.slice(0, 8)} — {formatCurrency(confirmApproveModal.total_amount)}</p>
-                <p className="text-slate-500">Requested by {confirmApproveModal.cashier_name}</p>
+                <p className="font-bold text-slate-900">Sale #{confirmApproveModal.sale_id ? confirmApproveModal.sale_id.slice(0, 8) : 'N/A'} — {formatCurrency(confirmApproveModal.total_amount)}</p>
+                <p className="text-slate-500">Requested by {confirmApproveModal.cashier_name || 'Cashier'}</p>
                 {confirmApproveModal.reason && <p className="text-slate-600 italic">"{confirmApproveModal.reason}"</p>}
               </div>
 
@@ -367,8 +379,8 @@ export default function DeleteRequestsTab({ user, branches, selectedBranchId, on
             </div>
             <div className="p-4 space-y-4">
               <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-1">
-                <p className="font-bold text-slate-900">Sale #{confirmRejectModal.sale_id.slice(0, 8)} — {formatCurrency(confirmRejectModal.total_amount)}</p>
-                <p className="text-slate-500">Requested by {confirmRejectModal.cashier_name}</p>
+                <p className="font-bold text-slate-900">Sale #{confirmRejectModal.sale_id ? confirmRejectModal.sale_id.slice(0, 8) : 'N/A'} — {formatCurrency(confirmRejectModal.total_amount)}</p>
+                <p className="text-slate-500">Requested by {confirmRejectModal.cashier_name || 'Cashier'}</p>
               </div>
 
               <div>

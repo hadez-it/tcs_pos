@@ -1357,7 +1357,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
 
   const mainTabs = ['overview', 'products', 'cashiers', 'cash-flow', 'branches'] as const;
   const moreTabs = ['staff-performance', 'transactions', 'settings', 'label-generator', 'sale-report', 'delete-requests'] as const;
-  const pendingDeleteCount = useMemo(() => deleteRequests.filter(r => r.status === 'pending').length, [deleteRequests]);
+  const pendingDeleteCount = useMemo(() => Array.isArray(deleteRequests) ? deleteRequests.filter(r => r && r.status === 'pending').length : 0, [deleteRequests]);
 
   // Back button: each surface pops in the reverse order it was opened, so a
   // delete confirmation raised from inside a modal closes before that modal.

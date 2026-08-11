@@ -92,7 +92,7 @@ export type DeleteRequestStatus = 'pending' | 'approved' | 'rejected';
 
 export interface SaleDeleteRequest {
   id: string;
-  sale_id: string;
+  sale_id?: string | null;
   cashier_id: string;
   cashier_name: string;
   branch_id?: string;

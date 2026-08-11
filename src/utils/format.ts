@@ -1,5 +1,6 @@
-export const formatCurrency = (val: number): string => {
-  return `${val.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })} Ks`;
+export const formatCurrency = (val?: number | null): string => {
+  const num = typeof val === 'number' && !isNaN(val) ? val : 0;
+  return `${num.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })} Ks`;
 };
 
 export const formatDate = (dateStr: string): string => {
