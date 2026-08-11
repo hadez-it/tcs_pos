@@ -6,8 +6,8 @@
   },
   "metadata.json": {
     "mtime": 1785894920.110552,
-    "ast_hash": "f4e9864e67f9324ceb33e28ca2209ecc",
-    "semantic_hash": "f4e9864e67f9324ceb33e28ca2209ecc"
+    "ast_hash": "",
+    "semantic_hash": ""
   },
   "package.json": {
     "mtime": 1786274708.3516376,
@@ -45,9 +45,9 @@
     "semantic_hash": "1a6ac864f8a87546b561d6b7527571bc"
   },
   "src/components/CashierDashboard.tsx": {
-    "mtime": 1786331109.105462,
-    "ast_hash": "5d98d3ac48c9b4aed8140c05d5125ac5",
-    "semantic_hash": "5d98d3ac48c9b4aed8140c05d5125ac5"
+    "mtime": 1786415187.950415,
+    "ast_hash": "33522060d5f681dbde359b88b6384b60",
+    "semantic_hash": ""
   },
   "src/components/CsvImportModal.tsx": {
     "mtime": 1786104448.977534,
@@ -161,13 +161,13 @@
   },
   "supabase_migrations/001_product_fk_set_null.sql": {
     "mtime": 1785982490.8089974,
-    "ast_hash": "368f159a1d423dd741e759ae1c543c58",
-    "semantic_hash": "368f159a1d423dd741e759ae1c543c58"
+    "ast_hash": "",
+    "semantic_hash": ""
   },
   "supabase_schema.sql": {
     "mtime": 1785982490.8089974,
-    "ast_hash": "28d94c408c0e45f8026dbf47d1371155",
-    "semantic_hash": "28d94c408c0e45f8026dbf47d1371155"
+    "ast_hash": "",
+    "semantic_hash": ""
   },
   "tsconfig.json": {
     "mtime": 1786239283.539225,

@@ -456,8 +456,7 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
         {activeTab === 'pos' ? (
           <>
             <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
-              {/* Search Bar & Category Dropdown */}
-              <div className="px-3 sm:px-4 pt-3 pb-2 shrink-0 space-y-2.5">
+              <div className="px-3 sm:px-4 pt-3 pb-2 shrink-0">
                 <div className="flex flex-col sm:flex-row gap-2">
                   <div className="relative flex-1">
                     <Search className="absolute inset-y-0 left-0 pl-4 w-4.5 h-4.5 my-auto text-slate-400 pointer-events-none" />
@@ -489,26 +488,6 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
                       <Camera className="w-5 h-5" />
                     </button>
                   </div>
-                </div>
-
-                {/* Quick Category Chips */}
-                <div className="flex gap-2 overflow-x-auto android-scroll pb-1 -mx-1 px-1">
-                  {categoryOptions.map((cat) => (
-                    <button
-                      key={cat.value}
-                      onClick={() => setSelectedCategory(cat.value)}
-                      className={`android-chip shrink-0 ${
-                        selectedCategory === cat.value ? 'active' : ''
-                      }`}
-                    >
-                      <span>{cat.label}</span>
-                      <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
-                        selectedCategory === cat.value ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-500'
-                      }`}>
-                        {cat.count}
-                      </span>
-                    </button>
-                  ))}
                 </div>
               </div>
 
