@@ -547,10 +547,18 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
           onPointerUp={handlePointerUp}
           title={`Barcode CODE128 (${effBarcodeWidth.toFixed(1)}×${effBarcodeHeight.toFixed(1)}mm)`}
         >
-          <div className="w-full h-full flex flex-col items-center justify-center overflow-hidden pointer-events-none">
-            <BarcodeSVG value={codeVal} height={Math.max(8, effBarcodeHeight * previewScale - (showCodeText ? 10 : 2))} showValue={false} />
+          <div className="w-full h-full flex flex-col items-center justify-between overflow-hidden pointer-events-none min-h-0">
+            <BarcodeSVG
+              value={codeVal}
+              height={Math.max(10, Math.round(effBarcodeHeight * previewScale - (showCodeText ? 10 : 0)))}
+              showValue={false}
+              className="w-full flex-1 min-h-0"
+            />
             {showCodeText && (
-              <div className="font-mono font-bold text-slate-900 text-center truncate w-full text-[8px]">
+              <div
+                className="font-mono font-bold text-slate-900 text-center truncate w-full shrink-0 leading-tight mt-0.5"
+                style={{ fontSize: Math.max(6, Math.min(14, effBarcodeHeight * previewScale * 0.22)) }}
+              >
                 {codeVal}
               </div>
             )}

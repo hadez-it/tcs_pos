@@ -57,7 +57,7 @@ export const BarcodeSVG: React.FC<BarcodeSVGProps> = ({
     }
   });
 
-  const quietZone = 10;
+  const quietZone = 2;
   const fullWidth = totalUnits + quietZone * 2;
   let currentX = quietZone;
 
@@ -80,10 +80,10 @@ export const BarcodeSVG: React.FC<BarcodeSVGProps> = ({
   });
 
   return (
-    <div className={`flex flex-col items-center select-none ${className}`}>
+    <div className={`flex flex-col items-center select-none w-full h-full ${className}`}>
       <svg
         viewBox={`0 0 ${fullWidth} ${height}`}
-        className="w-full h-auto max-h-[60px]"
+        className="w-full h-full block"
         preserveAspectRatio="none"
       >
         {rects}
