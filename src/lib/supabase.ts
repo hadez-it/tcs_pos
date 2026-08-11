@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
-import { Branch, Product, Sale, SaleItem, SaleWithItems, UserProfile, InventoryTransaction, UserRole, BusinessProfile, CashFlowEntry } from '../types';
+import { Branch, Product, Sale, SaleItem, SaleWithItems, UserProfile, InventoryTransaction, UserRole, BusinessProfile, CashFlowEntry, SaleDeleteRequest } from '../types';
 
 const supabaseUrl = (import.meta as any).env.VITE_SUPABASE_URL;
 const supabaseAnonKey = (import.meta as any).env.VITE_SUPABASE_ANON_KEY || (import.meta as any).env.VITE_SUPABASE_PUBLISHABLE_KEY;
@@ -106,6 +106,7 @@ const MOCK_SALES_KEY = 'retail_shop_sales';
 const MOCK_SALE_ITEMS_KEY = 'retail_shop_sale_items';
 const MOCK_TRANSACTIONS_KEY = 'retail_shop_transactions';
 const MOCK_CASHFLOW_KEY = 'retail_shop_cash_flow';
+const MOCK_DELETE_REQUESTS_KEY = 'retail_shop_sale_delete_requests';
 const MOCK_BRANCHES_KEY = 'retail_shop_branches';
 const MOCK_BUSINESS_KEY = 'retail_shop_business_profile';
 const CURRENT_USER_KEY = 'retail_shop_current_user';
@@ -139,6 +140,7 @@ const seedLocalStorage = () => {
     localStorage.removeItem(MOCK_SALE_ITEMS_KEY);
     localStorage.removeItem(MOCK_TRANSACTIONS_KEY);
     localStorage.removeItem(MOCK_CASHFLOW_KEY);
+    localStorage.removeItem(MOCK_DELETE_REQUESTS_KEY);
     localStorage.setItem('has_cleared_demo_data_v3', 'true');
   }
 
@@ -162,6 +164,9 @@ const seedLocalStorage = () => {
   }
   if (!localStorage.getItem(MOCK_CASHFLOW_KEY)) {
     localStorage.setItem(MOCK_CASHFLOW_KEY, JSON.stringify([]));
+  }
+  if (!localStorage.getItem(MOCK_DELETE_REQUESTS_KEY)) {
+    localStorage.setItem(MOCK_DELETE_REQUESTS_KEY, JSON.stringify([]));
   }
 };
 
@@ -1474,6 +1479,149 @@ export const dbService = {
     }
   },
 
+  saleDeleteRequests: {
+    async getAll(): Promise<SaleDeleteRequest[]> {
+      if (isSupabaseConfigured && supabase) {
+        try {
+          const { data, error } = await supabase
+            .from('sale_delete_requests')
+            .select('*')
+            .order('requested_at', { ascending: false });
+          if (error) throw error;
+          return data || [];
+        } catch (err) {
+          console.warn('Supabase saleDeleteRequests.getAll failed, falling back to LocalStorage:', err);
+          const reqs = getMockData<SaleDeleteRequest>(MOCK_DELETE_REQUESTS_KEY);
+          return reqs.sort((a, b) => new Date(b.requested_at).getTime() - new Date(a.requested_at).getTime());
+        }
+      } else {
+        const reqs = getMockData<SaleDeleteRequest>(MOCK_DELETE_REQUESTS_KEY);
+        return reqs.sort((a, b) => new Date(b.requested_at).getTime() - new Date(a.requested_at).getTime());
+      }
+    },
+
+    async create(requestData: Omit<SaleDeleteRequest, 'id' | 'requested_at' | 'status'>): Promise<SaleDeleteRequest> {
+      const newReq: SaleDeleteRequest = {
+        ...requestData,
+        id: 'delreq-' + generateId(),
+        status: 'pending',
+        requested_at: new Date().toISOString()
+      };
+
+      if (isSupabaseConfigured && supabase) {
+        try {
+          const { data, error } = await supabase
+            .from('sale_delete_requests')
+            .insert(newReq)
+            .select()
+            .single();
+          if (error) throw error;
+          return data;
+        } catch (err) {
+          console.warn('Supabase saleDeleteRequests.create failed, falling back to LocalStorage:', err);
+          const reqs = getMockData<SaleDeleteRequest>(MOCK_DELETE_REQUESTS_KEY);
+          reqs.push(newReq);
+          saveMockData(MOCK_DELETE_REQUESTS_KEY, reqs);
+          return newReq;
+        }
+      } else {
+        const reqs = getMockData<SaleDeleteRequest>(MOCK_DELETE_REQUESTS_KEY);
+        reqs.push(newReq);
+        saveMockData(MOCK_DELETE_REQUESTS_KEY, reqs);
+        return newReq;
+      }
+    },
+
+    async approve(requestId: string, reviewedBy: string): Promise<void> {
+      const now = new Date().toISOString();
+      const allSales = await dbService.sales.getAllWithItems();
+
+      let req: SaleDeleteRequest | undefined;
+      if (isSupabaseConfigured && supabase) {
+        try {
+          const { data } = await supabase.from('sale_delete_requests').select('*').eq('id', requestId).single();
+          req = data;
+        } catch (err) {
+          const reqs = getMockData<SaleDeleteRequest>(MOCK_DELETE_REQUESTS_KEY);
+          req = reqs.find(r => r.id === requestId);
+        }
+      } else {
+        const reqs = getMockData<SaleDeleteRequest>(MOCK_DELETE_REQUESTS_KEY);
+        req = reqs.find(r => r.id === requestId);
+      }
+
+      if (!req) throw new Error('Delete request not found');
+
+      const targetSale = allSales.find(s => s.id === req.sale_id);
+      if (targetSale && targetSale.items && targetSale.items.length > 0) {
+        const products = await dbService.products.getAll();
+        for (const item of targetSale.items) {
+          const prod = products.find(p => p.id === item.product_id);
+          if (prod) {
+            await dbService.products.restock(prod.id, item.quantity, reviewedBy);
+          }
+        }
+      }
+
+      if (isSupabaseConfigured && supabase) {
+        try {
+          await supabase
+            .from('sale_delete_requests')
+            .update({ status: 'approved', reviewed_at: now, reviewed_by: reviewedBy })
+            .eq('id', requestId);
+
+          if (req.sale_id) {
+            await supabase.from('sales').delete().eq('id', req.sale_id);
+          }
+        } catch (err) {
+          console.warn('Supabase approve delete request failed, falling back to LocalStorage:', err);
+        }
+      }
+
+      const reqs = getMockData<SaleDeleteRequest>(MOCK_DELETE_REQUESTS_KEY);
+      const rIdx = reqs.findIndex(r => r.id === requestId);
+      if (rIdx !== -1) {
+        reqs[rIdx] = { ...reqs[rIdx], status: 'approved', reviewed_at: now, reviewed_by: reviewedBy };
+        saveMockData(MOCK_DELETE_REQUESTS_KEY, reqs);
+      }
+
+      if (req.sale_id) {
+        const sales = getMockData<Sale>(MOCK_SALES_KEY).filter(s => s.id !== req.sale_id);
+        const saleItems = getMockData<SaleItem>(MOCK_SALE_ITEMS_KEY).filter(si => si.sale_id !== req.sale_id);
+        saveMockData(MOCK_SALES_KEY, sales);
+        saveMockData(MOCK_SALE_ITEMS_KEY, saleItems);
+      }
+    },
+
+    async reject(requestId: string, reviewedBy: string, rejectionReason?: string): Promise<void> {
+      const now = new Date().toISOString();
+
+      if (isSupabaseConfigured && supabase) {
+        try {
+          await supabase
+            .from('sale_delete_requests')
+            .update({ status: 'rejected', reviewed_at: now, reviewed_by: reviewedBy, rejection_reason: rejectionReason || '' })
+            .eq('id', requestId);
+        } catch (err) {
+          console.warn('Supabase reject delete request failed:', err);
+        }
+      }
+
+      const reqs = getMockData<SaleDeleteRequest>(MOCK_DELETE_REQUESTS_KEY);
+      const rIdx = reqs.findIndex(r => r.id === requestId);
+      if (rIdx !== -1) {
+        reqs[rIdx] = {
+          ...reqs[rIdx],
+          status: 'rejected',
+          reviewed_at: now,
+          reviewed_by: reviewedBy,
+          rejection_reason: rejectionReason || ''
+        };
+        saveMockData(MOCK_DELETE_REQUESTS_KEY, reqs);
+      }
+    }
+  },
+
   // ----------------------------------------
   // OFFLINE SYNC ENGINE
   // ----------------------------------------
@@ -1537,6 +1685,13 @@ export const dbService = {
         if (localCashFlow.length > 0) {
           const { error } = await supabase.from('cash_flow').upsert(localCashFlow);
           if (!error) syncedCount += localCashFlow.length;
+        }
+
+        // 8. Sync local sale delete requests
+        const localDelReqs = getMockData<SaleDeleteRequest>(MOCK_DELETE_REQUESTS_KEY);
+        if (localDelReqs.length > 0) {
+          const { error } = await supabase.from('sale_delete_requests').upsert(localDelReqs);
+          if (!error) syncedCount += localDelReqs.length;
         }
 
         return {

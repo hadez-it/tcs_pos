@@ -88,6 +88,25 @@ export interface SaleWithItems extends Sale {
   items: SaleItem[];
 }
 
+export type DeleteRequestStatus = 'pending' | 'approved' | 'rejected';
+
+export interface SaleDeleteRequest {
+  id: string;
+  sale_id: string;
+  cashier_id: string;
+  cashier_name: string;
+  branch_id?: string;
+  branch_name?: string;
+  total_amount: number;
+  reason?: string;
+  status: DeleteRequestStatus;
+  requested_at: string;
+  reviewed_at?: string;
+  reviewed_by?: string;
+  rejection_reason?: string;
+  items?: SaleItem[];
+}
+
 export interface InventoryTransaction {
   id: string;
   product_id: string;

@@ -11,7 +11,7 @@ import {
   ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend 
 } from 'recharts';
 import { dbService, isSupabaseConfigured, DEFAULT_BUSINESS_PROFILE, formatEmailWithDefaultDomain } from '../lib/supabase';
-import { Product, SaleWithItems, UserProfile, InventoryTransaction, SalesAnalytics, Branch, BusinessProfile, CashFlowEntry, CashFlowType, PaymentMethod } from '../types';
+import { Product, SaleWithItems, UserProfile, InventoryTransaction, SalesAnalytics, Branch, BusinessProfile, CashFlowEntry, CashFlowType, PaymentMethod, SaleDeleteRequest } from '../types';
 import { formatCurrency, formatDisplayEmail } from '../utils/format';
 import { useToast } from '../utils/toast';
 import { useBackDismiss, useBackTabHistory } from '../lib/backNavigation';
@@ -23,6 +23,7 @@ import CsvImportModal from './CsvImportModal';
 import SearchableCategorySelect from './SearchableCategorySelect';
 import QuickRestockModal from './QuickRestockModal';
 import SaleReportTab from './SaleReportTab';
+import DeleteRequestsTab from './DeleteRequestsTab';
 
 interface OwnerDashboardProps {
   user: UserProfile;
@@ -37,9 +38,10 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
   const [cashiers, setCashiers] = useState<UserProfile[]>([]);
   const [transactions, setTransactions] = useState<InventoryTransaction[]>([]);
   const [branches, setBranches] = useState<Branch[]>([]);
+  const [deleteRequests, setDeleteRequests] = useState<SaleDeleteRequest[]>([]);
   const [selectedBranchId, setSelectedBranchId] = useState<string>('all');
   const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'cashiers' | 'staff-performance' | 'transactions' | 'branches' | 'settings' | 'cash-flow' | 'label-generator' | 'sale-report'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'cashiers' | 'staff-performance' | 'transactions' | 'branches' | 'settings' | 'cash-flow' | 'label-generator' | 'sale-report' | 'delete-requests'>('overview');
   const [selectedSingleProduct, setSelectedSingleProduct] = useState<Product | null>(null);
   const [showSingleLabelModal, setShowSingleLabelModal] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -86,7 +88,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
   const INCOME_CATEGORIES = ['POS Sales', 'Investment', 'Loan Received', 'Other Income'];
   const EXPENSE_CATEGORIES = ['Inventory / Stock', 'Rent', 'Salaries', 'Utilities', 'Transport', 'Supplies', 'Marketing', 'Repairs', 'Other Expense'];
 
-  const handleTabSwitch = (tab: 'overview' | 'products' | 'cashiers' | 'staff-performance' | 'transactions' | 'branches' | 'settings' | 'cash-flow' | 'label-generator' | 'sale-report') => {
+  const handleTabSwitch = (tab: 'overview' | 'products' | 'cashiers' | 'staff-performance' | 'transactions' | 'branches' | 'settings' | 'cash-flow' | 'label-generator' | 'sale-report' | 'delete-requests') => {
     // 1. Immediately close sidebar drawer for zero-lag menu response
     setIsSidebarOpen(false);
 
@@ -348,18 +350,18 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
     URL.revokeObjectURL(url);
   };
 
-  // Load all dashboard data
   const loadData = async () => {
     setIsLoading(true);
     try {
-      const [allProducts, allSales, allCashiers, allTxs, allBranches, bizInfo, allCashFlow] = await Promise.all([
+      const [allProducts, allSales, allCashiers, allTxs, allBranches, bizInfo, allCashFlow, allDelReqs] = await Promise.all([
         dbService.products.getAll(),
         dbService.sales.getAllWithItems(),
         dbService.auth.getCashiers(),
         dbService.transactions.getAll(),
         dbService.branches.getAll(),
         dbService.business.get(),
-        dbService.cashFlow.getAll()
+        dbService.cashFlow.getAll(),
+        dbService.saleDeleteRequests.getAll()
       ]);
       setProducts(allProducts);
       setSales(allSales);
@@ -367,6 +369,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
       setTransactions(allTxs);
       setBranches(allBranches);
       setCashFlowEntries(allCashFlow);
+      setDeleteRequests(allDelReqs);
       if (bizInfo) {
         setBusinessProfile(bizInfo);
         setBusinessForm(bizInfo);
@@ -1353,7 +1356,8 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
   const [showMoreMenu, setShowMoreMenu] = useState(false);
 
   const mainTabs = ['overview', 'products', 'cashiers', 'cash-flow', 'branches'] as const;
-  const moreTabs = ['staff-performance', 'transactions', 'settings', 'label-generator'] as const;
+  const moreTabs = ['staff-performance', 'transactions', 'settings', 'label-generator', 'sale-report', 'delete-requests'] as const;
+  const pendingDeleteCount = useMemo(() => deleteRequests.filter(r => r.status === 'pending').length, [deleteRequests]);
 
   // Back button: each surface pops in the reverse order it was opened, so a
   // delete confirmation raised from inside a modal closes before that modal.
@@ -1424,6 +1428,16 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
           <div>
             <p className="px-3 text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-2">Management</p>
             <div className="space-y-1">
+              <button onClick={() => handleTabSwitch('delete-requests')} className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeTab === 'delete-requests' ? 'bg-black text-white shadow-xs' : 'text-slate-700 hover:bg-slate-100'}`}>
+                <div className="flex items-center gap-3">
+                  <Trash2 className="w-4 h-4 text-slate-500" /><span>Delete Requests</span>
+                </div>
+                {pendingDeleteCount > 0 && (
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-900 text-white">
+                    {pendingDeleteCount}
+                  </span>
+                )}
+              </button>
               <button onClick={() => handleTabSwitch('staff-performance')} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeTab === 'staff-performance' ? 'bg-black text-white shadow-xs' : 'text-slate-700 hover:bg-slate-100'}`}>
                 <Award className="w-4 h-4" /><span>Staff Performance</span>
               </button>
@@ -1489,6 +1503,8 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                     ? 'Dashboard'
                     : activeTab === 'cashiers'
                     ? 'Cashiers'
+                    : activeTab === 'delete-requests'
+                    ? 'Delete Requests'
                     : activeTab === 'staff-performance'
                     ? 'Staff'
                     : activeTab === 'settings'
@@ -1545,6 +1561,8 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                 ? 'Products Inventory'
                 : activeTab === 'cashiers'
                 ? 'Staff & Cashier Accounts'
+                : activeTab === 'delete-requests'
+                ? 'Sales Delete Requests'
                 : activeTab === 'staff-performance'
                 ? 'Staff Performance & Metrics'
                 : activeTab === 'settings'
@@ -3840,6 +3858,14 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                 </form>
               </div>
             )}
+            {activeTab === 'delete-requests' && (
+              <DeleteRequestsTab
+                user={user}
+                branches={branches}
+                selectedBranchId={selectedBranchId}
+                onDataChanged={loadData}
+              />
+            )}
           </div>
         )}
         </div>
@@ -4953,6 +4979,22 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
               >
                 <Clipboard className="w-5 h-5 text-gray-500" />
                 <span>Audit Logs & History</span>
+              </button>
+              <button
+                onClick={() => { handleTabSwitch('delete-requests'); setShowMoreMenu(false); }}
+                className={`w-full flex items-center justify-between px-4 py-3.5 rounded-xl text-sm font-bold transition-all cursor-pointer active-scale ${
+                  activeTab === 'delete-requests' ? 'bg-gray-50 text-gray-900' : 'text-slate-700 hover:bg-slate-50'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <Trash2 className="w-5 h-5 text-gray-500" />
+                  <span>Delete Requests</span>
+                </div>
+                {pendingDeleteCount > 0 && (
+                  <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-slate-900 text-white">
+                    {pendingDeleteCount}
+                  </span>
+                )}
               </button>
               <button
                 onClick={() => { handleTabSwitch('sale-report'); setShowMoreMenu(false); }}

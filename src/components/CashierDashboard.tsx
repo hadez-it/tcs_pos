@@ -6,7 +6,7 @@ import {
   FileText, Tag, ArrowRight, Printer, AlertCircle, Sparkles, Filter, ChevronDown, Menu, X, History, Camera
 } from 'lucide-react';
 import { dbService, DEFAULT_BUSINESS_PROFILE } from '../lib/supabase';
-import { Product, SaleWithItems, UserProfile, BusinessProfile } from '../types';
+import { Product, SaleWithItems, UserProfile, BusinessProfile, SaleDeleteRequest } from '../types';
 import { formatCurrency } from '../utils/format';
 import { useToast } from '../utils/toast';
 import SearchableCategorySelect from './SearchableCategorySelect';
@@ -56,7 +56,11 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
   const [heldCarts, setHeldCarts] = useState<HeldCart[]>([]);
   const [showHeldCartsModal, setShowHeldCartsModal] = useState(false);
   const [salesHistory, setSalesHistory] = useState<SaleWithItems[]>([]);
+  const [deleteRequests, setDeleteRequests] = useState<SaleDeleteRequest[]>([]);
   const [isHistoryLoading, setIsHistoryLoading] = useState(false);
+  const [saleToDelete, setSaleToDelete] = useState<SaleWithItems | null>(null);
+  const [deleteReason, setDeleteReason] = useState('');
+  const [isSubmittingDeleteRequest, setIsSubmittingDeleteRequest] = useState(false);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [discount, setDiscount] = useState<string>('');
   const [paymentMethod, setPaymentMethod] = useState<'cash' | 'card' | 'mobile'>('cash');
@@ -70,11 +74,11 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
   const [showScanner, setShowScanner] = useState(false);
 
-  // Back button: each surface pops in the reverse order it was opened.
   useBackDismiss(showCartModal, () => setShowCartModal(false));
   useBackDismiss(showHeldCartsModal, () => setShowHeldCartsModal(false));
   useBackDismiss(showReceipt, () => { setShowReceipt(false); setCompletedSale(null); });
   useBackDismiss(showScanner, () => setShowScanner(false));
+  useBackDismiss(saleToDelete !== null, () => setSaleToDelete(null));
 
   const handleTabSwitch = (tab: 'pos' | 'history') => {
     if (tab === activeTab) return;
@@ -82,7 +86,6 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
     React.startTransition(() => setActiveTab(tab));
   };
 
-  // Back from History returns to the POS tab rather than exiting.
   useBackTabHistory(activeTab, tab => {
     if (tab === 'history') loadRecentSales();
     React.startTransition(() => setActiveTab(tab));
@@ -91,12 +94,41 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
   const loadRecentSales = async () => {
     setIsHistoryLoading(true);
     try {
-      const allSales = await dbService.sales.getAllWithItems();
+      const [allSales, allDelReqs] = await Promise.all([
+        dbService.sales.getAllWithItems(),
+        dbService.saleDeleteRequests.getAll()
+      ]);
       setSalesHistory(allSales.filter(s => s.cashier_id === user.id));
+      setDeleteRequests(allDelReqs);
     } catch (err) {
       console.error('Failed to load sales history:', err);
     } finally {
       setIsHistoryLoading(false);
+    }
+  };
+
+  const handleRequestDeleteSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!saleToDelete || isSubmittingDeleteRequest) return;
+    setIsSubmittingDeleteRequest(true);
+    try {
+      await dbService.saleDeleteRequests.create({
+        sale_id: saleToDelete.id,
+        cashier_id: user.id,
+        cashier_name: user.name,
+        branch_id: user.branch_id,
+        branch_name: user.branch_name,
+        total_amount: saleToDelete.total_amount,
+        reason: deleteReason
+      });
+      toast('Delete request sent to owner for approval.', 'success');
+      setSaleToDelete(null);
+      setDeleteReason('');
+      await loadRecentSales();
+    } catch (err: any) {
+      toast(err.message || 'Failed to submit delete request.', 'error');
+    } finally {
+      setIsSubmittingDeleteRequest(false);
     }
   };
 
@@ -599,34 +631,64 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {salesHistory.map((sale) => (
-                    <div key={sale.id} className="android-card p-4 border border-slate-100 flex flex-col justify-between">
-                      <div>
-                        <div className="flex justify-between items-start mb-2">
-                          <div>
-                            <span className="font-mono font-bold text-slate-900 text-xs block">{sale.id.slice(0, 8)}</span>
-                            <span className="text-[10px] text-slate-500 font-medium">{new Date(sale.created_at).toLocaleString()}</span>
+                  {salesHistory.map((sale) => {
+                    const existingReq = deleteRequests.find(r => r.sale_id === sale.id);
+                    return (
+                      <div key={sale.id} className="android-card p-4 border border-slate-100 flex flex-col justify-between">
+                        <div>
+                          <div className="flex justify-between items-start mb-2">
+                            <div>
+                              <span className="font-mono font-bold text-slate-900 text-xs block">{sale.id.slice(0, 8)}</span>
+                              <span className="text-[10px] text-slate-500 font-medium">{new Date(sale.created_at).toLocaleString()}</span>
+                            </div>
+                            <div className="text-right">
+                              <span className="font-mono font-extrabold text-slate-950 text-base block">{formatCurrency(sale.total_amount)}</span>
+                              <span className="text-[10px] text-slate-400 font-medium">{sale.items.length} items</span>
+                            </div>
                           </div>
-                          <div className="text-right">
-                            <span className="font-mono font-extrabold text-slate-950 text-base block">{formatCurrency(sale.total_amount)}</span>
-                            <span className="text-[10px] text-slate-400 font-medium">{sale.items.length} items</span>
-                          </div>
+                          {sale.customer_name && (
+                            <div className="text-[10px] text-slate-500 mb-2 pb-2 border-b border-slate-100">
+                              <span className="font-semibold text-slate-600">{sale.customer_name}</span>
+                              {sale.customer_phone && <span className="ml-1 text-slate-400">({sale.customer_phone})</span>}
+                            </div>
+                          )}
+                          {existingReq && (
+                            <div className="mb-2">
+                              {existingReq.status === 'pending' && (
+                                <span className="inline-block px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-200">
+                                  Delete Request Pending
+                                </span>
+                              )}
+                              {existingReq.status === 'approved' && (
+                                <span className="inline-block px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-100 text-slate-800 border border-slate-200">
+                                  Approved & Voided
+                                </span>
+                              )}
+                              {existingReq.status === 'rejected' && (
+                                <span className="inline-block px-2.5 py-1 rounded-lg text-[10px] font-bold bg-red-50 text-red-600 border border-red-100">
+                                  Delete Rejected {existingReq.rejection_reason ? `(${existingReq.rejection_reason})` : ''}
+                                </span>
+                              )}
+                            </div>
+                          )}
                         </div>
-                        {sale.customer_name && (
-                          <div className="text-[10px] text-slate-500 mb-2 pb-2 border-b border-slate-100">
-                            <span className="font-semibold text-slate-600">{sale.customer_name}</span>
-                            {sale.customer_phone && <span className="ml-1 text-slate-400">({sale.customer_phone})</span>}
-                          </div>
-                        )}
+                        <div className="flex items-center justify-between gap-2 pt-2 border-t border-slate-100/60 mt-2">
+                          {(!existingReq || existingReq.status === 'rejected') ? (
+                            <button onClick={() => { setSaleToDelete(sale); setDeleteReason(''); }} className="inline-flex items-center gap-1 px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 font-bold rounded-xl text-[11px] transition-all cursor-pointer">
+                              <Trash2 className="w-3 h-3" />
+                              Request Delete
+                            </button>
+                          ) : (
+                            <div />
+                          )}
+                          <button onClick={() => { setCompletedSale(sale); setShowReceipt(true); }} className="inline-flex items-center gap-1 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-xl text-[11px] transition-all cursor-pointer">
+                            <Printer className="w-3 h-3" />
+                            Receipt
+                          </button>
+                        </div>
                       </div>
-                      <div className="flex justify-end gap-2 pt-2 border-t border-slate-100/60 mt-2">
-                        <button onClick={() => { setCompletedSale(sale); setShowReceipt(true); }} className="inline-flex items-center gap-1 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-xl text-[11px] transition-all cursor-pointer">
-                          <Printer className="w-3 h-3" />
-                          Receipt
-                        </button>
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </div>
@@ -902,6 +964,62 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
         onClose={() => setShowScanner(false)}
         onScan={handleBarcodeScan}
       />
+      {/* Sale Delete Request Modal */}
+      {saleToDelete && (
+        <div className="bottom-sheet-overlay" onClick={() => setSaleToDelete(null)}>
+          <div className="bottom-sheet" onClick={(e) => e.stopPropagation()}>
+            <div className="pt-3 pb-2">
+              <div className="pull-indicator" />
+            </div>
+            <div className="px-4 pb-3 flex items-center justify-between border-b border-slate-100">
+              <h4 className="font-bold text-sm text-slate-900 flex items-center gap-2">
+                <Trash2 className="w-4 h-4 text-red-500" />
+                Request Sale Deletion
+              </h4>
+              <button onClick={() => setSaleToDelete(null)} className="p-2 text-slate-400 hover:text-slate-600 rounded-xl cursor-pointer">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <form onSubmit={handleRequestDeleteSubmit} className="p-4 space-y-4">
+              <div className="bg-slate-50 p-3 rounded-xl border border-slate-100 text-xs space-y-1">
+                <div className="flex justify-between font-bold text-slate-900">
+                  <span>Sale #{saleToDelete.id.slice(0, 8)}</span>
+                  <span className="font-mono">{formatCurrency(saleToDelete.total_amount)}</span>
+                </div>
+                <p className="text-slate-500 text-[11px]">{saleToDelete.items.length} items • {new Date(saleToDelete.created_at).toLocaleString()}</p>
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-bold text-slate-600 uppercase tracking-wider mb-1.5">Reason for Deletion Request</label>
+                <textarea
+                  rows={3}
+                  placeholder="Explain why this sale should be deleted (e.g. customer return, cashier error...)"
+                  value={deleteReason}
+                  onChange={(e) => setDeleteReason(e.target.value)}
+                  className="android-input w-full p-3 text-xs"
+                />
+              </div>
+
+              <div className="flex justify-end gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setSaleToDelete(null)}
+                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmittingDeleteRequest}
+                  className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-bold text-xs rounded-xl cursor-pointer disabled:opacity-50"
+                >
+                  {isSubmittingDeleteRequest ? 'Submitting...' : 'Submit Request'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

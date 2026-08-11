@@ -45,8 +45,8 @@
     "semantic_hash": "1a6ac864f8a87546b561d6b7527571bc"
   },
   "src/components/CashierDashboard.tsx": {
-    "mtime": 1786415445.503404,
-    "ast_hash": "edc95b9b155010200902bc671c1c42b3",
+    "mtime": 1786451227.2583342,
+    "ast_hash": "7d0338ab559ac84819b601337acbab26",
     "semantic_hash": ""
   },
   "src/components/CsvImportModal.tsx": {
@@ -65,9 +65,9 @@
     "semantic_hash": "810780213315ddd843729446b086f32a"
   },
   "src/components/OwnerDashboard.tsx": {
-    "mtime": 1786330550.8894677,
-    "ast_hash": "42f5b3a6dbe65c257116bad218bcc0d6",
-    "semantic_hash": "42f5b3a6dbe65c257116bad218bcc0d6"
+    "mtime": 1786451310.1243382,
+    "ast_hash": "7a19c2e50b2627708374cde01af0d0c3",
+    "semantic_hash": ""
   },
   "src/components/PrinterSettings.tsx": {
     "mtime": 1786104448.981534,
@@ -105,9 +105,9 @@
     "semantic_hash": ""
   },
   "src/data/schemaSql.ts": {
-    "mtime": 1785982490.8029974,
-    "ast_hash": "dd6efe10a7bd6de446e1c18937ab9ab0",
-    "semantic_hash": "dd6efe10a7bd6de446e1c18937ab9ab0"
+    "mtime": 1786451195.0283327,
+    "ast_hash": "e96ff46e8984150ad8873a3b179bfe05",
+    "semantic_hash": ""
   },
   "src/lib/backNavigation.ts": {
     "mtime": 1786239272.0312254,
@@ -135,8 +135,8 @@
     "semantic_hash": "f93aee73eb3d4ab2c5d337793019a773"
   },
   "src/lib/supabase.ts": {
-    "mtime": 1786415452.4064035,
-    "ast_hash": "9e88a01a2033108cc8d6bb9945129618",
+    "mtime": 1786451211.6553335,
+    "ast_hash": "41cfdfe0e62dc040b6352c86dcb69cc4",
     "semantic_hash": ""
   },
   "src/main.tsx": {
@@ -145,8 +145,8 @@
     "semantic_hash": "2b36426d5ad7e08ef79746aa524f4fb7"
   },
   "src/types.ts": {
-    "mtime": 1786423466.3566775,
-    "ast_hash": "83aa11ef3d3e95eb3bc08166a83a35be",
+    "mtime": 1786451188.5213325,
+    "ast_hash": "7d22300be358e1058a363ca0d77c174d",
     "semantic_hash": ""
   },
   "src/utils/format.ts": {
@@ -208,5 +208,10 @@
     "mtime": 1785982490.8109972,
     "ast_hash": "28d94c408c0e45f8026dbf47d1371155",
     "semantic_hash": "28d94c408c0e45f8026dbf47d1371155"
+  },
+  "src/components/DeleteRequestsTab.tsx": {
+    "mtime": 1786451234.2153344,
+    "ast_hash": "012010f6b5d96f8724c416f05557ffb8",
+    "semantic_hash": ""
   }
 }

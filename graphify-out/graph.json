@@ -788,8 +788,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_app",
-      "community": 1,
-      "community_name": "OwnerDashboard.tsx",
+      "community": 16,
+      "community_name": "App.tsx",
       "norm_label": "app.tsx"
     },
     {
@@ -800,8 +800,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_app_exitprompt",
-      "community": 1,
-      "community_name": "OwnerDashboard.tsx",
+      "community": 16,
+      "community_name": "App.tsx",
       "norm_label": "exitprompt()"
     },
     {
@@ -812,8 +812,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_app_app",
-      "community": 1,
-      "community_name": "OwnerDashboard.tsx",
+      "community": 16,
+      "community_name": "App.tsx",
       "norm_label": "app()"
     },
     {
@@ -823,8 +823,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_auth",
-      "community": 1,
-      "community_name": "OwnerDashboard.tsx",
+      "community": 16,
+      "community_name": "App.tsx",
       "norm_label": "auth.tsx"
     },
     {
@@ -836,8 +836,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_auth_authprops",
-      "community": 1,
-      "community_name": "OwnerDashboard.tsx",
+      "community": 16,
+      "community_name": "App.tsx",
       "norm_label": "authprops"
     },
     {
@@ -848,8 +848,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_auth_auth",
-      "community": 1,
-      "community_name": "OwnerDashboard.tsx",
+      "community": 16,
+      "community_name": "App.tsx",
       "norm_label": "auth()"
     },
     {
@@ -859,8 +859,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_barcodeprintmodal",
-      "community": 16,
-      "community_name": "SingleLabelModal.tsx",
+      "community": 0,
+      "community_name": "escpos.ts",
       "norm_label": "barcodeprintmodal.tsx"
     },
     {
@@ -872,8 +872,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_barcodeprintmodal_barcodeprintmodalprops",
-      "community": 16,
-      "community_name": "SingleLabelModal.tsx",
+      "community": 1,
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "barcodeprintmodalprops"
     },
     {
@@ -884,8 +884,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_barcodeprintmodal_clamp",
-      "community": 16,
-      "community_name": "SingleLabelModal.tsx",
+      "community": 0,
+      "community_name": "escpos.ts",
       "norm_label": "clamp()"
     },
     {
@@ -896,8 +896,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_barcodeprintmodal_parsemm",
-      "community": 16,
-      "community_name": "SingleLabelModal.tsx",
+      "community": 0,
+      "community_name": "escpos.ts",
       "norm_label": "parsemm()"
     },
     {
@@ -908,8 +908,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_barcodeprintmodal_barcodeprintmodal",
-      "community": 16,
-      "community_name": "SingleLabelModal.tsx",
+      "community": 0,
+      "community_name": "escpos.ts",
       "norm_label": "barcodeprintmodal()"
     },
     {
@@ -919,8 +919,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_barcodesvg",
-      "community": 16,
-      "community_name": "SingleLabelModal.tsx",
+      "community": 0,
+      "community_name": "escpos.ts",
       "norm_label": "barcodesvg.tsx"
     },
     {
@@ -932,8 +932,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_barcodesvg_barcodesvgprops",
-      "community": 16,
-      "community_name": "SingleLabelModal.tsx",
+      "community": 0,
+      "community_name": "escpos.ts",
       "norm_label": "barcodesvgprops"
     },
     {
@@ -943,8 +943,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "src_components_barcodesvg_code128_patterns",
-      "community": 16,
-      "community_name": "SingleLabelModal.tsx",
+      "community": 0,
+      "community_name": "escpos.ts",
       "norm_label": "code128_patterns"
     },
     {
@@ -955,8 +955,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_barcodesvg_barcodesvg",
-      "community": 16,
-      "community_name": "SingleLabelModal.tsx",
+      "community": 0,
+      "community_name": "escpos.ts",
       "norm_label": "barcodesvg()"
     },
     {
@@ -1015,8 +1015,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_cashierdashboard_cashierdashboardprops",
-      "community": 1,
-      "community_name": "OwnerDashboard.tsx",
+      "community": 2,
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "cashierdashboardprops"
     },
     {
@@ -1028,8 +1028,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_cashierdashboard_cartitem",
-      "community": 16,
-      "community_name": "SingleLabelModal.tsx",
+      "community": 1,
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "cartitem"
     },
     {
@@ -1106,14 +1106,50 @@
       "norm_label": "csvimportmodal()"
     },
     {
+      "label": "DeleteRequestsTab.tsx",
+      "file_type": "code",
+      "source_file": "src/components/DeleteRequestsTab.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_components_deleterequeststab",
+      "community": 1,
+      "community_name": "OwnerDashboard.tsx",
+      "norm_label": "deleterequeststab.tsx"
+    },
+    {
+      "label": "DeleteRequestsTabProps",
+      "file_type": "code",
+      "source_file": "src/components/DeleteRequestsTab.tsx",
+      "source_location": "L8",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "id": "src_components_deleterequeststab_deleterequeststabprops",
+      "community": 1,
+      "community_name": "OwnerDashboard.tsx",
+      "norm_label": "deleterequeststabprops"
+    },
+    {
+      "label": "DeleteRequestsTab()",
+      "file_type": "code",
+      "source_file": "src/components/DeleteRequestsTab.tsx",
+      "source_location": "L15",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_components_deleterequeststab_deleterequeststab",
+      "community": 1,
+      "community_name": "OwnerDashboard.tsx",
+      "norm_label": "deleterequeststab()"
+    },
+    {
       "label": "LabelGeneratorTab.tsx",
       "file_type": "code",
       "source_file": "src/components/LabelGeneratorTab.tsx",
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_labelgeneratortab",
-      "community": 16,
-      "community_name": "SingleLabelModal.tsx",
+      "community": 0,
+      "community_name": "escpos.ts",
       "norm_label": "labelgeneratortab.tsx"
     },
     {
@@ -1125,8 +1161,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_labelgeneratortab_labelgeneratortabprops",
-      "community": 16,
-      "community_name": "SingleLabelModal.tsx",
+      "community": 1,
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "labelgeneratortabprops"
     },
     {
@@ -1137,8 +1173,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_labelgeneratortab_clamp",
-      "community": 16,
-      "community_name": "SingleLabelModal.tsx",
+      "community": 0,
+      "community_name": "escpos.ts",
       "norm_label": "clamp()"
     },
     {
@@ -1149,8 +1185,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_labelgeneratortab_parsemm",
-      "community": 16,
-      "community_name": "SingleLabelModal.tsx",
+      "community": 0,
+      "community_name": "escpos.ts",
       "norm_label": "parsemm()"
     },
     {
@@ -1161,8 +1197,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_labelgeneratortab_labelgeneratortab",
-      "community": 16,
-      "community_name": "SingleLabelModal.tsx",
+      "community": 0,
+      "community_name": "escpos.ts",
       "norm_label": "labelgeneratortab()"
     },
     {
@@ -1172,8 +1208,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_offlinesyncbar",
-      "community": 1,
-      "community_name": "OwnerDashboard.tsx",
+      "community": 16,
+      "community_name": "App.tsx",
       "norm_label": "offlinesyncbar.tsx"
     },
     {
@@ -1184,8 +1220,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_offlinesyncbar_offlinesyncbar",
-      "community": 1,
-      "community_name": "OwnerDashboard.tsx",
+      "community": 16,
+      "community_name": "App.tsx",
       "norm_label": "offlinesyncbar()"
     },
     {
@@ -1203,7 +1239,7 @@
       "label": "OwnerDashboardProps",
       "file_type": "code",
       "source_file": "src/components/OwnerDashboard.tsx",
-      "source_location": "L27",
+      "source_location": "L28",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
@@ -1216,7 +1252,7 @@
       "label": "OwnerDashboard()",
       "file_type": "code",
       "source_file": "src/components/OwnerDashboard.tsx",
-      "source_location": "L32",
+      "source_location": "L33",
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ownerdashboard_ownerdashboard",
@@ -1304,8 +1340,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_pulltorefresh",
-      "community": 1,
-      "community_name": "OwnerDashboard.tsx",
+      "community": 16,
+      "community_name": "App.tsx",
       "norm_label": "pulltorefresh.tsx"
     },
     {
@@ -1317,8 +1353,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_pulltorefresh_pulltorefreshprops",
-      "community": 1,
-      "community_name": "OwnerDashboard.tsx",
+      "community": 16,
+      "community_name": "App.tsx",
       "norm_label": "pulltorefreshprops"
     },
     {
@@ -1329,8 +1365,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_pulltorefresh_pulltorefresh",
-      "community": 1,
-      "community_name": "OwnerDashboard.tsx",
+      "community": 16,
+      "community_name": "App.tsx",
       "norm_label": "pulltorefresh()"
     },
     {
@@ -1353,8 +1389,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_quickrestockmodal_quickrestockmodalprops",
-      "community": 16,
-      "community_name": "SingleLabelModal.tsx",
+      "community": 1,
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "quickrestockmodalprops"
     },
     {
@@ -1461,8 +1497,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_setupbanner",
-      "community": 1,
-      "community_name": "OwnerDashboard.tsx",
+      "community": 16,
+      "community_name": "App.tsx",
       "norm_label": "setupbanner.tsx"
     },
     {
@@ -1473,8 +1509,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_setupbanner_setupbanner",
-      "community": 1,
-      "community_name": "OwnerDashboard.tsx",
+      "community": 16,
+      "community_name": "App.tsx",
       "norm_label": "setupbanner()"
     },
     {
@@ -1484,8 +1520,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_singlelabelmodal",
-      "community": 16,
-      "community_name": "SingleLabelModal.tsx",
+      "community": 0,
+      "community_name": "escpos.ts",
       "norm_label": "singlelabelmodal.tsx"
     },
     {
@@ -1497,8 +1533,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_singlelabelmodal_singlelabelmodalprops",
-      "community": 16,
-      "community_name": "SingleLabelModal.tsx",
+      "community": 1,
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "singlelabelmodalprops"
     },
     {
@@ -1509,8 +1545,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_singlelabelmodal_clamp",
-      "community": 16,
-      "community_name": "SingleLabelModal.tsx",
+      "community": 0,
+      "community_name": "escpos.ts",
       "norm_label": "clamp()"
     },
     {
@@ -1521,8 +1557,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_singlelabelmodal_parsemm",
-      "community": 16,
-      "community_name": "SingleLabelModal.tsx",
+      "community": 0,
+      "community_name": "escpos.ts",
       "norm_label": "parsemm()"
     },
     {
@@ -1533,8 +1569,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_singlelabelmodal_singlelabelmodal",
-      "community": 16,
-      "community_name": "SingleLabelModal.tsx",
+      "community": 0,
+      "community_name": "escpos.ts",
       "norm_label": "singlelabelmodal()"
     },
     {
@@ -1544,8 +1580,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_data_schemasql",
-      "community": 1,
-      "community_name": "OwnerDashboard.tsx",
+      "community": 16,
+      "community_name": "App.tsx",
       "norm_label": "schemasql.ts"
     },
     {
@@ -1555,8 +1591,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_data_schemasql_supabase_schema_sql",
-      "community": 1,
-      "community_name": "OwnerDashboard.tsx",
+      "community": 16,
+      "community_name": "App.tsx",
       "norm_label": "supabase_schema_sql"
     },
     {
@@ -1674,8 +1710,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_backnavigation_setexitprompthandler",
-      "community": 1,
-      "community_name": "OwnerDashboard.tsx",
+      "community": 16,
+      "community_name": "App.tsx",
       "norm_label": "setexitprompthandler()"
     },
     {
@@ -1960,8 +1996,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_escpos_init",
-      "community": 16,
-      "community_name": "SingleLabelModal.tsx",
+      "community": 0,
+      "community_name": "escpos.ts",
       "norm_label": "init()"
     },
     {
@@ -1972,8 +2008,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_escpos_setcodepage",
-      "community": 16,
-      "community_name": "SingleLabelModal.tsx",
+      "community": 0,
+      "community_name": "escpos.ts",
       "norm_label": "setcodepage()"
     },
     {
@@ -2178,8 +2214,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_escpos_feedpitch",
-      "community": 16,
-      "community_name": "SingleLabelModal.tsx",
+      "community": 0,
+      "community_name": "escpos.ts",
       "norm_label": "feedpitch()"
     },
     {
@@ -2227,8 +2263,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_escpos_buildmultilabel",
-      "community": 16,
-      "community_name": "SingleLabelModal.tsx",
+      "community": 0,
+      "community_name": "escpos.ts",
       "norm_label": "buildmultilabel()"
     },
     {
@@ -2278,8 +2314,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_escpos_getprintablemm",
-      "community": 16,
-      "community_name": "SingleLabelModal.tsx",
+      "community": 0,
+      "community_name": "escpos.ts",
       "norm_label": "getprintablemm()"
     },
     {
@@ -2314,8 +2350,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_escpos_normalizebarcodevalue",
-      "community": 16,
-      "community_name": "SingleLabelModal.tsx",
+      "community": 0,
+      "community_name": "escpos.ts",
       "norm_label": "normalizebarcodevalue()"
     },
     {
@@ -2374,8 +2410,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_escpos_testprint",
-      "community": 16,
-      "community_name": "SingleLabelModal.tsx",
+      "community": 0,
+      "community_name": "escpos.ts",
       "norm_label": "testprint()"
     },
     {
@@ -2385,8 +2421,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_labelconfig",
-      "community": 16,
-      "community_name": "SingleLabelModal.tsx",
+      "community": 0,
+      "community_name": "escpos.ts",
       "norm_label": "labelconfig.ts"
     },
     {
@@ -2396,8 +2432,8 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "src_lib_labelconfig_default_label_config",
-      "community": 16,
-      "community_name": "SingleLabelModal.tsx",
+      "community": 0,
+      "community_name": "escpos.ts",
       "norm_label": "default_label_config"
     },
     {
@@ -2408,8 +2444,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_labelconfig_loadlabelconfig",
-      "community": 16,
-      "community_name": "SingleLabelModal.tsx",
+      "community": 0,
+      "community_name": "escpos.ts",
       "norm_label": "loadlabelconfig()"
     },
     {
@@ -2420,8 +2456,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_labelconfig_savelabelconfig",
-      "community": 16,
-      "community_name": "SingleLabelModal.tsx",
+      "community": 0,
+      "community_name": "escpos.ts",
       "norm_label": "savelabelconfig()"
     },
     {
@@ -2658,8 +2694,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_lib_supabase_issupabaseconfigured",
-      "community": 1,
-      "community_name": "OwnerDashboard.tsx",
+      "community": 16,
+      "community_name": "App.tsx",
       "norm_label": "issupabaseconfigured"
     },
     {
@@ -2749,7 +2785,7 @@
       "label": "DEFAULT_BUSINESS_PROFILE",
       "file_type": "code",
       "source_file": "src/lib/supabase.ts",
-      "source_location": "L113",
+      "source_location": "L114",
       "_origin": "ast",
       "id": "src_lib_supabase_default_business_profile",
       "community": 1,
@@ -2760,7 +2796,7 @@
       "label": "INITIAL_BRANCHES",
       "file_type": "code",
       "source_file": "src/lib/supabase.ts",
-      "source_location": "L125",
+      "source_location": "L126",
       "_origin": "ast",
       "id": "src_lib_supabase_initial_branches",
       "community": 1,
@@ -2771,7 +2807,7 @@
       "label": "INITIAL_PROFILES",
       "file_type": "code",
       "source_file": "src/lib/supabase.ts",
-      "source_location": "L127",
+      "source_location": "L128",
       "_origin": "ast",
       "id": "src_lib_supabase_initial_profiles",
       "community": 1,
@@ -2782,7 +2818,7 @@
       "label": "INITIAL_PRODUCTS",
       "file_type": "code",
       "source_file": "src/lib/supabase.ts",
-      "source_location": "L129",
+      "source_location": "L130",
       "_origin": "ast",
       "id": "src_lib_supabase_initial_products",
       "community": 1,
@@ -2793,7 +2829,7 @@
       "label": "seedLocalStorage()",
       "file_type": "code",
       "source_file": "src/lib/supabase.ts",
-      "source_location": "L132",
+      "source_location": "L133",
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_supabase_seedlocalstorage",
@@ -2805,7 +2841,7 @@
       "label": "getMockData()",
       "file_type": "code",
       "source_file": "src/lib/supabase.ts",
-      "source_location": "L174",
+      "source_location": "L179",
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_supabase_getmockdata",
@@ -2817,7 +2853,7 @@
       "label": "saveMockData()",
       "file_type": "code",
       "source_file": "src/lib/supabase.ts",
-      "source_location": "L182",
+      "source_location": "L187",
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_supabase_savemockdata",
@@ -2829,23 +2865,23 @@
       "label": "formatEmailWithDefaultDomain()",
       "file_type": "code",
       "source_file": "src/lib/supabase.ts",
-      "source_location": "L190",
+      "source_location": "L195",
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_supabase_formatemailwithdefaultdomain",
-      "community": 1,
-      "community_name": "OwnerDashboard.tsx",
+      "community": 16,
+      "community_name": "App.tsx",
       "norm_label": "formatemailwithdefaultdomain()"
     },
     {
       "label": "dbService",
       "file_type": "code",
       "source_file": "src/lib/supabase.ts",
-      "source_location": "L197",
+      "source_location": "L202",
       "_origin": "ast",
       "id": "src_lib_supabase_dbservice",
-      "community": 1,
-      "community_name": "OwnerDashboard.tsx",
+      "community": 16,
+      "community_name": "App.tsx",
       "norm_label": "dbservice"
     },
     {
@@ -2855,8 +2891,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_main",
-      "community": 1,
-      "community_name": "OwnerDashboard.tsx",
+      "community": 16,
+      "community_name": "App.tsx",
       "norm_label": "main.tsx"
     },
     {
@@ -2931,8 +2967,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_types_product",
-      "community": 16,
-      "community_name": "SingleLabelModal.tsx",
+      "community": 1,
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "product"
     },
     {
@@ -2975,10 +3011,36 @@
       "norm_label": "salewithitems"
     },
     {
-      "label": "InventoryTransaction",
+      "label": "DeleteRequestStatus",
       "file_type": "code",
       "source_file": "src/types.ts",
       "source_location": "L91",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "id": "src_types_deleterequeststatus",
+      "community": 1,
+      "community_name": "OwnerDashboard.tsx",
+      "norm_label": "deleterequeststatus"
+    },
+    {
+      "label": "SaleDeleteRequest",
+      "file_type": "code",
+      "source_file": "src/types.ts",
+      "source_location": "L93",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "id": "src_types_saledeleterequest",
+      "community": 1,
+      "community_name": "OwnerDashboard.tsx",
+      "norm_label": "saledeleterequest"
+    },
+    {
+      "label": "InventoryTransaction",
+      "file_type": "code",
+      "source_file": "src/types.ts",
+      "source_location": "L110",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
@@ -2991,7 +3053,7 @@
       "label": "CashFlowType",
       "file_type": "code",
       "source_file": "src/types.ts",
-      "source_location": "L104",
+      "source_location": "L123",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
@@ -3004,7 +3066,7 @@
       "label": "PaymentMethod",
       "file_type": "code",
       "source_file": "src/types.ts",
-      "source_location": "L105",
+      "source_location": "L124",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
@@ -3017,7 +3079,7 @@
       "label": "CashFlowEntry",
       "file_type": "code",
       "source_file": "src/types.ts",
-      "source_location": "L107",
+      "source_location": "L126",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
@@ -3030,7 +3092,7 @@
       "label": "SalesAnalytics",
       "file_type": "code",
       "source_file": "src/types.ts",
-      "source_location": "L121",
+      "source_location": "L140",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
@@ -3043,13 +3105,13 @@
       "label": "LabelConfig",
       "file_type": "code",
       "source_file": "src/types.ts",
-      "source_location": "L132",
+      "source_location": "L151",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_types_labelconfig",
-      "community": 16,
-      "community_name": "SingleLabelModal.tsx",
+      "community": 0,
+      "community_name": "escpos.ts",
       "norm_label": "labelconfig"
     },
     {
@@ -3142,8 +3204,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_utils_toast",
-      "community": 1,
-      "community_name": "OwnerDashboard.tsx",
+      "community": 16,
+      "community_name": "App.tsx",
       "norm_label": "toast.tsx"
     },
     {
@@ -3155,8 +3217,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_utils_toast_toasttype",
-      "community": 1,
-      "community_name": "OwnerDashboard.tsx",
+      "community": 16,
+      "community_name": "App.tsx",
       "norm_label": "toasttype"
     },
     {
@@ -3168,8 +3230,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_utils_toast_toast",
-      "community": 1,
-      "community_name": "OwnerDashboard.tsx",
+      "community": 16,
+      "community_name": "App.tsx",
       "norm_label": "toast"
     },
     {
@@ -3181,8 +3243,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_utils_toast_toastcontextvalue",
-      "community": 1,
-      "community_name": "OwnerDashboard.tsx",
+      "community": 16,
+      "community_name": "App.tsx",
       "norm_label": "toastcontextvalue"
     },
     {
@@ -3192,8 +3254,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_utils_toast_toastcontext",
-      "community": 1,
-      "community_name": "OwnerDashboard.tsx",
+      "community": 16,
+      "community_name": "App.tsx",
       "norm_label": "toastcontext"
     },
     {
@@ -3216,8 +3278,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_utils_toast_toastprovider",
-      "community": 1,
-      "community_name": "OwnerDashboard.tsx",
+      "community": 16,
+      "community_name": "App.tsx",
       "norm_label": "toastprovider()"
     },
     {
@@ -5732,6 +5794,18 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard",
+      "target": "src_types_saledeleterequest",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/CashierDashboard.tsx",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_cashierdashboard",
       "target": "src_types_salewithitems",
       "confidence_score": 1.0
     },
@@ -5824,7 +5898,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/components/CashierDashboard.tsx",
-      "source_location": "L361",
+      "source_location": "L393",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard_cashierdashboard",
@@ -5837,7 +5911,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/CashierDashboard.tsx",
-      "source_location": "L74",
+      "source_location": "L77",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard_cashierdashboard",
@@ -5849,7 +5923,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/CashierDashboard.tsx",
-      "source_location": "L86",
+      "source_location": "L89",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard_cashierdashboard",
@@ -5861,7 +5935,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/CashierDashboard.tsx",
-      "source_location": "L267",
+      "source_location": "L299",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard_cashierdashboard",
@@ -5995,6 +6069,232 @@
       "_origin": "ast",
       "source": "src_components_ownerdashboard",
       "target": "src_components_csvimportmodal_csvimportmodal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/DeleteRequestsTab.tsx",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_deleterequeststab",
+      "target": "src_components_deleterequeststab_deleterequeststab",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/DeleteRequestsTab.tsx",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_deleterequeststab",
+      "target": "src_components_deleterequeststab_deleterequeststabprops",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/DeleteRequestsTab.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_deleterequeststab",
+      "target": "src_lib_supabase",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/DeleteRequestsTab.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_deleterequeststab",
+      "target": "src_lib_supabase_dbservice",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/DeleteRequestsTab.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_deleterequeststab",
+      "target": "src_types",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/DeleteRequestsTab.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_deleterequeststab",
+      "target": "src_types_branch",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/DeleteRequestsTab.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_deleterequeststab",
+      "target": "src_types_saledeleterequest",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/DeleteRequestsTab.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_deleterequeststab",
+      "target": "src_types_salewithitems",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/DeleteRequestsTab.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_deleterequeststab",
+      "target": "src_types_userprofile",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/DeleteRequestsTab.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_deleterequeststab",
+      "target": "src_utils_format",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/DeleteRequestsTab.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_deleterequeststab",
+      "target": "src_utils_format_formatcurrency",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/DeleteRequestsTab.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_deleterequeststab",
+      "target": "src_utils_toast",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/DeleteRequestsTab.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_deleterequeststab",
+      "target": "src_utils_toast_usetoast",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/OwnerDashboard.tsx",
+      "source_location": "L26",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_ownerdashboard",
+      "target": "src_components_deleterequeststab",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "field",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/DeleteRequestsTab.tsx",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_deleterequeststab_deleterequeststabprops",
+      "target": "src_types_branch",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "field",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/DeleteRequestsTab.tsx",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_deleterequeststab_deleterequeststabprops",
+      "target": "src_types_userprofile",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/components/DeleteRequestsTab.tsx",
+      "source_location": "L241",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_deleterequeststab_deleterequeststab",
+      "target": "src_utils_format_formatcurrency"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/components/DeleteRequestsTab.tsx",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_deleterequeststab_deleterequeststab",
+      "target": "src_utils_toast_usetoast"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/OwnerDashboard.tsx",
+      "source_location": "L26",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_ownerdashboard",
+      "target": "src_components_deleterequeststab_deleterequeststab",
       "confidence_score": 1.0
     },
     {
@@ -6440,7 +6740,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/OwnerDashboard.tsx",
-      "source_location": "L32",
+      "source_location": "L33",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_ownerdashboard",
@@ -6451,7 +6751,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/OwnerDashboard.tsx",
-      "source_location": "L27",
+      "source_location": "L28",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_ownerdashboard",
@@ -6779,6 +7079,18 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_ownerdashboard",
+      "target": "src_types_saledeleterequest",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/OwnerDashboard.tsx",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_ownerdashboard",
       "target": "src_types_salesanalytics",
       "confidence_score": 1.0
     },
@@ -6871,7 +7183,7 @@
       "context": "field",
       "confidence": "EXTRACTED",
       "source_file": "src/components/OwnerDashboard.tsx",
-      "source_location": "L28",
+      "source_location": "L29",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_ownerdashboard_ownerdashboardprops",
@@ -6884,7 +7196,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/OwnerDashboard.tsx",
-      "source_location": "L1360",
+      "source_location": "L1364",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_ownerdashboard_ownerdashboard",
@@ -6896,7 +7208,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/OwnerDashboard.tsx",
-      "source_location": "L1374",
+      "source_location": "L1378",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_ownerdashboard_ownerdashboard",
@@ -6908,7 +7220,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/OwnerDashboard.tsx",
-      "source_location": "L1205",
+      "source_location": "L1208",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_ownerdashboard_ownerdashboard",
@@ -6920,7 +7232,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/OwnerDashboard.tsx",
-      "source_location": "L862",
+      "source_location": "L865",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_ownerdashboard_ownerdashboard",
@@ -6932,7 +7244,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/OwnerDashboard.tsx",
-      "source_location": "L255",
+      "source_location": "L257",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_ownerdashboard_ownerdashboard",
@@ -6944,7 +7256,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/OwnerDashboard.tsx",
-      "source_location": "L33",
+      "source_location": "L34",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_ownerdashboard_ownerdashboard",
@@ -10256,7 +10568,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/supabase.ts",
-      "source_location": "L197",
+      "source_location": "L202",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_supabase",
@@ -10267,7 +10579,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/supabase.ts",
-      "source_location": "L113",
+      "source_location": "L114",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_supabase",
@@ -10278,7 +10590,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/supabase.ts",
-      "source_location": "L190",
+      "source_location": "L195",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_supabase",
@@ -10300,7 +10612,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/supabase.ts",
-      "source_location": "L174",
+      "source_location": "L179",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_supabase",
@@ -10311,7 +10623,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/supabase.ts",
-      "source_location": "L125",
+      "source_location": "L126",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_supabase",
@@ -10322,7 +10634,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/supabase.ts",
-      "source_location": "L129",
+      "source_location": "L130",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_supabase",
@@ -10333,7 +10645,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/supabase.ts",
-      "source_location": "L127",
+      "source_location": "L128",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_supabase",
@@ -10399,7 +10711,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/supabase.ts",
-      "source_location": "L182",
+      "source_location": "L187",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_supabase",
@@ -10410,7 +10722,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/supabase.ts",
-      "source_location": "L132",
+      "source_location": "L133",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_supabase",
@@ -10510,6 +10822,18 @@
       "_origin": "ast",
       "source": "src_lib_supabase",
       "target": "src_types_sale",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/supabase.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_supabase",
+      "target": "src_types_saledeleterequest",
       "confidence_score": 1.0
     },
     {
@@ -10622,7 +10946,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/types.ts",
-      "source_location": "L107",
+      "source_location": "L126",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_types",
@@ -10633,7 +10957,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/types.ts",
-      "source_location": "L104",
+      "source_location": "L123",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_types",
@@ -10648,6 +10972,17 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_types",
+      "target": "src_types_deleterequeststatus",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/types.ts",
+      "source_location": "L110",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_types",
       "target": "src_types_inventorytransaction",
       "confidence_score": 1.0
     },
@@ -10655,7 +10990,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/types.ts",
-      "source_location": "L132",
+      "source_location": "L151",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_types",
@@ -10666,7 +11001,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/types.ts",
-      "source_location": "L105",
+      "source_location": "L124",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_types",
@@ -10699,6 +11034,17 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/types.ts",
+      "source_location": "L93",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_types",
+      "target": "src_types_saledeleterequest",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/types.ts",
       "source_location": "L76",
       "weight": 1.0,
       "_origin": "ast",
@@ -10710,7 +11056,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/types.ts",
-      "source_location": "L121",
+      "source_location": "L140",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_types",
@@ -11415,5 +11761,5 @@
       "source_file": "supabase_schema.txt"
     }
   ],
-  "built_at_commit": "9750446de54eeae9147c3e031c65e7342aa3b901"
+  "built_at_commit": "9f8191d73449ccc75e65e9ea47b09fb5f87f3a4c"
 }
