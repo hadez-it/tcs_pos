@@ -404,7 +404,7 @@ export const SingleLabelModal: React.FC<SingleLabelModalProps> = ({
               {/* Price Box Element */}
               {config.showPrice && (
                 <div
-                  className="absolute bg-slate-900 text-white rounded flex items-center justify-center p-0.5"
+                  className="absolute flex items-center justify-center"
                   style={{
                     left: effElemX('price') * previewScale,
                     top: effElemY('price') * previewScale,
@@ -413,7 +413,7 @@ export const SingleLabelModal: React.FC<SingleLabelModalProps> = ({
                   }}
                 >
                   <span
-                    className="font-extrabold font-mono px-1 truncate pointer-events-none"
+                    className="font-extrabold font-mono text-slate-900 truncate pointer-events-none"
                     style={{ fontSize: Math.max(6, Math.min(26, effElemH('price') * previewScale * 0.75)) }}
                   >
                     {product.price.toLocaleString()} {currencySymbol}

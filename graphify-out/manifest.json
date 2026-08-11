@@ -100,8 +100,8 @@
     "semantic_hash": "f0fea52d6bff7b18aa354100a1a9dda1"
   },
   "src/components/SingleLabelModal.tsx": {
-    "mtime": 1786424557.7537014,
-    "ast_hash": "5b610fd3baca85202ee68e71121d4cd1",
+    "mtime": 1786454739.756497,
+    "ast_hash": "94cfa0a366098b55692da6b418b0c47b",
     "semantic_hash": ""
   },
   "src/data/schemaSql.ts": {
