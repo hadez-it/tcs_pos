@@ -5357,7 +5357,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/BarcodePrintModal.tsx",
-      "source_location": "L341",
+      "source_location": "L355",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_barcodeprintmodal_barcodeprintmodal",
@@ -5369,7 +5369,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/BarcodePrintModal.tsx",
-      "source_location": "L373",
+      "source_location": "L387",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_barcodeprintmodal_barcodeprintmodal",
@@ -5393,7 +5393,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/BarcodePrintModal.tsx",
-      "source_location": "L440",
+      "source_location": "L454",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_barcodeprintmodal_barcodeprintmodal",
@@ -5405,7 +5405,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/BarcodePrintModal.tsx",
-      "source_location": "L337",
+      "source_location": "L351",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_barcodeprintmodal_barcodeprintmodal",
@@ -5417,7 +5417,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/BarcodePrintModal.tsx",
-      "source_location": "L363",
+      "source_location": "L377",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_barcodeprintmodal_barcodeprintmodal",
@@ -11761,5 +11761,5 @@
       "source_file": "supabase_schema.txt"
     }
   ],
-  "built_at_commit": "a614ef99d0ae1aab4ab2f5e9b193217d777961bf"
+  "built_at_commit": "e818b3e83d5337f2ec5a12a027e769b8e99c4ce8"
 }
