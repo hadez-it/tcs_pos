@@ -3,7 +3,7 @@ import { useBackDismiss, useBackTabHistory } from '../lib/backNavigation';
 import { 
   Search, ShoppingCart, LogOut, RefreshCw, User, ShoppingBag, 
   Minus, Plus, Trash2, DollarSign, CreditCard, Smartphone, Check, 
-  FileText, Tag, ArrowRight, Printer, AlertCircle, Sparkles, Filter, ChevronDown, Menu, X, Ban, History, Camera
+  FileText, Tag, ArrowRight, Printer, AlertCircle, Sparkles, Filter, ChevronDown, Menu, X, History, Camera
 } from 'lucide-react';
 import { dbService, DEFAULT_BUSINESS_PROFILE } from '../lib/supabase';
 import { Product, SaleWithItems, UserProfile, BusinessProfile } from '../types';
@@ -63,7 +63,6 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
   const [isCheckingOut, setIsCheckingOut] = useState(false);
-  const [voidingSaleId, setVoidingSaleId] = useState<string | null>(null);
   const [completedSale, setCompletedSale] = useState<SaleWithItems | null>(null);
   const [showReceipt, setShowReceipt] = useState(false);
   const [showCartModal, setShowCartModal] = useState(false);
@@ -227,20 +226,6 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
     }
   };
 
-  const handleVoidSale = async (saleId: string) => {
-    if (voidingSaleId) return;
-    if (!confirm('Are you sure you want to void this sale? Stock will be restored.')) return;
-    setVoidingSaleId(saleId);
-    try {
-      await dbService.sales.voidSale(saleId, user.name);
-      toast('Sale voided successfully.', 'success');
-      await Promise.all([loadProducts(), loadRecentSales()]);
-    } catch (err: any) {
-      toast(err.message || 'Failed to void sale.', 'error');
-    } finally {
-      setVoidingSaleId(null);
-    }
-  };
 
   const categories = useMemo(() => ['All', ...Array.from(new Set(products.map(p => p.category)))], [products]);
 
@@ -635,19 +620,6 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
                         )}
                       </div>
                       <div className="flex justify-end gap-2 pt-2 border-t border-slate-100/60 mt-2">
-                        <button onClick={() => handleVoidSale(sale.id)} disabled={voidingSaleId !== null} className="inline-flex items-center gap-1 px-3 py-1.5 bg-red-50 hover:bg-red-100 disabled:opacity-50 text-red-700 font-bold rounded-xl text-[11px] transition-all cursor-pointer">
-                          {voidingSaleId === sale.id ? (
-                            <>
-                              <div className="w-3 h-3 border-2 border-red-300 border-t-red-700 rounded-full animate-spin" />
-                              Voiding...
-                            </>
-                          ) : (
-                            <>
-                              <Ban className="w-3 h-3" />
-                              Void
-                            </>
-                          )}
-                        </button>
                         <button onClick={() => { setCompletedSale(sale); setShowReceipt(true); }} className="inline-flex items-center gap-1 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-xl text-[11px] transition-all cursor-pointer">
                           <Printer className="w-3 h-3" />
                           Receipt

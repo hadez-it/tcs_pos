@@ -45,8 +45,8 @@
     "semantic_hash": "1a6ac864f8a87546b561d6b7527571bc"
   },
   "src/components/CashierDashboard.tsx": {
-    "mtime": 1786415445.503404,
-    "ast_hash": "edc95b9b155010200902bc671c1c42b3",
+    "mtime": 1786415187.950415,
+    "ast_hash": "33522060d5f681dbde359b88b6384b60",
     "semantic_hash": ""
   },
   "src/components/CsvImportModal.tsx": {
@@ -135,9 +135,9 @@
     "semantic_hash": "f93aee73eb3d4ab2c5d337793019a773"
   },
   "src/lib/supabase.ts": {
-    "mtime": 1786415452.4064035,
-    "ast_hash": "9e88a01a2033108cc8d6bb9945129618",
-    "semantic_hash": ""
+    "mtime": 1785985967.9550738,
+    "ast_hash": "fd6100a49978f8236029959d1053383b",
+    "semantic_hash": "fd6100a49978f8236029959d1053383b"
   },
   "src/main.tsx": {
     "mtime": 1785894920.114552,
@@ -145,9 +145,9 @@
     "semantic_hash": "2b36426d5ad7e08ef79746aa524f4fb7"
   },
   "src/types.ts": {
-    "mtime": 1786415459.1374032,
-    "ast_hash": "ecd45ffa0fe8c4d1addc03ccc07095e9",
-    "semantic_hash": ""
+    "mtime": 1786240970.40916,
+    "ast_hash": "e59a68babcb12b315f2b6d35829ae1b3",
+    "semantic_hash": "e59a68babcb12b315f2b6d35829ae1b3"
   },
   "src/utils/format.ts": {
     "mtime": 1786194584.7261531,

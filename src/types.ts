@@ -118,17 +118,6 @@ export interface CashFlowEntry {
   created_at: string;
 }
 
-// New type for cashier request to void or edit a sale
-export interface SaleRequest {
-  id: string; // UUID
-  saleId: string;
-  type: 'void' | 'edit';
-  requestedBy: string; // user.id
-  status: 'pending' | 'approved' | 'rejected';
-  created_at: string;
-  // additional payload for edit could be added later
-}
-
 export interface SalesAnalytics {
   totalRevenue: number;
   totalCost: number;

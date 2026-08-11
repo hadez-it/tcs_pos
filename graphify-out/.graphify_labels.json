@@ -1,1 +1,19 @@
-{"0": "Thermal Barcode & Label Generation", "1": "UI Modals & Authentication Components", "2": "Cashier Dashboard & Navigation Flow", "3": "Capacitor Mobile & UI Dependencies", "4": "Build System & Dev Tools", "5": "TypeScript Environment Configuration", "6": "Native Bluetooth Printer Bridge", "7": "Web Bluetooth Thermal Printer Integration", "8": "Core Database Schema & System Architecture", "9": "Web App PWA Manifest Configuration", "10": "Vercel Deployment Configuration", "11": "Graphify Knowledge Graph Configuration", "12": "Capacitor Android Native Configuration", "13": "Web HTML Entry Point", "14": "Supabase Business Settings Schema", "15": "Vite Bundler Configuration"}
+{
+  "0": "escpos.ts",
+  "1": "OwnerDashboard.tsx",
+  "2": "CashierDashboard.tsx",
+  "3": "dependencies",
+  "4": "scripts",
+  "5": "compilerOptions",
+  "6": "printerBridge.ts",
+  "7": "bluetoothPrinter.ts",
+  "8": "Branches Table",
+  "9": "manifest.json",
+  "10": "vercel.json",
+  "11": "Graphify Rule",
+  "12": "capacitor.config.ts",
+  "13": "Application Web Entry Point",
+  "14": "Business Settings Table",
+  "15": "vite.config.ts",
+  "16": "Product"
+}
