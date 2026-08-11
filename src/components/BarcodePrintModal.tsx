@@ -11,6 +11,7 @@ import {
   buildThermalLabel, init as escInit, setCodePage, feedPitch,
   normalizeBarcodeValue, getPrintableMm, testPrint,
 } from '../lib/escpos';
+import { loadLabelConfig, saveLabelConfig } from '../lib/labelConfig';
 
 interface BarcodePrintModalProps {
   products: Product[];
@@ -36,7 +37,6 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
   businessName,
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [storeName, setStoreName] = useState(businessName || 'My Retail Store');
 
   const [selectedProducts, setSelectedProducts] = useState<{ [id: string]: number }>(() => {
     const initialMap: { [id: string]: number } = {};
@@ -49,21 +49,23 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
     return initialMap;
   });
 
-  const [showStoreName, setShowStoreName] = useState(true);
-  const [showProductName, setShowProductName] = useState(true);
-  const [showPrice, setShowPrice] = useState(true);
-  const [showCodeText, setShowCodeText] = useState(true);
+  const initialConfig = loadLabelConfig(businessName);
+  const [storeName, setStoreName] = useState(initialConfig.storeName);
+  const [showStoreName, setShowStoreName] = useState(initialConfig.showStoreName);
+  const [showProductName, setShowProductName] = useState(initialConfig.showProductName);
+  const [showPrice, setShowPrice] = useState(initialConfig.showPrice);
+  const [showCodeText, setShowCodeText] = useState(initialConfig.showCodeText);
 
-  const [paperMode, setPaperMode] = useState<'sticker' | 'receipt'>('sticker');
+  const [paperMode, setPaperMode] = useState<'sticker' | 'receipt'>(initialConfig.paperMode);
 
-  const [paperWidth, setPaperWidth] = useState('80');
-  const [labelWidth, setLabelWidth] = useState('80');
-  const [labelHeight, setLabelHeight] = useState('30');
-  const [barcodeWidth, setBarcodeWidth] = useState('76');
-  const [barcodeHeight, setBarcodeHeight] = useState('10');
-  const [cutMode, setCutMode] = useState<'off' | 'full' | 'partial'>('off');
-  const [labelGap, setLabelGap] = useState('3');
-  const [feedOffset, setFeedOffset] = useState('0');
+  const [paperWidth, setPaperWidth] = useState(initialConfig.paperWidth);
+  const [labelWidth, setLabelWidth] = useState(initialConfig.labelWidth);
+  const [labelHeight, setLabelHeight] = useState(initialConfig.labelHeight);
+  const [barcodeWidth, setBarcodeWidth] = useState(initialConfig.barcodeWidth);
+  const [barcodeHeight, setBarcodeHeight] = useState(initialConfig.barcodeHeight);
+  const [cutMode, setCutMode] = useState<'off' | 'full' | 'partial'>(initialConfig.cutMode);
+  const [labelGap, setLabelGap] = useState(initialConfig.labelGap);
+  const [feedOffset, setFeedOffset] = useState(initialConfig.feedOffset);
 
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [zoomFactor, setZoomFactor] = useState(1);
@@ -73,16 +75,71 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
     product: { x: string; y: string; w?: string; h?: string };
     barcode: { x: string; y: string; w?: string; h?: string };
     price: { x: string; y: string; w?: string; h?: string };
-  }>({
-    store: { x: '2', y: '1', w: '76', h: '4' },
-    product: { x: '2', y: '6', w: '76', h: '6' },
-    barcode: { x: '2', y: '13', w: '76', h: '10' },
-    price: { x: '2', y: '24', w: '76', h: '5' },
-  });
+  }>(initialConfig.layoutXY);
 
-  const [fontSize, setFontSize] = useState<{ store: number; product: number; price: number }>({
-    store: 1, product: 1, price: 2,
-  });
+  const [fontSize, setFontSize] = useState<{ store: number; product: number; price: number }>(initialConfig.fontSize);
+
+  useEffect(() => {
+    if (isOpen) {
+      const cfg = loadLabelConfig(businessName);
+      setStoreName(cfg.storeName);
+      setShowStoreName(cfg.showStoreName);
+      setShowProductName(cfg.showProductName);
+      setShowPrice(cfg.showPrice);
+      setShowCodeText(cfg.showCodeText);
+      setPaperMode(cfg.paperMode);
+      setPaperWidth(cfg.paperWidth);
+      setLabelWidth(cfg.labelWidth);
+      setLabelHeight(cfg.labelHeight);
+      setBarcodeWidth(cfg.barcodeWidth);
+      setBarcodeHeight(cfg.barcodeHeight);
+      setCutMode(cfg.cutMode);
+      setLabelGap(cfg.labelGap);
+      setFeedOffset(cfg.feedOffset);
+      setLayoutXY(cfg.layoutXY);
+      setFontSize(cfg.fontSize);
+    }
+  }, [isOpen, businessName]);
+
+  const updateConfig = useCallback((updater: (prev: ReturnType<typeof loadLabelConfig>) => ReturnType<typeof loadLabelConfig>) => {
+    const current = loadLabelConfig(businessName);
+    const next = updater({
+      ...current,
+      paperMode,
+      paperWidth,
+      labelWidth,
+      labelHeight,
+      barcodeWidth,
+      barcodeHeight,
+      cutMode,
+      labelGap,
+      feedOffset,
+      showStoreName,
+      showProductName,
+      showPrice,
+      showCodeText,
+      storeName,
+      layoutXY,
+      fontSize,
+    });
+    setStoreName(next.storeName);
+    setShowStoreName(next.showStoreName);
+    setShowProductName(next.showProductName);
+    setShowPrice(next.showPrice);
+    setShowCodeText(next.showCodeText);
+    setPaperMode(next.paperMode);
+    setPaperWidth(next.paperWidth);
+    setLabelWidth(next.labelWidth);
+    setLabelHeight(next.labelHeight);
+    setBarcodeWidth(next.barcodeWidth);
+    setBarcodeHeight(next.barcodeHeight);
+    setCutMode(next.cutMode);
+    setLabelGap(next.labelGap);
+    setFeedOffset(next.feedOffset);
+    setLayoutXY(next.layoutXY);
+    setFontSize(next.fontSize);
+    saveLabelConfig(next);
+  }, [paperMode, paperWidth, labelWidth, labelHeight, barcodeWidth, barcodeHeight, cutMode, labelGap, feedOffset, showStoreName, showProductName, showPrice, showCodeText, storeName, layoutXY, fontSize, businessName]);
 
   const [dragState, setDragState] = useState<{
     elem: 'store' | 'product' | 'barcode' | 'price';
@@ -150,12 +207,36 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
 
   const effLabelGap = clamp(parseMm(labelGap) || 3, 2, 10);
   const effFeedOffset = clamp(parseMm(feedOffset) || 0, -10, 10);
+  const [viewportSize, setViewportSize] = useState({
+    w: typeof window !== 'undefined' ? window.innerWidth : 375,
+    h: typeof window !== 'undefined' ? window.innerHeight : 667,
+  });
 
-  const basePreviewScale = isFullscreen
-    ? Math.min((window.innerWidth * 0.7) / effLabelWidth, (window.innerHeight * 0.65) / effLabelHeight, 14)
-    : Math.min(260 / effLabelWidth, 5.5);
+  useEffect(() => {
+    const handleResize = () => {
+      setViewportSize({ w: window.innerWidth, h: window.innerHeight });
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
-  const previewScale = basePreviewScale * zoomFactor;
+  const isMobile = viewportSize.w < 768;
+
+  const maxCanvasW = isFullscreen
+    ? (isMobile ? viewportSize.w - 20 : viewportSize.w - 80)
+    : (isMobile ? Math.min(viewportSize.w - 48, 340) : 340);
+
+  const maxCanvasH = isFullscreen
+    ? (isMobile ? viewportSize.h - 130 : viewportSize.h - 160)
+    : 300;
+
+  const basePreviewScale = Math.min(
+    maxCanvasW / effLabelWidth,
+    maxCanvasH / effLabelHeight,
+    isFullscreen ? (isMobile ? 18 : 22) : 8
+  );
+
+  const previewScale = Math.max(0.5, basePreviewScale * zoomFactor);
   const previewW = Math.round(effLabelWidth * previewScale);
   const previewH = Math.round(effLabelHeight * previewScale);
 
@@ -476,24 +557,24 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
               className="font-extrabold uppercase text-slate-800 truncate w-full text-center pointer-events-none"
               style={{ fontSize: Math.max(6, Math.min(28, effElemH('store') * previewScale * 0.75)) }}
             >
-              {storeName}
+              {storeName || businessName || 'My Store'}
             </span>
             <div
-              className="absolute -right-1 top-1/2 -translate-y-1/2 w-2.5 h-4 bg-slate-900 border border-white rounded-2xs cursor-ew-resize opacity-0 group-hover:opacity-100 z-10"
+              className="absolute -right-1 top-1/2 -translate-y-1/2 w-3 h-5 bg-slate-900 border border-white rounded-2xs cursor-ew-resize opacity-90 sm:opacity-0 sm:group-hover:opacity-100 z-10 touch-none"
               onPointerDown={(e) => handlePointerDown(e, 'store', 'resize-e')}
               onPointerMove={handlePointerMove}
               onPointerUp={handlePointerUp}
               title="Resize Width"
             />
             <div
-              className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-2.5 bg-slate-900 border border-white rounded-2xs cursor-ns-resize opacity-0 group-hover:opacity-100 z-10"
+              className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-5 h-3 bg-slate-900 border border-white rounded-2xs cursor-ns-resize opacity-90 sm:opacity-0 sm:group-hover:opacity-100 z-10 touch-none"
               onPointerDown={(e) => handlePointerDown(e, 'store', 'resize-s')}
               onPointerMove={handlePointerMove}
               onPointerUp={handlePointerUp}
               title="Resize Height"
             />
             <div
-              className="absolute -bottom-1 -right-1 w-3 h-3 bg-black border border-white rounded-2xs cursor-nwse-resize opacity-0 group-hover:opacity-100 z-10"
+              className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-black border border-white rounded-2xs cursor-nwse-resize opacity-90 sm:opacity-0 sm:group-hover:opacity-100 z-10 touch-none"
               onPointerDown={(e) => handlePointerDown(e, 'store', 'resize-se')}
               onPointerMove={handlePointerMove}
               onPointerUp={handlePointerUp}
@@ -524,21 +605,21 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
               {productItem.name}
             </p>
             <div
-              className="absolute -right-1 top-1/2 -translate-y-1/2 w-2.5 h-4 bg-slate-900 border border-white rounded-2xs cursor-ew-resize opacity-0 group-hover:opacity-100 z-10"
+              className="absolute -right-1 top-1/2 -translate-y-1/2 w-3 h-5 bg-slate-900 border border-white rounded-2xs cursor-ew-resize opacity-90 sm:opacity-0 sm:group-hover:opacity-100 z-10 touch-none"
               onPointerDown={(e) => handlePointerDown(e, 'product', 'resize-e')}
               onPointerMove={handlePointerMove}
               onPointerUp={handlePointerUp}
               title="Resize Width"
             />
             <div
-              className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-2.5 bg-slate-900 border border-white rounded-2xs cursor-ns-resize opacity-0 group-hover:opacity-100 z-10"
+              className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-5 h-3 bg-slate-900 border border-white rounded-2xs cursor-ns-resize opacity-90 sm:opacity-0 sm:group-hover:opacity-100 z-10 touch-none"
               onPointerDown={(e) => handlePointerDown(e, 'product', 'resize-s')}
               onPointerMove={handlePointerMove}
               onPointerUp={handlePointerUp}
               title="Resize Height"
             />
             <div
-              className="absolute -bottom-1 -right-1 w-3 h-3 bg-black border border-white rounded-2xs cursor-nwse-resize opacity-0 group-hover:opacity-100 z-10"
+              className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-black border border-white rounded-2xs cursor-nwse-resize opacity-90 sm:opacity-0 sm:group-hover:opacity-100 z-10 touch-none"
               onPointerDown={(e) => handlePointerDown(e, 'product', 'resize-se')}
               onPointerMove={handlePointerMove}
               onPointerUp={handlePointerUp}
@@ -579,21 +660,21 @@ export const BarcodePrintModal: React.FC<BarcodePrintModalProps> = ({
           </div>
 
           <div
-            className="absolute -right-1 top-1/2 -translate-y-1/2 w-2.5 h-4 bg-slate-900 border border-white rounded-2xs cursor-ew-resize opacity-80 hover:opacity-100 z-10"
+            className="absolute -right-1 top-1/2 -translate-y-1/2 w-3 h-5 bg-slate-900 border border-white rounded-2xs cursor-ew-resize opacity-90 hover:opacity-100 z-10 touch-none"
             onPointerDown={(e) => handlePointerDown(e, 'barcode', 'resize-e')}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
             title="Resize Barcode Width"
           />
           <div
-            className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-2.5 bg-slate-900 border border-white rounded-2xs cursor-ns-resize opacity-80 hover:opacity-100 z-10"
+            className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-5 h-3 bg-slate-900 border border-white rounded-2xs cursor-ns-resize opacity-90 hover:opacity-100 z-10 touch-none"
             onPointerDown={(e) => handlePointerDown(e, 'barcode', 'resize-s')}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
             title="Resize Barcode Height"
           />
           <div
-            className="absolute -bottom-1 -right-1 w-3 h-3 bg-black border border-white rounded-2xs cursor-nwse-resize opacity-90 hover:opacity-100 z-10"
+            className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-black border border-white rounded-2xs cursor-nwse-resize opacity-95 hover:opacity-100 z-10 touch-none"
             onPointerDown={(e) => handlePointerDown(e, 'barcode', 'resize-se')}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}

@@ -788,7 +788,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_app",
-      "community": 16,
+      "community": 2,
       "community_name": "App.tsx",
       "norm_label": "app.tsx"
     },
@@ -800,7 +800,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_app_exitprompt",
-      "community": 16,
+      "community": 2,
       "community_name": "App.tsx",
       "norm_label": "exitprompt()"
     },
@@ -812,7 +812,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_app_app",
-      "community": 16,
+      "community": 2,
       "community_name": "App.tsx",
       "norm_label": "app()"
     },
@@ -823,8 +823,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_auth",
-      "community": 16,
-      "community_name": "App.tsx",
+      "community": 1,
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "auth.tsx"
     },
     {
@@ -836,8 +836,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_auth_authprops",
-      "community": 16,
-      "community_name": "App.tsx",
+      "community": 1,
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "authprops"
     },
     {
@@ -848,8 +848,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_auth_auth",
-      "community": 16,
-      "community_name": "App.tsx",
+      "community": 1,
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "auth()"
     },
     {
@@ -859,57 +859,57 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_barcodeprintmodal",
-      "community": 0,
-      "community_name": "escpos.ts",
+      "community": 16,
+      "community_name": "SingleLabelModal.tsx",
       "norm_label": "barcodeprintmodal.tsx"
     },
     {
       "label": "BarcodePrintModalProps",
       "file_type": "code",
       "source_file": "src/components/BarcodePrintModal.tsx",
-      "source_location": "L15",
+      "source_location": "L16",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_barcodeprintmodal_barcodeprintmodalprops",
-      "community": 1,
-      "community_name": "OwnerDashboard.tsx",
+      "community": 16,
+      "community_name": "SingleLabelModal.tsx",
       "norm_label": "barcodeprintmodalprops"
     },
     {
       "label": "clamp()",
       "file_type": "code",
       "source_file": "src/components/BarcodePrintModal.tsx",
-      "source_location": "L24",
+      "source_location": "L25",
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_barcodeprintmodal_clamp",
-      "community": 0,
-      "community_name": "escpos.ts",
+      "community": 16,
+      "community_name": "SingleLabelModal.tsx",
       "norm_label": "clamp()"
     },
     {
       "label": "parseMm()",
       "file_type": "code",
       "source_file": "src/components/BarcodePrintModal.tsx",
-      "source_location": "L25",
+      "source_location": "L26",
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_barcodeprintmodal_parsemm",
-      "community": 0,
-      "community_name": "escpos.ts",
+      "community": 16,
+      "community_name": "SingleLabelModal.tsx",
       "norm_label": "parsemm()"
     },
     {
       "label": "BarcodePrintModal()",
       "file_type": "code",
       "source_file": "src/components/BarcodePrintModal.tsx",
-      "source_location": "L30",
+      "source_location": "L31",
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_barcodeprintmodal_barcodeprintmodal",
-      "community": 0,
-      "community_name": "escpos.ts",
+      "community": 16,
+      "community_name": "SingleLabelModal.tsx",
       "norm_label": "barcodeprintmodal()"
     },
     {
@@ -919,8 +919,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_barcodesvg",
-      "community": 0,
-      "community_name": "escpos.ts",
+      "community": 16,
+      "community_name": "SingleLabelModal.tsx",
       "norm_label": "barcodesvg.tsx"
     },
     {
@@ -932,8 +932,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_barcodesvg_barcodesvgprops",
-      "community": 0,
-      "community_name": "escpos.ts",
+      "community": 16,
+      "community_name": "SingleLabelModal.tsx",
       "norm_label": "barcodesvgprops"
     },
     {
@@ -943,8 +943,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "src_components_barcodesvg_code128_patterns",
-      "community": 0,
-      "community_name": "escpos.ts",
+      "community": 16,
+      "community_name": "SingleLabelModal.tsx",
       "norm_label": "code128_patterns"
     },
     {
@@ -955,8 +955,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_barcodesvg_barcodesvg",
-      "community": 0,
-      "community_name": "escpos.ts",
+      "community": 16,
+      "community_name": "SingleLabelModal.tsx",
       "norm_label": "barcodesvg()"
     },
     {
@@ -967,7 +967,7 @@
       "_origin": "ast",
       "id": "src_components_barcodescannermodal",
       "community": 2,
-      "community_name": "CashierDashboard.tsx",
+      "community_name": "App.tsx",
       "norm_label": "barcodescannermodal.tsx"
     },
     {
@@ -980,7 +980,7 @@
       "_origin": "ast",
       "id": "src_components_barcodescannermodal_barcodescannermodalprops",
       "community": 2,
-      "community_name": "CashierDashboard.tsx",
+      "community_name": "App.tsx",
       "norm_label": "barcodescannermodalprops"
     },
     {
@@ -992,7 +992,7 @@
       "_origin": "ast",
       "id": "src_components_barcodescannermodal_barcodescannermodal",
       "community": 2,
-      "community_name": "CashierDashboard.tsx",
+      "community_name": "App.tsx",
       "norm_label": "barcodescannermodal()"
     },
     {
@@ -1003,7 +1003,7 @@
       "_origin": "ast",
       "id": "src_components_cashierdashboard",
       "community": 2,
-      "community_name": "CashierDashboard.tsx",
+      "community_name": "App.tsx",
       "norm_label": "cashierdashboard.tsx"
     },
     {
@@ -1016,7 +1016,7 @@
       "_origin": "ast",
       "id": "src_components_cashierdashboard_cashierdashboardprops",
       "community": 2,
-      "community_name": "CashierDashboard.tsx",
+      "community_name": "App.tsx",
       "norm_label": "cashierdashboardprops"
     },
     {
@@ -1028,8 +1028,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_cashierdashboard_cartitem",
-      "community": 1,
-      "community_name": "OwnerDashboard.tsx",
+      "community": 16,
+      "community_name": "SingleLabelModal.tsx",
       "norm_label": "cartitem"
     },
     {
@@ -1042,7 +1042,7 @@
       "_origin": "ast",
       "id": "src_components_cashierdashboard_heldcart",
       "community": 2,
-      "community_name": "CashierDashboard.tsx",
+      "community_name": "App.tsx",
       "norm_label": "heldcart"
     },
     {
@@ -1054,7 +1054,7 @@
       "_origin": "ast",
       "id": "src_components_cashierdashboard_getquickcashoptions",
       "community": 2,
-      "community_name": "CashierDashboard.tsx",
+      "community_name": "App.tsx",
       "norm_label": "getquickcashoptions()"
     },
     {
@@ -1066,7 +1066,7 @@
       "_origin": "ast",
       "id": "src_components_cashierdashboard_cashierdashboard",
       "community": 2,
-      "community_name": "CashierDashboard.tsx",
+      "community_name": "App.tsx",
       "norm_label": "cashierdashboard()"
     },
     {
@@ -1089,8 +1089,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_csvimportmodal_csvimportmodalprops",
-      "community": 1,
-      "community_name": "OwnerDashboard.tsx",
+      "community": 16,
+      "community_name": "SingleLabelModal.tsx",
       "norm_label": "csvimportmodalprops"
     },
     {
@@ -1148,8 +1148,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_labelgeneratortab",
-      "community": 0,
-      "community_name": "escpos.ts",
+      "community": 16,
+      "community_name": "SingleLabelModal.tsx",
       "norm_label": "labelgeneratortab.tsx"
     },
     {
@@ -1161,8 +1161,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_labelgeneratortab_labelgeneratortabprops",
-      "community": 1,
-      "community_name": "OwnerDashboard.tsx",
+      "community": 16,
+      "community_name": "SingleLabelModal.tsx",
       "norm_label": "labelgeneratortabprops"
     },
     {
@@ -1173,8 +1173,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_labelgeneratortab_clamp",
-      "community": 0,
-      "community_name": "escpos.ts",
+      "community": 16,
+      "community_name": "SingleLabelModal.tsx",
       "norm_label": "clamp()"
     },
     {
@@ -1185,8 +1185,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_labelgeneratortab_parsemm",
-      "community": 0,
-      "community_name": "escpos.ts",
+      "community": 16,
+      "community_name": "SingleLabelModal.tsx",
       "norm_label": "parsemm()"
     },
     {
@@ -1197,8 +1197,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_labelgeneratortab_labelgeneratortab",
-      "community": 0,
-      "community_name": "escpos.ts",
+      "community": 16,
+      "community_name": "SingleLabelModal.tsx",
       "norm_label": "labelgeneratortab()"
     },
     {
@@ -1208,8 +1208,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_offlinesyncbar",
-      "community": 16,
-      "community_name": "App.tsx",
+      "community": 1,
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "offlinesyncbar.tsx"
     },
     {
@@ -1220,8 +1220,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_offlinesyncbar_offlinesyncbar",
-      "community": 16,
-      "community_name": "App.tsx",
+      "community": 1,
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "offlinesyncbar()"
     },
     {
@@ -1340,7 +1340,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_pulltorefresh",
-      "community": 16,
+      "community": 2,
       "community_name": "App.tsx",
       "norm_label": "pulltorefresh.tsx"
     },
@@ -1353,7 +1353,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_pulltorefresh_pulltorefreshprops",
-      "community": 16,
+      "community": 2,
       "community_name": "App.tsx",
       "norm_label": "pulltorefreshprops"
     },
@@ -1365,7 +1365,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_pulltorefresh_pulltorefresh",
-      "community": 16,
+      "community": 2,
       "community_name": "App.tsx",
       "norm_label": "pulltorefresh()"
     },
@@ -1389,8 +1389,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_quickrestockmodal_quickrestockmodalprops",
-      "community": 1,
-      "community_name": "OwnerDashboard.tsx",
+      "community": 16,
+      "community_name": "SingleLabelModal.tsx",
       "norm_label": "quickrestockmodalprops"
     },
     {
@@ -1449,7 +1449,7 @@
       "_origin": "ast",
       "id": "src_components_searchablecategoryselect",
       "community": 2,
-      "community_name": "CashierDashboard.tsx",
+      "community_name": "App.tsx",
       "norm_label": "searchablecategoryselect.tsx"
     },
     {
@@ -1462,7 +1462,7 @@
       "_origin": "ast",
       "id": "src_components_searchablecategoryselect_categoryoption",
       "community": 2,
-      "community_name": "CashierDashboard.tsx",
+      "community_name": "App.tsx",
       "norm_label": "categoryoption"
     },
     {
@@ -1475,7 +1475,7 @@
       "_origin": "ast",
       "id": "src_components_searchablecategoryselect_searchablecategoryselectprops",
       "community": 2,
-      "community_name": "CashierDashboard.tsx",
+      "community_name": "App.tsx",
       "norm_label": "searchablecategoryselectprops"
     },
     {
@@ -1487,7 +1487,7 @@
       "_origin": "ast",
       "id": "src_components_searchablecategoryselect_searchablecategoryselect",
       "community": 2,
-      "community_name": "CashierDashboard.tsx",
+      "community_name": "App.tsx",
       "norm_label": "searchablecategoryselect()"
     },
     {
@@ -1497,8 +1497,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_setupbanner",
-      "community": 16,
-      "community_name": "App.tsx",
+      "community": 1,
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "setupbanner.tsx"
     },
     {
@@ -1509,8 +1509,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_setupbanner_setupbanner",
-      "community": 16,
-      "community_name": "App.tsx",
+      "community": 1,
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "setupbanner()"
     },
     {
@@ -1520,8 +1520,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_singlelabelmodal",
-      "community": 0,
-      "community_name": "escpos.ts",
+      "community": 16,
+      "community_name": "SingleLabelModal.tsx",
       "norm_label": "singlelabelmodal.tsx"
     },
     {
@@ -1533,8 +1533,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_singlelabelmodal_singlelabelmodalprops",
-      "community": 1,
-      "community_name": "OwnerDashboard.tsx",
+      "community": 16,
+      "community_name": "SingleLabelModal.tsx",
       "norm_label": "singlelabelmodalprops"
     },
     {
@@ -1545,8 +1545,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_singlelabelmodal_clamp",
-      "community": 0,
-      "community_name": "escpos.ts",
+      "community": 16,
+      "community_name": "SingleLabelModal.tsx",
       "norm_label": "clamp()"
     },
     {
@@ -1557,8 +1557,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_singlelabelmodal_parsemm",
-      "community": 0,
-      "community_name": "escpos.ts",
+      "community": 16,
+      "community_name": "SingleLabelModal.tsx",
       "norm_label": "parsemm()"
     },
     {
@@ -1569,8 +1569,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_singlelabelmodal_singlelabelmodal",
-      "community": 0,
-      "community_name": "escpos.ts",
+      "community": 16,
+      "community_name": "SingleLabelModal.tsx",
       "norm_label": "singlelabelmodal()"
     },
     {
@@ -1580,8 +1580,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_data_schemasql",
-      "community": 16,
-      "community_name": "App.tsx",
+      "community": 1,
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "schemasql.ts"
     },
     {
@@ -1591,8 +1591,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_data_schemasql_supabase_schema_sql",
-      "community": 16,
-      "community_name": "App.tsx",
+      "community": 1,
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "supabase_schema_sql"
     },
     {
@@ -1603,7 +1603,7 @@
       "_origin": "ast",
       "id": "src_lib_backnavigation",
       "community": 2,
-      "community_name": "CashierDashboard.tsx",
+      "community_name": "App.tsx",
       "norm_label": "backnavigation.ts"
     },
     {
@@ -1616,7 +1616,7 @@
       "_origin": "ast",
       "id": "src_lib_backnavigation_layer",
       "community": 2,
-      "community_name": "CashierDashboard.tsx",
+      "community_name": "App.tsx",
       "norm_label": "layer"
     },
     {
@@ -1627,7 +1627,7 @@
       "_origin": "ast",
       "id": "src_lib_backnavigation_layers",
       "community": 2,
-      "community_name": "CashierDashboard.tsx",
+      "community_name": "App.tsx",
       "norm_label": "layers"
     },
     {
@@ -1639,7 +1639,7 @@
       "_origin": "ast",
       "id": "src_lib_backnavigation_depthstate",
       "community": 2,
-      "community_name": "CashierDashboard.tsx",
+      "community_name": "App.tsx",
       "norm_label": "depthstate()"
     },
     {
@@ -1651,7 +1651,7 @@
       "_origin": "ast",
       "id": "src_lib_backnavigation_handlepopstate",
       "community": 2,
-      "community_name": "CashierDashboard.tsx",
+      "community_name": "App.tsx",
       "norm_label": "handlepopstate()"
     },
     {
@@ -1663,7 +1663,7 @@
       "_origin": "ast",
       "id": "src_lib_backnavigation_handlekeydown",
       "community": 2,
-      "community_name": "CashierDashboard.tsx",
+      "community_name": "App.tsx",
       "norm_label": "handlekeydown()"
     },
     {
@@ -1675,7 +1675,7 @@
       "_origin": "ast",
       "id": "src_lib_backnavigation_handlecapacitorbackbutton",
       "community": 2,
-      "community_name": "CashierDashboard.tsx",
+      "community_name": "App.tsx",
       "norm_label": "handlecapacitorbackbutton()"
     },
     {
@@ -1687,7 +1687,7 @@
       "_origin": "ast",
       "id": "src_lib_backnavigation_startbacknavigation",
       "community": 2,
-      "community_name": "CashierDashboard.tsx",
+      "community_name": "App.tsx",
       "norm_label": "startbacknavigation()"
     },
     {
@@ -1699,7 +1699,7 @@
       "_origin": "ast",
       "id": "src_lib_backnavigation_stopbacknavigation",
       "community": 2,
-      "community_name": "CashierDashboard.tsx",
+      "community_name": "App.tsx",
       "norm_label": "stopbacknavigation()"
     },
     {
@@ -1710,7 +1710,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_backnavigation_setexitprompthandler",
-      "community": 16,
+      "community": 2,
       "community_name": "App.tsx",
       "norm_label": "setexitprompthandler()"
     },
@@ -1723,7 +1723,7 @@
       "_origin": "ast",
       "id": "src_lib_backnavigation_registerlayer",
       "community": 2,
-      "community_name": "CashierDashboard.tsx",
+      "community_name": "App.tsx",
       "norm_label": "registerlayer()"
     },
     {
@@ -1735,7 +1735,7 @@
       "_origin": "ast",
       "id": "src_lib_backnavigation_releaselayer",
       "community": 2,
-      "community_name": "CashierDashboard.tsx",
+      "community_name": "App.tsx",
       "norm_label": "releaselayer()"
     },
     {
@@ -1747,7 +1747,7 @@
       "_origin": "ast",
       "id": "src_lib_backnavigation_usebackdismiss",
       "community": 2,
-      "community_name": "CashierDashboard.tsx",
+      "community_name": "App.tsx",
       "norm_label": "usebackdismiss()"
     },
     {
@@ -1759,7 +1759,7 @@
       "_origin": "ast",
       "id": "src_lib_backnavigation_usebacktabhistory",
       "community": 2,
-      "community_name": "CashierDashboard.tsx",
+      "community_name": "App.tsx",
       "norm_label": "usebacktabhistory()"
     },
     {
@@ -1996,8 +1996,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_escpos_init",
-      "community": 0,
-      "community_name": "escpos.ts",
+      "community": 16,
+      "community_name": "SingleLabelModal.tsx",
       "norm_label": "init()"
     },
     {
@@ -2008,8 +2008,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_escpos_setcodepage",
-      "community": 0,
-      "community_name": "escpos.ts",
+      "community": 16,
+      "community_name": "SingleLabelModal.tsx",
       "norm_label": "setcodepage()"
     },
     {
@@ -2083,8 +2083,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_escpos_barcodetype",
-      "community": 0,
-      "community_name": "escpos.ts",
+      "community": 16,
+      "community_name": "SingleLabelModal.tsx",
       "norm_label": "barcodetype"
     },
     {
@@ -2214,8 +2214,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_escpos_feedpitch",
-      "community": 0,
-      "community_name": "escpos.ts",
+      "community": 16,
+      "community_name": "SingleLabelModal.tsx",
       "norm_label": "feedpitch()"
     },
     {
@@ -2314,8 +2314,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_escpos_getprintablemm",
-      "community": 0,
-      "community_name": "escpos.ts",
+      "community": 16,
+      "community_name": "SingleLabelModal.tsx",
       "norm_label": "getprintablemm()"
     },
     {
@@ -2350,8 +2350,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_escpos_normalizebarcodevalue",
-      "community": 0,
-      "community_name": "escpos.ts",
+      "community": 16,
+      "community_name": "SingleLabelModal.tsx",
       "norm_label": "normalizebarcodevalue()"
     },
     {
@@ -2410,8 +2410,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_escpos_testprint",
-      "community": 0,
-      "community_name": "escpos.ts",
+      "community": 16,
+      "community_name": "SingleLabelModal.tsx",
       "norm_label": "testprint()"
     },
     {
@@ -2421,8 +2421,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_labelconfig",
-      "community": 0,
-      "community_name": "escpos.ts",
+      "community": 16,
+      "community_name": "SingleLabelModal.tsx",
       "norm_label": "labelconfig.ts"
     },
     {
@@ -2432,8 +2432,8 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "src_lib_labelconfig_default_label_config",
-      "community": 0,
-      "community_name": "escpos.ts",
+      "community": 16,
+      "community_name": "SingleLabelModal.tsx",
       "norm_label": "default_label_config"
     },
     {
@@ -2444,8 +2444,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_labelconfig_loadlabelconfig",
-      "community": 0,
-      "community_name": "escpos.ts",
+      "community": 16,
+      "community_name": "SingleLabelModal.tsx",
       "norm_label": "loadlabelconfig()"
     },
     {
@@ -2456,8 +2456,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_labelconfig_savelabelconfig",
-      "community": 0,
-      "community_name": "escpos.ts",
+      "community": 16,
+      "community_name": "SingleLabelModal.tsx",
       "norm_label": "savelabelconfig()"
     },
     {
@@ -2694,8 +2694,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_lib_supabase_issupabaseconfigured",
-      "community": 16,
-      "community_name": "App.tsx",
+      "community": 1,
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "issupabaseconfigured"
     },
     {
@@ -2869,8 +2869,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_supabase_formatemailwithdefaultdomain",
-      "community": 16,
-      "community_name": "App.tsx",
+      "community": 1,
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "formatemailwithdefaultdomain()"
     },
     {
@@ -2880,8 +2880,8 @@
       "source_location": "L202",
       "_origin": "ast",
       "id": "src_lib_supabase_dbservice",
-      "community": 16,
-      "community_name": "App.tsx",
+      "community": 1,
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "dbservice"
     },
     {
@@ -2891,7 +2891,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_main",
-      "community": 16,
+      "community": 2,
       "community_name": "App.tsx",
       "norm_label": "main.tsx"
     },
@@ -2967,8 +2967,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_types_product",
-      "community": 1,
-      "community_name": "OwnerDashboard.tsx",
+      "community": 16,
+      "community_name": "SingleLabelModal.tsx",
       "norm_label": "product"
     },
     {
@@ -3110,8 +3110,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_types_labelconfig",
-      "community": 0,
-      "community_name": "escpos.ts",
+      "community": 16,
+      "community_name": "SingleLabelModal.tsx",
       "norm_label": "labelconfig"
     },
     {
@@ -3204,7 +3204,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_utils_toast",
-      "community": 16,
+      "community": 2,
       "community_name": "App.tsx",
       "norm_label": "toast.tsx"
     },
@@ -3217,7 +3217,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_utils_toast_toasttype",
-      "community": 16,
+      "community": 2,
       "community_name": "App.tsx",
       "norm_label": "toasttype"
     },
@@ -3230,7 +3230,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_utils_toast_toast",
-      "community": 16,
+      "community": 2,
       "community_name": "App.tsx",
       "norm_label": "toast"
     },
@@ -3243,7 +3243,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_utils_toast_toastcontextvalue",
-      "community": 16,
+      "community": 2,
       "community_name": "App.tsx",
       "norm_label": "toastcontextvalue"
     },
@@ -3254,7 +3254,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_utils_toast_toastcontext",
-      "community": 16,
+      "community": 2,
       "community_name": "App.tsx",
       "norm_label": "toastcontext"
     },
@@ -3278,7 +3278,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_utils_toast_toastprovider",
-      "community": 16,
+      "community": 2,
       "community_name": "App.tsx",
       "norm_label": "toastprovider()"
     },
@@ -5107,7 +5107,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/BarcodePrintModal.tsx",
-      "source_location": "L30",
+      "source_location": "L31",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_barcodeprintmodal",
@@ -5118,7 +5118,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/BarcodePrintModal.tsx",
-      "source_location": "L15",
+      "source_location": "L16",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_barcodeprintmodal",
@@ -5129,7 +5129,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/BarcodePrintModal.tsx",
-      "source_location": "L24",
+      "source_location": "L25",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_barcodeprintmodal",
@@ -5140,7 +5140,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/BarcodePrintModal.tsx",
-      "source_location": "L25",
+      "source_location": "L26",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_barcodeprintmodal",
@@ -5272,6 +5272,42 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/components/BarcodePrintModal.tsx",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_barcodeprintmodal",
+      "target": "src_lib_labelconfig",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/BarcodePrintModal.tsx",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_barcodeprintmodal",
+      "target": "src_lib_labelconfig_loadlabelconfig",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/BarcodePrintModal.tsx",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_barcodeprintmodal",
+      "target": "src_lib_labelconfig_savelabelconfig",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/BarcodePrintModal.tsx",
       "source_location": "L9",
       "weight": 1.0,
       "_origin": "ast",
@@ -5320,7 +5356,7 @@
       "context": "field",
       "confidence": "EXTRACTED",
       "source_file": "src/components/BarcodePrintModal.tsx",
-      "source_location": "L16",
+      "source_location": "L17",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_barcodeprintmodal_barcodeprintmodalprops",
@@ -5332,7 +5368,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/components/BarcodePrintModal.tsx",
-      "source_location": "L109",
+      "source_location": "L166",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_barcodeprintmodal_barcodeprintmodal",
@@ -5344,7 +5380,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/components/BarcodePrintModal.tsx",
-      "source_location": "L109",
+      "source_location": "L166",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_barcodeprintmodal_barcodeprintmodal",
@@ -5357,7 +5393,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/BarcodePrintModal.tsx",
-      "source_location": "L355",
+      "source_location": "L436",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_barcodeprintmodal_barcodeprintmodal",
@@ -5369,7 +5405,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/BarcodePrintModal.tsx",
-      "source_location": "L387",
+      "source_location": "L468",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_barcodeprintmodal_barcodeprintmodal",
@@ -5381,7 +5417,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/BarcodePrintModal.tsx",
-      "source_location": "L110",
+      "source_location": "L167",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_barcodeprintmodal_barcodeprintmodal",
@@ -5393,7 +5429,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/BarcodePrintModal.tsx",
-      "source_location": "L454",
+      "source_location": "L535",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_barcodeprintmodal_barcodeprintmodal",
@@ -5405,7 +5441,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/BarcodePrintModal.tsx",
-      "source_location": "L351",
+      "source_location": "L432",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_barcodeprintmodal_barcodeprintmodal",
@@ -5417,11 +5453,35 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/BarcodePrintModal.tsx",
-      "source_location": "L377",
+      "source_location": "L458",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_barcodeprintmodal_barcodeprintmodal",
       "target": "src_lib_escpos_testprint"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/components/BarcodePrintModal.tsx",
+      "source_location": "L52",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_barcodeprintmodal_barcodeprintmodal",
+      "target": "src_lib_labelconfig_loadlabelconfig"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/components/BarcodePrintModal.tsx",
+      "source_location": "L141",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_barcodeprintmodal_barcodeprintmodal",
+      "target": "src_lib_labelconfig_savelabelconfig"
     },
     {
       "relation": "imports",
@@ -11761,5 +11821,5 @@
       "source_file": "supabase_schema.txt"
     }
   ],
-  "built_at_commit": "e818b3e83d5337f2ec5a12a027e769b8e99c4ce8"
+  "built_at_commit": "6b8dddd49c1e136869e6b19f1c82888626f3ae48"
 }

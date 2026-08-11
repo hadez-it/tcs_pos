@@ -1,7 +1,7 @@
 {
   "0": "escpos.ts",
   "1": "OwnerDashboard.tsx",
-  "2": "CashierDashboard.tsx",
+  "2": "App.tsx",
   "3": "dependencies",
   "4": "scripts",
   "5": "compilerOptions",
@@ -15,5 +15,5 @@
   "13": "Application Web Entry Point",
   "14": "Business Settings Table",
   "15": "vite.config.ts",
-  "16": "App.tsx"
+  "16": "SingleLabelModal.tsx"
 }
