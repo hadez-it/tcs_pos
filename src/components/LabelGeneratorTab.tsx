@@ -40,6 +40,18 @@ export const LabelGeneratorTab: React.FC<LabelGeneratorTabProps> = ({
 
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [zoomFactor, setZoomFactor] = useState(1);
+  const [viewportSize, setViewportSize] = useState({
+    w: typeof window !== 'undefined' ? window.innerWidth : 375,
+    h: typeof window !== 'undefined' ? window.innerHeight : 667,
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setViewportSize({ w: window.innerWidth, h: window.innerHeight });
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const isNative = printerBridge.isNativeShell();
   const [btAvailable] = useState(() => printerBridge.isBluetoothAvailable());
@@ -192,11 +204,23 @@ export const LabelGeneratorTab: React.FC<LabelGeneratorTabProps> = ({
   const effLabelGap = clamp(parseMm(config.labelGap) || 3, 2, 10);
   const effFeedOffset = clamp(parseMm(config.feedOffset) || 0, -10, 10);
 
-  const basePreviewScale = isFullscreen
-    ? Math.min((window.innerWidth * 0.7) / effLabelWidth, (window.innerHeight * 0.65) / effLabelHeight, 14)
-    : Math.min(340 / effLabelWidth, 6);
+  const isMobile = viewportSize.w < 768;
 
-  const previewScale = basePreviewScale * zoomFactor;
+  const maxCanvasW = isFullscreen
+    ? (isMobile ? viewportSize.w - 20 : viewportSize.w - 80)
+    : (isMobile ? Math.min(viewportSize.w - 48, 340) : 340);
+
+  const maxCanvasH = isFullscreen
+    ? (isMobile ? viewportSize.h - 130 : viewportSize.h - 160)
+    : 300;
+
+  const basePreviewScale = Math.min(
+    maxCanvasW / effLabelWidth,
+    maxCanvasH / effLabelHeight,
+    isFullscreen ? (isMobile ? 18 : 22) : 8
+  );
+
+  const previewScale = Math.max(0.5, basePreviewScale * zoomFactor);
   const previewW = Math.round(effLabelWidth * previewScale);
   const previewH = Math.round(effLabelHeight * previewScale);
 
@@ -465,7 +489,6 @@ export const LabelGeneratorTab: React.FC<LabelGeneratorTabProps> = ({
       className="bg-white border border-slate-400 rounded shadow-md select-none overflow-hidden touch-none relative transition-transform duration-75"
       style={{ width: previewW, height: previewH }}
     >
-      {/* Store Name Element */}
       {config.showStoreName && (
         <div
           className="absolute border border-dashed border-slate-400/80 hover:border-black bg-slate-900/5 rounded group flex items-center justify-center select-none cursor-move p-0.5"
@@ -487,21 +510,21 @@ export const LabelGeneratorTab: React.FC<LabelGeneratorTabProps> = ({
             {config.storeName || businessName || 'My Store'}
           </span>
           <div
-            className="absolute -right-1 top-1/2 -translate-y-1/2 w-2.5 h-4 bg-slate-900 border border-white rounded-2xs cursor-ew-resize opacity-0 group-hover:opacity-100 z-10"
+            className="absolute -right-1 top-1/2 -translate-y-1/2 w-3 h-5 bg-slate-900 border border-white rounded-2xs cursor-ew-resize opacity-90 sm:opacity-0 sm:group-hover:opacity-100 z-10 touch-none"
             onPointerDown={(e) => handlePointerDown(e, 'store', 'resize-e')}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
             title="Resize Width"
           />
           <div
-            className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-2.5 bg-slate-900 border border-white rounded-2xs cursor-ns-resize opacity-0 group-hover:opacity-100 z-10"
+            className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-5 h-3 bg-slate-900 border border-white rounded-2xs cursor-ns-resize opacity-90 sm:opacity-0 sm:group-hover:opacity-100 z-10 touch-none"
             onPointerDown={(e) => handlePointerDown(e, 'store', 'resize-s')}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
             title="Resize Height"
           />
           <div
-            className="absolute -bottom-1 -right-1 w-3 h-3 bg-black border border-white rounded-2xs cursor-nwse-resize opacity-0 group-hover:opacity-100 z-10"
+            className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-black border border-white rounded-2xs cursor-nwse-resize opacity-90 sm:opacity-0 sm:group-hover:opacity-100 z-10 touch-none"
             onPointerDown={(e) => handlePointerDown(e, 'store', 'resize-se')}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
@@ -510,7 +533,6 @@ export const LabelGeneratorTab: React.FC<LabelGeneratorTabProps> = ({
         </div>
       )}
 
-      {/* Product Name Element */}
       {config.showProductName && (
         <div
           className="absolute border border-dashed border-slate-400/80 hover:border-black bg-slate-900/5 rounded group flex items-center justify-center select-none cursor-move p-0.5"
@@ -532,21 +554,21 @@ export const LabelGeneratorTab: React.FC<LabelGeneratorTabProps> = ({
             {sampleProduct.name}
           </p>
           <div
-            className="absolute -right-1 top-1/2 -translate-y-1/2 w-2.5 h-4 bg-slate-900 border border-white rounded-2xs cursor-ew-resize opacity-0 group-hover:opacity-100 z-10"
+            className="absolute -right-1 top-1/2 -translate-y-1/2 w-3 h-5 bg-slate-900 border border-white rounded-2xs cursor-ew-resize opacity-90 sm:opacity-0 sm:group-hover:opacity-100 z-10 touch-none"
             onPointerDown={(e) => handlePointerDown(e, 'product', 'resize-e')}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
             title="Resize Width"
           />
           <div
-            className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-2.5 bg-slate-900 border border-white rounded-2xs cursor-ns-resize opacity-0 group-hover:opacity-100 z-10"
+            className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-5 h-3 bg-slate-900 border border-white rounded-2xs cursor-ns-resize opacity-90 sm:opacity-0 sm:group-hover:opacity-100 z-10 touch-none"
             onPointerDown={(e) => handlePointerDown(e, 'product', 'resize-s')}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
             title="Resize Height"
           />
           <div
-            className="absolute -bottom-1 -right-1 w-3 h-3 bg-black border border-white rounded-2xs cursor-nwse-resize opacity-0 group-hover:opacity-100 z-10"
+            className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-black border border-white rounded-2xs cursor-nwse-resize opacity-90 sm:opacity-0 sm:group-hover:opacity-100 z-10 touch-none"
             onPointerDown={(e) => handlePointerDown(e, 'product', 'resize-se')}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
@@ -555,7 +577,6 @@ export const LabelGeneratorTab: React.FC<LabelGeneratorTabProps> = ({
         </div>
       )}
 
-      {/* Barcode Box Element */}
       <div
         className="absolute border border-dashed border-slate-900 bg-slate-900/5 group flex flex-col items-center justify-between rounded cursor-move select-none p-0.5"
         style={{
@@ -587,21 +608,21 @@ export const LabelGeneratorTab: React.FC<LabelGeneratorTabProps> = ({
         </div>
 
         <div
-          className="absolute -right-1 top-1/2 -translate-y-1/2 w-2.5 h-4 bg-slate-900 border border-white rounded-2xs cursor-ew-resize opacity-80 hover:opacity-100 z-10"
+          className="absolute -right-1 top-1/2 -translate-y-1/2 w-3 h-5 bg-slate-900 border border-white rounded-2xs cursor-ew-resize opacity-90 hover:opacity-100 z-10 touch-none"
           onPointerDown={(e) => handlePointerDown(e, 'barcode', 'resize-e')}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
           title="Resize Barcode Width"
         />
         <div
-          className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-2.5 bg-slate-900 border border-white rounded-2xs cursor-ns-resize opacity-80 hover:opacity-100 z-10"
+          className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-5 h-3 bg-slate-900 border border-white rounded-2xs cursor-ns-resize opacity-90 hover:opacity-100 z-10 touch-none"
           onPointerDown={(e) => handlePointerDown(e, 'barcode', 'resize-s')}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
           title="Resize Barcode Height"
         />
         <div
-          className="absolute -bottom-1 -right-1 w-3 h-3 bg-black border border-white rounded-2xs cursor-nwse-resize opacity-90 hover:opacity-100 z-10"
+          className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-black border border-white rounded-2xs cursor-nwse-resize opacity-95 hover:opacity-100 z-10 touch-none"
           onPointerDown={(e) => handlePointerDown(e, 'barcode', 'resize-se')}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
@@ -609,7 +630,6 @@ export const LabelGeneratorTab: React.FC<LabelGeneratorTabProps> = ({
         />
       </div>
 
-      {/* Price Box Element */}
       {config.showPrice && (
         <div
           className="absolute bg-slate-900 text-white border border-slate-900 rounded group flex items-center justify-center cursor-move p-0.5"
@@ -631,21 +651,21 @@ export const LabelGeneratorTab: React.FC<LabelGeneratorTabProps> = ({
             {sampleProduct.price.toLocaleString()} {currencySymbol}
           </span>
           <div
-            className="absolute -right-1 top-1/2 -translate-y-1/2 w-2.5 h-4 bg-white border border-black rounded-2xs cursor-ew-resize opacity-0 group-hover:opacity-100 z-10"
+            className="absolute -right-1 top-1/2 -translate-y-1/2 w-3 h-5 bg-white border border-black rounded-2xs cursor-ew-resize opacity-90 sm:opacity-0 sm:group-hover:opacity-100 z-10 touch-none"
             onPointerDown={(e) => handlePointerDown(e, 'price', 'resize-e')}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
             title="Resize Width"
           />
           <div
-            className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-2.5 bg-white border border-black rounded-2xs cursor-ns-resize opacity-0 group-hover:opacity-100 z-10"
+            className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-5 h-3 bg-white border border-black rounded-2xs cursor-ns-resize opacity-90 sm:opacity-0 sm:group-hover:opacity-100 z-10 touch-none"
             onPointerDown={(e) => handlePointerDown(e, 'price', 'resize-s')}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
             title="Resize Height"
           />
           <div
-            className="absolute -bottom-1 -right-1 w-3 h-3 bg-white border border-black rounded-2xs cursor-nwse-resize opacity-0 group-hover:opacity-100 z-10"
+            className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-white border border-black rounded-2xs cursor-nwse-resize opacity-90 sm:opacity-0 sm:group-hover:opacity-100 z-10 touch-none"
             onPointerDown={(e) => handlePointerDown(e, 'price', 'resize-se')}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
@@ -658,31 +678,28 @@ export const LabelGeneratorTab: React.FC<LabelGeneratorTabProps> = ({
 
   return (
     <div className="space-y-6 pb-12 animate-fade-in">
-      
-      {/* Fullscreen Interactive Canvas Overlay */}
       {isFullscreen && (
-        <div className="fixed inset-0 z-50 bg-slate-950/95 text-white flex flex-col p-4 sm:p-6 backdrop-blur-md overflow-hidden animate-fade-in">
-          <div className="flex items-center justify-between gap-4 pb-4 border-b border-slate-800">
-            <div className="flex items-center space-x-3">
-              <div className="p-2 bg-white text-black rounded-xl">
-                <Tag className="w-5 h-5" />
+        <div className="fixed inset-0 z-50 bg-slate-950/95 text-white flex flex-col p-2.5 sm:p-6 backdrop-blur-md overflow-hidden animate-fade-in">
+          <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-4 pb-2.5 sm:pb-4 border-b border-slate-800 shrink-0">
+            <div className="flex items-center space-x-2.5 sm:space-x-3">
+              <div className="p-1.5 sm:p-2 bg-white text-black rounded-xl shrink-0">
+                <Tag className="w-4 h-4 sm:w-5 sm:h-5" />
               </div>
               <div>
-                <h3 className="font-extrabold text-white text-sm sm:text-base">
+                <h3 className="font-extrabold text-white text-xs sm:text-base">
                   Fullscreen Interactive Label Canvas
                 </h3>
-                <p className="text-xs text-slate-400 font-medium">
-                  {effLabelWidth.toFixed(0)} × {effLabelHeight.toFixed(0)}mm · Drag to move, handles to resize (CODE 128)
+                <p className="text-[10px] sm:text-xs text-slate-400 font-medium">
+                  {effLabelWidth.toFixed(0)} × {effLabelHeight.toFixed(0)}mm · Drag to move, handles to resize
                 </p>
               </div>
             </div>
 
-            <div className="flex items-center space-x-2">
-              <span className="text-xs font-semibold text-slate-400 hidden md:inline">Sample Item:</span>
+            <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
               <select
                 value={sampleProductId}
                 onChange={e => setSampleProductId(e.target.value)}
-                className="px-2.5 py-1.5 bg-slate-800 border border-slate-700 rounded-xl text-xs font-bold text-white focus:outline-none max-w-[160px] cursor-pointer"
+                className="px-2 py-1 bg-slate-800 border border-slate-700 rounded-xl text-xs font-bold text-white focus:outline-none max-w-[120px] sm:max-w-[170px] cursor-pointer"
               >
                 {products.map(p => (
                   <option key={p.id} value={p.id}>{p.name}</option>
@@ -693,14 +710,14 @@ export const LabelGeneratorTab: React.FC<LabelGeneratorTabProps> = ({
                 <button
                   onClick={handleZoomOut}
                   disabled={zoomFactor <= 0.5}
-                  className="p-1.5 text-slate-300 hover:text-white disabled:opacity-30 cursor-pointer"
+                  className="p-1 sm:p-1.5 text-slate-300 hover:text-white disabled:opacity-30 cursor-pointer"
                   title="Zoom Out (-25%)"
                 >
-                  <ZoomOut className="w-4 h-4" />
+                  <ZoomOut className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 </button>
                 <button
                   onClick={handleResetZoom}
-                  className="px-2 py-1 text-xs font-extrabold text-white hover:bg-slate-700 rounded-lg cursor-pointer font-mono"
+                  className="px-1.5 sm:px-2 py-0.5 sm:py-1 text-[11px] sm:text-xs font-extrabold text-white hover:bg-slate-700 rounded-lg cursor-pointer font-mono"
                   title="Reset Zoom (100%)"
                 >
                   {Math.round(zoomFactor * 100)}%
@@ -708,42 +725,42 @@ export const LabelGeneratorTab: React.FC<LabelGeneratorTabProps> = ({
                 <button
                   onClick={handleZoomIn}
                   disabled={zoomFactor >= 3}
-                  className="p-1.5 text-slate-300 hover:text-white disabled:opacity-30 cursor-pointer"
+                  className="p-1 sm:p-1.5 text-slate-300 hover:text-white disabled:opacity-30 cursor-pointer"
                   title="Zoom In (+25%)"
                 >
-                  <ZoomIn className="w-4 h-4" />
+                  <ZoomIn className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 </button>
                 <button
                   onClick={handleResetZoom}
-                  className="p-1.5 text-slate-400 hover:text-white cursor-pointer"
+                  className="p-1 sm:p-1.5 text-slate-400 hover:text-white cursor-pointer"
                   title="Reset Zoom Scale"
                 >
-                  <RotateCcw className="w-3.5 h-3.5" />
+                  <RotateCcw className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                 </button>
               </div>
 
               <button
                 onClick={() => setIsFullscreen(false)}
-                className="px-3.5 py-1.5 bg-white text-black font-extrabold text-xs rounded-xl shadow-xs hover:bg-slate-200 transition-colors flex items-center space-x-1.5 cursor-pointer"
+                className="px-2.5 sm:px-3.5 py-1.5 bg-white text-black font-extrabold text-xs rounded-xl shadow-xs hover:bg-slate-200 transition-colors flex items-center space-x-1.5 cursor-pointer shrink-0"
               >
                 <Minimize2 className="w-4 h-4" />
-                <span>Exit Fullscreen</span>
+                <span className="hidden sm:inline">Exit Fullscreen</span>
               </button>
             </div>
           </div>
 
-          <div className="flex-1 flex flex-col items-center justify-center overflow-auto p-8 my-4 bg-slate-900/60 rounded-2xl border border-slate-800 shadow-2xl relative select-none">
+          <div className="flex-1 flex flex-col items-center justify-center overflow-auto p-2 sm:p-8 my-2 sm:my-4 bg-slate-900/60 rounded-2xl border border-slate-800 shadow-2xl relative select-none touch-none">
             {renderCanvasCard()}
           </div>
 
-          <div className="pt-3 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
-            <div className="flex items-center space-x-4 font-mono">
-              <span>Store: {effElemX('store').toFixed(1)},{effElemY('store').toFixed(1)}mm ({effElemW('store').toFixed(1)}×{effElemH('store').toFixed(1)}mm)</span>
-              <span>Product: {effElemX('product').toFixed(1)},{effElemY('product').toFixed(1)}mm ({effElemW('product').toFixed(1)}×{effElemH('product').toFixed(1)}mm)</span>
-              <span>Barcode: {effBarcodeX.toFixed(1)},{effBarcodeY.toFixed(1)}mm ({effBarcodeWidth.toFixed(1)}×{effBarcodeHeight.toFixed(1)}mm)</span>
-              <span>Price: {effElemX('price').toFixed(1)},{effElemY('price').toFixed(1)}mm ({effElemW('price').toFixed(1)}×{effElemH('price').toFixed(1)}mm)</span>
+          <div className="pt-2 sm:pt-3 border-t border-slate-800 flex flex-wrap items-center justify-between gap-2 text-[10px] sm:text-xs text-slate-400 shrink-0">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono">
+              <span>Store: {effElemX('store').toFixed(1)},{effElemY('store').toFixed(1)}</span>
+              <span>Product: {effElemX('product').toFixed(1)},{effElemY('product').toFixed(1)}</span>
+              <span>Barcode: {effBarcodeX.toFixed(1)},{effBarcodeY.toFixed(1)}</span>
+              <span>Price: {effElemX('price').toFixed(1)},{effElemY('price').toFixed(1)}</span>
             </div>
-            <span>Press <kbd className="bg-slate-800 px-1.5 py-0.5 rounded text-white font-mono">ESC</kbd> to exit fullscreen</span>
+            <span className="hidden sm:inline">Press <kbd className="bg-slate-800 px-1.5 py-0.5 rounded text-white font-mono">ESC</kbd> to exit</span>
           </div>
         </div>
       )}

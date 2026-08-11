@@ -55,8 +55,8 @@
     "semantic_hash": "2205be830ccbead0ca572cbf1c72554a"
   },
   "src/components/LabelGeneratorTab.tsx": {
-    "mtime": 1786424049.1046903,
-    "ast_hash": "64a538b91b99aa0c4d6a85863205d231",
+    "mtime": 1786452911.9984124,
+    "ast_hash": "abf026fbf4cb1dd79428def9bdf36e03",
     "semantic_hash": ""
   },
   "src/components/OfflineSyncBar.tsx": {
