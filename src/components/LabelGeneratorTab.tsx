@@ -186,14 +186,14 @@ export const LabelGeneratorTab: React.FC<LabelGeneratorTabProps> = ({
 
   const effElemW = (k: 'store' | 'product' | 'barcode' | 'price') => {
     const raw = parseMm(config.layoutXY[k].w);
-    const defaultW = k === 'barcode' ? (parseMm(config.barcodeWidth) || Math.max(10, effLabelWidth - 4)) : Math.max(5, effLabelWidth - effElemX(k));
-    return clamp(raw || defaultW, 5, Math.max(5, effLabelWidth - effElemX(k)));
+    const defaultW = k === 'barcode' ? (parseMm(config.barcodeWidth) || Math.max(10, effLabelWidth - 4)) : Math.max(1, effLabelWidth - effElemX(k));
+    return clamp(raw || defaultW, 1, Math.max(1, effLabelWidth - effElemX(k)));
   };
 
   const effElemH = (k: 'store' | 'product' | 'barcode' | 'price') => {
     const raw = parseMm(config.layoutXY[k].h);
     const defaultH = k === 'barcode' ? (parseMm(config.barcodeHeight) || 10) : (k === 'price' ? 5 : 4);
-    return clamp(raw || defaultH, 2, Math.max(2, effLabelHeight - effElemY(k)));
+    return clamp(raw || defaultH, 1, Math.max(1, effLabelHeight - effElemY(k)));
   };
 
   const effBarcodeWidth = effElemW('barcode');
@@ -281,12 +281,12 @@ export const LabelGeneratorTab: React.FC<LabelGeneratorTabProps> = ({
       newY = clamp(dragState.initialY + dyMm, 0, Math.max(0, effLabelHeight - dragState.initialH));
     } else {
       if (dragState.action === 'resize-e' || dragState.action === 'resize-se') {
-        const minW = elem === 'barcode' ? 10 : 5;
+        const minW = 1;
         const maxW = Math.max(minW, effLabelWidth - dragState.initialX);
         newW = clamp(dragState.initialW + dxMm, minW, maxW);
       }
       if (dragState.action === 'resize-s' || dragState.action === 'resize-se') {
-        const minH = elem === 'barcode' ? 3 : 2;
+        const minH = 1;
         const maxH = Math.max(minH, effLabelHeight - dragState.initialY);
         newH = clamp(dragState.initialH + dyMm, minH, maxH);
       }
@@ -1094,31 +1094,31 @@ export const LabelGeneratorTab: React.FC<LabelGeneratorTabProps> = ({
                   
                   {/* Store */}
                   <span className="text-slate-800 normal-case font-bold">Store</span>
-                  <input type="number" step={0.5} min={0} max={Math.max(0, effLabelWidth - 5)} value={config.layoutXY.store.x}
+                  <input type="number" step={0.5} min={0} max={Math.max(0, effLabelWidth - 1)} value={config.layoutXY.store.x}
                     onChange={e => updateConfig(p => ({ ...p, layoutXY: { ...p.layoutXY, store: { ...p.layoutXY.store, x: e.target.value } } }))}
                     className="w-full px-1 py-1 bg-white border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
-                  <input type="number" step={0.5} min={0} max={Math.max(0, effLabelHeight - 3)} value={config.layoutXY.store.y}
+                  <input type="number" step={0.5} min={0} max={Math.max(0, effLabelHeight - 1)} value={config.layoutXY.store.y}
                     onChange={e => updateConfig(p => ({ ...p, layoutXY: { ...p.layoutXY, store: { ...p.layoutXY.store, y: e.target.value } } }))}
                     className="w-full px-1 py-1 bg-white border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
-                  <input type="number" step={0.5} min={5} max={effLabelWidth} value={config.layoutXY.store.w || effElemW('store').toFixed(1)}
+                  <input type="number" step={0.5} min={1} max={effLabelWidth} value={config.layoutXY.store.w || effElemW('store').toFixed(1)}
                     onChange={e => updateConfig(p => ({ ...p, layoutXY: { ...p.layoutXY, store: { ...p.layoutXY.store, w: e.target.value } } }))}
                     className="w-full px-1 py-1 bg-white border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
-                  <input type="number" step={0.5} min={2} max={effLabelHeight} value={config.layoutXY.store.h || effElemH('store').toFixed(1)}
+                  <input type="number" step={0.5} min={1} max={effLabelHeight} value={config.layoutXY.store.h || effElemH('store').toFixed(1)}
                     onChange={e => updateConfig(p => ({ ...p, layoutXY: { ...p.layoutXY, store: { ...p.layoutXY.store, h: e.target.value } } }))}
                     className="w-full px-1 py-1 bg-white border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
 
                   {/* Product */}
                   <span className="text-slate-800 normal-case font-bold">Product</span>
-                  <input type="number" step={0.5} min={0} max={Math.max(0, effLabelWidth - 5)} value={config.layoutXY.product.x}
+                  <input type="number" step={0.5} min={0} max={Math.max(0, effLabelWidth - 1)} value={config.layoutXY.product.x}
                     onChange={e => updateConfig(p => ({ ...p, layoutXY: { ...p.layoutXY, product: { ...p.layoutXY.product, x: e.target.value } } }))}
                     className="w-full px-1 py-1 bg-white border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
-                  <input type="number" step={0.5} min={0} max={Math.max(0, effLabelHeight - 3)} value={config.layoutXY.product.y}
+                  <input type="number" step={0.5} min={0} max={Math.max(0, effLabelHeight - 1)} value={config.layoutXY.product.y}
                     onChange={e => updateConfig(p => ({ ...p, layoutXY: { ...p.layoutXY, product: { ...p.layoutXY.product, y: e.target.value } } }))}
                     className="w-full px-1 py-1 bg-white border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
-                  <input type="number" step={0.5} min={5} max={effLabelWidth} value={config.layoutXY.product.w || effElemW('product').toFixed(1)}
+                  <input type="number" step={0.5} min={1} max={effLabelWidth} value={config.layoutXY.product.w || effElemW('product').toFixed(1)}
                     onChange={e => updateConfig(p => ({ ...p, layoutXY: { ...p.layoutXY, product: { ...p.layoutXY.product, w: e.target.value } } }))}
                     className="w-full px-1 py-1 bg-white border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
-                  <input type="number" step={0.5} min={2} max={effLabelHeight} value={config.layoutXY.product.h || effElemH('product').toFixed(1)}
+                  <input type="number" step={0.5} min={1} max={effLabelHeight} value={config.layoutXY.product.h || effElemH('product').toFixed(1)}
                     onChange={e => updateConfig(p => ({ ...p, layoutXY: { ...p.layoutXY, product: { ...p.layoutXY.product, h: e.target.value } } }))}
                     className="w-full px-1 py-1 bg-white border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
 
@@ -1130,25 +1130,25 @@ export const LabelGeneratorTab: React.FC<LabelGeneratorTabProps> = ({
                   <input type="number" step={0.5} min={0} max={Math.max(0, effLabelHeight - effBarcodeHeight)} value={config.layoutXY.barcode.y}
                     onChange={e => updateConfig(p => ({ ...p, layoutXY: { ...p.layoutXY, barcode: { ...p.layoutXY.barcode, y: e.target.value } } }))}
                     className="w-full px-1 py-1 bg-white border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
-                  <input type="number" step={0.5} min={10} max={effLabelWidth} value={config.barcodeWidth}
+                  <input type="number" step={0.5} min={1} max={effLabelWidth} value={config.barcodeWidth}
                     onChange={e => updateConfig(p => ({ ...p, barcodeWidth: e.target.value, layoutXY: { ...p.layoutXY, barcode: { ...p.layoutXY.barcode, w: e.target.value } } }))}
                     className="w-full px-1 py-1 bg-white border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
-                  <input type="number" step={0.5} min={3} max={effLabelHeight} value={config.barcodeHeight}
+                  <input type="number" step={0.5} min={1} max={effLabelHeight} value={config.barcodeHeight}
                     onChange={e => updateConfig(p => ({ ...p, barcodeHeight: e.target.value, layoutXY: { ...p.layoutXY, barcode: { ...p.layoutXY.barcode, h: e.target.value } } }))}
                     className="w-full px-1 py-1 bg-white border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
 
                   {/* Price */}
                   <span className="text-slate-800 normal-case font-bold">Price</span>
-                  <input type="number" step={0.5} min={0} max={Math.max(0, effLabelWidth - 5)} value={config.layoutXY.price.x}
+                  <input type="number" step={0.5} min={0} max={Math.max(0, effLabelWidth - 1)} value={config.layoutXY.price.x}
                     onChange={e => updateConfig(p => ({ ...p, layoutXY: { ...p.layoutXY, price: { ...p.layoutXY.price, x: e.target.value } } }))}
                     className="w-full px-1 py-1 bg-white border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
-                  <input type="number" step={0.5} min={0} max={Math.max(0, effLabelHeight - 3)} value={config.layoutXY.price.y}
+                  <input type="number" step={0.5} min={0} max={Math.max(0, effLabelHeight - 1)} value={config.layoutXY.price.y}
                     onChange={e => updateConfig(p => ({ ...p, layoutXY: { ...p.layoutXY, price: { ...p.layoutXY.price, y: e.target.value } } }))}
                     className="w-full px-1 py-1 bg-white border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
-                  <input type="number" step={0.5} min={5} max={effLabelWidth} value={config.layoutXY.price.w || effElemW('price').toFixed(1)}
+                  <input type="number" step={0.5} min={1} max={effLabelWidth} value={config.layoutXY.price.w || effElemW('price').toFixed(1)}
                     onChange={e => updateConfig(p => ({ ...p, layoutXY: { ...p.layoutXY, price: { ...p.layoutXY.price, w: e.target.value } } }))}
                     className="w-full px-1 py-1 bg-white border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
-                  <input type="number" step={0.5} min={2} max={effLabelHeight} value={config.layoutXY.price.h || effElemH('price').toFixed(1)}
+                  <input type="number" step={0.5} min={1} max={effLabelHeight} value={config.layoutXY.price.h || effElemH('price').toFixed(1)}
                     onChange={e => updateConfig(p => ({ ...p, layoutXY: { ...p.layoutXY, price: { ...p.layoutXY.price, h: e.target.value } } }))}
                     className="w-full px-1 py-1 bg-white border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
                 </div>
