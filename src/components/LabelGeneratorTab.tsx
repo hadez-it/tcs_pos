@@ -646,7 +646,7 @@ export const LabelGeneratorTab: React.FC<LabelGeneratorTabProps> = ({
 
       {config.showPrice && (
         <div
-          className="absolute bg-slate-900 text-white border border-slate-900 rounded group flex items-center justify-center cursor-move p-0.5"
+          className="absolute border border-dashed border-slate-400/80 hover:border-black bg-slate-900/5 rounded group flex items-center justify-center cursor-move p-0.5"
           style={{
             left: effElemX('price') * previewScale,
             top: effElemY('price') * previewScale,
@@ -659,27 +659,27 @@ export const LabelGeneratorTab: React.FC<LabelGeneratorTabProps> = ({
           title={`Price Tag (${effElemW('price').toFixed(1)}×${effElemH('price').toFixed(1)}mm)`}
         >
           <span
-            className="font-extrabold font-mono px-1 truncate pointer-events-none"
+            className="font-extrabold font-mono text-slate-900 px-1 truncate pointer-events-none"
             style={{ fontSize: Math.max(6, Math.min(26, effElemH('price') * previewScale * 0.75)) }}
           >
             {sampleProduct.price.toLocaleString()} {currencySymbol}
           </span>
           <div
-            className="absolute -right-1 top-1/2 -translate-y-1/2 w-3 h-5 bg-white border border-black rounded-2xs cursor-ew-resize opacity-90 sm:opacity-0 sm:group-hover:opacity-100 z-10 touch-none"
+            className="absolute -right-1 top-1/2 -translate-y-1/2 w-3 h-5 bg-slate-900 border border-white rounded-2xs cursor-ew-resize opacity-90 sm:opacity-0 sm:group-hover:opacity-100 z-10 touch-none"
             onPointerDown={(e) => handlePointerDown(e, 'price', 'resize-e')}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
             title="Resize Width"
           />
           <div
-            className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-5 h-3 bg-white border border-black rounded-2xs cursor-ns-resize opacity-90 sm:opacity-0 sm:group-hover:opacity-100 z-10 touch-none"
+            className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-5 h-3 bg-slate-900 border border-white rounded-2xs cursor-ns-resize opacity-90 sm:opacity-0 sm:group-hover:opacity-100 z-10 touch-none"
             onPointerDown={(e) => handlePointerDown(e, 'price', 'resize-s')}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
             title="Resize Height"
           />
           <div
-            className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-white border border-black rounded-2xs cursor-nwse-resize opacity-90 sm:opacity-0 sm:group-hover:opacity-100 z-10 touch-none"
+            className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-black border border-white rounded-2xs cursor-nwse-resize opacity-90 sm:opacity-0 sm:group-hover:opacity-100 z-10 touch-none"
             onPointerDown={(e) => handlePointerDown(e, 'price', 'resize-se')}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
