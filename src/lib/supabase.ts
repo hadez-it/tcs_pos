@@ -468,15 +468,23 @@ export const dbService = {
     },
 
     async deleteCashier(id: string): Promise<void> {
-      // Always keep LocalStorage mock data updated
       const profiles = getMockData<UserProfile>(MOCK_PROFILES_KEY);
       const updated = profiles.filter(p => p.id !== id);
       saveMockData(MOCK_PROFILES_KEY, updated);
 
       if (isSupabaseConfigured && supabase) {
         try {
-          // Unlink cashier from any sales first to avoid foreign key constraint errors
-          await supabase.from('sales').update({ cashier_id: null }).eq('cashier_id', id);
+          try {
+            await supabase.from('sales').update({ cashier_id: null }).eq('cashier_id', id);
+          } catch (e) {
+            console.warn('Could not unlink sales cashier_id before delete:', e);
+          }
+
+          try {
+            await supabase.from('sale_delete_requests').update({ cashier_id: null }).eq('cashier_id', id);
+          } catch (e) {
+            console.warn('Could not unlink sale_delete_requests cashier_id before delete:', e);
+          }
 
           const { error } = await supabase
             .from('profiles')

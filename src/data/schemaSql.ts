@@ -162,7 +162,7 @@ CREATE POLICY "Owners can delete products"
 -- ── 4. Sales ─────────────────────────────────────────────────
 CREATE TABLE public.sales (
     id              TEXT PRIMARY KEY,
-    cashier_id      UUID REFERENCES public.profiles(id),
+    cashier_id      UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
     cashier_name    TEXT NOT NULL,
     branch_id       TEXT REFERENCES public.branches(id),
     branch_name     TEXT,
@@ -186,6 +186,10 @@ CREATE POLICY "Cashiers can read own sales"
 CREATE POLICY "Cashiers can insert sales"
   ON public.sales FOR INSERT
   WITH CHECK (cashier_id = auth.uid());
+
+CREATE POLICY "Owners can update sales"
+  ON public.sales FOR UPDATE
+  USING (public.current_user_is_owner());
 
 CREATE POLICY "Owners can delete sales (void)"
   ON public.sales FOR DELETE
@@ -303,7 +307,7 @@ CREATE POLICY "Owners can manage cash_flow"
 CREATE TABLE public.sale_delete_requests (
     id               TEXT PRIMARY KEY,
     sale_id          TEXT REFERENCES public.sales(id) ON DELETE SET NULL,
-    cashier_id       UUID REFERENCES public.profiles(id),
+    cashier_id       UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
     cashier_name     TEXT NOT NULL,
     branch_id        TEXT REFERENCES public.branches(id),
     branch_name      TEXT,
