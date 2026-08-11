@@ -116,7 +116,7 @@ export type BarcodeType = 'CODE39' | 'CODE128' | 'EAN13' | 'EAN8' | 'UPCA' | 'UP
 
 export function barcode(
   data: string,
-  type: BarcodeType = 'CODE39',
+  type: BarcodeType = 'CODE128',
   height: number = 50, // barcode bar height in dots (default ~50 dots for 58mm printers)
   hriPosition: 0 | 1 | 2 | 3 = 3, // HRI text position: 0=none, 1=above, 2=below, 3=both
   moduleWidth: number = 2, // GS w n — narrow-module width (1..6)
@@ -606,7 +606,7 @@ export function buildThermalLabel(opts: ThermalLabelOptions): Uint8Array {
     paperWidthMm = 58,
     labelWidthMm = 50,
     labelHeightMm = 30,
-    barcodeType = 'CODE39',
+    barcodeType = 'CODE128',
     barcodeHeightMm = 10,
     cutMode = 'off',
     paperMode = 'sticker',
@@ -741,7 +741,7 @@ function buildCustomThermalLabel(opts: ThermalLabelOptions): Uint8Array {
     paperWidthMm = 58,
     labelWidthMm = 50,
     labelHeightMm = 30,
-    barcodeType = 'CODE39',
+    barcodeType = 'CODE128',
     barcodeHeightMm = 10,
     paperMode = 'sticker',
     labelGapMm = 3,

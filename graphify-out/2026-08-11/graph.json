@@ -41,7 +41,7 @@
       "_origin": "ast",
       "id": "capacitor_config",
       "community": 12,
-      "community_name": "Capacitor Android Native Configuration",
+      "community_name": "capacitor.config.ts",
       "norm_label": "capacitor.config.ts"
     },
     {
@@ -52,7 +52,7 @@
       "_origin": "ast",
       "id": "capacitor_config_config",
       "community": 12,
-      "community_name": "Capacitor Android Native Configuration",
+      "community_name": "capacitor.config.ts",
       "norm_label": "config"
     },
     {
@@ -63,7 +63,7 @@
       "_origin": "ast",
       "id": "package",
       "community": 4,
-      "community_name": "Build System & Dev Tools",
+      "community_name": "scripts",
       "norm_label": "package.json"
     },
     {
@@ -74,7 +74,7 @@
       "_origin": "ast",
       "id": "package_name",
       "community": 4,
-      "community_name": "Build System & Dev Tools",
+      "community_name": "scripts",
       "norm_label": "name"
     },
     {
@@ -85,7 +85,7 @@
       "_origin": "ast",
       "id": "package_private",
       "community": 4,
-      "community_name": "Build System & Dev Tools",
+      "community_name": "scripts",
       "norm_label": "private"
     },
     {
@@ -96,7 +96,7 @@
       "_origin": "ast",
       "id": "package_version",
       "community": 4,
-      "community_name": "Build System & Dev Tools",
+      "community_name": "scripts",
       "norm_label": "version"
     },
     {
@@ -107,7 +107,7 @@
       "_origin": "ast",
       "id": "package_type",
       "community": 4,
-      "community_name": "Build System & Dev Tools",
+      "community_name": "scripts",
       "norm_label": "type"
     },
     {
@@ -118,7 +118,7 @@
       "_origin": "ast",
       "id": "package_scripts",
       "community": 4,
-      "community_name": "Build System & Dev Tools",
+      "community_name": "scripts",
       "norm_label": "scripts"
     },
     {
@@ -129,7 +129,7 @@
       "_origin": "ast",
       "id": "package_scripts_dev",
       "community": 4,
-      "community_name": "Build System & Dev Tools",
+      "community_name": "scripts",
       "norm_label": "dev"
     },
     {
@@ -140,7 +140,7 @@
       "_origin": "ast",
       "id": "package_scripts_build",
       "community": 4,
-      "community_name": "Build System & Dev Tools",
+      "community_name": "scripts",
       "norm_label": "build"
     },
     {
@@ -151,7 +151,7 @@
       "_origin": "ast",
       "id": "package_scripts_preview",
       "community": 4,
-      "community_name": "Build System & Dev Tools",
+      "community_name": "scripts",
       "norm_label": "preview"
     },
     {
@@ -162,7 +162,7 @@
       "_origin": "ast",
       "id": "package_scripts_clean",
       "community": 4,
-      "community_name": "Build System & Dev Tools",
+      "community_name": "scripts",
       "norm_label": "clean"
     },
     {
@@ -173,7 +173,7 @@
       "_origin": "ast",
       "id": "package_scripts_lint",
       "community": 4,
-      "community_name": "Build System & Dev Tools",
+      "community_name": "scripts",
       "norm_label": "lint"
     },
     {
@@ -184,7 +184,7 @@
       "_origin": "ast",
       "id": "package_scripts_cap_sync",
       "community": 4,
-      "community_name": "Build System & Dev Tools",
+      "community_name": "scripts",
       "norm_label": "cap:sync"
     },
     {
@@ -195,7 +195,7 @@
       "_origin": "ast",
       "id": "package_scripts_cap_android",
       "community": 4,
-      "community_name": "Build System & Dev Tools",
+      "community_name": "scripts",
       "norm_label": "cap:android"
     },
     {
@@ -206,7 +206,7 @@
       "_origin": "ast",
       "id": "package_scripts_cap_open",
       "community": 4,
-      "community_name": "Build System & Dev Tools",
+      "community_name": "scripts",
       "norm_label": "cap:open"
     },
     {
@@ -217,7 +217,7 @@
       "_origin": "ast",
       "id": "package_dependencies",
       "community": 3,
-      "community_name": "Capacitor Mobile & UI Dependencies",
+      "community_name": "dependencies",
       "norm_label": "dependencies"
     },
     {
@@ -228,7 +228,7 @@
       "_origin": "ast",
       "id": "package_dependencies_capacitor_android",
       "community": 3,
-      "community_name": "Capacitor Mobile & UI Dependencies",
+      "community_name": "dependencies",
       "norm_label": "@capacitor/android"
     },
     {
@@ -239,7 +239,7 @@
       "_origin": "ast",
       "id": "capacitor_android",
       "community": 3,
-      "community_name": "Capacitor Mobile & UI Dependencies",
+      "community_name": "dependencies",
       "norm_label": "@capacitor/android"
     },
     {
@@ -250,7 +250,7 @@
       "_origin": "ast",
       "id": "package_dependencies_capacitor_app",
       "community": 3,
-      "community_name": "Capacitor Mobile & UI Dependencies",
+      "community_name": "dependencies",
       "norm_label": "@capacitor/app"
     },
     {
@@ -261,7 +261,7 @@
       "_origin": "ast",
       "id": "capacitor_app",
       "community": 3,
-      "community_name": "Capacitor Mobile & UI Dependencies",
+      "community_name": "dependencies",
       "norm_label": "@capacitor/app"
     },
     {
@@ -272,7 +272,7 @@
       "_origin": "ast",
       "id": "package_dependencies_capacitor_cli",
       "community": 3,
-      "community_name": "Capacitor Mobile & UI Dependencies",
+      "community_name": "dependencies",
       "norm_label": "@capacitor/cli"
     },
     {
@@ -283,7 +283,7 @@
       "_origin": "ast",
       "id": "capacitor_cli",
       "community": 3,
-      "community_name": "Capacitor Mobile & UI Dependencies",
+      "community_name": "dependencies",
       "norm_label": "@capacitor/cli"
     },
     {
@@ -294,7 +294,7 @@
       "_origin": "ast",
       "id": "package_dependencies_capacitor_core",
       "community": 3,
-      "community_name": "Capacitor Mobile & UI Dependencies",
+      "community_name": "dependencies",
       "norm_label": "@capacitor/core"
     },
     {
@@ -305,7 +305,7 @@
       "_origin": "ast",
       "id": "capacitor_core",
       "community": 3,
-      "community_name": "Capacitor Mobile & UI Dependencies",
+      "community_name": "dependencies",
       "norm_label": "@capacitor/core"
     },
     {
@@ -316,7 +316,7 @@
       "_origin": "ast",
       "id": "package_dependencies_shoerofi_capacitor_bluetooth_serial",
       "community": 3,
-      "community_name": "Capacitor Mobile & UI Dependencies",
+      "community_name": "dependencies",
       "norm_label": "@shoerofi/capacitor-bluetooth-serial"
     },
     {
@@ -327,7 +327,7 @@
       "_origin": "ast",
       "id": "shoerofi_capacitor_bluetooth_serial",
       "community": 3,
-      "community_name": "Capacitor Mobile & UI Dependencies",
+      "community_name": "dependencies",
       "norm_label": "@shoerofi/capacitor-bluetooth-serial"
     },
     {
@@ -338,7 +338,7 @@
       "_origin": "ast",
       "id": "package_dependencies_supabase_supabase_js",
       "community": 3,
-      "community_name": "Capacitor Mobile & UI Dependencies",
+      "community_name": "dependencies",
       "norm_label": "@supabase/supabase-js"
     },
     {
@@ -349,7 +349,7 @@
       "_origin": "ast",
       "id": "supabase_supabase_js",
       "community": 3,
-      "community_name": "Capacitor Mobile & UI Dependencies",
+      "community_name": "dependencies",
       "norm_label": "@supabase/supabase-js"
     },
     {
@@ -360,7 +360,7 @@
       "_origin": "ast",
       "id": "package_dependencies_tailwindcss_vite",
       "community": 3,
-      "community_name": "Capacitor Mobile & UI Dependencies",
+      "community_name": "dependencies",
       "norm_label": "@tailwindcss/vite"
     },
     {
@@ -371,7 +371,7 @@
       "_origin": "ast",
       "id": "tailwindcss_vite",
       "community": 3,
-      "community_name": "Capacitor Mobile & UI Dependencies",
+      "community_name": "dependencies",
       "norm_label": "@tailwindcss/vite"
     },
     {
@@ -382,7 +382,7 @@
       "_origin": "ast",
       "id": "package_dependencies_vitejs_plugin_react",
       "community": 3,
-      "community_name": "Capacitor Mobile & UI Dependencies",
+      "community_name": "dependencies",
       "norm_label": "@vitejs/plugin-react"
     },
     {
@@ -393,7 +393,7 @@
       "_origin": "ast",
       "id": "vitejs_plugin_react",
       "community": 3,
-      "community_name": "Capacitor Mobile & UI Dependencies",
+      "community_name": "dependencies",
       "norm_label": "@vitejs/plugin-react"
     },
     {
@@ -404,7 +404,7 @@
       "_origin": "ast",
       "id": "package_dependencies_lucide_react",
       "community": 3,
-      "community_name": "Capacitor Mobile & UI Dependencies",
+      "community_name": "dependencies",
       "norm_label": "lucide-react"
     },
     {
@@ -415,7 +415,7 @@
       "_origin": "ast",
       "id": "lucide_react",
       "community": 3,
-      "community_name": "Capacitor Mobile & UI Dependencies",
+      "community_name": "dependencies",
       "norm_label": "lucide-react"
     },
     {
@@ -426,7 +426,7 @@
       "_origin": "ast",
       "id": "package_dependencies_react",
       "community": 3,
-      "community_name": "Capacitor Mobile & UI Dependencies",
+      "community_name": "dependencies",
       "norm_label": "react"
     },
     {
@@ -437,7 +437,7 @@
       "_origin": "ast",
       "id": "react",
       "community": 3,
-      "community_name": "Capacitor Mobile & UI Dependencies",
+      "community_name": "dependencies",
       "norm_label": "react"
     },
     {
@@ -448,7 +448,7 @@
       "_origin": "ast",
       "id": "package_dependencies_react_dom",
       "community": 3,
-      "community_name": "Capacitor Mobile & UI Dependencies",
+      "community_name": "dependencies",
       "norm_label": "react-dom"
     },
     {
@@ -459,7 +459,7 @@
       "_origin": "ast",
       "id": "react_dom",
       "community": 3,
-      "community_name": "Capacitor Mobile & UI Dependencies",
+      "community_name": "dependencies",
       "norm_label": "react-dom"
     },
     {
@@ -470,7 +470,7 @@
       "_origin": "ast",
       "id": "package_dependencies_react_zxing",
       "community": 3,
-      "community_name": "Capacitor Mobile & UI Dependencies",
+      "community_name": "dependencies",
       "norm_label": "react-zxing"
     },
     {
@@ -481,7 +481,7 @@
       "_origin": "ast",
       "id": "react_zxing",
       "community": 3,
-      "community_name": "Capacitor Mobile & UI Dependencies",
+      "community_name": "dependencies",
       "norm_label": "react-zxing"
     },
     {
@@ -492,7 +492,7 @@
       "_origin": "ast",
       "id": "package_dependencies_recharts",
       "community": 3,
-      "community_name": "Capacitor Mobile & UI Dependencies",
+      "community_name": "dependencies",
       "norm_label": "recharts"
     },
     {
@@ -503,7 +503,7 @@
       "_origin": "ast",
       "id": "recharts",
       "community": 3,
-      "community_name": "Capacitor Mobile & UI Dependencies",
+      "community_name": "dependencies",
       "norm_label": "recharts"
     },
     {
@@ -514,7 +514,7 @@
       "_origin": "ast",
       "id": "package_dependencies_vite",
       "community": 3,
-      "community_name": "Capacitor Mobile & UI Dependencies",
+      "community_name": "dependencies",
       "norm_label": "vite"
     },
     {
@@ -525,7 +525,7 @@
       "_origin": "ast",
       "id": "vite",
       "community": 3,
-      "community_name": "Capacitor Mobile & UI Dependencies",
+      "community_name": "dependencies",
       "norm_label": "vite"
     },
     {
@@ -536,7 +536,7 @@
       "_origin": "ast",
       "id": "package_devdependencies",
       "community": 4,
-      "community_name": "Build System & Dev Tools",
+      "community_name": "scripts",
       "norm_label": "devdependencies"
     },
     {
@@ -547,7 +547,7 @@
       "_origin": "ast",
       "id": "package_devdependencies_types_node",
       "community": 4,
-      "community_name": "Build System & Dev Tools",
+      "community_name": "scripts",
       "norm_label": "@types/node"
     },
     {
@@ -558,7 +558,7 @@
       "_origin": "ast",
       "id": "types_node",
       "community": 4,
-      "community_name": "Build System & Dev Tools",
+      "community_name": "scripts",
       "norm_label": "@types/node"
     },
     {
@@ -569,7 +569,7 @@
       "_origin": "ast",
       "id": "package_devdependencies_types_web_bluetooth",
       "community": 4,
-      "community_name": "Build System & Dev Tools",
+      "community_name": "scripts",
       "norm_label": "@types/web-bluetooth"
     },
     {
@@ -580,7 +580,7 @@
       "_origin": "ast",
       "id": "types_web_bluetooth",
       "community": 4,
-      "community_name": "Build System & Dev Tools",
+      "community_name": "scripts",
       "norm_label": "@types/web-bluetooth"
     },
     {
@@ -591,7 +591,7 @@
       "_origin": "ast",
       "id": "package_devdependencies_autoprefixer",
       "community": 4,
-      "community_name": "Build System & Dev Tools",
+      "community_name": "scripts",
       "norm_label": "autoprefixer"
     },
     {
@@ -602,7 +602,7 @@
       "_origin": "ast",
       "id": "autoprefixer",
       "community": 4,
-      "community_name": "Build System & Dev Tools",
+      "community_name": "scripts",
       "norm_label": "autoprefixer"
     },
     {
@@ -613,7 +613,7 @@
       "_origin": "ast",
       "id": "package_devdependencies_tailwindcss",
       "community": 4,
-      "community_name": "Build System & Dev Tools",
+      "community_name": "scripts",
       "norm_label": "tailwindcss"
     },
     {
@@ -624,7 +624,7 @@
       "_origin": "ast",
       "id": "tailwindcss",
       "community": 4,
-      "community_name": "Build System & Dev Tools",
+      "community_name": "scripts",
       "norm_label": "tailwindcss"
     },
     {
@@ -635,7 +635,7 @@
       "_origin": "ast",
       "id": "package_devdependencies_tsx",
       "community": 4,
-      "community_name": "Build System & Dev Tools",
+      "community_name": "scripts",
       "norm_label": "tsx"
     },
     {
@@ -646,7 +646,7 @@
       "_origin": "ast",
       "id": "tsx",
       "community": 4,
-      "community_name": "Build System & Dev Tools",
+      "community_name": "scripts",
       "norm_label": "tsx"
     },
     {
@@ -657,7 +657,7 @@
       "_origin": "ast",
       "id": "package_devdependencies_typescript",
       "community": 4,
-      "community_name": "Build System & Dev Tools",
+      "community_name": "scripts",
       "norm_label": "typescript"
     },
     {
@@ -668,7 +668,7 @@
       "_origin": "ast",
       "id": "typescript",
       "community": 4,
-      "community_name": "Build System & Dev Tools",
+      "community_name": "scripts",
       "norm_label": "typescript"
     },
     {
@@ -679,7 +679,7 @@
       "_origin": "ast",
       "id": "public_manifest",
       "community": 9,
-      "community_name": "Web App PWA Manifest Configuration",
+      "community_name": "manifest.json",
       "norm_label": "manifest.json"
     },
     {
@@ -690,7 +690,7 @@
       "_origin": "ast",
       "id": "public_manifest_name",
       "community": 9,
-      "community_name": "Web App PWA Manifest Configuration",
+      "community_name": "manifest.json",
       "norm_label": "name"
     },
     {
@@ -701,7 +701,7 @@
       "_origin": "ast",
       "id": "public_manifest_short_name",
       "community": 9,
-      "community_name": "Web App PWA Manifest Configuration",
+      "community_name": "manifest.json",
       "norm_label": "short_name"
     },
     {
@@ -712,7 +712,7 @@
       "_origin": "ast",
       "id": "public_manifest_description",
       "community": 9,
-      "community_name": "Web App PWA Manifest Configuration",
+      "community_name": "manifest.json",
       "norm_label": "description"
     },
     {
@@ -723,7 +723,7 @@
       "_origin": "ast",
       "id": "public_manifest_start_url",
       "community": 9,
-      "community_name": "Web App PWA Manifest Configuration",
+      "community_name": "manifest.json",
       "norm_label": "start_url"
     },
     {
@@ -734,7 +734,7 @@
       "_origin": "ast",
       "id": "public_manifest_display",
       "community": 9,
-      "community_name": "Web App PWA Manifest Configuration",
+      "community_name": "manifest.json",
       "norm_label": "display"
     },
     {
@@ -745,7 +745,7 @@
       "_origin": "ast",
       "id": "public_manifest_orientation",
       "community": 9,
-      "community_name": "Web App PWA Manifest Configuration",
+      "community_name": "manifest.json",
       "norm_label": "orientation"
     },
     {
@@ -756,7 +756,7 @@
       "_origin": "ast",
       "id": "public_manifest_background_color",
       "community": 9,
-      "community_name": "Web App PWA Manifest Configuration",
+      "community_name": "manifest.json",
       "norm_label": "background_color"
     },
     {
@@ -767,7 +767,7 @@
       "_origin": "ast",
       "id": "public_manifest_theme_color",
       "community": 9,
-      "community_name": "Web App PWA Manifest Configuration",
+      "community_name": "manifest.json",
       "norm_label": "theme_color"
     },
     {
@@ -778,7 +778,7 @@
       "_origin": "ast",
       "id": "public_manifest_icons",
       "community": 9,
-      "community_name": "Web App PWA Manifest Configuration",
+      "community_name": "manifest.json",
       "norm_label": "icons"
     },
     {
@@ -788,8 +788,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_app",
-      "community": 2,
-      "community_name": "Cashier Dashboard & Navigation Flow",
+      "community": 1,
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "app.tsx"
     },
     {
@@ -800,8 +800,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_app_exitprompt",
-      "community": 2,
-      "community_name": "Cashier Dashboard & Navigation Flow",
+      "community": 1,
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "exitprompt()"
     },
     {
@@ -812,8 +812,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_app_app",
-      "community": 2,
-      "community_name": "Cashier Dashboard & Navigation Flow",
+      "community": 1,
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "app()"
     },
     {
@@ -824,7 +824,7 @@
       "_origin": "ast",
       "id": "src_components_auth",
       "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "auth.tsx"
     },
     {
@@ -837,7 +837,7 @@
       "_origin": "ast",
       "id": "src_components_auth_authprops",
       "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "authprops"
     },
     {
@@ -849,7 +849,7 @@
       "_origin": "ast",
       "id": "src_components_auth_auth",
       "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "auth()"
     },
     {
@@ -860,7 +860,7 @@
       "_origin": "ast",
       "id": "src_components_barcodeprintmodal",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "barcodeprintmodal.tsx"
     },
     {
@@ -872,8 +872,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_barcodeprintmodal_barcodeprintmodalprops",
-      "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community": 16,
+      "community_name": "Product",
       "norm_label": "barcodeprintmodalprops"
     },
     {
@@ -884,7 +884,7 @@
       "_origin": "ast",
       "id": "src_components_barcodeprintmodal_barcode_types",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "barcode_types"
     },
     {
@@ -896,7 +896,7 @@
       "_origin": "ast",
       "id": "src_components_barcodeprintmodal_clamp",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "clamp()"
     },
     {
@@ -908,7 +908,7 @@
       "_origin": "ast",
       "id": "src_components_barcodeprintmodal_parsemm",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "parsemm()"
     },
     {
@@ -920,7 +920,7 @@
       "_origin": "ast",
       "id": "src_components_barcodeprintmodal_barcodeprintmodal",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "barcodeprintmodal()"
     },
     {
@@ -931,7 +931,7 @@
       "_origin": "ast",
       "id": "src_components_barcodesvg",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "barcodesvg.tsx"
     },
     {
@@ -944,7 +944,7 @@
       "_origin": "ast",
       "id": "src_components_barcodesvg_barcodesvgprops",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "barcodesvgprops"
     },
     {
@@ -955,7 +955,7 @@
       "_origin": "ast",
       "id": "src_components_barcodesvg_code39_patterns",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "code39_patterns"
     },
     {
@@ -967,7 +967,7 @@
       "_origin": "ast",
       "id": "src_components_barcodesvg_barcodesvg",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "barcodesvg()"
     },
     {
@@ -978,7 +978,7 @@
       "_origin": "ast",
       "id": "src_components_barcodescannermodal",
       "community": 2,
-      "community_name": "Cashier Dashboard & Navigation Flow",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "barcodescannermodal.tsx"
     },
     {
@@ -991,7 +991,7 @@
       "_origin": "ast",
       "id": "src_components_barcodescannermodal_barcodescannermodalprops",
       "community": 2,
-      "community_name": "Cashier Dashboard & Navigation Flow",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "barcodescannermodalprops"
     },
     {
@@ -1003,7 +1003,7 @@
       "_origin": "ast",
       "id": "src_components_barcodescannermodal_barcodescannermodal",
       "community": 2,
-      "community_name": "Cashier Dashboard & Navigation Flow",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "barcodescannermodal()"
     },
     {
@@ -1014,7 +1014,7 @@
       "_origin": "ast",
       "id": "src_components_cashierdashboard",
       "community": 2,
-      "community_name": "Cashier Dashboard & Navigation Flow",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "cashierdashboard.tsx"
     },
     {
@@ -1027,7 +1027,7 @@
       "_origin": "ast",
       "id": "src_components_cashierdashboard_cashierdashboardprops",
       "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "cashierdashboardprops"
     },
     {
@@ -1039,8 +1039,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_cashierdashboard_cartitem",
-      "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community": 16,
+      "community_name": "Product",
       "norm_label": "cartitem"
     },
     {
@@ -1053,7 +1053,7 @@
       "_origin": "ast",
       "id": "src_components_cashierdashboard_heldcart",
       "community": 2,
-      "community_name": "Cashier Dashboard & Navigation Flow",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "heldcart"
     },
     {
@@ -1065,7 +1065,7 @@
       "_origin": "ast",
       "id": "src_components_cashierdashboard_getquickcashoptions",
       "community": 2,
-      "community_name": "Cashier Dashboard & Navigation Flow",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "getquickcashoptions()"
     },
     {
@@ -1077,7 +1077,7 @@
       "_origin": "ast",
       "id": "src_components_cashierdashboard_cashierdashboard",
       "community": 2,
-      "community_name": "Cashier Dashboard & Navigation Flow",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "cashierdashboard()"
     },
     {
@@ -1087,8 +1087,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_csvimportmodal",
-      "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community": 16,
+      "community_name": "Product",
       "norm_label": "csvimportmodal.tsx"
     },
     {
@@ -1100,8 +1100,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_csvimportmodal_csvimportmodalprops",
-      "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community": 16,
+      "community_name": "Product",
       "norm_label": "csvimportmodalprops"
     },
     {
@@ -1112,8 +1112,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_csvimportmodal_csvimportmodal",
-      "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community": 16,
+      "community_name": "Product",
       "norm_label": "csvimportmodal()"
     },
     {
@@ -1124,7 +1124,7 @@
       "_origin": "ast",
       "id": "src_components_labelgeneratortab",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "labelgeneratortab.tsx"
     },
     {
@@ -1136,8 +1136,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_labelgeneratortab_labelgeneratortabprops",
-      "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community": 16,
+      "community_name": "Product",
       "norm_label": "labelgeneratortabprops"
     },
     {
@@ -1148,7 +1148,7 @@
       "_origin": "ast",
       "id": "src_components_labelgeneratortab_barcode_types",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "barcode_types"
     },
     {
@@ -1160,7 +1160,7 @@
       "_origin": "ast",
       "id": "src_components_labelgeneratortab_clamp",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "clamp()"
     },
     {
@@ -1172,7 +1172,7 @@
       "_origin": "ast",
       "id": "src_components_labelgeneratortab_parsemm",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "parsemm()"
     },
     {
@@ -1184,7 +1184,7 @@
       "_origin": "ast",
       "id": "src_components_labelgeneratortab_labelgeneratortab",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "labelgeneratortab()"
     },
     {
@@ -1194,8 +1194,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_offlinesyncbar",
-      "community": 2,
-      "community_name": "Cashier Dashboard & Navigation Flow",
+      "community": 1,
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "offlinesyncbar.tsx"
     },
     {
@@ -1206,8 +1206,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_offlinesyncbar_offlinesyncbar",
-      "community": 2,
-      "community_name": "Cashier Dashboard & Navigation Flow",
+      "community": 1,
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "offlinesyncbar()"
     },
     {
@@ -1218,7 +1218,7 @@
       "_origin": "ast",
       "id": "src_components_ownerdashboard",
       "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "ownerdashboard.tsx"
     },
     {
@@ -1231,7 +1231,7 @@
       "_origin": "ast",
       "id": "src_components_ownerdashboard_ownerdashboardprops",
       "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "ownerdashboardprops"
     },
     {
@@ -1242,8 +1242,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ownerdashboard_ownerdashboard",
-      "community": 2,
-      "community_name": "Cashier Dashboard & Navigation Flow",
+      "community": 16,
+      "community_name": "Product",
       "norm_label": "ownerdashboard()"
     },
     {
@@ -1254,7 +1254,7 @@
       "_origin": "ast",
       "id": "src_components_printersettings",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "printersettings.tsx"
     },
     {
@@ -1267,7 +1267,7 @@
       "_origin": "ast",
       "id": "src_components_printersettings_printerrole",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "printerrole"
     },
     {
@@ -1280,7 +1280,7 @@
       "_origin": "ast",
       "id": "src_components_printersettings_printersettingsprops",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "printersettingsprops"
     },
     {
@@ -1292,7 +1292,7 @@
       "_origin": "ast",
       "id": "src_components_printersettings_loadassignedname",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "loadassignedname()"
     },
     {
@@ -1304,7 +1304,7 @@
       "_origin": "ast",
       "id": "src_components_printersettings_saveassignedname",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "saveassignedname()"
     },
     {
@@ -1316,7 +1316,7 @@
       "_origin": "ast",
       "id": "src_components_printersettings_printersettings",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "printersettings()"
     },
     {
@@ -1326,8 +1326,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_pulltorefresh",
-      "community": 2,
-      "community_name": "Cashier Dashboard & Navigation Flow",
+      "community": 1,
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "pulltorefresh.tsx"
     },
     {
@@ -1339,8 +1339,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_pulltorefresh_pulltorefreshprops",
-      "community": 2,
-      "community_name": "Cashier Dashboard & Navigation Flow",
+      "community": 1,
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "pulltorefreshprops"
     },
     {
@@ -1351,8 +1351,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_pulltorefresh_pulltorefresh",
-      "community": 2,
-      "community_name": "Cashier Dashboard & Navigation Flow",
+      "community": 1,
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "pulltorefresh()"
     },
     {
@@ -1362,8 +1362,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_quickrestockmodal",
-      "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community": 16,
+      "community_name": "Product",
       "norm_label": "quickrestockmodal.tsx"
     },
     {
@@ -1375,8 +1375,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_quickrestockmodal_quickrestockmodalprops",
-      "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community": 16,
+      "community_name": "Product",
       "norm_label": "quickrestockmodalprops"
     },
     {
@@ -1387,8 +1387,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_quickrestockmodal_quickrestockmodal",
-      "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community": 16,
+      "community_name": "Product",
       "norm_label": "quickrestockmodal()"
     },
     {
@@ -1399,7 +1399,7 @@
       "_origin": "ast",
       "id": "src_components_salereporttab",
       "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "salereporttab.tsx"
     },
     {
@@ -1412,7 +1412,7 @@
       "_origin": "ast",
       "id": "src_components_salereporttab_salereporttabprops",
       "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "salereporttabprops"
     },
     {
@@ -1424,7 +1424,7 @@
       "_origin": "ast",
       "id": "src_components_salereporttab_salereporttab",
       "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "salereporttab()"
     },
     {
@@ -1435,7 +1435,7 @@
       "_origin": "ast",
       "id": "src_components_searchablecategoryselect",
       "community": 2,
-      "community_name": "Cashier Dashboard & Navigation Flow",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "searchablecategoryselect.tsx"
     },
     {
@@ -1448,7 +1448,7 @@
       "_origin": "ast",
       "id": "src_components_searchablecategoryselect_categoryoption",
       "community": 2,
-      "community_name": "Cashier Dashboard & Navigation Flow",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "categoryoption"
     },
     {
@@ -1461,7 +1461,7 @@
       "_origin": "ast",
       "id": "src_components_searchablecategoryselect_searchablecategoryselectprops",
       "community": 2,
-      "community_name": "Cashier Dashboard & Navigation Flow",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "searchablecategoryselectprops"
     },
     {
@@ -1473,7 +1473,7 @@
       "_origin": "ast",
       "id": "src_components_searchablecategoryselect_searchablecategoryselect",
       "community": 2,
-      "community_name": "Cashier Dashboard & Navigation Flow",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "searchablecategoryselect()"
     },
     {
@@ -1483,8 +1483,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_setupbanner",
-      "community": 2,
-      "community_name": "Cashier Dashboard & Navigation Flow",
+      "community": 1,
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "setupbanner.tsx"
     },
     {
@@ -1495,8 +1495,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_setupbanner_setupbanner",
-      "community": 2,
-      "community_name": "Cashier Dashboard & Navigation Flow",
+      "community": 1,
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "setupbanner()"
     },
     {
@@ -1507,7 +1507,7 @@
       "_origin": "ast",
       "id": "src_components_singlelabelmodal",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "singlelabelmodal.tsx"
     },
     {
@@ -1519,8 +1519,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_singlelabelmodal_singlelabelmodalprops",
-      "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community": 16,
+      "community_name": "Product",
       "norm_label": "singlelabelmodalprops"
     },
     {
@@ -1532,7 +1532,7 @@
       "_origin": "ast",
       "id": "src_components_singlelabelmodal_clamp",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "clamp()"
     },
     {
@@ -1544,7 +1544,7 @@
       "_origin": "ast",
       "id": "src_components_singlelabelmodal_parsemm",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "parsemm()"
     },
     {
@@ -1556,7 +1556,7 @@
       "_origin": "ast",
       "id": "src_components_singlelabelmodal_singlelabelmodal",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "singlelabelmodal()"
     },
     {
@@ -1566,8 +1566,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_data_schemasql",
-      "community": 2,
-      "community_name": "Cashier Dashboard & Navigation Flow",
+      "community": 1,
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "schemasql.ts"
     },
     {
@@ -1577,8 +1577,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_data_schemasql_supabase_schema_sql",
-      "community": 2,
-      "community_name": "Cashier Dashboard & Navigation Flow",
+      "community": 1,
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "supabase_schema_sql"
     },
     {
@@ -1589,7 +1589,7 @@
       "_origin": "ast",
       "id": "src_lib_backnavigation",
       "community": 2,
-      "community_name": "Cashier Dashboard & Navigation Flow",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "backnavigation.ts"
     },
     {
@@ -1602,7 +1602,7 @@
       "_origin": "ast",
       "id": "src_lib_backnavigation_layer",
       "community": 2,
-      "community_name": "Cashier Dashboard & Navigation Flow",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "layer"
     },
     {
@@ -1613,7 +1613,7 @@
       "_origin": "ast",
       "id": "src_lib_backnavigation_layers",
       "community": 2,
-      "community_name": "Cashier Dashboard & Navigation Flow",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "layers"
     },
     {
@@ -1625,7 +1625,7 @@
       "_origin": "ast",
       "id": "src_lib_backnavigation_depthstate",
       "community": 2,
-      "community_name": "Cashier Dashboard & Navigation Flow",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "depthstate()"
     },
     {
@@ -1637,7 +1637,7 @@
       "_origin": "ast",
       "id": "src_lib_backnavigation_handlepopstate",
       "community": 2,
-      "community_name": "Cashier Dashboard & Navigation Flow",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "handlepopstate()"
     },
     {
@@ -1649,7 +1649,7 @@
       "_origin": "ast",
       "id": "src_lib_backnavigation_handlekeydown",
       "community": 2,
-      "community_name": "Cashier Dashboard & Navigation Flow",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "handlekeydown()"
     },
     {
@@ -1661,7 +1661,7 @@
       "_origin": "ast",
       "id": "src_lib_backnavigation_handlecapacitorbackbutton",
       "community": 2,
-      "community_name": "Cashier Dashboard & Navigation Flow",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "handlecapacitorbackbutton()"
     },
     {
@@ -1673,7 +1673,7 @@
       "_origin": "ast",
       "id": "src_lib_backnavigation_startbacknavigation",
       "community": 2,
-      "community_name": "Cashier Dashboard & Navigation Flow",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "startbacknavigation()"
     },
     {
@@ -1685,7 +1685,7 @@
       "_origin": "ast",
       "id": "src_lib_backnavigation_stopbacknavigation",
       "community": 2,
-      "community_name": "Cashier Dashboard & Navigation Flow",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "stopbacknavigation()"
     },
     {
@@ -1696,8 +1696,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_backnavigation_setexitprompthandler",
-      "community": 2,
-      "community_name": "Cashier Dashboard & Navigation Flow",
+      "community": 1,
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "setexitprompthandler()"
     },
     {
@@ -1709,7 +1709,7 @@
       "_origin": "ast",
       "id": "src_lib_backnavigation_registerlayer",
       "community": 2,
-      "community_name": "Cashier Dashboard & Navigation Flow",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "registerlayer()"
     },
     {
@@ -1721,7 +1721,7 @@
       "_origin": "ast",
       "id": "src_lib_backnavigation_releaselayer",
       "community": 2,
-      "community_name": "Cashier Dashboard & Navigation Flow",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "releaselayer()"
     },
     {
@@ -1733,7 +1733,7 @@
       "_origin": "ast",
       "id": "src_lib_backnavigation_usebackdismiss",
       "community": 2,
-      "community_name": "Cashier Dashboard & Navigation Flow",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "usebackdismiss()"
     },
     {
@@ -1745,7 +1745,7 @@
       "_origin": "ast",
       "id": "src_lib_backnavigation_usebacktabhistory",
       "community": 2,
-      "community_name": "Cashier Dashboard & Navigation Flow",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "usebacktabhistory()"
     },
     {
@@ -1756,7 +1756,7 @@
       "_origin": "ast",
       "id": "src_lib_bluetoothprinter",
       "community": 7,
-      "community_name": "Web Bluetooth Thermal Printer Integration",
+      "community_name": "bluetoothPrinter.ts",
       "norm_label": "bluetoothprinter.ts"
     },
     {
@@ -1769,7 +1769,7 @@
       "_origin": "ast",
       "id": "src_lib_bluetoothprinter_bluetoothprinterstate",
       "community": 7,
-      "community_name": "Web Bluetooth Thermal Printer Integration",
+      "community_name": "bluetoothPrinter.ts",
       "norm_label": "bluetoothprinterstate"
     },
     {
@@ -1782,7 +1782,7 @@
       "_origin": "ast",
       "id": "src_lib_bluetoothprinter_disconnectcallback",
       "community": 7,
-      "community_name": "Web Bluetooth Thermal Printer Integration",
+      "community_name": "bluetoothPrinter.ts",
       "norm_label": "disconnectcallback"
     },
     {
@@ -1793,7 +1793,7 @@
       "_origin": "ast",
       "id": "src_lib_bluetoothprinter_fallback_services",
       "community": 7,
-      "community_name": "Web Bluetooth Thermal Printer Integration",
+      "community_name": "bluetoothPrinter.ts",
       "norm_label": "fallback_services"
     },
     {
@@ -1804,7 +1804,7 @@
       "_origin": "ast",
       "id": "src_lib_bluetoothprinter_state",
       "community": 7,
-      "community_name": "Web Bluetooth Thermal Printer Integration",
+      "community_name": "bluetoothPrinter.ts",
       "norm_label": "state"
     },
     {
@@ -1816,7 +1816,7 @@
       "_origin": "ast",
       "id": "src_lib_bluetoothprinter_iswebbluetoothavailable",
       "community": 7,
-      "community_name": "Web Bluetooth Thermal Printer Integration",
+      "community_name": "bluetoothPrinter.ts",
       "norm_label": "iswebbluetoothavailable()"
     },
     {
@@ -1828,7 +1828,7 @@
       "_origin": "ast",
       "id": "src_lib_bluetoothprinter_isconnected",
       "community": 7,
-      "community_name": "Web Bluetooth Thermal Printer Integration",
+      "community_name": "bluetoothPrinter.ts",
       "norm_label": "isconnected()"
     },
     {
@@ -1840,7 +1840,7 @@
       "_origin": "ast",
       "id": "src_lib_bluetoothprinter_getprintername",
       "community": 7,
-      "community_name": "Web Bluetooth Thermal Printer Integration",
+      "community_name": "bluetoothPrinter.ts",
       "norm_label": "getprintername()"
     },
     {
@@ -1852,7 +1852,7 @@
       "_origin": "ast",
       "id": "src_lib_bluetoothprinter_ondisconnect",
       "community": 7,
-      "community_name": "Web Bluetooth Thermal Printer Integration",
+      "community_name": "bluetoothPrinter.ts",
       "norm_label": "ondisconnect()"
     },
     {
@@ -1864,7 +1864,7 @@
       "_origin": "ast",
       "id": "src_lib_bluetoothprinter_offdisconnect",
       "community": 7,
-      "community_name": "Web Bluetooth Thermal Printer Integration",
+      "community_name": "bluetoothPrinter.ts",
       "norm_label": "offdisconnect()"
     },
     {
@@ -1876,7 +1876,7 @@
       "_origin": "ast",
       "id": "src_lib_bluetoothprinter_connect",
       "community": 7,
-      "community_name": "Web Bluetooth Thermal Printer Integration",
+      "community_name": "bluetoothPrinter.ts",
       "norm_label": "connect()"
     },
     {
@@ -1888,7 +1888,7 @@
       "_origin": "ast",
       "id": "src_lib_bluetoothprinter_send",
       "community": 7,
-      "community_name": "Web Bluetooth Thermal Printer Integration",
+      "community_name": "bluetoothPrinter.ts",
       "norm_label": "send()"
     },
     {
@@ -1900,7 +1900,7 @@
       "_origin": "ast",
       "id": "src_lib_bluetoothprinter_sendwithprogress",
       "community": 7,
-      "community_name": "Web Bluetooth Thermal Printer Integration",
+      "community_name": "bluetoothPrinter.ts",
       "norm_label": "sendwithprogress()"
     },
     {
@@ -1912,7 +1912,7 @@
       "_origin": "ast",
       "id": "src_lib_bluetoothprinter_disconnect",
       "community": 7,
-      "community_name": "Web Bluetooth Thermal Printer Integration",
+      "community_name": "bluetoothPrinter.ts",
       "norm_label": "disconnect()"
     },
     {
@@ -1924,7 +1924,7 @@
       "_origin": "ast",
       "id": "src_lib_bluetoothprinter_handledisconnect",
       "community": 7,
-      "community_name": "Web Bluetooth Thermal Printer Integration",
+      "community_name": "bluetoothPrinter.ts",
       "norm_label": "handledisconnect()"
     },
     {
@@ -1936,7 +1936,7 @@
       "_origin": "ast",
       "id": "src_lib_bluetoothprinter_sleep",
       "community": 7,
-      "community_name": "Web Bluetooth Thermal Printer Integration",
+      "community_name": "bluetoothPrinter.ts",
       "norm_label": "sleep()"
     },
     {
@@ -1947,7 +1947,7 @@
       "_origin": "ast",
       "id": "src_lib_escpos",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "escpos.ts"
     },
     {
@@ -1959,7 +1959,7 @@
       "_origin": "ast",
       "id": "src_lib_escpos_strtobytes",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "strtobytes()"
     },
     {
@@ -1971,7 +1971,7 @@
       "_origin": "ast",
       "id": "src_lib_escpos_concat",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "concat()"
     },
     {
@@ -1983,7 +1983,7 @@
       "_origin": "ast",
       "id": "src_lib_escpos_init",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "init()"
     },
     {
@@ -1995,7 +1995,7 @@
       "_origin": "ast",
       "id": "src_lib_escpos_setcodepage",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "setcodepage()"
     },
     {
@@ -2008,7 +2008,7 @@
       "_origin": "ast",
       "id": "src_lib_escpos_align",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "align"
     },
     {
@@ -2021,7 +2021,7 @@
       "_origin": "ast",
       "id": "src_lib_escpos_textoptions",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "textoptions"
     },
     {
@@ -2033,7 +2033,7 @@
       "_origin": "ast",
       "id": "src_lib_escpos_text",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "text()"
     },
     {
@@ -2045,7 +2045,7 @@
       "_origin": "ast",
       "id": "src_lib_escpos_resetformat",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "resetformat()"
     },
     {
@@ -2057,7 +2057,7 @@
       "_origin": "ast",
       "id": "src_lib_escpos_separator",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "separator()"
     },
     {
@@ -2070,7 +2070,7 @@
       "_origin": "ast",
       "id": "src_lib_escpos_barcodetype",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "barcodetype"
     },
     {
@@ -2082,7 +2082,7 @@
       "_origin": "ast",
       "id": "src_lib_escpos_barcode",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "barcode()"
     },
     {
@@ -2093,7 +2093,7 @@
       "_origin": "ast",
       "id": "src_lib_escpos_code39_patterns",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "code39_patterns"
     },
     {
@@ -2105,7 +2105,7 @@
       "_origin": "ast",
       "id": "src_lib_escpos_rasterbarcode",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "rasterbarcode()"
     },
     {
@@ -2117,7 +2117,7 @@
       "_origin": "ast",
       "id": "src_lib_escpos_feedraster",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "feedraster()"
     },
     {
@@ -2129,7 +2129,7 @@
       "_origin": "ast",
       "id": "src_lib_escpos_setabsolutex",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "setabsolutex()"
     },
     {
@@ -2141,7 +2141,7 @@
       "_origin": "ast",
       "id": "src_lib_escpos_absolutetextlines",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "absolutetextlines()"
     },
     {
@@ -2153,7 +2153,7 @@
       "_origin": "ast",
       "id": "src_lib_escpos_mmtodots",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "mmtodots()"
     },
     {
@@ -2165,7 +2165,7 @@
       "_origin": "ast",
       "id": "src_lib_escpos_feed",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "feed()"
     },
     {
@@ -2177,7 +2177,7 @@
       "_origin": "ast",
       "id": "src_lib_escpos_feeddots",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "feeddots()"
     },
     {
@@ -2189,7 +2189,7 @@
       "_origin": "ast",
       "id": "src_lib_escpos_cut",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "cut()"
     },
     {
@@ -2201,7 +2201,7 @@
       "_origin": "ast",
       "id": "src_lib_escpos_feedpitch",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "feedpitch()"
     },
     {
@@ -2213,7 +2213,7 @@
       "_origin": "ast",
       "id": "src_lib_escpos_partialcut",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "partialcut()"
     },
     {
@@ -2226,7 +2226,7 @@
       "_origin": "ast",
       "id": "src_lib_escpos_labeloptions",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "labeloptions"
     },
     {
@@ -2238,7 +2238,7 @@
       "_origin": "ast",
       "id": "src_lib_escpos_buildlabel",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "buildlabel()"
     },
     {
@@ -2250,7 +2250,7 @@
       "_origin": "ast",
       "id": "src_lib_escpos_buildmultilabel",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "buildmultilabel()"
     },
     {
@@ -2263,7 +2263,7 @@
       "_origin": "ast",
       "id": "src_lib_escpos_thermallabeloptions",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "thermallabeloptions"
     },
     {
@@ -2276,7 +2276,7 @@
       "_origin": "ast",
       "id": "src_lib_escpos_thermallabellayout",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "thermallabellayout"
     },
     {
@@ -2289,7 +2289,7 @@
       "_origin": "ast",
       "id": "src_lib_escpos_labelposition",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "labelposition"
     },
     {
@@ -2301,7 +2301,7 @@
       "_origin": "ast",
       "id": "src_lib_escpos_getprintablemm",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "getprintablemm()"
     },
     {
@@ -2313,7 +2313,7 @@
       "_origin": "ast",
       "id": "src_lib_escpos_printabledotsforpaper",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "printabledotsforpaper()"
     },
     {
@@ -2325,7 +2325,7 @@
       "_origin": "ast",
       "id": "src_lib_escpos_wraplabeltext",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "wraplabeltext()"
     },
     {
@@ -2337,7 +2337,7 @@
       "_origin": "ast",
       "id": "src_lib_escpos_normalizebarcodevalue",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "normalizebarcodevalue()"
     },
     {
@@ -2349,7 +2349,7 @@
       "_origin": "ast",
       "id": "src_lib_escpos_estimatebarcodemodules",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "estimatebarcodemodules()"
     },
     {
@@ -2361,7 +2361,7 @@
       "_origin": "ast",
       "id": "src_lib_escpos_buildthermallabel",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "buildthermallabel()"
     },
     {
@@ -2373,7 +2373,7 @@
       "_origin": "ast",
       "id": "src_lib_escpos_buildcustomthermallabel",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "buildcustomthermallabel()"
     },
     {
@@ -2385,7 +2385,7 @@
       "_origin": "ast",
       "id": "src_lib_escpos_buildthermallabels",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "buildthermallabels()"
     },
     {
@@ -2397,7 +2397,7 @@
       "_origin": "ast",
       "id": "src_lib_escpos_testprint",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "testprint()"
     },
     {
@@ -2408,7 +2408,7 @@
       "_origin": "ast",
       "id": "src_lib_labelconfig",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "labelconfig.ts"
     },
     {
@@ -2419,7 +2419,7 @@
       "_origin": "ast",
       "id": "src_lib_labelconfig_default_label_config",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "default_label_config"
     },
     {
@@ -2431,7 +2431,7 @@
       "_origin": "ast",
       "id": "src_lib_labelconfig_loadlabelconfig",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "loadlabelconfig()"
     },
     {
@@ -2443,7 +2443,7 @@
       "_origin": "ast",
       "id": "src_lib_labelconfig_savelabelconfig",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "savelabelconfig()"
     },
     {
@@ -2454,7 +2454,7 @@
       "_origin": "ast",
       "id": "src_lib_printerbridge",
       "community": 6,
-      "community_name": "Native Bluetooth Printer Bridge",
+      "community_name": "printerBridge.ts",
       "norm_label": "printerbridge.ts"
     },
     {
@@ -2467,7 +2467,7 @@
       "_origin": "ast",
       "id": "src_lib_printerbridge_pairedprinter",
       "community": 6,
-      "community_name": "Native Bluetooth Printer Bridge",
+      "community_name": "printerBridge.ts",
       "norm_label": "pairedprinter"
     },
     {
@@ -2479,7 +2479,7 @@
       "_origin": "ast",
       "id": "src_lib_printerbridge_isnativemode",
       "community": 6,
-      "community_name": "Native Bluetooth Printer Bridge",
+      "community_name": "printerBridge.ts",
       "norm_label": "isnativemode()"
     },
     {
@@ -2491,7 +2491,7 @@
       "_origin": "ast",
       "id": "src_lib_printerbridge_isbluetoothavailable",
       "community": 6,
-      "community_name": "Native Bluetooth Printer Bridge",
+      "community_name": "printerBridge.ts",
       "norm_label": "isbluetoothavailable()"
     },
     {
@@ -2503,7 +2503,7 @@
       "_origin": "ast",
       "id": "src_lib_printerbridge_isnativeshell",
       "community": 6,
-      "community_name": "Native Bluetooth Printer Bridge",
+      "community_name": "printerBridge.ts",
       "norm_label": "isnativeshell()"
     },
     {
@@ -2515,7 +2515,7 @@
       "_origin": "ast",
       "id": "src_lib_printerbridge_issupported",
       "community": 6,
-      "community_name": "Native Bluetooth Printer Bridge",
+      "community_name": "printerBridge.ts",
       "norm_label": "issupported()"
     },
     {
@@ -2527,7 +2527,7 @@
       "_origin": "ast",
       "id": "src_lib_printerbridge_getpairedprinters",
       "community": 6,
-      "community_name": "Native Bluetooth Printer Bridge",
+      "community_name": "printerBridge.ts",
       "norm_label": "getpairedprinters()"
     },
     {
@@ -2539,7 +2539,7 @@
       "_origin": "ast",
       "id": "src_lib_printerbridge_connect",
       "community": 6,
-      "community_name": "Native Bluetooth Printer Bridge",
+      "community_name": "printerBridge.ts",
       "norm_label": "connect()"
     },
     {
@@ -2551,7 +2551,7 @@
       "_origin": "ast",
       "id": "src_lib_printerbridge_isconnected",
       "community": 6,
-      "community_name": "Native Bluetooth Printer Bridge",
+      "community_name": "printerBridge.ts",
       "norm_label": "isconnected()"
     },
     {
@@ -2563,7 +2563,7 @@
       "_origin": "ast",
       "id": "src_lib_printerbridge_getdevicename",
       "community": 6,
-      "community_name": "Native Bluetooth Printer Bridge",
+      "community_name": "printerBridge.ts",
       "norm_label": "getdevicename()"
     },
     {
@@ -2575,7 +2575,7 @@
       "_origin": "ast",
       "id": "src_lib_printerbridge_ondisconnect",
       "community": 6,
-      "community_name": "Native Bluetooth Printer Bridge",
+      "community_name": "printerBridge.ts",
       "norm_label": "ondisconnect()"
     },
     {
@@ -2587,7 +2587,7 @@
       "_origin": "ast",
       "id": "src_lib_printerbridge_offdisconnect",
       "community": 6,
-      "community_name": "Native Bluetooth Printer Bridge",
+      "community_name": "printerBridge.ts",
       "norm_label": "offdisconnect()"
     },
     {
@@ -2599,7 +2599,7 @@
       "_origin": "ast",
       "id": "src_lib_printerbridge_send",
       "community": 6,
-      "community_name": "Native Bluetooth Printer Bridge",
+      "community_name": "printerBridge.ts",
       "norm_label": "send()"
     },
     {
@@ -2611,7 +2611,7 @@
       "_origin": "ast",
       "id": "src_lib_printerbridge_disconnect",
       "community": 6,
-      "community_name": "Native Bluetooth Printer Bridge",
+      "community_name": "printerBridge.ts",
       "norm_label": "disconnect()"
     },
     {
@@ -2623,7 +2623,7 @@
       "_origin": "ast",
       "id": "src_lib_printerbridge_savelastprinter",
       "community": 6,
-      "community_name": "Native Bluetooth Printer Bridge",
+      "community_name": "printerBridge.ts",
       "norm_label": "savelastprinter()"
     },
     {
@@ -2635,7 +2635,7 @@
       "_origin": "ast",
       "id": "src_lib_printerbridge_getlastprinter",
       "community": 6,
-      "community_name": "Native Bluetooth Printer Bridge",
+      "community_name": "printerBridge.ts",
       "norm_label": "getlastprinter()"
     },
     {
@@ -2647,7 +2647,7 @@
       "_origin": "ast",
       "id": "src_lib_printerbridge_autoconnectlastprinter",
       "community": 6,
-      "community_name": "Native Bluetooth Printer Bridge",
+      "community_name": "printerBridge.ts",
       "norm_label": "autoconnectlastprinter()"
     },
     {
@@ -2659,7 +2659,7 @@
       "_origin": "ast",
       "id": "src_lib_printerbridge_bytestolatin1",
       "community": 6,
-      "community_name": "Native Bluetooth Printer Bridge",
+      "community_name": "printerBridge.ts",
       "norm_label": "bytestolatin1()"
     },
     {
@@ -2670,7 +2670,7 @@
       "_origin": "ast",
       "id": "src_lib_supabase",
       "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "supabase.ts"
     },
     {
@@ -2680,8 +2680,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_lib_supabase_issupabaseconfigured",
-      "community": 2,
-      "community_name": "Cashier Dashboard & Navigation Flow",
+      "community": 1,
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "issupabaseconfigured"
     },
     {
@@ -2692,7 +2692,7 @@
       "_origin": "ast",
       "id": "src_lib_supabase_supabase",
       "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "supabase"
     },
     {
@@ -2704,7 +2704,7 @@
       "_origin": "ast",
       "id": "src_lib_supabase_generateid",
       "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "generateid()"
     },
     {
@@ -2716,7 +2716,7 @@
       "_origin": "ast",
       "id": "src_lib_supabase_randomsku",
       "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "randomsku()"
     },
     {
@@ -2728,7 +2728,7 @@
       "_origin": "ast",
       "id": "src_lib_supabase_normalizesku",
       "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "normalizesku()"
     },
     {
@@ -2740,7 +2740,7 @@
       "_origin": "ast",
       "id": "src_lib_supabase_normalizebarcode",
       "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "normalizebarcode()"
     },
     {
@@ -2752,7 +2752,7 @@
       "_origin": "ast",
       "id": "src_lib_supabase_collectproductcodes",
       "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "collectproductcodes()"
     },
     {
@@ -2764,7 +2764,7 @@
       "_origin": "ast",
       "id": "src_lib_supabase_nextsequentialbarcode",
       "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "nextsequentialbarcode()"
     },
     {
@@ -2774,8 +2774,8 @@
       "source_location": "L113",
       "_origin": "ast",
       "id": "src_lib_supabase_default_business_profile",
-      "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community": 2,
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "default_business_profile"
     },
     {
@@ -2786,7 +2786,7 @@
       "_origin": "ast",
       "id": "src_lib_supabase_initial_branches",
       "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "initial_branches"
     },
     {
@@ -2797,7 +2797,7 @@
       "_origin": "ast",
       "id": "src_lib_supabase_initial_profiles",
       "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "initial_profiles"
     },
     {
@@ -2808,7 +2808,7 @@
       "_origin": "ast",
       "id": "src_lib_supabase_initial_products",
       "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "initial_products"
     },
     {
@@ -2820,7 +2820,7 @@
       "_origin": "ast",
       "id": "src_lib_supabase_seedlocalstorage",
       "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "seedlocalstorage()"
     },
     {
@@ -2832,7 +2832,7 @@
       "_origin": "ast",
       "id": "src_lib_supabase_getmockdata",
       "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "getmockdata()"
     },
     {
@@ -2844,7 +2844,7 @@
       "_origin": "ast",
       "id": "src_lib_supabase_savemockdata",
       "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "savemockdata()"
     },
     {
@@ -2856,7 +2856,7 @@
       "_origin": "ast",
       "id": "src_lib_supabase_formatemailwithdefaultdomain",
       "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "formatemailwithdefaultdomain()"
     },
     {
@@ -2866,8 +2866,8 @@
       "source_location": "L197",
       "_origin": "ast",
       "id": "src_lib_supabase_dbservice",
-      "community": 2,
-      "community_name": "Cashier Dashboard & Navigation Flow",
+      "community": 1,
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "dbservice"
     },
     {
@@ -2877,8 +2877,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_main",
-      "community": 2,
-      "community_name": "Cashier Dashboard & Navigation Flow",
+      "community": 1,
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "main.tsx"
     },
     {
@@ -2889,7 +2889,7 @@
       "_origin": "ast",
       "id": "src_types",
       "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "types.ts"
     },
     {
@@ -2902,7 +2902,7 @@
       "_origin": "ast",
       "id": "src_types_userrole",
       "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "userrole"
     },
     {
@@ -2915,7 +2915,7 @@
       "_origin": "ast",
       "id": "src_types_businessprofile",
       "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "businessprofile"
     },
     {
@@ -2928,7 +2928,7 @@
       "_origin": "ast",
       "id": "src_types_branch",
       "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "branch"
     },
     {
@@ -2941,7 +2941,7 @@
       "_origin": "ast",
       "id": "src_types_userprofile",
       "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "userprofile"
     },
     {
@@ -2953,8 +2953,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_types_product",
-      "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community": 16,
+      "community_name": "Product",
       "norm_label": "product"
     },
     {
@@ -2967,7 +2967,7 @@
       "_origin": "ast",
       "id": "src_types_sale",
       "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "sale"
     },
     {
@@ -2980,7 +2980,7 @@
       "_origin": "ast",
       "id": "src_types_saleitem",
       "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "saleitem"
     },
     {
@@ -2993,7 +2993,7 @@
       "_origin": "ast",
       "id": "src_types_salewithitems",
       "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "salewithitems"
     },
     {
@@ -3006,7 +3006,7 @@
       "_origin": "ast",
       "id": "src_types_inventorytransaction",
       "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "inventorytransaction"
     },
     {
@@ -3019,7 +3019,7 @@
       "_origin": "ast",
       "id": "src_types_cashflowtype",
       "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "cashflowtype"
     },
     {
@@ -3032,7 +3032,7 @@
       "_origin": "ast",
       "id": "src_types_paymentmethod",
       "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "paymentmethod"
     },
     {
@@ -3045,46 +3045,33 @@
       "_origin": "ast",
       "id": "src_types_cashflowentry",
       "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "cashflowentry"
-    },
-    {
-      "label": "SaleRequest",
-      "file_type": "code",
-      "source_file": "src/types.ts",
-      "source_location": "L122",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "id": "src_types_salerequest",
-      "community": 1,
-      "community_name": "UI Modals & Authentication Components",
-      "norm_label": "salerequest"
     },
     {
       "label": "SalesAnalytics",
       "file_type": "code",
       "source_file": "src/types.ts",
-      "source_location": "L132",
+      "source_location": "L121",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_types_salesanalytics",
       "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community_name": "OwnerDashboard.tsx",
       "norm_label": "salesanalytics"
     },
     {
       "label": "LabelConfig",
       "file_type": "code",
       "source_file": "src/types.ts",
-      "source_location": "L143",
+      "source_location": "L132",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_types_labelconfig",
       "community": 0,
-      "community_name": "Thermal Barcode & Label Generation",
+      "community_name": "escpos.ts",
       "norm_label": "labelconfig"
     },
     {
@@ -3094,8 +3081,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_utils_format",
-      "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community": 16,
+      "community_name": "Product",
       "norm_label": "format.ts"
     },
     {
@@ -3106,8 +3093,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_utils_format_formatcurrency",
-      "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community": 16,
+      "community_name": "Product",
       "norm_label": "formatcurrency()"
     },
     {
@@ -3118,8 +3105,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_utils_format_formatdate",
-      "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community": 16,
+      "community_name": "Product",
       "norm_label": "formatdate()"
     },
     {
@@ -3130,8 +3117,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_utils_format_formatdateshort",
-      "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community": 16,
+      "community_name": "Product",
       "norm_label": "formatdateshort()"
     },
     {
@@ -3142,8 +3129,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_utils_format_formattime",
-      "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community": 16,
+      "community_name": "Product",
       "norm_label": "formattime()"
     },
     {
@@ -3154,8 +3141,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_utils_format_generateid",
-      "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community": 16,
+      "community_name": "Product",
       "norm_label": "generateid()"
     },
     {
@@ -3166,8 +3153,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_utils_format_formatdisplayemail",
-      "community": 1,
-      "community_name": "UI Modals & Authentication Components",
+      "community": 16,
+      "community_name": "Product",
       "norm_label": "formatdisplayemail()"
     },
     {
@@ -3177,8 +3164,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_utils_toast",
-      "community": 2,
-      "community_name": "Cashier Dashboard & Navigation Flow",
+      "community": 16,
+      "community_name": "Product",
       "norm_label": "toast.tsx"
     },
     {
@@ -3190,8 +3177,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_utils_toast_toasttype",
-      "community": 2,
-      "community_name": "Cashier Dashboard & Navigation Flow",
+      "community": 16,
+      "community_name": "Product",
       "norm_label": "toasttype"
     },
     {
@@ -3203,8 +3190,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_utils_toast_toast",
-      "community": 2,
-      "community_name": "Cashier Dashboard & Navigation Flow",
+      "community": 16,
+      "community_name": "Product",
       "norm_label": "toast"
     },
     {
@@ -3216,8 +3203,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_utils_toast_toastcontextvalue",
-      "community": 2,
-      "community_name": "Cashier Dashboard & Navigation Flow",
+      "community": 16,
+      "community_name": "Product",
       "norm_label": "toastcontextvalue"
     },
     {
@@ -3227,8 +3214,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_utils_toast_toastcontext",
-      "community": 2,
-      "community_name": "Cashier Dashboard & Navigation Flow",
+      "community": 16,
+      "community_name": "Product",
       "norm_label": "toastcontext"
     },
     {
@@ -3239,8 +3226,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_utils_toast_usetoast",
-      "community": 2,
-      "community_name": "Cashier Dashboard & Navigation Flow",
+      "community": 16,
+      "community_name": "Product",
       "norm_label": "usetoast()"
     },
     {
@@ -3251,8 +3238,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_utils_toast_toastprovider",
-      "community": 2,
-      "community_name": "Cashier Dashboard & Navigation Flow",
+      "community": 16,
+      "community_name": "Product",
       "norm_label": "toastprovider()"
     },
     {
@@ -3263,7 +3250,7 @@
       "_origin": "ast",
       "id": "tsconfig",
       "community": 5,
-      "community_name": "TypeScript Environment Configuration",
+      "community_name": "compilerOptions",
       "norm_label": "tsconfig.json"
     },
     {
@@ -3274,7 +3261,7 @@
       "_origin": "ast",
       "id": "tsconfig_compileroptions",
       "community": 5,
-      "community_name": "TypeScript Environment Configuration",
+      "community_name": "compilerOptions",
       "norm_label": "compileroptions"
     },
     {
@@ -3285,7 +3272,7 @@
       "_origin": "ast",
       "id": "tsconfig_compileroptions_target",
       "community": 5,
-      "community_name": "TypeScript Environment Configuration",
+      "community_name": "compilerOptions",
       "norm_label": "target"
     },
     {
@@ -3296,7 +3283,7 @@
       "_origin": "ast",
       "id": "tsconfig_compileroptions_experimentaldecorators",
       "community": 5,
-      "community_name": "TypeScript Environment Configuration",
+      "community_name": "compilerOptions",
       "norm_label": "experimentaldecorators"
     },
     {
@@ -3307,7 +3294,7 @@
       "_origin": "ast",
       "id": "tsconfig_compileroptions_usedefineforclassfields",
       "community": 5,
-      "community_name": "TypeScript Environment Configuration",
+      "community_name": "compilerOptions",
       "norm_label": "usedefineforclassfields"
     },
     {
@@ -3318,7 +3305,7 @@
       "_origin": "ast",
       "id": "tsconfig_compileroptions_module",
       "community": 5,
-      "community_name": "TypeScript Environment Configuration",
+      "community_name": "compilerOptions",
       "norm_label": "module"
     },
     {
@@ -3329,7 +3316,7 @@
       "_origin": "ast",
       "id": "tsconfig_compileroptions_lib",
       "community": 5,
-      "community_name": "TypeScript Environment Configuration",
+      "community_name": "compilerOptions",
       "norm_label": "lib"
     },
     {
@@ -3340,7 +3327,7 @@
       "_origin": "ast",
       "id": "ref_es2022",
       "community": 5,
-      "community_name": "TypeScript Environment Configuration",
+      "community_name": "compilerOptions",
       "norm_label": "es2022"
     },
     {
@@ -3351,7 +3338,7 @@
       "_origin": "ast",
       "id": "ref_dom",
       "community": 5,
-      "community_name": "TypeScript Environment Configuration",
+      "community_name": "compilerOptions",
       "norm_label": "dom"
     },
     {
@@ -3362,7 +3349,7 @@
       "_origin": "ast",
       "id": "ref_dom_iterable",
       "community": 5,
-      "community_name": "TypeScript Environment Configuration",
+      "community_name": "compilerOptions",
       "norm_label": "dom.iterable"
     },
     {
@@ -3373,7 +3360,7 @@
       "_origin": "ast",
       "id": "tsconfig_compileroptions_skiplibcheck",
       "community": 5,
-      "community_name": "TypeScript Environment Configuration",
+      "community_name": "compilerOptions",
       "norm_label": "skiplibcheck"
     },
     {
@@ -3384,7 +3371,7 @@
       "_origin": "ast",
       "id": "tsconfig_compileroptions_moduleresolution",
       "community": 5,
-      "community_name": "TypeScript Environment Configuration",
+      "community_name": "compilerOptions",
       "norm_label": "moduleresolution"
     },
     {
@@ -3395,7 +3382,7 @@
       "_origin": "ast",
       "id": "tsconfig_compileroptions_isolatedmodules",
       "community": 5,
-      "community_name": "TypeScript Environment Configuration",
+      "community_name": "compilerOptions",
       "norm_label": "isolatedmodules"
     },
     {
@@ -3406,7 +3393,7 @@
       "_origin": "ast",
       "id": "tsconfig_compileroptions_moduledetection",
       "community": 5,
-      "community_name": "TypeScript Environment Configuration",
+      "community_name": "compilerOptions",
       "norm_label": "moduledetection"
     },
     {
@@ -3417,7 +3404,7 @@
       "_origin": "ast",
       "id": "tsconfig_compileroptions_allowjs",
       "community": 5,
-      "community_name": "TypeScript Environment Configuration",
+      "community_name": "compilerOptions",
       "norm_label": "allowjs"
     },
     {
@@ -3428,7 +3415,7 @@
       "_origin": "ast",
       "id": "tsconfig_compileroptions_jsx",
       "community": 5,
-      "community_name": "TypeScript Environment Configuration",
+      "community_name": "compilerOptions",
       "norm_label": "jsx"
     },
     {
@@ -3439,7 +3426,7 @@
       "_origin": "ast",
       "id": "tsconfig_compileroptions_paths",
       "community": 5,
-      "community_name": "TypeScript Environment Configuration",
+      "community_name": "compilerOptions",
       "norm_label": "paths"
     },
     {
@@ -3450,7 +3437,7 @@
       "_origin": "ast",
       "id": "tsconfig_compileroptions_allowimportingtsextensions",
       "community": 5,
-      "community_name": "TypeScript Environment Configuration",
+      "community_name": "compilerOptions",
       "norm_label": "allowimportingtsextensions"
     },
     {
@@ -3461,7 +3448,7 @@
       "_origin": "ast",
       "id": "tsconfig_compileroptions_noemit",
       "community": 5,
-      "community_name": "TypeScript Environment Configuration",
+      "community_name": "compilerOptions",
       "norm_label": "noemit"
     },
     {
@@ -3472,7 +3459,7 @@
       "_origin": "ast",
       "id": "tsconfig_include",
       "community": 5,
-      "community_name": "TypeScript Environment Configuration",
+      "community_name": "compilerOptions",
       "norm_label": "include"
     },
     {
@@ -3483,7 +3470,7 @@
       "_origin": "ast",
       "id": "ref_src",
       "community": 5,
-      "community_name": "TypeScript Environment Configuration",
+      "community_name": "compilerOptions",
       "norm_label": "src/**/*"
     },
     {
@@ -3494,7 +3481,7 @@
       "_origin": "ast",
       "id": "tsconfig_exclude",
       "community": 5,
-      "community_name": "TypeScript Environment Configuration",
+      "community_name": "compilerOptions",
       "norm_label": "exclude"
     },
     {
@@ -3505,7 +3492,7 @@
       "_origin": "ast",
       "id": "ref_dist",
       "community": 5,
-      "community_name": "TypeScript Environment Configuration",
+      "community_name": "compilerOptions",
       "norm_label": "dist"
     },
     {
@@ -3516,7 +3503,7 @@
       "_origin": "ast",
       "id": "ref_node_modules",
       "community": 5,
-      "community_name": "TypeScript Environment Configuration",
+      "community_name": "compilerOptions",
       "norm_label": "node_modules"
     },
     {
@@ -3527,7 +3514,7 @@
       "_origin": "ast",
       "id": "ref_android",
       "community": 5,
-      "community_name": "TypeScript Environment Configuration",
+      "community_name": "compilerOptions",
       "norm_label": "android"
     },
     {
@@ -3538,7 +3525,7 @@
       "_origin": "ast",
       "id": "vercel",
       "community": 10,
-      "community_name": "Vercel Deployment Configuration",
+      "community_name": "vercel.json",
       "norm_label": "vercel.json"
     },
     {
@@ -3549,7 +3536,7 @@
       "_origin": "ast",
       "id": "vercel_buildcommand",
       "community": 10,
-      "community_name": "Vercel Deployment Configuration",
+      "community_name": "vercel.json",
       "norm_label": "buildcommand"
     },
     {
@@ -3560,7 +3547,7 @@
       "_origin": "ast",
       "id": "vercel_outputdirectory",
       "community": 10,
-      "community_name": "Vercel Deployment Configuration",
+      "community_name": "vercel.json",
       "norm_label": "outputdirectory"
     },
     {
@@ -3571,7 +3558,7 @@
       "_origin": "ast",
       "id": "vercel_framework",
       "community": 10,
-      "community_name": "Vercel Deployment Configuration",
+      "community_name": "vercel.json",
       "norm_label": "framework"
     },
     {
@@ -3582,7 +3569,7 @@
       "_origin": "ast",
       "id": "vercel_rewrites",
       "community": 10,
-      "community_name": "Vercel Deployment Configuration",
+      "community_name": "vercel.json",
       "norm_label": "rewrites"
     },
     {
@@ -3593,7 +3580,7 @@
       "_origin": "ast",
       "id": "vite_config",
       "community": 15,
-      "community_name": "Vite Bundler Configuration",
+      "community_name": "vite.config.ts",
       "norm_label": "vite.config.ts"
     },
     {
@@ -3605,10 +3592,11 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "_agents_rules_graphify_rule",
       "community": 11,
-      "community_name": "Graphify Knowledge Graph Configuration",
-      "norm_label": "graphify rule"
+      "community_name": "Graphify Rule",
+      "norm_label": "graphify rule",
+      "_origin": "semantic",
+      "id": "_agents_rules_graphify_rule"
     },
     {
       "label": "Graphify Workflow",
@@ -3619,10 +3607,11 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "_agents_workflows_graphify_workflow",
       "community": 11,
-      "community_name": "Graphify Knowledge Graph Configuration",
-      "norm_label": "graphify workflow"
+      "community_name": "Graphify Rule",
+      "norm_label": "graphify workflow",
+      "_origin": "semantic",
+      "id": "_agents_workflows_graphify_workflow"
     },
     {
       "label": "Mibayate POS System Architecture",
@@ -3633,10 +3622,11 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "agents_project_overview",
       "community": 8,
-      "community_name": "Core Database Schema & System Architecture",
-      "norm_label": "mibayate pos system architecture"
+      "community_name": "Branches Table",
+      "norm_label": "mibayate pos system architecture",
+      "_origin": "semantic",
+      "id": "agents_project_overview"
     },
     {
       "label": "Owner Dashboard",
@@ -3647,10 +3637,11 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "agents_owner_dashboard",
       "community": 8,
-      "community_name": "Core Database Schema & System Architecture",
-      "norm_label": "owner dashboard"
+      "community_name": "Branches Table",
+      "norm_label": "owner dashboard",
+      "_origin": "semantic",
+      "id": "agents_owner_dashboard"
     },
     {
       "label": "Cashier Dashboard",
@@ -3661,10 +3652,11 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "agents_cashier_dashboard",
       "community": 8,
-      "community_name": "Core Database Schema & System Architecture",
-      "norm_label": "cashier dashboard"
+      "community_name": "Branches Table",
+      "norm_label": "cashier dashboard",
+      "_origin": "semantic",
+      "id": "agents_cashier_dashboard"
     },
     {
       "label": "Supabase Offline Fallback Rationale",
@@ -3675,10 +3667,11 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "agents_supabase_offline_fallback",
       "community": 8,
-      "community_name": "Core Database Schema & System Architecture",
-      "norm_label": "supabase offline fallback rationale"
+      "community_name": "Branches Table",
+      "norm_label": "supabase offline fallback rationale",
+      "_origin": "semantic",
+      "id": "agents_supabase_offline_fallback"
     },
     {
       "label": "Application Web Entry Point",
@@ -3689,10 +3682,11 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "index_app_root",
       "community": 13,
-      "community_name": "Web HTML Entry Point",
-      "norm_label": "application web entry point"
+      "community_name": "Application Web Entry Point",
+      "norm_label": "application web entry point",
+      "_origin": "semantic",
+      "id": "index_app_root"
     },
     {
       "label": "Profiles Table",
@@ -3703,10 +3697,11 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "supabase_schema_profiles",
       "community": 8,
-      "community_name": "Core Database Schema & System Architecture",
-      "norm_label": "profiles table"
+      "community_name": "Branches Table",
+      "norm_label": "profiles table",
+      "_origin": "semantic",
+      "id": "supabase_schema_profiles"
     },
     {
       "label": "current_user_is_owner Function",
@@ -3717,10 +3712,11 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "supabase_schema_current_user_is_owner",
       "community": 8,
-      "community_name": "Core Database Schema & System Architecture",
-      "norm_label": "current_user_is_owner function"
+      "community_name": "Branches Table",
+      "norm_label": "current_user_is_owner function",
+      "_origin": "semantic",
+      "id": "supabase_schema_current_user_is_owner"
     },
     {
       "label": "handle_new_user Trigger",
@@ -3731,10 +3727,11 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "supabase_schema_handle_new_user",
       "community": 8,
-      "community_name": "Core Database Schema & System Architecture",
-      "norm_label": "handle_new_user trigger"
+      "community_name": "Branches Table",
+      "norm_label": "handle_new_user trigger",
+      "_origin": "semantic",
+      "id": "supabase_schema_handle_new_user"
     },
     {
       "label": "Branches Table",
@@ -3745,10 +3742,11 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "supabase_schema_branches",
       "community": 8,
-      "community_name": "Core Database Schema & System Architecture",
-      "norm_label": "branches table"
+      "community_name": "Branches Table",
+      "norm_label": "branches table",
+      "_origin": "semantic",
+      "id": "supabase_schema_branches"
     },
     {
       "label": "Products Table",
@@ -3759,10 +3757,11 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "supabase_schema_products",
       "community": 8,
-      "community_name": "Core Database Schema & System Architecture",
-      "norm_label": "products table"
+      "community_name": "Branches Table",
+      "norm_label": "products table",
+      "_origin": "semantic",
+      "id": "supabase_schema_products"
     },
     {
       "label": "Sales Table",
@@ -3773,10 +3772,11 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "supabase_schema_sales",
       "community": 8,
-      "community_name": "Core Database Schema & System Architecture",
-      "norm_label": "sales table"
+      "community_name": "Branches Table",
+      "norm_label": "sales table",
+      "_origin": "semantic",
+      "id": "supabase_schema_sales"
     },
     {
       "label": "Sale Items Table",
@@ -3787,10 +3787,11 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "supabase_schema_sale_items",
       "community": 8,
-      "community_name": "Core Database Schema & System Architecture",
-      "norm_label": "sale items table"
+      "community_name": "Branches Table",
+      "norm_label": "sale items table",
+      "_origin": "semantic",
+      "id": "supabase_schema_sale_items"
     },
     {
       "label": "Inventory Transactions Table",
@@ -3801,10 +3802,11 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "supabase_schema_inventory_transactions",
       "community": 8,
-      "community_name": "Core Database Schema & System Architecture",
-      "norm_label": "inventory transactions table"
+      "community_name": "Branches Table",
+      "norm_label": "inventory transactions table",
+      "_origin": "semantic",
+      "id": "supabase_schema_inventory_transactions"
     },
     {
       "label": "Business Settings Table",
@@ -3815,10 +3817,11 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "supabase_schema_business_settings",
       "community": 14,
-      "community_name": "Supabase Business Settings Schema",
-      "norm_label": "business settings table"
+      "community_name": "Business Settings Table",
+      "norm_label": "business settings table",
+      "_origin": "semantic",
+      "id": "supabase_schema_business_settings"
     },
     {
       "label": "Cash Flow Table",
@@ -3829,10 +3832,11 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "supabase_schema_cash_flow",
       "community": 8,
-      "community_name": "Core Database Schema & System Architecture",
-      "norm_label": "cash flow table"
+      "community_name": "Branches Table",
+      "norm_label": "cash flow table",
+      "_origin": "semantic",
+      "id": "supabase_schema_cash_flow"
     }
   ],
   "links": [
@@ -5865,7 +5869,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/components/CashierDashboard.tsx",
-      "source_location": "L376",
+      "source_location": "L361",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard_cashierdashboard",
@@ -5878,7 +5882,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/CashierDashboard.tsx",
-      "source_location": "L75",
+      "source_location": "L74",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard_cashierdashboard",
@@ -5890,7 +5894,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/CashierDashboard.tsx",
-      "source_location": "L87",
+      "source_location": "L86",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard_cashierdashboard",
@@ -5902,7 +5906,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/CashierDashboard.tsx",
-      "source_location": "L282",
+      "source_location": "L267",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard_cashierdashboard",
@@ -10719,7 +10723,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/types.ts",
-      "source_location": "L143",
+      "source_location": "L132",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_types",
@@ -10774,18 +10778,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/types.ts",
-      "source_location": "L122",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_types",
-      "target": "src_types_salerequest",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/types.ts",
-      "source_location": "L132",
+      "source_location": "L121",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_types",
@@ -11291,6 +11284,7 @@
       "source_file": ".agents/workflows/graphify.md",
       "source_location": null,
       "weight": 1.0,
+      "_origin": "semantic",
       "source": "_agents_workflows_graphify_workflow",
       "target": "_agents_rules_graphify_rule"
     },
@@ -11301,6 +11295,7 @@
       "source_file": "AGENTS.md",
       "source_location": null,
       "weight": 1.0,
+      "_origin": "semantic",
       "source": "agents_project_overview",
       "target": "agents_cashier_dashboard"
     },
@@ -11311,6 +11306,7 @@
       "source_file": "AGENTS.md",
       "source_location": null,
       "weight": 1.0,
+      "_origin": "semantic",
       "source": "agents_project_overview",
       "target": "agents_owner_dashboard"
     },
@@ -11321,6 +11317,7 @@
       "source_file": "AGENTS.md",
       "source_location": null,
       "weight": 1.0,
+      "_origin": "semantic",
       "source": "agents_project_overview",
       "target": "agents_supabase_offline_fallback"
     },
@@ -11331,6 +11328,7 @@
       "source_file": "AGENTS.md",
       "source_location": null,
       "weight": 1.0,
+      "_origin": "semantic",
       "source": "agents_supabase_offline_fallback",
       "target": "supabase_schema_profiles"
     },
@@ -11341,6 +11339,7 @@
       "source_file": "supabase_schema.txt",
       "source_location": null,
       "weight": 1.0,
+      "_origin": "semantic",
       "source": "supabase_schema_current_user_is_owner",
       "target": "supabase_schema_profiles"
     },
@@ -11351,6 +11350,7 @@
       "source_file": "supabase_schema.txt",
       "source_location": null,
       "weight": 1.0,
+      "_origin": "semantic",
       "source": "supabase_schema_handle_new_user",
       "target": "supabase_schema_profiles"
     },
@@ -11361,6 +11361,7 @@
       "source_file": "supabase_schema.txt",
       "source_location": null,
       "weight": 1.0,
+      "_origin": "semantic",
       "source": "supabase_schema_profiles",
       "target": "supabase_schema_branches"
     },
@@ -11371,6 +11372,7 @@
       "source_file": "supabase_schema.txt",
       "source_location": null,
       "weight": 1.0,
+      "_origin": "semantic",
       "source": "supabase_schema_sales",
       "target": "supabase_schema_profiles"
     },
@@ -11381,6 +11383,7 @@
       "source_file": "supabase_schema.txt",
       "source_location": null,
       "weight": 1.0,
+      "_origin": "semantic",
       "source": "supabase_schema_cash_flow",
       "target": "supabase_schema_branches"
     },
@@ -11391,6 +11394,7 @@
       "source_file": "supabase_schema.txt",
       "source_location": null,
       "weight": 1.0,
+      "_origin": "semantic",
       "source": "supabase_schema_inventory_transactions",
       "target": "supabase_schema_branches"
     },
@@ -11401,6 +11405,7 @@
       "source_file": "supabase_schema.txt",
       "source_location": null,
       "weight": 1.0,
+      "_origin": "semantic",
       "source": "supabase_schema_products",
       "target": "supabase_schema_branches"
     },
@@ -11411,6 +11416,7 @@
       "source_file": "supabase_schema.txt",
       "source_location": null,
       "weight": 1.0,
+      "_origin": "semantic",
       "source": "supabase_schema_sales",
       "target": "supabase_schema_branches"
     },
@@ -11421,6 +11427,7 @@
       "source_file": "supabase_schema.txt",
       "source_location": null,
       "weight": 1.0,
+      "_origin": "semantic",
       "source": "supabase_schema_inventory_transactions",
       "target": "supabase_schema_products"
     },
@@ -11431,6 +11438,7 @@
       "source_file": "supabase_schema.txt",
       "source_location": null,
       "weight": 1.0,
+      "_origin": "semantic",
       "source": "supabase_schema_sale_items",
       "target": "supabase_schema_products"
     },
@@ -11441,6 +11449,7 @@
       "source_file": "supabase_schema.txt",
       "source_location": null,
       "weight": 1.0,
+      "_origin": "semantic",
       "source": "supabase_schema_sale_items",
       "target": "supabase_schema_sales"
     }
@@ -11474,5 +11483,5 @@
       "source_file": "supabase_schema.txt"
     }
   ],
-  "built_at_commit": "3983ec4faa2d1a3657309afebe9c694f86d3a5de"
+  "built_at_commit": "3d2927a8ebfac312c14044530243d7d08eea574b"
 }

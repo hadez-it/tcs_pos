@@ -8,54 +8,19 @@ interface BarcodeSVGProps {
   className?: string;
 }
 
-// Code 39 Barcode character patterns (n = narrow bar 1 unit, w = wide bar 3 units)
-// Each character consists of 9 elements (5 bars, 4 spaces)
-const CODE39_PATTERNS: Record<string, string> = {
-  '0': 'nnnwwnwnn',
-  '1': 'wnnwnnnnw',
-  '2': 'nnwwnnnnw',
-  '3': 'wnwwnnnnn',
-  '4': 'nnnwwnnnw',
-  '5': 'wnnwwnnnn',
-  '6': 'nnwwwnnnn',
-  '7': 'nnnwnnwnw',
-  '8': 'wnnwnnwnn',
-  '9': 'nnwwnnwnn',
-  'A': 'wnnnnwnnw',
-  'B': 'nnwnnwnnw',
-  'C': 'wnwnnwnnn',
-  'D': 'nnnnwwnnw',
-  'E': 'wnnnwwnnn',
-  'F': 'nnwnwwnnn',
-  'G': 'nnnnnwwnw',
-  'H': 'wnnnnwwnn',
-  'I': 'nnwnnwwnn',
-  'J': 'nnnnwwwnn',
-  'K': 'wnnnnnnnw',
-  'L': 'nnwnnnnnw',
-  'M': 'wnwnnnnnn',
-  'N': 'nnnnwnnnw',
-  'O': 'wnnnwnnnn',
-  'P': 'nnwnwnnnn',
-  'Q': 'nnnnnnwnw',
-  'R': 'wnnnnnwnn',
-  'S': 'nnwnnnwnn',
-  'T': 'nnnnwnwnn',
-  'U': 'wwnnnnnnw',
-  'V': 'nwwnnnnnw',
-  'W': 'wwwnnnnnn',
-  'X': 'nwnnwnnnw',
-  'Y': 'wwnnwnnnn',
-  'Z': 'nwwnwnnnn',
-  '-': 'nwnnnnwnw',
-  '.': 'wwnnnnwnn',
-  ' ': 'nwwnnnwnn',
-  '$': 'nwnwnwnnn',
-  '/': 'nwnwnnnwn',
-  '+': 'nwnnnwnwn',
-  '%': 'nnnwnwnwn',
-  '*': 'nwnnwwwnn', // Start/Stop asterisk
-};
+const CODE128_PATTERNS = [
+  '212222', '222122', '222221', '121223', '121322', '131222', '122213', '122312', '132212', '221213',
+  '221312', '231212', '112232', '122132', '122231', '113222', '123122', '123221', '223211', '221132',
+  '221231', '213212', '223112', '312131', '311222', '321122', '321221', '312212', '322112', '322211',
+  '212123', '212321', '232121', '111323', '131123', '131321', '112313', '132113', '132311', '211313',
+  '231113', '231311', '112133', '112331', '132131', '113123', '113321', '133121', '313121', '211331',
+  '231131', '213113', '213311', '213131', '311123', '311321', '331121', '312113', '312311', '332111',
+  '314111', '221411', '431111', '111224', '111422', '121124', '121421', '141122', '141221', '112214',
+  '112412', '122114', '122411', '142112', '142211', '241211', '221114', '413111', '241112', '134111',
+  '111242', '121142', '121241', '114212', '124112', '124211', '411212', '421112', '421211', '212141',
+  '214121', '412121', '111143', '111341', '131141', '114113', '114311', '411113', '411311', '113141',
+  '114131', '311141', '411131', '211412', '211214', '211232', '2331112'
+];
 
 export const BarcodeSVG: React.FC<BarcodeSVGProps> = ({
   value,
@@ -63,38 +28,39 @@ export const BarcodeSVG: React.FC<BarcodeSVGProps> = ({
   showValue = true,
   className = '',
 }) => {
-  const cleanVal = (value || '000000').toUpperCase().replace(/[^A-Z0-9\-\.\ \$\/\+\%]/g, '');
-  const barcodeStr = `*${cleanVal || '000000'}*`;
+  const cleanVal = (value || '000000').replace(/[^ -~]/g, '');
+  const displayVal = cleanVal || '000000';
 
-  // Calculate total units
-  // Wide bar = 3 units, Narrow bar = 1 unit
-  // Inter-character space = 1 unit narrow
+  const symbols: number[] = [104];
+  let checksum = 104;
+
+  for (let i = 0; i < displayVal.length; i++) {
+    const code = displayVal.charCodeAt(i);
+    const val = code >= 32 && code <= 126 ? code - 32 : 0;
+    symbols.push(val);
+    checksum += (i + 1) * val;
+  }
+
+  symbols.push(checksum % 103);
+  symbols.push(106);
+
   let totalUnits = 0;
   const elements: Array<{ isBar: boolean; widthUnits: number }> = [];
 
-  for (let i = 0; i < barcodeStr.length; i++) {
-    const char = barcodeStr[i];
-    const pattern = CODE39_PATTERNS[char] || CODE39_PATTERNS['0'];
-
-    for (let p = 0; p < pattern.length; p++) {
+  symbols.forEach(symIdx => {
+    const pat = CODE128_PATTERNS[symIdx] || CODE128_PATTERNS[0];
+    for (let p = 0; p < pat.length; p++) {
       const isBar = p % 2 === 0;
-      const widthUnits = pattern[p] === 'w' ? 3 : 1;
+      const widthUnits = parseInt(pat[p], 10);
       elements.push({ isBar, widthUnits });
       totalUnits += widthUnits;
     }
+  });
 
-    // Add inter-character gap (narrow space = 1 unit) if not last char
-    if (i < barcodeStr.length - 1) {
-      elements.push({ isBar: false, widthUnits: 1 });
-      totalUnits += 1;
-    }
-  }
-
-  // Quiet zones on left & right (10 units each)
   const quietZone = 10;
   const fullWidth = totalUnits + quietZone * 2;
-
   let currentX = quietZone;
+
   const rects: React.ReactNode[] = [];
 
   elements.forEach((el, idx) => {
@@ -124,7 +90,7 @@ export const BarcodeSVG: React.FC<BarcodeSVGProps> = ({
       </svg>
       {showValue && (
         <span className="font-mono text-[10px] sm:text-xs font-bold text-slate-800 tracking-widest mt-0.5">
-          {cleanVal}
+          {displayVal}
         </span>
       )}
     </div>
@@ -132,3 +98,4 @@ export const BarcodeSVG: React.FC<BarcodeSVGProps> = ({
 };
 
 export default BarcodeSVG;
+

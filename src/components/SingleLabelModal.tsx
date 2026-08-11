@@ -161,7 +161,7 @@ export const SingleLabelModal: React.FC<SingleLabelModalProps> = ({
     paperWidthMm: effPaperWidth,
     labelWidthMm: effLabelWidth,
     labelHeightMm: effLabelHeight,
-    barcodeType: config.barcodeType as BarcodeType,
+    barcodeType: 'CODE128' as const,
     barcodeWidthMm: effBarcodeWidth,
     barcodeHeightMm: effBarcodeHeight,
     cutMode: config.paperMode === 'sticker' ? ('off' as const) : config.cutMode,
@@ -225,7 +225,7 @@ export const SingleLabelModal: React.FC<SingleLabelModalProps> = ({
   const previewScale = Math.min(260 / effLabelWidth, 6);
   const previewW = Math.round(effLabelWidth * previewScale);
   const previewH = Math.round(effLabelHeight * previewScale);
-  const codeVal = normalizeBarcodeValue(product.barcode || product.sku || '000000', config.barcodeType as BarcodeType);
+  const codeVal = normalizeBarcodeValue(product.barcode || product.sku || '000000', 'CODE128');
 
   return (
     <div className="fixed inset-0 bg-slate-900/70 z-50 flex items-center justify-center p-3 sm:p-4 backdrop-blur-xs animate-fade-in">

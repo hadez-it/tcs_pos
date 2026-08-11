@@ -131,12 +131,12 @@ export interface SalesAnalytics {
 
 export interface LabelConfig {
   paperMode: 'sticker' | 'receipt';
-  paperWidth: '32' | '58' | '80';
+  paperWidth: string;
   labelWidth: string;
   labelHeight: string;
   barcodeWidth: string;
   barcodeHeight: string;
-  barcodeType: 'CODE39' | 'CODE128' | 'EAN13' | 'EAN8' | 'UPCA' | 'UPCE' | 'ITF' | 'CODE93';
+  barcodeType: 'CODE128';
   cutMode: 'off' | 'full' | 'partial';
   labelGap: string;
   feedOffset: string;
@@ -147,15 +147,15 @@ export interface LabelConfig {
   storeName: string;
   customLayout: boolean;
   layoutXY: {
-    store: { x: string; y: string };
-    product: { x: string; y: string };
-    barcode: { x: string; y: string };
-    price: { x: string; y: string };
+    store: { x: string; y: string; w?: string; h?: string };
+    product: { x: string; y: string; w?: string; h?: string };
+    barcode: { x: string; y: string; w?: string; h?: string };
+    price: { x: string; y: string; w?: string; h?: string };
   };
   fontSize: {
-    store: 1 | 2;
-    product: 1 | 2;
-    price: 1 | 2;
+    store: number;
+    product: number;
+    price: number;
   };
   lastPrinterAddress?: string;
   lastPrinterName?: string;

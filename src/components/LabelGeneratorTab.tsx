@@ -9,7 +9,7 @@ import BarcodeSVG from './BarcodeSVG';
 import * as printerBridge from '../lib/printerBridge';
 import {
   buildThermalLabel, init as escInit, setCodePage, feedPitch,
-  BarcodeType, normalizeBarcodeValue, getPrintableMm, testPrint,
+  normalizeBarcodeValue, getPrintableMm, testPrint,
 } from '../lib/escpos';
 import { loadLabelConfig, saveLabelConfig, DEFAULT_LABEL_CONFIG } from '../lib/labelConfig';
 
@@ -18,17 +18,6 @@ interface LabelGeneratorTabProps {
   currencySymbol?: string;
   businessName?: string;
 }
-
-const BARCODE_TYPES: { value: BarcodeType; label: string }[] = [
-  { value: 'CODE128', label: 'CODE128' },
-  { value: 'CODE39', label: 'CODE39' },
-  { value: 'EAN13', label: 'EAN13' },
-  { value: 'EAN8', label: 'EAN8' },
-  { value: 'UPCA', label: 'UPC-A' },
-  { value: 'UPCE', label: 'UPC-E' },
-  { value: 'ITF', label: 'ITF' },
-  { value: 'CODE93', label: 'CODE93' },
-];
 
 const clamp = (n: number, min: number, max: number) => Math.min(Math.max(n, min), max);
 const parseMm = (v: string) => {
@@ -60,19 +49,14 @@ export const LabelGeneratorTab: React.FC<LabelGeneratorTabProps> = ({
   const [selectedAddress, setSelectedAddress] = useState('');
 
   const [dragState, setDragState] = useState<{
-    type: 'move-barcode' | 'resize-barcode-e' | 'resize-barcode-s' | 'resize-barcode-se' | 'move-store' | 'move-product' | 'move-price';
+    elem: 'store' | 'product' | 'barcode' | 'price';
+    action: 'move' | 'resize-e' | 'resize-s' | 'resize-se';
     startX: number;
     startY: number;
     initialX: number;
     initialY: number;
     initialW: number;
     initialH: number;
-    initialStoreX: number;
-    initialStoreY: number;
-    initialProdX: number;
-    initialProdY: number;
-    initialPriceX: number;
-    initialPriceY: number;
   } | null>(null);
 
   useEffect(() => {
@@ -160,30 +144,38 @@ export const LabelGeneratorTab: React.FC<LabelGeneratorTabProps> = ({
     setPrinterName('');
   }, []);
 
-  const effPaperWidth = config.paperWidth === '80' ? 80 : config.paperWidth === '58' ? 58 : 32;
+  const effPaperWidth = clamp(parseMm(config.paperWidth) || 80, 15, 300);
   const printableMm = getPrintableMm(effPaperWidth);
-  const effLabelWidth = clamp(parseMm(config.labelWidth) || effPaperWidth, 5, 80);
+  const effLabelWidth = clamp(parseMm(config.labelWidth) || effPaperWidth, 5, effPaperWidth);
   const effLabelHeight = clamp(parseMm(config.labelHeight) || 30, 8, 300);
 
-  const rawBcW = parseMm(config.barcodeWidth) || effLabelWidth;
-  const effBarcodeWidth = clamp(rawBcW, 10, effLabelWidth);
+  const effElemX = (k: 'store' | 'product' | 'barcode' | 'price') =>
+    clamp(parseMm(config.layoutXY[k].x) || 0, 0, Math.max(0, effLabelWidth - 5));
 
-  const rawBcH = parseMm(config.barcodeHeight) || 10;
-  const effBarcodeHeight = clamp(rawBcH, 3, effLabelHeight);
+  const effElemY = (k: 'store' | 'product' | 'barcode' | 'price') =>
+    clamp(parseMm(config.layoutXY[k].y) || 0, 0, Math.max(0, effLabelHeight - 3));
 
-  const rawBcX = parseMm(config.layoutXY.barcode.x) || 0;
-  const effBarcodeX = clamp(rawBcX, 0, Math.max(0, effLabelWidth - effBarcodeWidth));
+  const effElemW = (k: 'store' | 'product' | 'barcode' | 'price') => {
+    const raw = parseMm(config.layoutXY[k].w);
+    const defaultW = k === 'barcode' ? (parseMm(config.barcodeWidth) || Math.max(10, effLabelWidth - 4)) : Math.max(5, effLabelWidth - effElemX(k));
+    return clamp(raw || defaultW, 5, Math.max(5, effLabelWidth - effElemX(k)));
+  };
 
-  const rawBcY = parseMm(config.layoutXY.barcode.y) || 0;
-  const effBarcodeY = clamp(rawBcY, 0, Math.max(0, effLabelHeight - effBarcodeHeight));
+  const effElemH = (k: 'store' | 'product' | 'barcode' | 'price') => {
+    const raw = parseMm(config.layoutXY[k].h);
+    const defaultH = k === 'barcode' ? (parseMm(config.barcodeHeight) || 10) : (k === 'price' ? 5 : 4);
+    return clamp(raw || defaultH, 2, Math.max(2, effLabelHeight - effElemY(k)));
+  };
+
+  const effBarcodeWidth = effElemW('barcode');
+  const effBarcodeHeight = effElemH('barcode');
+  const effBarcodeX = effElemX('barcode');
+  const effBarcodeY = effElemY('barcode');
 
   const effLabelGap = clamp(parseMm(config.labelGap) || 3, 2, 10);
   const effFeedOffset = clamp(parseMm(config.feedOffset) || 0, -10, 10);
 
-  const effLayoutX = (k: 'store' | 'product' | 'price') => clamp(parseMm(config.layoutXY[k].x) || 0, 0, Math.max(0, effLabelWidth - 5));
-  const effLayoutY = (k: 'store' | 'product' | 'price') => clamp(parseMm(config.layoutXY[k].y) || 0, 0, Math.max(0, effLabelHeight - 3));
-
-  const previewScale = Math.min(320 / effLabelWidth, 6);
+  const previewScale = Math.min(340 / effLabelWidth, 6);
   const previewW = Math.round(effLabelWidth * previewScale);
   const previewH = Math.round(effLabelHeight * previewScale);
 
@@ -202,27 +194,29 @@ export const LabelGeneratorTab: React.FC<LabelGeneratorTabProps> = ({
 
   const handlePointerDown = (
     e: React.PointerEvent,
-    type: 'move-barcode' | 'resize-barcode-e' | 'resize-barcode-s' | 'resize-barcode-se' | 'move-store' | 'move-product' | 'move-price'
+    elem: 'store' | 'product' | 'barcode' | 'price',
+    action: 'move' | 'resize-e' | 'resize-s' | 'resize-se'
   ) => {
     e.preventDefault();
     e.stopPropagation();
     try {
       (e.target as HTMLElement).setPointerCapture(e.pointerId);
     } catch {}
+
+    const initialX = effElemX(elem);
+    const initialY = effElemY(elem);
+    const initialW = effElemW(elem);
+    const initialH = effElemH(elem);
+
     setDragState({
-      type,
+      elem,
+      action,
       startX: e.clientX,
       startY: e.clientY,
-      initialX: effBarcodeX,
-      initialY: effBarcodeY,
-      initialW: effBarcodeWidth,
-      initialH: effBarcodeHeight,
-      initialStoreX: effLayoutX('store'),
-      initialStoreY: effLayoutY('store'),
-      initialProdX: effLayoutX('product'),
-      initialProdY: effLayoutY('product'),
-      initialPriceX: effLayoutX('price'),
-      initialPriceY: effLayoutY('price'),
+      initialX,
+      initialY,
+      initialW,
+      initialH,
     });
   };
 
@@ -230,43 +224,59 @@ export const LabelGeneratorTab: React.FC<LabelGeneratorTabProps> = ({
     if (!dragState) return;
     const dxMm = (e.clientX - dragState.startX) / previewScale;
     const dyMm = (e.clientY - dragState.startY) / previewScale;
+    const elem = dragState.elem;
 
-    if (dragState.type === 'move-barcode') {
-      const maxW = effBarcodeWidth;
-      const maxH = effBarcodeHeight;
-      const newX = clamp(dragState.initialX + dxMm, 0, Math.max(0, effLabelWidth - maxW));
-      const newY = clamp(dragState.initialY + dyMm, 0, Math.max(0, effLabelHeight - maxH));
-      updateConfig(prev => ({
-        ...prev,
-        layoutXY: { ...prev.layoutXY, barcode: { x: newX.toFixed(1), y: newY.toFixed(1) } }
-      }));
-    } else if (dragState.type === 'resize-barcode-e') {
-      const maxW = Math.max(10, effLabelWidth - effBarcodeX);
-      const newW = clamp(dragState.initialW + dxMm, 10, maxW);
-      updateConfig(prev => ({ ...prev, barcodeWidth: newW.toFixed(1) }));
-    } else if (dragState.type === 'resize-barcode-s') {
-      const maxH = Math.max(3, effLabelHeight - effBarcodeY);
-      const newH = clamp(dragState.initialH + dyMm, 3, maxH);
-      updateConfig(prev => ({ ...prev, barcodeHeight: newH.toFixed(1) }));
-    } else if (dragState.type === 'resize-barcode-se') {
-      const maxW = Math.max(10, effLabelWidth - effBarcodeX);
-      const maxH = Math.max(3, effLabelHeight - effBarcodeY);
-      const newW = clamp(dragState.initialW + dxMm, 10, maxW);
-      const newH = clamp(dragState.initialH + dyMm, 3, maxH);
-      updateConfig(prev => ({ ...prev, barcodeWidth: newW.toFixed(1), barcodeHeight: newH.toFixed(1) }));
-    } else if (dragState.type === 'move-store') {
-      const newX = clamp(dragState.initialStoreX + dxMm, 0, Math.max(0, effLabelWidth - 5));
-      const newY = clamp(dragState.initialStoreY + dyMm, 0, Math.max(0, effLabelHeight - 3));
-      updateConfig(prev => ({ ...prev, layoutXY: { ...prev.layoutXY, store: { x: newX.toFixed(1), y: newY.toFixed(1) } } }));
-    } else if (dragState.type === 'move-product') {
-      const newX = clamp(dragState.initialProdX + dxMm, 0, Math.max(0, effLabelWidth - 5));
-      const newY = clamp(dragState.initialProdY + dyMm, 0, Math.max(0, effLabelHeight - 3));
-      updateConfig(prev => ({ ...prev, layoutXY: { ...prev.layoutXY, product: { x: newX.toFixed(1), y: newY.toFixed(1) } } }));
-    } else if (dragState.type === 'move-price') {
-      const newX = clamp(dragState.initialPriceX + dxMm, 0, Math.max(0, effLabelWidth - 5));
-      const newY = clamp(dragState.initialPriceY + dyMm, 0, Math.max(0, effLabelHeight - 3));
-      updateConfig(prev => ({ ...prev, layoutXY: { ...prev.layoutXY, price: { x: newX.toFixed(1), y: newY.toFixed(1) } } }));
+    let newX = dragState.initialX;
+    let newY = dragState.initialY;
+    let newW = dragState.initialW;
+    let newH = dragState.initialH;
+
+    if (dragState.action === 'move') {
+      newX = clamp(dragState.initialX + dxMm, 0, Math.max(0, effLabelWidth - dragState.initialW));
+      newY = clamp(dragState.initialY + dyMm, 0, Math.max(0, effLabelHeight - dragState.initialH));
+    } else {
+      if (dragState.action === 'resize-e' || dragState.action === 'resize-se') {
+        const minW = elem === 'barcode' ? 10 : 5;
+        const maxW = Math.max(minW, effLabelWidth - dragState.initialX);
+        newW = clamp(dragState.initialW + dxMm, minW, maxW);
+      }
+      if (dragState.action === 'resize-s' || dragState.action === 'resize-se') {
+        const minH = elem === 'barcode' ? 3 : 2;
+        const maxH = Math.max(minH, effLabelHeight - dragState.initialY);
+        newH = clamp(dragState.initialH + dyMm, minH, maxH);
+      }
     }
+
+    updateConfig(prev => {
+      const updatedLayout = {
+        ...prev.layoutXY,
+        [elem]: {
+          x: newX.toFixed(1),
+          y: newY.toFixed(1),
+          w: newW.toFixed(1),
+          h: newH.toFixed(1),
+        },
+      };
+      let updatedBCWidth = prev.barcodeWidth;
+      let updatedBCHeight = prev.barcodeHeight;
+      let updatedFontSize = { ...prev.fontSize };
+
+      if (elem === 'barcode') {
+        updatedBCWidth = newW.toFixed(1);
+        updatedBCHeight = newH.toFixed(1);
+      } else {
+        const fontScale = newH >= 8 ? 2 : 1;
+        updatedFontSize[elem] = fontScale;
+      }
+
+      return {
+        ...prev,
+        layoutXY: updatedLayout,
+        barcodeWidth: updatedBCWidth,
+        barcodeHeight: updatedBCHeight,
+        fontSize: updatedFontSize,
+      };
+    });
   };
 
   const handlePointerUp = (e: React.PointerEvent) => {
@@ -278,14 +288,12 @@ export const LabelGeneratorTab: React.FC<LabelGeneratorTabProps> = ({
     }
   };
 
-  const layoutForPrint = config.customLayout
-    ? {
-        storeName: config.showStoreName ? { xMm: effLayoutX('store'), yMm: effLayoutY('store'), size: config.fontSize.store } : undefined,
-        productName: config.showProductName ? { xMm: effLayoutX('product'), yMm: effLayoutY('product'), size: config.fontSize.product } : undefined,
-        barcode: { xMm: effBarcodeX, yMm: effBarcodeY, widthMm: effBarcodeWidth, heightMm: effBarcodeHeight },
-        price: config.showPrice ? { xMm: effLayoutX('price'), yMm: effLayoutY('price'), size: config.fontSize.price } : undefined,
-      }
-    : undefined;
+  const layoutForPrint = {
+    storeName: config.showStoreName ? { xMm: effElemX('store'), yMm: effElemY('store'), widthMm: effElemW('store'), heightMm: effElemH('store'), size: config.fontSize.store as 1 | 2 } : undefined,
+    productName: config.showProductName ? { xMm: effElemX('product'), yMm: effElemY('product'), widthMm: effElemW('product'), heightMm: effElemH('product'), size: config.fontSize.product as 1 | 2 } : undefined,
+    barcode: { xMm: effBarcodeX, yMm: effBarcodeY, widthMm: effBarcodeWidth, heightMm: effBarcodeHeight },
+    price: config.showPrice ? { xMm: effElemX('price'), yMm: effElemY('price'), widthMm: effElemW('price'), heightMm: effElemH('price'), size: config.fontSize.price as 1 | 2 } : undefined,
+  };
 
   const labelOptionsFor = (productItem: Product) => ({
     storeName: config.storeName || businessName || 'My Retail Store',
@@ -300,7 +308,7 @@ export const LabelGeneratorTab: React.FC<LabelGeneratorTabProps> = ({
     paperWidthMm: effPaperWidth,
     labelWidthMm: effLabelWidth,
     labelHeightMm: effLabelHeight,
-    barcodeType: config.barcodeType as BarcodeType,
+    barcodeType: 'CODE128' as const,
     barcodeWidthMm: effBarcodeWidth,
     barcodeHeightMm: effBarcodeHeight,
     cutMode: config.paperMode === 'sticker' ? ('off' as const) : config.cutMode,
@@ -421,20 +429,20 @@ export const LabelGeneratorTab: React.FC<LabelGeneratorTabProps> = ({
     }
   };
 
-  const numInputClass = "w-full px-2 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-800 focus:outline-none focus:border-gray-900";
+  const numInputClass = "w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:border-gray-900";
   const segBtn = (active: boolean) =>
-    `flex-1 px-2.5 py-1.5 rounded-lg border font-bold text-xs transition-all text-center cursor-pointer ${
+    `flex-1 px-2.5 py-1.5 rounded-xl border font-bold text-xs transition-all text-center cursor-pointer ${
       active
         ? 'bg-black text-white border-black shadow-xs'
         : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
     }`;
 
-  const sampleCodeVal = normalizeBarcodeValue(sampleProduct.barcode || sampleProduct.sku || '000000', config.barcodeType as BarcodeType);
+  const sampleCodeVal = normalizeBarcodeValue(sampleProduct.barcode || sampleProduct.sku || '000000', 'CODE128');
 
   return (
     <div className="space-y-6 pb-12 animate-fade-in">
       
-      {/* Top Banner & Header */}
+      {/* Header */}
       <div className="bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center space-x-3.5">
           <div className="p-3 bg-black text-white rounded-xl shadow-xs shrink-0">
@@ -442,10 +450,10 @@ export const LabelGeneratorTab: React.FC<LabelGeneratorTabProps> = ({
           </div>
           <div>
             <h2 className="text-base sm:text-lg font-extrabold text-slate-900">
-              Label Generator & Thermal Layout Designer
+              Label Generator & Live Layout Designer
             </h2>
             <p className="text-xs text-slate-500 font-medium mt-0.5">
-              Choose Bluetooth printer models, calibrate sticker paper sizes, and edit item label positions.
+              Set paper size by numbers, drag & resize elements freely on the live canvas (CODE 128 format).
             </p>
           </div>
         </div>
@@ -462,7 +470,7 @@ export const LabelGeneratorTab: React.FC<LabelGeneratorTabProps> = ({
           <button
             onClick={handleSaveSettings}
             className="px-4 py-2 bg-black hover:bg-gray-800 text-white text-xs font-bold rounded-xl shadow-xs transition-all cursor-pointer flex items-center gap-1.5 active:scale-95"
-            title="Save printer and label layout settings to local storage"
+            title="Save settings"
           >
             <Save className="w-4 h-4" />
             <span>Save Settings</span>
@@ -487,13 +495,13 @@ export const LabelGeneratorTab: React.FC<LabelGeneratorTabProps> = ({
         </div>
       )}
 
-      {/* Main Grid: Printer & Layout Config vs Live Preview & Bulk Print */}
+      {/* Main Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         
-        {/* Left Column: Printer Model, Paper Size, Layout Controls */}
+        {/* Left Column */}
         <div className="lg:col-span-6 space-y-6">
 
-          {/* Card 1: Printer Model & Connection */}
+          {/* Printer Connection */}
           <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-2xs space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
@@ -572,13 +580,13 @@ export const LabelGeneratorTab: React.FC<LabelGeneratorTabProps> = ({
             )}
           </div>
 
-          {/* Card 2: Paper Size & Thermal Dimensions */}
+          {/* Paper Dimensions by Number */}
           <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-2xs space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
                 <Ruler className="w-5 h-5 text-gray-900" />
                 <h3 className="font-extrabold text-slate-900 text-sm">
-                  Paper Size & Label Dimensions
+                  Paper & Label Size (Set by Number)
                 </h3>
               </div>
               <span className="text-xs font-semibold text-slate-400">
@@ -607,70 +615,34 @@ export const LabelGeneratorTab: React.FC<LabelGeneratorTabProps> = ({
                 </div>
               </div>
 
-              <div>
-                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
-                  Roll / Paper Width
-                </label>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => updateConfig(p => ({ ...p, paperWidth: '32', labelWidth: '32', barcodeWidth: '32' }))}
-                    className={segBtn(config.paperWidth === '32')}
-                  >
-                    32mm
-                  </button>
-                  <button
-                    onClick={() => updateConfig(p => ({ ...p, paperWidth: '58', labelWidth: '58', barcodeWidth: '58' }))}
-                    className={segBtn(config.paperWidth === '58')}
-                  >
-                    58mm
-                  </button>
-                  <button
-                    onClick={() => updateConfig(p => ({ ...p, paperWidth: '80', labelWidth: '80', barcodeWidth: '80' }))}
-                    className={segBtn(config.paperWidth === '80')}
-                  >
-                    80mm
-                  </button>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+              <div className="grid grid-cols-3 gap-2.5">
                 <div>
                   <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
-                    Label W (mm)
+                    Paper Width (mm)
                   </label>
                   <input
-                    type="number" min={5} max={80} value={config.labelWidth}
+                    type="number" min={15} max={300} value={config.paperWidth}
+                    onChange={e => updateConfig(p => ({ ...p, paperWidth: e.target.value }))}
+                    className={numInputClass}
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
+                    Label Width (mm)
+                  </label>
+                  <input
+                    type="number" min={5} max={300} value={config.labelWidth}
                     onChange={e => updateConfig(p => ({ ...p, labelWidth: e.target.value }))}
                     className={numInputClass}
                   />
                 </div>
                 <div>
                   <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
-                    Label H (mm)
+                    Label Height (mm)
                   </label>
                   <input
                     type="number" min={8} max={300} value={config.labelHeight}
                     onChange={e => updateConfig(p => ({ ...p, labelHeight: e.target.value }))}
-                    className={numInputClass}
-                  />
-                </div>
-                <div>
-                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
-                    BC Box W (mm)
-                  </label>
-                  <input
-                    type="number" min={10} max={effLabelWidth} value={config.barcodeWidth}
-                    onChange={e => updateConfig(p => ({ ...p, barcodeWidth: e.target.value }))}
-                    className={numInputClass}
-                  />
-                </div>
-                <div>
-                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
-                    BC Box H (mm)
-                  </label>
-                  <input
-                    type="number" min={3} max={effLabelHeight} value={config.barcodeHeight}
-                    onChange={e => updateConfig(p => ({ ...p, barcodeHeight: e.target.value }))}
                     className={numInputClass}
                   />
                 </div>
@@ -703,12 +675,12 @@ export const LabelGeneratorTab: React.FC<LabelGeneratorTabProps> = ({
             </div>
           </div>
 
-          {/* Card 3: Label Fields & X/Y Layout Controls */}
+          {/* Label Elements & Format */}
           <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-2xs space-y-4">
             <div className="flex items-center space-x-2">
               <Settings2 className="w-5 h-5 text-gray-900" />
               <h3 className="font-extrabold text-slate-900 text-sm">
-                Label Layout & Fields Settings
+                Label Fields & Barcode Format
               </h3>
             </div>
 
@@ -769,17 +741,9 @@ export const LabelGeneratorTab: React.FC<LabelGeneratorTabProps> = ({
               </div>
 
               <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
-                    Barcode Format
-                  </label>
-                  <select
-                    value={config.barcodeType}
-                    onChange={e => updateConfig(p => ({ ...p, barcodeType: e.target.value as BarcodeType }))}
-                    className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-800 focus:outline-none focus:border-gray-900 cursor-pointer"
-                  >
-                    {BARCODE_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
-                  </select>
+                <div className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between">
+                  <span className="text-xs font-bold text-slate-700">Barcode Format</span>
+                  <span className="font-mono bg-black text-white px-2.5 py-0.5 rounded-lg text-xs font-extrabold">CODE 128</span>
                 </div>
 
                 {config.paperMode === 'receipt' && (
@@ -788,103 +752,83 @@ export const LabelGeneratorTab: React.FC<LabelGeneratorTabProps> = ({
                       Paper Cut Mode
                     </label>
                     <div className="flex gap-1 text-xs">
-                      <button onClick={() => updateConfig(p => ({ ...p, cutMode: 'off' }))} className={segBtn(config.cutMode === 'off')}>
-                        Off
-                      </button>
-                      <button onClick={() => updateConfig(p => ({ ...p, cutMode: 'partial' }))} className={segBtn(config.cutMode === 'partial')}>
-                        Partial
-                      </button>
-                      <button onClick={() => updateConfig(p => ({ ...p, cutMode: 'full' }))} className={segBtn(config.cutMode === 'full')}>
-                        Full
-                      </button>
+                      <button onClick={() => updateConfig(p => ({ ...p, cutMode: 'off' }))} className={segBtn(config.cutMode === 'off')}>Off</button>
+                      <button onClick={() => updateConfig(p => ({ ...p, cutMode: 'partial' }))} className={segBtn(config.cutMode === 'partial')}>Partial</button>
+                      <button onClick={() => updateConfig(p => ({ ...p, cutMode: 'full' }))} className={segBtn(config.cutMode === 'full')}>Full</button>
                     </div>
                   </div>
                 )}
               </div>
 
-              {/* Custom X/Y Position & Barcode Box Controls */}
+              {/* Precise Coordinates Table */}
               <div className="border border-slate-200 rounded-xl p-3 bg-slate-50/50 space-y-2">
-                <label className="flex items-center space-x-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={config.customLayout}
-                    onChange={e => updateConfig(p => ({ ...p, customLayout: e.target.checked }))}
-                    className="rounded text-gray-900 focus:ring-black/20"
-                  />
-                  <span className="text-xs font-bold text-slate-900">Custom X/Y Position & Box Resizing</span>
-                </label>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-slate-900">Live Element Coordinates (mm)</span>
+                  <span className="text-[10px] text-slate-400 font-medium">Auto-syncs with canvas drag</span>
+                </div>
+                <div className="grid grid-cols-[1fr_52px_52px_52px_52px] gap-1 text-[10px] font-bold text-slate-500 uppercase tracking-wider items-center">
+                  <span>Element</span><span>X mm</span><span>Y mm</span><span>W mm</span><span>H mm</span>
+                  
+                  {/* Store */}
+                  <span className="text-slate-800 normal-case font-bold">Store</span>
+                  <input type="number" step={0.5} min={0} max={Math.max(0, effLabelWidth - 5)} value={config.layoutXY.store.x}
+                    onChange={e => updateConfig(p => ({ ...p, layoutXY: { ...p.layoutXY, store: { ...p.layoutXY.store, x: e.target.value } } }))}
+                    className="w-full px-1 py-1 bg-white border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
+                  <input type="number" step={0.5} min={0} max={Math.max(0, effLabelHeight - 3)} value={config.layoutXY.store.y}
+                    onChange={e => updateConfig(p => ({ ...p, layoutXY: { ...p.layoutXY, store: { ...p.layoutXY.store, y: e.target.value } } }))}
+                    className="w-full px-1 py-1 bg-white border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
+                  <input type="number" step={0.5} min={5} max={effLabelWidth} value={config.layoutXY.store.w || effElemW('store').toFixed(1)}
+                    onChange={e => updateConfig(p => ({ ...p, layoutXY: { ...p.layoutXY, store: { ...p.layoutXY.store, w: e.target.value } } }))}
+                    className="w-full px-1 py-1 bg-white border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
+                  <input type="number" step={0.5} min={2} max={effLabelHeight} value={config.layoutXY.store.h || effElemH('store').toFixed(1)}
+                    onChange={e => updateConfig(p => ({ ...p, layoutXY: { ...p.layoutXY, store: { ...p.layoutXY.store, h: e.target.value } } }))}
+                    className="w-full px-1 py-1 bg-white border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
 
-                {config.customLayout && (
-                  <div className="pt-2 space-y-2">
-                    <p className="text-[11px] text-slate-500 font-medium leading-relaxed">
-                      Drag elements directly on the preview card, or specify precise millimetre coordinates below.
-                    </p>
-                    
-                    <div className="grid grid-cols-[1fr_48px_48px_48px_48px] gap-1 text-[10px] font-bold text-slate-500 uppercase tracking-wider items-center">
-                      <span>Element</span><span>X mm</span><span>Y mm</span><span>W mm</span><span>Size</span>
-                      
-                      {/* Store */}
-                      <span className="text-slate-800 normal-case font-bold">Store</span>
-                      <input type="number" step={0.5} min={0} max={Math.max(0, effLabelWidth - 5)} value={config.layoutXY.store.x}
-                        onChange={e => updateConfig(p => ({ ...p, layoutXY: { ...p.layoutXY, store: { ...p.layoutXY.store, x: e.target.value } } }))}
-                        className="w-full px-1 py-1 bg-white border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
-                      <input type="number" step={0.5} min={0} max={Math.max(0, effLabelHeight - 3)} value={config.layoutXY.store.y}
-                        onChange={e => updateConfig(p => ({ ...p, layoutXY: { ...p.layoutXY, store: { ...p.layoutXY.store, y: e.target.value } } }))}
-                        className="w-full px-1 py-1 bg-white border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
-                      <span className="text-[9px] text-slate-400 text-center">—</span>
-                      <select value={config.fontSize.store} onChange={e => updateConfig(p => ({ ...p, fontSize: { ...p.fontSize, store: Number(e.target.value) as 1 | 2 } }))}
-                        className="w-full px-1 py-1 bg-white border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900 cursor-pointer">
-                        <option value={1}>1x</option>
-                        <option value={2}>2x</option>
-                      </select>
+                  {/* Product */}
+                  <span className="text-slate-800 normal-case font-bold">Product</span>
+                  <input type="number" step={0.5} min={0} max={Math.max(0, effLabelWidth - 5)} value={config.layoutXY.product.x}
+                    onChange={e => updateConfig(p => ({ ...p, layoutXY: { ...p.layoutXY, product: { ...p.layoutXY.product, x: e.target.value } } }))}
+                    className="w-full px-1 py-1 bg-white border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
+                  <input type="number" step={0.5} min={0} max={Math.max(0, effLabelHeight - 3)} value={config.layoutXY.product.y}
+                    onChange={e => updateConfig(p => ({ ...p, layoutXY: { ...p.layoutXY, product: { ...p.layoutXY.product, y: e.target.value } } }))}
+                    className="w-full px-1 py-1 bg-white border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
+                  <input type="number" step={0.5} min={5} max={effLabelWidth} value={config.layoutXY.product.w || effElemW('product').toFixed(1)}
+                    onChange={e => updateConfig(p => ({ ...p, layoutXY: { ...p.layoutXY, product: { ...p.layoutXY.product, w: e.target.value } } }))}
+                    className="w-full px-1 py-1 bg-white border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
+                  <input type="number" step={0.5} min={2} max={effLabelHeight} value={config.layoutXY.product.h || effElemH('product').toFixed(1)}
+                    onChange={e => updateConfig(p => ({ ...p, layoutXY: { ...p.layoutXY, product: { ...p.layoutXY.product, h: e.target.value } } }))}
+                    className="w-full px-1 py-1 bg-white border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
 
-                      {/* Product */}
-                      <span className="text-slate-800 normal-case font-bold">Product</span>
-                      <input type="number" step={0.5} min={0} max={Math.max(0, effLabelWidth - 5)} value={config.layoutXY.product.x}
-                        onChange={e => updateConfig(p => ({ ...p, layoutXY: { ...p.layoutXY, product: { ...p.layoutXY.product, x: e.target.value } } }))}
-                        className="w-full px-1 py-1 bg-white border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
-                      <input type="number" step={0.5} min={0} max={Math.max(0, effLabelHeight - 3)} value={config.layoutXY.product.y}
-                        onChange={e => updateConfig(p => ({ ...p, layoutXY: { ...p.layoutXY, product: { ...p.layoutXY.product, y: e.target.value } } }))}
-                        className="w-full px-1 py-1 bg-white border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
-                      <span className="text-[9px] text-slate-400 text-center">—</span>
-                      <select value={config.fontSize.product} onChange={e => updateConfig(p => ({ ...p, fontSize: { ...p.fontSize, product: Number(e.target.value) as 1 | 2 } }))}
-                        className="w-full px-1 py-1 bg-white border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900 cursor-pointer">
-                        <option value={1}>1x</option>
-                        <option value={2}>2x</option>
-                      </select>
+                  {/* Barcode Box */}
+                  <span className="text-slate-900 normal-case font-extrabold">Barcode</span>
+                  <input type="number" step={0.5} min={0} max={Math.max(0, effLabelWidth - effBarcodeWidth)} value={config.layoutXY.barcode.x}
+                    onChange={e => updateConfig(p => ({ ...p, layoutXY: { ...p.layoutXY, barcode: { ...p.layoutXY.barcode, x: e.target.value } } }))}
+                    className="w-full px-1 py-1 bg-white border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
+                  <input type="number" step={0.5} min={0} max={Math.max(0, effLabelHeight - effBarcodeHeight)} value={config.layoutXY.barcode.y}
+                    onChange={e => updateConfig(p => ({ ...p, layoutXY: { ...p.layoutXY, barcode: { ...p.layoutXY.barcode, y: e.target.value } } }))}
+                    className="w-full px-1 py-1 bg-white border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
+                  <input type="number" step={0.5} min={10} max={effLabelWidth} value={config.barcodeWidth}
+                    onChange={e => updateConfig(p => ({ ...p, barcodeWidth: e.target.value, layoutXY: { ...p.layoutXY, barcode: { ...p.layoutXY.barcode, w: e.target.value } } }))}
+                    className="w-full px-1 py-1 bg-white border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
+                  <input type="number" step={0.5} min={3} max={effLabelHeight} value={config.barcodeHeight}
+                    onChange={e => updateConfig(p => ({ ...p, barcodeHeight: e.target.value, layoutXY: { ...p.layoutXY, barcode: { ...p.layoutXY.barcode, h: e.target.value } } }))}
+                    className="w-full px-1 py-1 bg-white border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
 
-                      {/* Barcode Box */}
-                      <span className="text-slate-900 normal-case font-extrabold">Barcode</span>
-                      <input type="number" step={0.5} min={0} max={Math.max(0, effLabelWidth - effBarcodeWidth)} value={config.layoutXY.barcode.x}
-                        onChange={e => updateConfig(p => ({ ...p, layoutXY: { ...p.layoutXY, barcode: { ...p.layoutXY.barcode, x: e.target.value } } }))}
-                        className="w-full px-1 py-1 bg-white border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
-                      <input type="number" step={0.5} min={0} max={Math.max(0, effLabelHeight - effBarcodeHeight)} value={config.layoutXY.barcode.y}
-                        onChange={e => updateConfig(p => ({ ...p, layoutXY: { ...p.layoutXY, barcode: { ...p.layoutXY.barcode, y: e.target.value } } }))}
-                        className="w-full px-1 py-1 bg-white border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
-                      <input type="number" step={0.5} min={10} max={effLabelWidth} value={config.barcodeWidth}
-                        onChange={e => updateConfig(p => ({ ...p, barcodeWidth: e.target.value }))}
-                        className="w-full px-1 py-1 bg-white border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
-                      <input type="number" step={0.5} min={3} max={effLabelHeight} value={config.barcodeHeight}
-                        onChange={e => updateConfig(p => ({ ...p, barcodeHeight: e.target.value }))}
-                        className="w-full px-1 py-1 bg-white border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
-
-                      {/* Price */}
-                      <span className="text-slate-800 normal-case font-bold">Price</span>
-                      <input type="number" step={0.5} min={0} max={Math.max(0, effLabelWidth - 5)} value={config.layoutXY.price.x}
-                        onChange={e => updateConfig(p => ({ ...p, layoutXY: { ...p.layoutXY, price: { ...p.layoutXY.price, x: e.target.value } } }))}
-                        className="w-full px-1 py-1 bg-white border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
-                      <input type="number" step={0.5} min={0} max={Math.max(0, effLabelHeight - 3)} value={config.layoutXY.price.y}
-                        onChange={e => updateConfig(p => ({ ...p, layoutXY: { ...p.layoutXY, price: { ...p.layoutXY.price, y: e.target.value } } }))}
-                        className="w-full px-1 py-1 bg-white border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
-                      <span className="text-[9px] text-slate-400 text-center">—</span>
-                      <select value={config.fontSize.price} onChange={e => updateConfig(p => ({ ...p, fontSize: { ...p.fontSize, price: Number(e.target.value) as 1 | 2 } }))}
-                        className="w-full px-1 py-1 bg-white border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900 cursor-pointer">
-                        <option value={1}>1x</option>
-                        <option value={2}>2x</option>
-                      </select>
-                    </div>
-                  </div>
-                )}
+                  {/* Price */}
+                  <span className="text-slate-800 normal-case font-bold">Price</span>
+                  <input type="number" step={0.5} min={0} max={Math.max(0, effLabelWidth - 5)} value={config.layoutXY.price.x}
+                    onChange={e => updateConfig(p => ({ ...p, layoutXY: { ...p.layoutXY, price: { ...p.layoutXY.price, x: e.target.value } } }))}
+                    className="w-full px-1 py-1 bg-white border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
+                  <input type="number" step={0.5} min={0} max={Math.max(0, effLabelHeight - 3)} value={config.layoutXY.price.y}
+                    onChange={e => updateConfig(p => ({ ...p, layoutXY: { ...p.layoutXY, price: { ...p.layoutXY.price, y: e.target.value } } }))}
+                    className="w-full px-1 py-1 bg-white border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
+                  <input type="number" step={0.5} min={5} max={effLabelWidth} value={config.layoutXY.price.w || effElemW('price').toFixed(1)}
+                    onChange={e => updateConfig(p => ({ ...p, layoutXY: { ...p.layoutXY, price: { ...p.layoutXY.price, w: e.target.value } } }))}
+                    className="w-full px-1 py-1 bg-white border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
+                  <input type="number" step={0.5} min={2} max={effLabelHeight} value={config.layoutXY.price.h || effElemH('price').toFixed(1)}
+                    onChange={e => updateConfig(p => ({ ...p, layoutXY: { ...p.layoutXY, price: { ...p.layoutXY.price, h: e.target.value } } }))}
+                    className="w-full px-1 py-1 bg-white border border-slate-200 rounded text-[10px] font-semibold text-slate-800 focus:outline-none focus:border-gray-900" />
+                </div>
               </div>
             </div>
           </div>
@@ -894,7 +838,7 @@ export const LabelGeneratorTab: React.FC<LabelGeneratorTabProps> = ({
         {/* Right Column: Live Interactive Canvas Preview & Bulk Print */}
         <div className="lg:col-span-6 space-y-6">
 
-          {/* Card 1: Interactive Canvas & Sample Product Picker */}
+          {/* Interactive Canvas */}
           <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-2xs space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div className="flex items-center space-x-2">
@@ -919,146 +863,200 @@ export const LabelGeneratorTab: React.FC<LabelGeneratorTabProps> = ({
             </div>
 
             {/* Canvas Container */}
-            <div className="bg-slate-200/60 p-6 rounded-xl border border-slate-300 flex flex-col items-center justify-center min-h-[260px] shadow-inner relative overflow-hidden">
+            <div className="bg-slate-200/60 p-6 rounded-xl border border-slate-300 flex flex-col items-center justify-center min-h-[280px] shadow-inner relative overflow-hidden">
               <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-3">
-                {effLabelWidth.toFixed(0)} × {effLabelHeight.toFixed(0)}mm ({config.paperMode})
+                {effLabelWidth.toFixed(0)} × {effLabelHeight.toFixed(0)}mm · Drag elements to move / resize handles
               </p>
 
-              {config.customLayout ? (
-                <div
-                  className="bg-white border border-slate-400 rounded shadow-md select-none overflow-hidden touch-none relative"
-                  style={{ width: previewW, height: previewH }}
-                >
-                  {config.showStoreName && (
-                    <div
-                      className="absolute font-extrabold uppercase text-slate-700 truncate cursor-move hover:ring-1 hover:ring-slate-400 p-0.5 rounded"
-                      style={{
-                        left: effLayoutX('store') * previewScale,
-                        top: effLayoutY('store') * previewScale,
-                        width: Math.max(10, (effLabelWidth - effLayoutX('store')) * previewScale),
-                        fontSize: 8 * config.fontSize.store,
-                      }}
-                      onPointerDown={(e) => handlePointerDown(e, 'move-store')}
-                      onPointerMove={handlePointerMove}
-                      onPointerUp={handlePointerUp}
-                    >
-                      {config.storeName || businessName || 'My Store'}
-                    </div>
-                  )}
-
-                  {config.showProductName && (
-                    <p
-                      className="absolute font-extrabold text-slate-900 leading-tight truncate cursor-move hover:ring-1 hover:ring-slate-400 p-0.5 rounded"
-                      style={{
-                        left: effLayoutX('product') * previewScale,
-                        top: effLayoutY('product') * previewScale,
-                        width: Math.max(10, (effLabelWidth - effLayoutX('product')) * previewScale),
-                        fontSize: 8 * config.fontSize.product,
-                      }}
-                      onPointerDown={(e) => handlePointerDown(e, 'move-product')}
-                      onPointerMove={handlePointerMove}
-                      onPointerUp={handlePointerUp}
-                    >
-                      {sampleProduct.name}
-                    </p>
-                  )}
-
-                  {/* BARCODE BOX WITH HANDLES */}
+              <div
+                className="bg-white border border-slate-400 rounded shadow-md select-none overflow-hidden touch-none relative"
+                style={{ width: previewW, height: previewH }}
+              >
+                {/* Store Name Element */}
+                {config.showStoreName && (
                   <div
-                    className="absolute border border-dashed border-slate-900 bg-slate-900/5 flex flex-col items-center justify-between rounded cursor-move select-none p-0.5"
+                    className="absolute border border-dashed border-slate-400/80 hover:border-black bg-slate-900/5 rounded group flex items-center justify-center select-none cursor-move p-0.5"
                     style={{
-                      left: effBarcodeX * previewScale,
-                      top: effBarcodeY * previewScale,
-                      width: effBarcodeWidth * previewScale,
-                      height: effBarcodeHeight * previewScale,
+                      left: effElemX('store') * previewScale,
+                      top: effElemY('store') * previewScale,
+                      width: effElemW('store') * previewScale,
+                      height: effElemH('store') * previewScale,
                     }}
-                    onPointerDown={(e) => handlePointerDown(e, 'move-barcode')}
+                    onPointerDown={(e) => handlePointerDown(e, 'store', 'move')}
                     onPointerMove={handlePointerMove}
                     onPointerUp={handlePointerUp}
-                    title={`Drag box to move, handles to resize (${effBarcodeWidth.toFixed(1)}×${effBarcodeHeight.toFixed(1)}mm)`}
+                    title={`Store Name (${effElemW('store').toFixed(1)}×${effElemH('store').toFixed(1)}mm)`}
                   >
-                    <div className="w-full h-full flex flex-col items-center justify-center overflow-hidden pointer-events-none">
-                      <BarcodeSVG value={sampleCodeVal} height={Math.max(8, effBarcodeHeight * previewScale - (config.showCodeText ? 10 : 2))} showValue={false} />
-                      {config.showCodeText && (
-                        <div className="font-mono font-bold text-slate-900 text-center truncate w-full text-[8px]">
-                          {sampleCodeVal}
-                        </div>
-                      )}
-                    </div>
-
-                    <div
-                      className="absolute -right-1 top-1/2 -translate-y-1/2 w-2 h-4 bg-slate-900 border border-white rounded-2xs cursor-ew-resize opacity-80 hover:opacity-100 z-10"
-                      title="Resize Barcode Width"
-                      onPointerDown={(e) => handlePointerDown(e, 'resize-barcode-e')}
-                      onPointerMove={handlePointerMove}
-                      onPointerUp={handlePointerUp}
-                    />
-                    <div
-                      className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-2 bg-slate-900 border border-white rounded-2xs cursor-ns-resize opacity-80 hover:opacity-100 z-10"
-                      title="Resize Barcode Height"
-                      onPointerDown={(e) => handlePointerDown(e, 'resize-barcode-s')}
-                      onPointerMove={handlePointerMove}
-                      onPointerUp={handlePointerUp}
-                    />
-                    <div
-                      className="absolute -bottom-1 -right-1 w-2.5 h-2.5 bg-black border border-white rounded-2xs cursor-nwse-resize opacity-90 hover:opacity-100 z-10"
-                      title="Resize Barcode Box"
-                      onPointerDown={(e) => handlePointerDown(e, 'resize-barcode-se')}
-                      onPointerMove={handlePointerMove}
-                      onPointerUp={handlePointerUp}
-                    />
-                  </div>
-
-                  {config.showPrice && (
-                    <div
-                      className="absolute bg-slate-900 text-white rounded flex items-center justify-center cursor-move p-0.5"
-                      style={{
-                        left: effLayoutX('price') * previewScale,
-                        top: effLayoutY('price') * previewScale,
-                        width: Math.max(12, (effLabelWidth - effLayoutX('price')) * previewScale),
-                        fontSize: Math.max(7, 4 * config.fontSize.price),
-                      }}
-                      onPointerDown={(e) => handlePointerDown(e, 'move-price')}
-                      onPointerMove={handlePointerMove}
-                      onPointerUp={handlePointerUp}
+                    <span
+                      className="font-extrabold uppercase text-slate-800 truncate w-full text-center pointer-events-none"
+                      style={{ fontSize: Math.max(6, Math.min(24, effElemH('store') * previewScale * 0.75)) }}
                     >
-                      <span className="font-extrabold font-mono px-1 truncate">
-                        {sampleProduct.price.toLocaleString()} {currencySymbol}
-                      </span>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <div
-                  className="bg-white border border-slate-400 rounded shadow-md flex flex-col items-center justify-center text-center select-none overflow-hidden p-2"
-                  style={{ width: previewW, height: previewH }}
-                >
-                  {config.showStoreName && (
-                    <span className="text-[8px] font-extrabold uppercase tracking-wider text-slate-700 border-b border-slate-200 pb-0.5 w-full truncate">
                       {config.storeName || businessName || 'My Store'}
                     </span>
-                  )}
-                  {config.showProductName && (
-                    <p className="font-extrabold text-[9px] text-slate-900 leading-tight line-clamp-2 w-full px-0.5 my-0.5">
+                    <div
+                      className="absolute -right-1 top-1/2 -translate-y-1/2 w-2 h-3 bg-slate-900 border border-white rounded-2xs cursor-ew-resize opacity-0 group-hover:opacity-100 z-10"
+                      onPointerDown={(e) => handlePointerDown(e, 'store', 'resize-e')}
+                      onPointerMove={handlePointerMove}
+                      onPointerUp={handlePointerUp}
+                      title="Resize Width"
+                    />
+                    <div
+                      className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-3 h-2 bg-slate-900 border border-white rounded-2xs cursor-ns-resize opacity-0 group-hover:opacity-100 z-10"
+                      onPointerDown={(e) => handlePointerDown(e, 'store', 'resize-s')}
+                      onPointerMove={handlePointerMove}
+                      onPointerUp={handlePointerUp}
+                      title="Resize Height"
+                    />
+                    <div
+                      className="absolute -bottom-1 -right-1 w-2.5 h-2.5 bg-black border border-white rounded-2xs cursor-nwse-resize opacity-0 group-hover:opacity-100 z-10"
+                      onPointerDown={(e) => handlePointerDown(e, 'store', 'resize-se')}
+                      onPointerMove={handlePointerMove}
+                      onPointerUp={handlePointerUp}
+                      title="Resize Size"
+                    />
+                  </div>
+                )}
+
+                {/* Product Name Element */}
+                {config.showProductName && (
+                  <div
+                    className="absolute border border-dashed border-slate-400/80 hover:border-black bg-slate-900/5 rounded group flex items-center justify-center select-none cursor-move p-0.5"
+                    style={{
+                      left: effElemX('product') * previewScale,
+                      top: effElemY('product') * previewScale,
+                      width: effElemW('product') * previewScale,
+                      height: effElemH('product') * previewScale,
+                    }}
+                    onPointerDown={(e) => handlePointerDown(e, 'product', 'move')}
+                    onPointerMove={handlePointerMove}
+                    onPointerUp={handlePointerUp}
+                    title={`Product Title (${effElemW('product').toFixed(1)}×${effElemH('product').toFixed(1)}mm)`}
+                  >
+                    <p
+                      className="font-extrabold text-slate-900 leading-tight line-clamp-2 w-full text-center pointer-events-none"
+                      style={{ fontSize: Math.max(6, Math.min(20, effElemH('product') * previewScale * 0.6)) }}
+                    >
                       {sampleProduct.name}
                     </p>
-                  )}
-                  <div className="my-0.5 px-0.5 flex items-center justify-center overflow-hidden" style={{ width: effBarcodeWidth * previewScale, height: effBarcodeHeight * previewScale }}>
-                    <BarcodeSVG value={sampleCodeVal} height={Math.max(10, effBarcodeHeight * previewScale - (config.showCodeText ? 10 : 0))} showValue={config.showCodeText} />
+                    <div
+                      className="absolute -right-1 top-1/2 -translate-y-1/2 w-2 h-3 bg-slate-900 border border-white rounded-2xs cursor-ew-resize opacity-0 group-hover:opacity-100 z-10"
+                      onPointerDown={(e) => handlePointerDown(e, 'product', 'resize-e')}
+                      onPointerMove={handlePointerMove}
+                      onPointerUp={handlePointerUp}
+                      title="Resize Width"
+                    />
+                    <div
+                      className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-3 h-2 bg-slate-900 border border-white rounded-2xs cursor-ns-resize opacity-0 group-hover:opacity-100 z-10"
+                      onPointerDown={(e) => handlePointerDown(e, 'product', 'resize-s')}
+                      onPointerMove={handlePointerMove}
+                      onPointerUp={handlePointerUp}
+                      title="Resize Height"
+                    />
+                    <div
+                      className="absolute -bottom-1 -right-1 w-2.5 h-2.5 bg-black border border-white rounded-2xs cursor-nwse-resize opacity-0 group-hover:opacity-100 z-10"
+                      onPointerDown={(e) => handlePointerDown(e, 'product', 'resize-se')}
+                      onPointerMove={handlePointerMove}
+                      onPointerUp={handlePointerUp}
+                      title="Resize Size"
+                    />
                   </div>
-                  {config.showPrice && (
-                    <div className="w-full flex items-center justify-center bg-slate-900 text-white rounded py-0.5 px-1 mt-0.5">
-                      <span className="font-extrabold font-mono text-[9px] leading-none">
-                        {sampleProduct.price.toLocaleString()} {currencySymbol}
-                      </span>
-                    </div>
-                  )}
+                )}
+
+                {/* Barcode Box Element */}
+                <div
+                  className="absolute border border-dashed border-slate-900 bg-slate-900/5 group flex flex-col items-center justify-between rounded cursor-move select-none p-0.5"
+                  style={{
+                    left: effBarcodeX * previewScale,
+                    top: effBarcodeY * previewScale,
+                    width: effBarcodeWidth * previewScale,
+                    height: effBarcodeHeight * previewScale,
+                  }}
+                  onPointerDown={(e) => handlePointerDown(e, 'barcode', 'move')}
+                  onPointerMove={handlePointerMove}
+                  onPointerUp={handlePointerUp}
+                  title={`Barcode CODE128 (${effBarcodeWidth.toFixed(1)}×${effBarcodeHeight.toFixed(1)}mm)`}
+                >
+                  <div className="w-full h-full flex flex-col items-center justify-center overflow-hidden pointer-events-none">
+                    <BarcodeSVG value={sampleCodeVal} height={Math.max(8, effBarcodeHeight * previewScale - (config.showCodeText ? 10 : 2))} showValue={false} />
+                    {config.showCodeText && (
+                      <div className="font-mono font-bold text-slate-900 text-center truncate w-full text-[8px]">
+                        {sampleCodeVal}
+                      </div>
+                    )}
+                  </div>
+
+                  <div
+                    className="absolute -right-1 top-1/2 -translate-y-1/2 w-2 h-4 bg-slate-900 border border-white rounded-2xs cursor-ew-resize opacity-80 hover:opacity-100 z-10"
+                    onPointerDown={(e) => handlePointerDown(e, 'barcode', 'resize-e')}
+                    onPointerMove={handlePointerMove}
+                    onPointerUp={handlePointerUp}
+                    title="Resize Barcode Width"
+                  />
+                  <div
+                    className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-2 bg-slate-900 border border-white rounded-2xs cursor-ns-resize opacity-80 hover:opacity-100 z-10"
+                    onPointerDown={(e) => handlePointerDown(e, 'barcode', 'resize-s')}
+                    onPointerMove={handlePointerMove}
+                    onPointerUp={handlePointerUp}
+                    title="Resize Barcode Height"
+                  />
+                  <div
+                    className="absolute -bottom-1 -right-1 w-2.5 h-2.5 bg-black border border-white rounded-2xs cursor-nwse-resize opacity-90 hover:opacity-100 z-10"
+                    onPointerDown={(e) => handlePointerDown(e, 'barcode', 'resize-se')}
+                    onPointerMove={handlePointerMove}
+                    onPointerUp={handlePointerUp}
+                    title="Resize Barcode Box"
+                  />
                 </div>
-              )}
+
+                {/* Price Box Element */}
+                {config.showPrice && (
+                  <div
+                    className="absolute bg-slate-900 text-white border border-slate-900 rounded group flex items-center justify-center cursor-move p-0.5"
+                    style={{
+                      left: effElemX('price') * previewScale,
+                      top: effElemY('price') * previewScale,
+                      width: effElemW('price') * previewScale,
+                      height: effElemH('price') * previewScale,
+                    }}
+                    onPointerDown={(e) => handlePointerDown(e, 'price', 'move')}
+                    onPointerMove={handlePointerMove}
+                    onPointerUp={handlePointerUp}
+                    title={`Price Tag (${effElemW('price').toFixed(1)}×${effElemH('price').toFixed(1)}mm)`}
+                  >
+                    <span
+                      className="font-extrabold font-mono px-1 truncate pointer-events-none"
+                      style={{ fontSize: Math.max(6, Math.min(22, effElemH('price') * previewScale * 0.75)) }}
+                    >
+                      {sampleProduct.price.toLocaleString()} {currencySymbol}
+                    </span>
+                    <div
+                      className="absolute -right-1 top-1/2 -translate-y-1/2 w-2 h-3 bg-white border border-black rounded-2xs cursor-ew-resize opacity-0 group-hover:opacity-100 z-10"
+                      onPointerDown={(e) => handlePointerDown(e, 'price', 'resize-e')}
+                      onPointerMove={handlePointerMove}
+                      onPointerUp={handlePointerUp}
+                      title="Resize Width"
+                    />
+                    <div
+                      className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-3 h-2 bg-white border border-black rounded-2xs cursor-ns-resize opacity-0 group-hover:opacity-100 z-10"
+                      onPointerDown={(e) => handlePointerDown(e, 'price', 'resize-s')}
+                      onPointerMove={handlePointerMove}
+                      onPointerUp={handlePointerUp}
+                      title="Resize Height"
+                    />
+                    <div
+                      className="absolute -bottom-1 -right-1 w-2.5 h-2.5 bg-white border border-black rounded-2xs cursor-nwse-resize opacity-0 group-hover:opacity-100 z-10"
+                      onPointerDown={(e) => handlePointerDown(e, 'price', 'resize-se')}
+                      onPointerMove={handlePointerMove}
+                      onPointerUp={handlePointerUp}
+                      title="Resize Size"
+                    />
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
-          {/* Card 2: Bulk Print Selection */}
+          {/* Bulk Print Selection */}
           <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-2xs space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
