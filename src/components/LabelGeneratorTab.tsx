@@ -3,6 +3,7 @@ import {
   Printer, X, Search, CheckSquare, Square, Settings2,
   Tag, Bluetooth, BluetoothOff, Loader2, CheckCircle2, AlertCircle,
   Minus, Plus, Ruler, Scissors, RefreshCw, Save, Layers,
+  Maximize2, Minimize2, ZoomIn, ZoomOut, RotateCcw,
 } from 'lucide-react';
 import { Product, LabelConfig } from '../types';
 import BarcodeSVG from './BarcodeSVG';
@@ -36,6 +37,9 @@ export const LabelGeneratorTab: React.FC<LabelGeneratorTabProps> = ({
   const [sampleProductId, setSampleProductId] = useState<string>(() => (products[0] ? products[0].id : ''));
 
   const [selectedProducts, setSelectedProducts] = useState<{ [id: string]: number }>({});
+
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [zoomFactor, setZoomFactor] = useState(1);
 
   const isNative = printerBridge.isNativeShell();
   const [btAvailable] = useState(() => printerBridge.isBluetoothAvailable());
@@ -92,6 +96,15 @@ export const LabelGeneratorTab: React.FC<LabelGeneratorTabProps> = ({
     };
   }, [isNative]);
 
+  useEffect(() => {
+    if (!isFullscreen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsFullscreen(false);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isFullscreen]);
+
   const updateConfig = (updater: (prev: LabelConfig) => LabelConfig) => {
     setConfig(prev => {
       const next = updater(prev);
@@ -144,6 +157,10 @@ export const LabelGeneratorTab: React.FC<LabelGeneratorTabProps> = ({
     setPrinterName('');
   }, []);
 
+  const handleZoomIn = () => setZoomFactor(prev => Math.min(3, Math.round((prev + 0.25) * 100) / 100));
+  const handleZoomOut = () => setZoomFactor(prev => Math.max(0.5, Math.round((prev - 0.25) * 100) / 100));
+  const handleResetZoom = () => setZoomFactor(1);
+
   const effPaperWidth = clamp(parseMm(config.paperWidth) || 80, 15, 300);
   const printableMm = getPrintableMm(effPaperWidth);
   const effLabelWidth = clamp(parseMm(config.labelWidth) || effPaperWidth, 5, effPaperWidth);
@@ -175,7 +192,11 @@ export const LabelGeneratorTab: React.FC<LabelGeneratorTabProps> = ({
   const effLabelGap = clamp(parseMm(config.labelGap) || 3, 2, 10);
   const effFeedOffset = clamp(parseMm(config.feedOffset) || 0, -10, 10);
 
-  const previewScale = Math.min(340 / effLabelWidth, 6);
+  const basePreviewScale = isFullscreen
+    ? Math.min((window.innerWidth * 0.7) / effLabelWidth, (window.innerHeight * 0.65) / effLabelHeight, 14)
+    : Math.min(340 / effLabelWidth, 6);
+
+  const previewScale = basePreviewScale * zoomFactor;
   const previewW = Math.round(effLabelWidth * previewScale);
   const previewH = Math.round(effLabelHeight * previewScale);
 
@@ -439,9 +460,286 @@ export const LabelGeneratorTab: React.FC<LabelGeneratorTabProps> = ({
 
   const sampleCodeVal = normalizeBarcodeValue(sampleProduct.barcode || sampleProduct.sku || '000000', 'CODE128');
 
+  const renderCanvasCard = () => (
+    <div
+      className="bg-white border border-slate-400 rounded shadow-md select-none overflow-hidden touch-none relative transition-transform duration-75"
+      style={{ width: previewW, height: previewH }}
+    >
+      {/* Store Name Element */}
+      {config.showStoreName && (
+        <div
+          className="absolute border border-dashed border-slate-400/80 hover:border-black bg-slate-900/5 rounded group flex items-center justify-center select-none cursor-move p-0.5"
+          style={{
+            left: effElemX('store') * previewScale,
+            top: effElemY('store') * previewScale,
+            width: effElemW('store') * previewScale,
+            height: effElemH('store') * previewScale,
+          }}
+          onPointerDown={(e) => handlePointerDown(e, 'store', 'move')}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          title={`Store Name (${effElemW('store').toFixed(1)}×${effElemH('store').toFixed(1)}mm)`}
+        >
+          <span
+            className="font-extrabold uppercase text-slate-800 truncate w-full text-center pointer-events-none"
+            style={{ fontSize: Math.max(6, Math.min(28, effElemH('store') * previewScale * 0.75)) }}
+          >
+            {config.storeName || businessName || 'My Store'}
+          </span>
+          <div
+            className="absolute -right-1 top-1/2 -translate-y-1/2 w-2.5 h-4 bg-slate-900 border border-white rounded-2xs cursor-ew-resize opacity-0 group-hover:opacity-100 z-10"
+            onPointerDown={(e) => handlePointerDown(e, 'store', 'resize-e')}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+            title="Resize Width"
+          />
+          <div
+            className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-2.5 bg-slate-900 border border-white rounded-2xs cursor-ns-resize opacity-0 group-hover:opacity-100 z-10"
+            onPointerDown={(e) => handlePointerDown(e, 'store', 'resize-s')}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+            title="Resize Height"
+          />
+          <div
+            className="absolute -bottom-1 -right-1 w-3 h-3 bg-black border border-white rounded-2xs cursor-nwse-resize opacity-0 group-hover:opacity-100 z-10"
+            onPointerDown={(e) => handlePointerDown(e, 'store', 'resize-se')}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+            title="Resize Size"
+          />
+        </div>
+      )}
+
+      {/* Product Name Element */}
+      {config.showProductName && (
+        <div
+          className="absolute border border-dashed border-slate-400/80 hover:border-black bg-slate-900/5 rounded group flex items-center justify-center select-none cursor-move p-0.5"
+          style={{
+            left: effElemX('product') * previewScale,
+            top: effElemY('product') * previewScale,
+            width: effElemW('product') * previewScale,
+            height: effElemH('product') * previewScale,
+          }}
+          onPointerDown={(e) => handlePointerDown(e, 'product', 'move')}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          title={`Product Title (${effElemW('product').toFixed(1)}×${effElemH('product').toFixed(1)}mm)`}
+        >
+          <p
+            className="font-extrabold text-slate-900 leading-tight line-clamp-2 w-full text-center pointer-events-none"
+            style={{ fontSize: Math.max(6, Math.min(24, effElemH('product') * previewScale * 0.6)) }}
+          >
+            {sampleProduct.name}
+          </p>
+          <div
+            className="absolute -right-1 top-1/2 -translate-y-1/2 w-2.5 h-4 bg-slate-900 border border-white rounded-2xs cursor-ew-resize opacity-0 group-hover:opacity-100 z-10"
+            onPointerDown={(e) => handlePointerDown(e, 'product', 'resize-e')}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+            title="Resize Width"
+          />
+          <div
+            className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-2.5 bg-slate-900 border border-white rounded-2xs cursor-ns-resize opacity-0 group-hover:opacity-100 z-10"
+            onPointerDown={(e) => handlePointerDown(e, 'product', 'resize-s')}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+            title="Resize Height"
+          />
+          <div
+            className="absolute -bottom-1 -right-1 w-3 h-3 bg-black border border-white rounded-2xs cursor-nwse-resize opacity-0 group-hover:opacity-100 z-10"
+            onPointerDown={(e) => handlePointerDown(e, 'product', 'resize-se')}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+            title="Resize Size"
+          />
+        </div>
+      )}
+
+      {/* Barcode Box Element */}
+      <div
+        className="absolute border border-dashed border-slate-900 bg-slate-900/5 group flex flex-col items-center justify-between rounded cursor-move select-none p-0.5"
+        style={{
+          left: effBarcodeX * previewScale,
+          top: effBarcodeY * previewScale,
+          width: effBarcodeWidth * previewScale,
+          height: effBarcodeHeight * previewScale,
+        }}
+        onPointerDown={(e) => handlePointerDown(e, 'barcode', 'move')}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        title={`Barcode CODE128 (${effBarcodeWidth.toFixed(1)}×${effBarcodeHeight.toFixed(1)}mm)`}
+      >
+        <div className="w-full h-full flex flex-col items-center justify-center overflow-hidden pointer-events-none">
+          <BarcodeSVG value={sampleCodeVal} height={Math.max(8, effBarcodeHeight * previewScale - (config.showCodeText ? 10 : 2))} showValue={false} />
+          {config.showCodeText && (
+            <div className="font-mono font-bold text-slate-900 text-center truncate w-full text-[8px]">
+              {sampleCodeVal}
+            </div>
+          )}
+        </div>
+
+        <div
+          className="absolute -right-1 top-1/2 -translate-y-1/2 w-2.5 h-4 bg-slate-900 border border-white rounded-2xs cursor-ew-resize opacity-80 hover:opacity-100 z-10"
+          onPointerDown={(e) => handlePointerDown(e, 'barcode', 'resize-e')}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          title="Resize Barcode Width"
+        />
+        <div
+          className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-2.5 bg-slate-900 border border-white rounded-2xs cursor-ns-resize opacity-80 hover:opacity-100 z-10"
+          onPointerDown={(e) => handlePointerDown(e, 'barcode', 'resize-s')}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          title="Resize Barcode Height"
+        />
+        <div
+          className="absolute -bottom-1 -right-1 w-3 h-3 bg-black border border-white rounded-2xs cursor-nwse-resize opacity-90 hover:opacity-100 z-10"
+          onPointerDown={(e) => handlePointerDown(e, 'barcode', 'resize-se')}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          title="Resize Barcode Box"
+        />
+      </div>
+
+      {/* Price Box Element */}
+      {config.showPrice && (
+        <div
+          className="absolute bg-slate-900 text-white border border-slate-900 rounded group flex items-center justify-center cursor-move p-0.5"
+          style={{
+            left: effElemX('price') * previewScale,
+            top: effElemY('price') * previewScale,
+            width: effElemW('price') * previewScale,
+            height: effElemH('price') * previewScale,
+          }}
+          onPointerDown={(e) => handlePointerDown(e, 'price', 'move')}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          title={`Price Tag (${effElemW('price').toFixed(1)}×${effElemH('price').toFixed(1)}mm)`}
+        >
+          <span
+            className="font-extrabold font-mono px-1 truncate pointer-events-none"
+            style={{ fontSize: Math.max(6, Math.min(26, effElemH('price') * previewScale * 0.75)) }}
+          >
+            {sampleProduct.price.toLocaleString()} {currencySymbol}
+          </span>
+          <div
+            className="absolute -right-1 top-1/2 -translate-y-1/2 w-2.5 h-4 bg-white border border-black rounded-2xs cursor-ew-resize opacity-0 group-hover:opacity-100 z-10"
+            onPointerDown={(e) => handlePointerDown(e, 'price', 'resize-e')}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+            title="Resize Width"
+          />
+          <div
+            className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-2.5 bg-white border border-black rounded-2xs cursor-ns-resize opacity-0 group-hover:opacity-100 z-10"
+            onPointerDown={(e) => handlePointerDown(e, 'price', 'resize-s')}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+            title="Resize Height"
+          />
+          <div
+            className="absolute -bottom-1 -right-1 w-3 h-3 bg-white border border-black rounded-2xs cursor-nwse-resize opacity-0 group-hover:opacity-100 z-10"
+            onPointerDown={(e) => handlePointerDown(e, 'price', 'resize-se')}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+            title="Resize Size"
+          />
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <div className="space-y-6 pb-12 animate-fade-in">
       
+      {/* Fullscreen Interactive Canvas Overlay */}
+      {isFullscreen && (
+        <div className="fixed inset-0 z-50 bg-slate-950/95 text-white flex flex-col p-4 sm:p-6 backdrop-blur-md overflow-hidden animate-fade-in">
+          <div className="flex items-center justify-between gap-4 pb-4 border-b border-slate-800">
+            <div className="flex items-center space-x-3">
+              <div className="p-2 bg-white text-black rounded-xl">
+                <Tag className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="font-extrabold text-white text-sm sm:text-base">
+                  Fullscreen Interactive Label Canvas
+                </h3>
+                <p className="text-xs text-slate-400 font-medium">
+                  {effLabelWidth.toFixed(0)} × {effLabelHeight.toFixed(0)}mm · Drag to move, handles to resize (CODE 128)
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <span className="text-xs font-semibold text-slate-400 hidden md:inline">Sample Item:</span>
+              <select
+                value={sampleProductId}
+                onChange={e => setSampleProductId(e.target.value)}
+                className="px-2.5 py-1.5 bg-slate-800 border border-slate-700 rounded-xl text-xs font-bold text-white focus:outline-none max-w-[160px] cursor-pointer"
+              >
+                {products.map(p => (
+                  <option key={p.id} value={p.id}>{p.name}</option>
+                ))}
+              </select>
+
+              <div className="flex items-center space-x-1 bg-slate-800 p-1 rounded-xl border border-slate-700 text-xs">
+                <button
+                  onClick={handleZoomOut}
+                  disabled={zoomFactor <= 0.5}
+                  className="p-1.5 text-slate-300 hover:text-white disabled:opacity-30 cursor-pointer"
+                  title="Zoom Out (-25%)"
+                >
+                  <ZoomOut className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={handleResetZoom}
+                  className="px-2 py-1 text-xs font-extrabold text-white hover:bg-slate-700 rounded-lg cursor-pointer font-mono"
+                  title="Reset Zoom (100%)"
+                >
+                  {Math.round(zoomFactor * 100)}%
+                </button>
+                <button
+                  onClick={handleZoomIn}
+                  disabled={zoomFactor >= 3}
+                  className="p-1.5 text-slate-300 hover:text-white disabled:opacity-30 cursor-pointer"
+                  title="Zoom In (+25%)"
+                >
+                  <ZoomIn className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={handleResetZoom}
+                  className="p-1.5 text-slate-400 hover:text-white cursor-pointer"
+                  title="Reset Zoom Scale"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                </button>
+              </div>
+
+              <button
+                onClick={() => setIsFullscreen(false)}
+                className="px-3.5 py-1.5 bg-white text-black font-extrabold text-xs rounded-xl shadow-xs hover:bg-slate-200 transition-colors flex items-center space-x-1.5 cursor-pointer"
+              >
+                <Minimize2 className="w-4 h-4" />
+                <span>Exit Fullscreen</span>
+              </button>
+            </div>
+          </div>
+
+          <div className="flex-1 flex flex-col items-center justify-center overflow-auto p-8 my-4 bg-slate-900/60 rounded-2xl border border-slate-800 shadow-2xl relative select-none">
+            {renderCanvasCard()}
+          </div>
+
+          <div className="pt-3 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+            <div className="flex items-center space-x-4 font-mono">
+              <span>Store: {effElemX('store').toFixed(1)},{effElemY('store').toFixed(1)}mm ({effElemW('store').toFixed(1)}×{effElemH('store').toFixed(1)}mm)</span>
+              <span>Product: {effElemX('product').toFixed(1)},{effElemY('product').toFixed(1)}mm ({effElemW('product').toFixed(1)}×{effElemH('product').toFixed(1)}mm)</span>
+              <span>Barcode: {effBarcodeX.toFixed(1)},{effBarcodeY.toFixed(1)}mm ({effBarcodeWidth.toFixed(1)}×{effBarcodeHeight.toFixed(1)}mm)</span>
+              <span>Price: {effElemX('price').toFixed(1)},{effElemY('price').toFixed(1)}mm ({effElemW('price').toFixed(1)}×{effElemH('price').toFixed(1)}mm)</span>
+            </div>
+            <span>Press <kbd className="bg-slate-800 px-1.5 py-0.5 rounded text-white font-mono">ESC</kbd> to exit fullscreen</span>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center space-x-3.5">
@@ -849,210 +1147,60 @@ export const LabelGeneratorTab: React.FC<LabelGeneratorTabProps> = ({
               </div>
 
               <div className="flex items-center space-x-2">
-                <span className="text-xs font-semibold text-slate-500">Sample Item:</span>
+                <span className="text-xs font-semibold text-slate-500 hidden sm:inline">Sample Item:</span>
                 <select
                   value={sampleProductId}
                   onChange={e => setSampleProductId(e.target.value)}
-                  className="px-2.5 py-1 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-slate-800 focus:outline-none focus:border-gray-900 max-w-[180px] cursor-pointer"
+                  className="px-2 py-1 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-slate-800 focus:outline-none focus:border-gray-900 max-w-[130px] cursor-pointer"
                 >
                   {products.map(p => (
                     <option key={p.id} value={p.id}>{p.name}</option>
                   ))}
                 </select>
+
+                <div className="flex items-center space-x-1 bg-slate-100 p-0.5 rounded-lg border border-slate-200 text-xs">
+                  <button
+                    onClick={handleZoomOut}
+                    disabled={zoomFactor <= 0.5}
+                    className="p-1 text-slate-600 hover:text-black disabled:opacity-30 cursor-pointer"
+                    title="Zoom Out (-25%)"
+                  >
+                    <ZoomOut className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    onClick={handleResetZoom}
+                    className="px-1.5 py-0.5 text-[10px] font-extrabold text-slate-800 hover:bg-slate-200 rounded cursor-pointer font-mono"
+                    title="Reset Zoom (100%)"
+                  >
+                    {Math.round(zoomFactor * 100)}%
+                  </button>
+                  <button
+                    onClick={handleZoomIn}
+                    disabled={zoomFactor >= 3}
+                    className="p-1 text-slate-600 hover:text-black disabled:opacity-30 cursor-pointer"
+                    title="Zoom In (+25%)"
+                  >
+                    <ZoomIn className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+
+                <button
+                  onClick={() => setIsFullscreen(true)}
+                  className="p-1.5 bg-black hover:bg-gray-800 text-white rounded-lg shadow-xs transition-colors cursor-pointer"
+                  title="Fullscreen Canvas Mode"
+                >
+                  <Maximize2 className="w-4 h-4" />
+                </button>
               </div>
             </div>
 
             {/* Canvas Container */}
             <div className="bg-slate-200/60 p-6 rounded-xl border border-slate-300 flex flex-col items-center justify-center min-h-[280px] shadow-inner relative overflow-hidden">
               <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-3">
-                {effLabelWidth.toFixed(0)} × {effLabelHeight.toFixed(0)}mm · Drag elements to move / resize handles
+                {effLabelWidth.toFixed(0)} × {effLabelHeight.toFixed(0)}mm · Drag to move, handles to resize
               </p>
 
-              <div
-                className="bg-white border border-slate-400 rounded shadow-md select-none overflow-hidden touch-none relative"
-                style={{ width: previewW, height: previewH }}
-              >
-                {/* Store Name Element */}
-                {config.showStoreName && (
-                  <div
-                    className="absolute border border-dashed border-slate-400/80 hover:border-black bg-slate-900/5 rounded group flex items-center justify-center select-none cursor-move p-0.5"
-                    style={{
-                      left: effElemX('store') * previewScale,
-                      top: effElemY('store') * previewScale,
-                      width: effElemW('store') * previewScale,
-                      height: effElemH('store') * previewScale,
-                    }}
-                    onPointerDown={(e) => handlePointerDown(e, 'store', 'move')}
-                    onPointerMove={handlePointerMove}
-                    onPointerUp={handlePointerUp}
-                    title={`Store Name (${effElemW('store').toFixed(1)}×${effElemH('store').toFixed(1)}mm)`}
-                  >
-                    <span
-                      className="font-extrabold uppercase text-slate-800 truncate w-full text-center pointer-events-none"
-                      style={{ fontSize: Math.max(6, Math.min(24, effElemH('store') * previewScale * 0.75)) }}
-                    >
-                      {config.storeName || businessName || 'My Store'}
-                    </span>
-                    <div
-                      className="absolute -right-1 top-1/2 -translate-y-1/2 w-2 h-3 bg-slate-900 border border-white rounded-2xs cursor-ew-resize opacity-0 group-hover:opacity-100 z-10"
-                      onPointerDown={(e) => handlePointerDown(e, 'store', 'resize-e')}
-                      onPointerMove={handlePointerMove}
-                      onPointerUp={handlePointerUp}
-                      title="Resize Width"
-                    />
-                    <div
-                      className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-3 h-2 bg-slate-900 border border-white rounded-2xs cursor-ns-resize opacity-0 group-hover:opacity-100 z-10"
-                      onPointerDown={(e) => handlePointerDown(e, 'store', 'resize-s')}
-                      onPointerMove={handlePointerMove}
-                      onPointerUp={handlePointerUp}
-                      title="Resize Height"
-                    />
-                    <div
-                      className="absolute -bottom-1 -right-1 w-2.5 h-2.5 bg-black border border-white rounded-2xs cursor-nwse-resize opacity-0 group-hover:opacity-100 z-10"
-                      onPointerDown={(e) => handlePointerDown(e, 'store', 'resize-se')}
-                      onPointerMove={handlePointerMove}
-                      onPointerUp={handlePointerUp}
-                      title="Resize Size"
-                    />
-                  </div>
-                )}
-
-                {/* Product Name Element */}
-                {config.showProductName && (
-                  <div
-                    className="absolute border border-dashed border-slate-400/80 hover:border-black bg-slate-900/5 rounded group flex items-center justify-center select-none cursor-move p-0.5"
-                    style={{
-                      left: effElemX('product') * previewScale,
-                      top: effElemY('product') * previewScale,
-                      width: effElemW('product') * previewScale,
-                      height: effElemH('product') * previewScale,
-                    }}
-                    onPointerDown={(e) => handlePointerDown(e, 'product', 'move')}
-                    onPointerMove={handlePointerMove}
-                    onPointerUp={handlePointerUp}
-                    title={`Product Title (${effElemW('product').toFixed(1)}×${effElemH('product').toFixed(1)}mm)`}
-                  >
-                    <p
-                      className="font-extrabold text-slate-900 leading-tight line-clamp-2 w-full text-center pointer-events-none"
-                      style={{ fontSize: Math.max(6, Math.min(20, effElemH('product') * previewScale * 0.6)) }}
-                    >
-                      {sampleProduct.name}
-                    </p>
-                    <div
-                      className="absolute -right-1 top-1/2 -translate-y-1/2 w-2 h-3 bg-slate-900 border border-white rounded-2xs cursor-ew-resize opacity-0 group-hover:opacity-100 z-10"
-                      onPointerDown={(e) => handlePointerDown(e, 'product', 'resize-e')}
-                      onPointerMove={handlePointerMove}
-                      onPointerUp={handlePointerUp}
-                      title="Resize Width"
-                    />
-                    <div
-                      className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-3 h-2 bg-slate-900 border border-white rounded-2xs cursor-ns-resize opacity-0 group-hover:opacity-100 z-10"
-                      onPointerDown={(e) => handlePointerDown(e, 'product', 'resize-s')}
-                      onPointerMove={handlePointerMove}
-                      onPointerUp={handlePointerUp}
-                      title="Resize Height"
-                    />
-                    <div
-                      className="absolute -bottom-1 -right-1 w-2.5 h-2.5 bg-black border border-white rounded-2xs cursor-nwse-resize opacity-0 group-hover:opacity-100 z-10"
-                      onPointerDown={(e) => handlePointerDown(e, 'product', 'resize-se')}
-                      onPointerMove={handlePointerMove}
-                      onPointerUp={handlePointerUp}
-                      title="Resize Size"
-                    />
-                  </div>
-                )}
-
-                {/* Barcode Box Element */}
-                <div
-                  className="absolute border border-dashed border-slate-900 bg-slate-900/5 group flex flex-col items-center justify-between rounded cursor-move select-none p-0.5"
-                  style={{
-                    left: effBarcodeX * previewScale,
-                    top: effBarcodeY * previewScale,
-                    width: effBarcodeWidth * previewScale,
-                    height: effBarcodeHeight * previewScale,
-                  }}
-                  onPointerDown={(e) => handlePointerDown(e, 'barcode', 'move')}
-                  onPointerMove={handlePointerMove}
-                  onPointerUp={handlePointerUp}
-                  title={`Barcode CODE128 (${effBarcodeWidth.toFixed(1)}×${effBarcodeHeight.toFixed(1)}mm)`}
-                >
-                  <div className="w-full h-full flex flex-col items-center justify-center overflow-hidden pointer-events-none">
-                    <BarcodeSVG value={sampleCodeVal} height={Math.max(8, effBarcodeHeight * previewScale - (config.showCodeText ? 10 : 2))} showValue={false} />
-                    {config.showCodeText && (
-                      <div className="font-mono font-bold text-slate-900 text-center truncate w-full text-[8px]">
-                        {sampleCodeVal}
-                      </div>
-                    )}
-                  </div>
-
-                  <div
-                    className="absolute -right-1 top-1/2 -translate-y-1/2 w-2 h-4 bg-slate-900 border border-white rounded-2xs cursor-ew-resize opacity-80 hover:opacity-100 z-10"
-                    onPointerDown={(e) => handlePointerDown(e, 'barcode', 'resize-e')}
-                    onPointerMove={handlePointerMove}
-                    onPointerUp={handlePointerUp}
-                    title="Resize Barcode Width"
-                  />
-                  <div
-                    className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-2 bg-slate-900 border border-white rounded-2xs cursor-ns-resize opacity-80 hover:opacity-100 z-10"
-                    onPointerDown={(e) => handlePointerDown(e, 'barcode', 'resize-s')}
-                    onPointerMove={handlePointerMove}
-                    onPointerUp={handlePointerUp}
-                    title="Resize Barcode Height"
-                  />
-                  <div
-                    className="absolute -bottom-1 -right-1 w-2.5 h-2.5 bg-black border border-white rounded-2xs cursor-nwse-resize opacity-90 hover:opacity-100 z-10"
-                    onPointerDown={(e) => handlePointerDown(e, 'barcode', 'resize-se')}
-                    onPointerMove={handlePointerMove}
-                    onPointerUp={handlePointerUp}
-                    title="Resize Barcode Box"
-                  />
-                </div>
-
-                {/* Price Box Element */}
-                {config.showPrice && (
-                  <div
-                    className="absolute bg-slate-900 text-white border border-slate-900 rounded group flex items-center justify-center cursor-move p-0.5"
-                    style={{
-                      left: effElemX('price') * previewScale,
-                      top: effElemY('price') * previewScale,
-                      width: effElemW('price') * previewScale,
-                      height: effElemH('price') * previewScale,
-                    }}
-                    onPointerDown={(e) => handlePointerDown(e, 'price', 'move')}
-                    onPointerMove={handlePointerMove}
-                    onPointerUp={handlePointerUp}
-                    title={`Price Tag (${effElemW('price').toFixed(1)}×${effElemH('price').toFixed(1)}mm)`}
-                  >
-                    <span
-                      className="font-extrabold font-mono px-1 truncate pointer-events-none"
-                      style={{ fontSize: Math.max(6, Math.min(22, effElemH('price') * previewScale * 0.75)) }}
-                    >
-                      {sampleProduct.price.toLocaleString()} {currencySymbol}
-                    </span>
-                    <div
-                      className="absolute -right-1 top-1/2 -translate-y-1/2 w-2 h-3 bg-white border border-black rounded-2xs cursor-ew-resize opacity-0 group-hover:opacity-100 z-10"
-                      onPointerDown={(e) => handlePointerDown(e, 'price', 'resize-e')}
-                      onPointerMove={handlePointerMove}
-                      onPointerUp={handlePointerUp}
-                      title="Resize Width"
-                    />
-                    <div
-                      className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-3 h-2 bg-white border border-black rounded-2xs cursor-ns-resize opacity-0 group-hover:opacity-100 z-10"
-                      onPointerDown={(e) => handlePointerDown(e, 'price', 'resize-s')}
-                      onPointerMove={handlePointerMove}
-                      onPointerUp={handlePointerUp}
-                      title="Resize Height"
-                    />
-                    <div
-                      className="absolute -bottom-1 -right-1 w-2.5 h-2.5 bg-white border border-black rounded-2xs cursor-nwse-resize opacity-0 group-hover:opacity-100 z-10"
-                      onPointerDown={(e) => handlePointerDown(e, 'price', 'resize-se')}
-                      onPointerMove={handlePointerMove}
-                      onPointerUp={handlePointerUp}
-                      title="Resize Size"
-                    />
-                  </div>
-                )}
-              </div>
+              {renderCanvasCard()}
             </div>
           </div>
 

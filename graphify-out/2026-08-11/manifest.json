@@ -30,14 +30,14 @@
     "semantic_hash": "1e27e12ec86594a876800e6ca1e33d0a"
   },
   "src/components/BarcodePrintModal.tsx": {
-    "mtime": 1786187237.8497062,
-    "ast_hash": "05983b7770babd6c11e16f77fe9ac4e5",
-    "semantic_hash": "05983b7770babd6c11e16f77fe9ac4e5"
+    "mtime": 1786423544.3256793,
+    "ast_hash": "25057ccd58a78755e132689a1a3e8dd7",
+    "semantic_hash": ""
   },
   "src/components/BarcodeSVG.tsx": {
-    "mtime": 1785894920.111552,
-    "ast_hash": "2193015de965f6d1e6210d9866c211b5",
-    "semantic_hash": "2193015de965f6d1e6210d9866c211b5"
+    "mtime": 1786423459.6996775,
+    "ast_hash": "0c7b4ed1257171fbc7d0ea9745d4f7da",
+    "semantic_hash": ""
   },
   "src/components/BarcodeScannerModal.tsx": {
     "mtime": 1786274801.5316393,
@@ -55,9 +55,9 @@
     "semantic_hash": "2205be830ccbead0ca572cbf1c72554a"
   },
   "src/components/LabelGeneratorTab.tsx": {
-    "mtime": 1786191797.0502498,
-    "ast_hash": "0cb109ad20d91110b9cdb8fd50edb0f7",
-    "semantic_hash": "0cb109ad20d91110b9cdb8fd50edb0f7"
+    "mtime": 1786423509.3446784,
+    "ast_hash": "78dca63805b7f57e6ba7d4755980a429",
+    "semantic_hash": ""
   },
   "src/components/OfflineSyncBar.tsx": {
     "mtime": 1786104344.8395386,
@@ -100,9 +100,9 @@
     "semantic_hash": "f0fea52d6bff7b18aa354100a1a9dda1"
   },
   "src/components/SingleLabelModal.tsx": {
-    "mtime": 1786191785.4452503,
-    "ast_hash": "6843eba93fec8763c05783e5dd998328",
-    "semantic_hash": "6843eba93fec8763c05783e5dd998328"
+    "mtime": 1786423557.8526795,
+    "ast_hash": "a3662e46ad5b44b6b77285a0f3793bfd",
+    "semantic_hash": ""
   },
   "src/data/schemaSql.ts": {
     "mtime": 1785982490.8029974,
@@ -120,14 +120,14 @@
     "semantic_hash": "b27927357ad21e2027688442875c2de7"
   },
   "src/lib/escpos.ts": {
-    "mtime": 1786187127.6637135,
-    "ast_hash": "05f8249ab876a3c1c23a8f29be5a2010",
-    "semantic_hash": "05f8249ab876a3c1c23a8f29be5a2010"
+    "mtime": 1786423482.531678,
+    "ast_hash": "5e5256c1b6dd35dcfa923fa608ba98ba",
+    "semantic_hash": ""
   },
   "src/lib/labelConfig.ts": {
-    "mtime": 1786191199.4382706,
-    "ast_hash": "f86e5148696a625fafb525916ce2f8d4",
-    "semantic_hash": "f86e5148696a625fafb525916ce2f8d4"
+    "mtime": 1786423470.1426775,
+    "ast_hash": "9a5b5db74cf7bdb7d72e268db0e120d7",
+    "semantic_hash": ""
   },
   "src/lib/printerBridge.ts": {
     "mtime": 1786191766.724251,
@@ -145,8 +145,8 @@
     "semantic_hash": "2b36426d5ad7e08ef79746aa524f4fb7"
   },
   "src/types.ts": {
-    "mtime": 1786415459.1374032,
-    "ast_hash": "ecd45ffa0fe8c4d1addc03ccc07095e9",
+    "mtime": 1786423466.3566775,
+    "ast_hash": "83aa11ef3d3e95eb3bc08166a83a35be",
     "semantic_hash": ""
   },
   "src/utils/format.ts": {
