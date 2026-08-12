@@ -245,7 +245,7 @@ export const dbService = {
           if (!profile) {
             // If the user created an account in Supabase Auth but there's no profile record yet,
             // create a profile with inferred or provided role
-            const determinedRole: UserRole = role || (cleanEmail.includes('cashier') ? 'cashier' : 'owner');
+            const determinedRole: UserRole = role || (cleanEmail.includes('manager') ? 'manager' : cleanEmail.includes('cashier') ? 'cashier' : 'owner');
             profile = {
               id: authData.user?.id || generateId(),
               email: cleanEmail,
@@ -283,7 +283,7 @@ export const dbService = {
         
         if (!user) {
           // Dynamically create user profile in mock storage with inferred or default role
-          const determinedRole: UserRole = role || (cleanEmail.includes('cashier') ? 'cashier' : 'owner');
+          const determinedRole: UserRole = role || (cleanEmail.includes('manager') ? 'manager' : cleanEmail.includes('cashier') ? 'cashier' : 'owner');
           user = {
             id: generateId(),
             email: cleanEmail,
