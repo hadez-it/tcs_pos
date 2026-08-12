@@ -316,24 +316,24 @@ export const dbService = {
       }
     },
 
-    // Get all cashiers (Owner can manage cashiers)
+    // Get all cashiers and managers
     async getCashiers(): Promise<UserProfile[]> {
       if (isSupabaseConfigured && supabase) {
         try {
           const { data, error } = await supabase
             .from('profiles')
             .select('*')
-            .eq('role', 'cashier');
+            .in('role', ['cashier', 'manager']);
           if (error) throw error;
           return data || [];
         } catch (err) {
           console.warn('Supabase getCashiers failed, falling back to LocalStorage:', err);
           const profiles = getMockData<UserProfile>(MOCK_PROFILES_KEY);
-          return profiles.filter(p => p.role === 'cashier');
+          return profiles.filter(p => p.role === 'cashier' || p.role === 'manager');
         }
       } else {
         const profiles = getMockData<UserProfile>(MOCK_PROFILES_KEY);
-        return profiles.filter(p => p.role === 'cashier');
+        return profiles.filter(p => p.role === 'cashier' || p.role === 'manager');
       }
     },
 
@@ -342,7 +342,8 @@ export const dbService = {
       name: string, 
       password?: string, 
       branch_id?: string, 
-      branch_name?: string
+      branch_name?: string,
+      role: UserRole = 'cashier'
     ): Promise<UserProfile> {
       const staffPassword = password && password.trim() ? password : null;
       if (isSupabaseConfigured && supabase) {
@@ -374,7 +375,7 @@ export const dbService = {
             id: authData.user.id,
             email: formatEmailWithDefaultDomain(email),
             name,
-            role: 'cashier',
+            role,
             branch_id,
             branch_name,
             created_at: new Date().toISOString()
@@ -418,7 +419,7 @@ export const dbService = {
           id: generateId(),
           email: formatEmailWithDefaultDomain(email),
           name,
-          role: 'cashier',
+          role,
           branch_id,
           branch_name,
           created_at: new Date().toISOString()

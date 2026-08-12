@@ -134,7 +134,8 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
     name: '',
     email: '',
     password: '',
-    branch_id: ''
+    branch_id: '',
+    role: 'cashier' as UserRole
   });
   const [cashierSearch, setCashierSearch] = useState('');
 
@@ -244,7 +245,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
 
   const openNewCashierModal = () => {
     setEditingCashier(null);
-    setCashierForm({ name: '', email: '', password: '', branch_id: '' });
+    setCashierForm({ name: '', email: '', password: '', branch_id: '', role: 'cashier' });
     setFormError(null);
     setFormSuccess(null);
     setShowCashierModal(true);
@@ -256,7 +257,8 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
       name: cashier.name || '',
       email: formatDisplayEmail(cashier.email),
       password: '',
-      branch_id: cashier.branch_id || ''
+      branch_id: cashier.branch_id || '',
+      role: cashier.role || 'cashier'
     });
     setFormError(null);
     setFormSuccess(null);
@@ -1207,28 +1209,30 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
           name: cashierForm.name,
           email: formatEmailWithDefaultDomain(cashierForm.email),
           branch_id: cashierForm.branch_id || undefined,
-          branch_name: assignedBranch ? assignedBranch.name : undefined
+          branch_name: assignedBranch ? assignedBranch.name : undefined,
+          role: cashierForm.role
         };
         if (cashierForm.password) {
           updates.password = cashierForm.password;
         }
         await dbService.auth.updateCashier(editingCashier.id, updates);
-        setFormSuccess('Cashier credentials updated successfully!');
+        setFormSuccess('Staff credentials updated successfully!');
       } else {
         await dbService.auth.addCashier(
           formatEmailWithDefaultDomain(cashierForm.email), 
           cashierForm.name, 
           cashierForm.password,
           cashierForm.branch_id || undefined,
-          assignedBranch ? assignedBranch.name : undefined
+          assignedBranch ? assignedBranch.name : undefined,
+          cashierForm.role
         );
-        setFormSuccess('Cashier registered successfully!');
+        setFormSuccess('Staff registered successfully!');
       }
       await loadData();
       setTimeout(() => {
         setShowCashierModal(false);
         setEditingCashier(null);
-        setCashierForm({ name: '', email: '', password: '', branch_id: '' });
+        setCashierForm({ name: '', email: '', password: '', branch_id: '', role: 'cashier' });
         setFormSuccess(null);
         setIsSubmitting(false);
       }, 1200);
@@ -2830,101 +2834,86 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
 
             {/* CASHIER ACCOUNTS MANAGEMENT TAB */}
             {activeTab === 'cashiers' && (
-              <div className="space-y-4 sm:space-y-6">
-                {/* Top Control Bar */}
-                <div className="relative w-full">
-                  <Search className="absolute inset-y-0 left-0 pl-3.5 w-4 h-4 my-auto text-slate-400" />
-                  <input
-                    type="text"
-                    placeholder="Search cashier name or email..."
-                    value={cashierSearch}
-                    onChange={(e) => setCashierSearch(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm font-semibold focus:bg-white focus:outline-none focus:ring-2 focus:ring-black/20 focus:border-gray-900 transition-all shadow-xs"
-                  />
+              <div className="space-y-6">
+                {/* Header and Search */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div>
+                    <h2 className="text-xl font-extrabold text-slate-900 tracking-tight">Staff Accounts</h2>
+                    <p className="text-xs text-slate-500 font-medium mt-1">Manage {filteredCashiers.length} store managers and cashiers</p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="relative w-full sm:w-64">
+                      <Search className="absolute inset-y-0 left-0 pl-3.5 w-4 h-4 my-auto text-slate-400" />
+                      <input
+                        type="text"
+                        placeholder="Search name or email..."
+                        value={cashierSearch}
+                        onChange={(e) => setCashierSearch(e.target.value)}
+                        className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm font-semibold focus:bg-white focus:outline-none focus:ring-2 focus:ring-black/20 focus:border-gray-900 transition-all shadow-xs"
+                      />
+                    </div>
+                  </div>
                 </div>
 
-                {/* Cashier Credentials Table */}
-                <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
-                  <div className="px-4 py-4 sm:px-5 border-b border-slate-200/80 bg-slate-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <div>
-                      <h3 className="text-sm font-bold text-slate-900">Cashier Credentials & Branch Outlets</h3>
-                      <p className="text-xs text-slate-500 mt-0.5">Manage cashier login usernames, passwords, and assigned store branches.</p>
-                    </div>
-                    <span className="self-start sm:self-auto text-xs font-extrabold text-gray-900 bg-gray-50 border border-gray-100 px-2.5 py-1 rounded-lg">
-                      {filteredCashiers.length} Accounts
-                    </span>
-                  </div>
-
+                {/* Staff List */}
+                <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
                   {filteredCashiers.length === 0 ? (
-                    <div className="text-center py-16 text-slate-400 text-xs flex flex-col items-center justify-center space-y-3 bg-white rounded-2xl border border-slate-200">
-                      <div className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-400">
-                        <Users className="w-6 h-6" />
+                    <div className="text-center py-20 px-4 text-slate-400 flex flex-col items-center">
+                      <div className="w-16 h-16 rounded-2xl bg-slate-50 flex items-center justify-center mb-4">
+                        <Users className="w-8 h-8 text-slate-300" />
                       </div>
-                      <div>
-                        <p className="font-semibold text-slate-700 text-sm">No Staff Accounts Found</p>
-                        <p className="text-slate-400 text-xs mt-0.5">Try a different search term or branch filter.</p>
-                      </div>
-                      <button
-                        onClick={openNewCashierModal}
-                        className="mt-2 bg-black hover:bg-gray-800 text-white font-semibold text-xs py-2 px-4 rounded-lg flex items-center gap-1.5 transition-all cursor-pointer"
-                      >
-                        <Plus className="w-3.5 h-3.5" />
-                        <span>Add Cashier Account</span>
-                      </button>
+                      <p className="font-bold text-slate-700 text-sm">No Staff Found</p>
+                      <p className="text-xs mt-1 max-w-xs">We couldn't find any staff accounts matching your search or filters.</p>
                     </div>
                   ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                    <div className="divide-y divide-slate-100">
                       {filteredCashiers.map((cashier) => (
-                        <div key={cashier.id} className="bg-white rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-all p-5 flex flex-col justify-between space-y-4">
-                          <div className="space-y-3">
-                            <div className="flex items-start justify-between gap-2">
-                              <div className="flex items-center gap-3 min-w-0">
-                                <div className="w-12 h-12 rounded-2xl bg-black text-white font-extrabold text-base flex items-center justify-center uppercase shrink-0 shadow-xs">
-                                  {cashier.name ? cashier.name.split(' ').map(n => n[0]).join('').slice(0, 2) : 'C'}
-                                </div>
-                                <div className="min-w-0">
-                                  <h4 className="font-extrabold text-slate-900 text-base truncate">{cashier.name}</h4>
-                                  <p className="text-xs text-slate-400 font-mono truncate">{formatDisplayEmail(cashier.email)}</p>
-                                </div>
-                              </div>
-                              <span className="px-2.5 py-1 rounded-full bg-slate-100 text-slate-800 font-extrabold text-[10px] uppercase tracking-wider border border-slate-200 shrink-0">
-                                {cashier.role || 'cashier'}
-                              </span>
+                        <div key={cashier.id} className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-slate-50/50 transition-colors group">
+                          
+                          <div className="flex items-center gap-4 min-w-0">
+                            <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-700 font-extrabold text-sm flex items-center justify-center uppercase shrink-0 shadow-xs border border-slate-200/60">
+                              {cashier.name ? cashier.name.charAt(0) : 'S'}
                             </div>
-
-                            <div className="bg-slate-50 p-3 rounded-xl border border-slate-200/60 space-y-2 text-xs">
-                              <div className="flex justify-between items-center">
-                                <span className="text-[10px] font-bold text-slate-400 uppercase">Assigned Branch</span>
-                                <span className="inline-flex items-center gap-1 text-slate-800 font-bold text-xs">
-                                  <Building2 className="w-3.5 h-3.5 text-slate-500" />
-                                  <span>{cashier.branch_name || 'All Branches'}</span>
+                            <div className="min-w-0">
+                              <div className="flex items-center gap-2">
+                                <h4 className="font-extrabold text-slate-900 text-sm truncate">{cashier.name}</h4>
+                                <span className={`px-2 py-0.5 rounded-md font-extrabold text-[9px] uppercase tracking-wider border ${
+                                  cashier.role === 'manager' 
+                                    ? 'bg-black text-white border-black' 
+                                    : 'bg-slate-100 text-slate-600 border-slate-200'
+                                }`}>
+                                  {cashier.role || 'cashier'}
                                 </span>
                               </div>
-                              <div className="flex justify-between items-center">
-                                <span className="text-[10px] font-bold text-slate-400 uppercase">Account Status</span>
-                                <span className="inline-flex items-center gap-1 text-gray-900 font-bold text-[11px]">
-                                  <span className="w-2 h-2 rounded-full bg-black animate-pulse-soft" />
-                                  <span>Active</span>
-                                </span>
-                              </div>
+                              <p className="text-xs text-slate-500 font-medium truncate mt-0.5">{formatDisplayEmail(cashier.email)}</p>
                             </div>
                           </div>
 
-                          <div className="pt-2 border-t border-slate-100 flex items-center gap-2">
-                            <button
-                              onClick={() => startEditCashier(cashier)}
-                              className="flex-1 py-2.5 bg-black hover:bg-gray-800 text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
-                            >
-                              <Edit2 className="w-4 h-4" />
-                              <span>Edit Account</span>
-                            </button>
-                            <button
-                              onClick={() => triggerDeleteCashier(cashier.id, cashier.name)}
-                              className="p-2.5 bg-red-50 hover:bg-red-100 text-red-600 rounded-xl transition-all font-bold text-xs cursor-pointer border border-red-100"
-                              title="Revoke Staff Account"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
+                          <div className="flex items-center gap-4 sm:gap-6 text-xs shrink-0 w-full sm:w-auto justify-between sm:justify-end">
+                            <div className="flex flex-col items-start sm:items-end gap-1">
+                              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Assigned To</span>
+                              <div className="flex items-center gap-1.5 font-bold text-slate-700 bg-slate-100 px-2.5 py-1 rounded-lg">
+                                <Building2 className="w-3.5 h-3.5 text-slate-400" />
+                                <span>{cashier.branch_name || 'All Branches'}</span>
+                              </div>
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                              <button
+                                onClick={() => startEditCashier(cashier)}
+                                className="p-2.5 bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 rounded-xl transition-all cursor-pointer shadow-xs active-scale"
+                                title="Edit Account"
+                              >
+                                <Edit2 className="w-4 h-4" />
+                              </button>
+                              <button
+                                onClick={() => triggerDeleteCashier(cashier.id, cashier.name)}
+                                className="p-2.5 bg-white hover:bg-red-50 border border-slate-200 hover:border-red-100 text-red-500 rounded-xl transition-all cursor-pointer shadow-xs active-scale"
+                                title="Revoke Account"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
                           </div>
                         </div>
                       ))}
@@ -4306,11 +4295,23 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                 </select>
               </div>
 
+              <div>
+                <label className="block text-[10px] font-bold text-slate-600 uppercase tracking-wider mb-1">Account Role</label>
+                <select
+                  value={cashierForm.role}
+                  onChange={(e) => setCashierForm({ ...cashierForm, role: e.target.value as UserRole })}
+                  className="w-full p-2.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-gray-900 font-medium cursor-pointer"
+                >
+                  <option value="cashier">Cashier</option>
+                  <option value="manager">Manager</option>
+                </select>
+              </div>
+
               <div className="p-3 bg-gray-50/60 border border-gray-100/80 rounded-lg text-[11px] text-gray-900 space-y-1">
                 <p className="font-bold flex items-center gap-1 text-gray-900">
                   <span>🔑 Staff Login Info</span>
                 </p>
-                <p className="text-[10px] text-gray-900/90">{editingCashier ? 'Update the cashier login credentials.' : 'The cashier will use their email and this custom password to log in.'}</p>
+                <p className="text-[10px] text-gray-900/90">{editingCashier ? 'Update the staff login credentials.' : 'The staff will use their email and this custom password to log in.'}</p>
               </div>
 
               <div className="pt-3 flex justify-end space-x-2.5 border-t border-slate-100">
