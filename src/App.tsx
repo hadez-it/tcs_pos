@@ -81,7 +81,7 @@ export default function App() {
           <SetupBanner />
           {!currentUser ? (
             <Auth onLoginSuccess={handleLoginSuccess} />
-          ) : currentUser.role === 'owner' ? (
+          ) : currentUser.role === 'owner' || currentUser.role === 'manager' ? (
             <OwnerDashboard user={currentUser} onLogout={handleLogout} />
           ) : (
             <CashierDashboard user={currentUser} onLogout={handleLogout} />

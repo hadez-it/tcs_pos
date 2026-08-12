@@ -1,4 +1,4 @@
-export type UserRole = 'owner' | 'cashier';
+export type UserRole = 'owner' | 'manager' | 'cashier';
 
 export interface BusinessProfile {
   name: string;

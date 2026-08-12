@@ -39,9 +39,9 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
   const [transactions, setTransactions] = useState<InventoryTransaction[]>([]);
   const [branches, setBranches] = useState<Branch[]>([]);
   const [deleteRequests, setDeleteRequests] = useState<SaleDeleteRequest[]>([]);
-  const [selectedBranchId, setSelectedBranchId] = useState<string>('all');
+  const [selectedBranchId, setSelectedBranchId] = useState<string>(user.role === 'manager' && user.branch_id ? user.branch_id : 'all');
   const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'cashiers' | 'staff-performance' | 'transactions' | 'branches' | 'settings' | 'cash-flow' | 'label-generator' | 'sale-report' | 'delete-requests'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'cashiers' | 'staff-performance' | 'transactions' | 'branches' | 'settings' | 'cash-flow' | 'label-generator' | 'sale-report' | 'delete-requests'>(user.role === 'manager' ? 'products' : 'overview');
   const [selectedSingleProduct, setSelectedSingleProduct] = useState<Product | null>(null);
   const [showSingleLabelModal, setShowSingleLabelModal] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -1355,8 +1355,12 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
 
   const [showMoreMenu, setShowMoreMenu] = useState(false);
 
-  const mainTabs = ['overview', 'products', 'cashiers', 'cash-flow', 'branches'] as const;
-  const moreTabs = ['staff-performance', 'transactions', 'settings', 'label-generator', 'sale-report', 'delete-requests'] as const;
+  const mainTabs = user.role === 'manager' 
+    ? (['products', 'cash-flow'] as const)
+    : (['overview', 'products', 'cashiers', 'cash-flow', 'branches'] as const);
+  const moreTabs = user.role === 'manager'
+    ? (['staff-performance', 'label-generator', 'sale-report', 'delete-requests'] as const)
+    : (['staff-performance', 'transactions', 'settings', 'label-generator', 'sale-report', 'delete-requests'] as const);
   const pendingDeleteCount = useMemo(() => Array.isArray(deleteRequests) ? deleteRequests.filter(r => r && r.status === 'pending').length : 0, [deleteRequests]);
 
   // Back button: each surface pops in the reverse order it was opened, so a
@@ -1407,21 +1411,27 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
           <div>
             <p className="px-3 text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-2">Main Menu</p>
             <div className="space-y-1">
-              <button onClick={() => handleTabSwitch('overview')} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeTab === 'overview' ? 'bg-black text-white shadow-xs' : 'text-slate-700 hover:bg-slate-100'}`}>
-                <TrendingUp className="w-4 h-4" /><span>Dashboard</span>
-              </button>
+              {user.role === 'owner' && (
+                <button onClick={() => handleTabSwitch('overview')} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeTab === 'overview' ? 'bg-black text-white shadow-xs' : 'text-slate-700 hover:bg-slate-100'}`}>
+                  <TrendingUp className="w-4 h-4" /><span>Dashboard</span>
+                </button>
+              )}
               <button onClick={() => handleTabSwitch('products')} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeTab === 'products' ? 'bg-black text-white shadow-xs' : 'text-slate-700 hover:bg-slate-100'}`}>
                 <Package className="w-4 h-4" /><span>Products Catalog</span>
               </button>
-              <button onClick={() => handleTabSwitch('cashiers')} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeTab === 'cashiers' ? 'bg-black text-white shadow-xs' : 'text-slate-700 hover:bg-slate-100'}`}>
-                <Users className="w-4 h-4" /><span>Staff & Cashiers</span>
-              </button>
+              {user.role === 'owner' && (
+                <button onClick={() => handleTabSwitch('cashiers')} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeTab === 'cashiers' ? 'bg-black text-white shadow-xs' : 'text-slate-700 hover:bg-slate-100'}`}>
+                  <Users className="w-4 h-4" /><span>Staff & Cashiers</span>
+                </button>
+              )}
               <button onClick={() => handleTabSwitch('cash-flow')} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeTab === 'cash-flow' ? 'bg-black text-white shadow-xs' : 'text-slate-700 hover:bg-slate-100'}`}>
                 <Wallet className="w-4 h-4" /><span>Cash Flow</span>
               </button>
-              <button onClick={() => handleTabSwitch('branches')} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeTab === 'branches' ? 'bg-black text-white shadow-xs' : 'text-slate-700 hover:bg-slate-100'}`}>
-                <Building2 className="w-4 h-4" /><span>Stores & Branches</span>
-              </button>
+              {user.role === 'owner' && (
+                <button onClick={() => handleTabSwitch('branches')} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeTab === 'branches' ? 'bg-black text-white shadow-xs' : 'text-slate-700 hover:bg-slate-100'}`}>
+                  <Building2 className="w-4 h-4" /><span>Stores & Branches</span>
+                </button>
+              )}
             </div>
           </div>
 
@@ -1441,32 +1451,38 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
               <button onClick={() => handleTabSwitch('staff-performance')} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeTab === 'staff-performance' ? 'bg-black text-white shadow-xs' : 'text-slate-700 hover:bg-slate-100'}`}>
                 <Award className="w-4 h-4" /><span>Staff Performance</span>
               </button>
-              <button onClick={() => handleTabSwitch('transactions')} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeTab === 'transactions' ? 'bg-black text-white shadow-xs' : 'text-slate-700 hover:bg-slate-100'}`}>
-                <Clipboard className="w-4 h-4" /><span>Audit Logs & History</span>
-              </button>
+              {user.role === 'owner' && (
+                <button onClick={() => handleTabSwitch('transactions')} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeTab === 'transactions' ? 'bg-black text-white shadow-xs' : 'text-slate-700 hover:bg-slate-100'}`}>
+                  <Clipboard className="w-4 h-4" /><span>Audit Logs & History</span>
+                </button>
+              )}
               <button onClick={() => handleTabSwitch('sale-report')} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeTab === 'sale-report' ? 'bg-black text-white shadow-xs' : 'text-slate-700 hover:bg-slate-100'}`}>
                 <Receipt className="w-4 h-4" /><span>Sale Report</span>
               </button>
-              <button onClick={() => handleTabSwitch('settings')} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeTab === 'settings' ? 'bg-black text-white shadow-xs' : 'text-slate-700 hover:bg-slate-100'}`}>
-                <Store className="w-4 h-4" /><span>Business & Branding</span>
-              </button>
+              {user.role === 'owner' && (
+                <button onClick={() => handleTabSwitch('settings')} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeTab === 'settings' ? 'bg-black text-white shadow-xs' : 'text-slate-700 hover:bg-slate-100'}`}>
+                  <Store className="w-4 h-4" /><span>Business & Branding</span>
+                </button>
+              )}
               <button onClick={() => handleTabSwitch('label-generator')} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeTab === 'label-generator' ? 'bg-black text-white shadow-xs' : 'text-slate-700 hover:bg-slate-100'}`}>
                 <Printer className="w-4 h-4" /><span>Label Generator</span>
               </button>
             </div>
           </div>
 
-          <div>
-            <p className="px-3 text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-2">Data & Setup</p>
-            <div className="space-y-1">
-              <button onClick={() => setShowSqlModal(true)} className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-100 transition-all cursor-pointer">
-                <Database className="w-4 h-4 text-slate-500" /><span>Supabase SQL Setup</span>
-              </button>
-              <button onClick={() => setShowCsvModal(true)} className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-100 transition-all cursor-pointer">
-                <FileSpreadsheet className="w-4 h-4 text-slate-500" /><span>Import Products CSV</span>
-              </button>
+          {user.role === 'owner' && (
+            <div>
+              <p className="px-3 text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-2">Data & Setup</p>
+              <div className="space-y-1">
+                <button onClick={() => setShowSqlModal(true)} className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-100 transition-all cursor-pointer">
+                  <Database className="w-4 h-4 text-slate-500" /><span>Supabase SQL Setup</span>
+                </button>
+                <button onClick={() => setShowCsvModal(true)} className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-100 transition-all cursor-pointer">
+                  <FileSpreadsheet className="w-4 h-4 text-slate-500" /><span>Import Products CSV</span>
+                </button>
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         <div className="p-3 border-t border-slate-100 bg-slate-50/50 flex items-center justify-between">
@@ -1583,7 +1599,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
           </div>
 
           <div className="flex items-center space-x-3">
-            {branches.length > 0 && (
+            {branches.length > 0 && user.role !== 'manager' && (
               <select
                 value={selectedBranchId}
                 onChange={e => setSelectedBranchId(e.target.value)}
