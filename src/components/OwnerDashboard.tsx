@@ -4988,15 +4988,17 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                 <Award className="w-5 h-5 text-gray-500" />
                 <span>Staff Performance</span>
               </button>
-              <button
-                onClick={() => { handleTabSwitch('transactions'); setShowMoreMenu(false); }}
-                className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-bold transition-all cursor-pointer active-scale ${
-                  activeTab === 'transactions' ? 'bg-gray-50 text-gray-900' : 'text-slate-700 hover:bg-slate-50'
-                }`}
-              >
-                <Clipboard className="w-5 h-5 text-gray-500" />
-                <span>Audit Logs & History</span>
-              </button>
+              {user.role === 'owner' && (
+                <button
+                  onClick={() => { handleTabSwitch('transactions'); setShowMoreMenu(false); }}
+                  className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-bold transition-all cursor-pointer active-scale ${
+                    activeTab === 'transactions' ? 'bg-gray-50 text-gray-900' : 'text-slate-700 hover:bg-slate-50'
+                  }`}
+                >
+                  <Clipboard className="w-5 h-5 text-gray-500" />
+                  <span>Audit Logs & History</span>
+                </button>
+              )}
               <button
                 onClick={() => { handleTabSwitch('delete-requests'); setShowMoreMenu(false); }}
                 className={`w-full flex items-center justify-between px-4 py-3.5 rounded-xl text-sm font-bold transition-all cursor-pointer active-scale ${
@@ -5022,15 +5024,17 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                 <Receipt className="w-5 h-5 text-gray-500" />
                 <span>Sale Report</span>
               </button>
-              <button
-                onClick={() => { handleTabSwitch('settings'); setShowMoreMenu(false); }}
-                className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-bold transition-all cursor-pointer active-scale ${
-                  activeTab === 'settings' ? 'bg-gray-50 text-gray-900' : 'text-slate-700 hover:bg-slate-50'
-                }`}
-              >
-                <Store className="w-5 h-5 text-gray-500" />
-                <span>Business & Branding</span>
-              </button>
+              {user.role === 'owner' && (
+                <button
+                  onClick={() => { handleTabSwitch('settings'); setShowMoreMenu(false); }}
+                  className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-bold transition-all cursor-pointer active-scale ${
+                    activeTab === 'settings' ? 'bg-gray-50 text-gray-900' : 'text-slate-700 hover:bg-slate-50'
+                  }`}
+                >
+                  <Store className="w-5 h-5 text-gray-500" />
+                  <span>Business & Branding</span>
+                </button>
+              )}
 
               <button
                 onClick={() => { handleTabSwitch('label-generator'); setShowMoreMenu(false); }}
@@ -5044,20 +5048,24 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
 
               <div className="border-t border-slate-100 my-2" />
 
-              <button
-                onClick={() => { setShowSqlModal(true); setShowMoreMenu(false); }}
-                className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-bold text-slate-700 hover:bg-slate-50 transition-all cursor-pointer active-scale"
-              >
-                <Database className="w-5 h-5 text-gray-500" />
-                <span>Supabase SQL Setup</span>
-              </button>
-              <button
-                onClick={() => { setShowCsvModal(true); setShowMoreMenu(false); }}
-                className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-bold text-slate-700 hover:bg-slate-50 transition-all cursor-pointer active-scale"
-              >
-                <FileSpreadsheet className="w-5 h-5 text-gray-500" />
-                <span>Import Products CSV</span>
-              </button>
+              {user.role === 'owner' && (
+                <>
+                  <button
+                    onClick={() => { setShowSqlModal(true); setShowMoreMenu(false); }}
+                    className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-bold text-slate-700 hover:bg-slate-50 transition-all cursor-pointer active-scale"
+                  >
+                    <Database className="w-5 h-5 text-gray-500" />
+                    <span>Supabase SQL Setup</span>
+                  </button>
+                  <button
+                    onClick={() => { setShowCsvModal(true); setShowMoreMenu(false); }}
+                    className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-bold text-slate-700 hover:bg-slate-50 transition-all cursor-pointer active-scale"
+                  >
+                    <FileSpreadsheet className="w-5 h-5 text-gray-500" />
+                    <span>Import Products CSV</span>
+                  </button>
+                </>
+              )}
 
               <div className="border-t border-slate-100 my-2" />
 
