@@ -1205,13 +1205,14 @@ export const dbService = {
           for (const item of cart) {
             const newStock = Math.max(0, item.product.stock - item.quantity);
             // Update Stock
-            await supabase
+            const { error: stockErr } = await supabase
               .from('products')
               .update({ stock: newStock })
               .eq('id', item.product.id);
+            if (stockErr) throw stockErr;
 
             // Log transaction
-            await supabase.from('inventory_transactions').insert({
+            const { error: txErr } = await supabase.from('inventory_transactions').insert({
               id: generateId(),
               product_id: item.product.id,
               product_name: item.product.name,
@@ -1223,6 +1224,7 @@ export const dbService = {
               performed_by: cashier.name,
               created_at: now
             });
+            if (txErr) throw txErr;
           }
 
           return { ...newSale, items: saleItems };
@@ -1285,6 +1287,8 @@ export const dbService = {
             id: generateId(),
             product_id: item.product.id,
             product_name: item.product.name,
+            branch_id: cashier.branch_id || DEFAULT_BRANCH_ID,
+            branch_name: cashier.branch_name || DEFAULT_BRANCH_NAME,
             type: 'sale',
             quantity: item.quantity,
             notes: `Sold at POS to ${customer?.name || 'Walk-in Customer'}`,

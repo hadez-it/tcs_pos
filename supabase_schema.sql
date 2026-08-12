@@ -150,9 +150,9 @@ CREATE POLICY "Owners can insert products"
   ON public.products FOR INSERT
   WITH CHECK (public.current_user_is_owner());
 
-CREATE POLICY "Owners can update products"
+CREATE POLICY "Authenticated users can update products"
   ON public.products FOR UPDATE
-  USING (public.current_user_is_owner());
+  USING (auth.role() = 'authenticated');
 
 CREATE POLICY "Owners can delete products"
   ON public.products FOR DELETE
