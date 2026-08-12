@@ -20,7 +20,7 @@ CREATE TABLE public.profiles (
     id          UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
     email       TEXT UNIQUE NOT NULL,
     name        TEXT NOT NULL,
-    role        TEXT NOT NULL CHECK (role IN ('owner', 'cashier')),
+    role        TEXT NOT NULL CHECK (role IN ('owner', 'cashier', 'manager')),
     branch_id   TEXT,
     branch_name TEXT,
     created_at  TIMESTAMPTZ NOT NULL DEFAULT timezone('Asia/Yangon', now())
