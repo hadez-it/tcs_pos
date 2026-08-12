@@ -109,6 +109,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
   // Interactive Modals / Forms States
   const [showProductModal, setShowProductModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [expandedProductId, setExpandedProductId] = useState<string | null>(null);
   const [productForm, setProductForm] = useState({
     name: '',
     sku: '',
@@ -2531,7 +2532,11 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                           const isOutOfStock = prod.stock === 0;
 
                           return (
-                            <div key={prod.id} className="p-4 rounded-xl border border-slate-200 bg-white shadow-2xs space-y-3">
+                            <div 
+                              key={prod.id} 
+                              onClick={() => setExpandedProductId(expandedProductId === prod.id ? null : prod.id)}
+                              className="p-4 rounded-xl border border-slate-200 bg-white shadow-2xs space-y-3 cursor-pointer transition-all duration-300 active:scale-[0.98]"
+                            >
                               <div className="flex justify-between items-start">
                                 <div className="min-w-0">
                                   <h4 className="font-bold text-slate-950 text-xs">{prod.name}</h4>
@@ -2575,38 +2580,41 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                                     <span className="text-gray-900">Stock OK</span>
                                   )}
                                 </div>
-
-                                <div className="flex items-center space-x-1.5">
-                                  <button
-                                    onClick={() => { setSelectedSingleProduct(prod); setShowSingleLabelModal(true); }}
-                                    className="p-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors flex items-center gap-1 text-[10px] font-bold"
-                                    title="Print Barcode Label"
-                                  >
-                                    <Printer className="w-3 h-3 text-gray-900" />
-                                    <span>Barcode</span>
-                                  </button>
-                                  <button
-                                    onClick={() => startEditProduct(prod)}
-                                    className="p-1.5 bg-gray-50 hover:bg-gray-100 text-gray-900 rounded-lg transition-colors flex items-center gap-1 text-[10px] font-bold"
-                                  >
-                                    <Edit2 className="w-3 h-3" />
-                                    <span>Edit</span>
-                                  </button>
-                                  <button
-                                    onClick={() => openQuickRestock(prod)}
-                                    className="p-1.5 bg-gray-50 hover:bg-gray-100 text-gray-900 rounded-lg transition-colors flex items-center gap-1 text-[10px] font-bold"
-                                  >
-                                    <PackagePlus className="w-3 h-3" />
-                                    <span>Restock</span>
-                                  </button>
-                                  <button
-                                    onClick={() => triggerDeleteProduct(prod.id, prod.name)}
-                                    className="p-1.5 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg transition-colors flex items-center gap-1 text-[10px] font-bold"
-                                  >
-                                    <Trash2 className="w-3 h-3" />
-                                    <span>Delete</span>
-                                  </button>
+                                <div className={`text-slate-400 transition-transform duration-300 ${expandedProductId === prod.id ? 'rotate-180' : ''}`}>
+                                  <ChevronDown className="w-4 h-4" />
                                 </div>
+                              </div>
+
+                              <div className={`grid grid-cols-2 gap-2 overflow-hidden transition-all duration-300 ease-in-out ${expandedProductId === prod.id ? 'max-h-40 opacity-100 mt-3 pt-3 border-t border-slate-100' : 'max-h-0 opacity-0 mt-0 pt-0 border-transparent'}`}>
+                                <button
+                                  onClick={(e) => { e.stopPropagation(); setSelectedSingleProduct(prod); setShowSingleLabelModal(true); }}
+                                  className="p-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors flex items-center justify-center gap-1.5 text-[10px] font-bold w-full"
+                                  title="Print Barcode Label"
+                                >
+                                  <Printer className="w-3.5 h-3.5 text-gray-900" />
+                                  <span>Barcode</span>
+                                </button>
+                                <button
+                                  onClick={(e) => { e.stopPropagation(); startEditProduct(prod); }}
+                                  className="p-2.5 bg-gray-50 hover:bg-gray-100 text-gray-900 rounded-lg transition-colors flex items-center justify-center gap-1.5 text-[10px] font-bold w-full"
+                                >
+                                  <Edit2 className="w-3.5 h-3.5" />
+                                  <span>Edit</span>
+                                </button>
+                                <button
+                                  onClick={(e) => { e.stopPropagation(); openQuickRestock(prod); }}
+                                  className="p-2.5 bg-gray-50 hover:bg-gray-100 text-gray-900 rounded-lg transition-colors flex items-center justify-center gap-1.5 text-[10px] font-bold w-full"
+                                >
+                                  <PackagePlus className="w-3.5 h-3.5" />
+                                  <span>Restock</span>
+                                </button>
+                                <button
+                                  onClick={(e) => { e.stopPropagation(); triggerDeleteProduct(prod.id, prod.name); }}
+                                  className="p-2.5 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg transition-colors flex items-center justify-center gap-1.5 text-[10px] font-bold w-full"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                  <span>Delete</span>
+                                </button>
                               </div>
                             </div>
                           );
