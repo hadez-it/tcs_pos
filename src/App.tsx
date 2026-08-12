@@ -76,7 +76,7 @@ export default function App() {
     <ToastProvider>
       <ExitPrompt />
       <PullToRefresh>
-        <div className="h-full w-full flex flex-col bg-slate-50 text-slate-900 select-none overflow-hidden">
+        <div className="h-full w-full flex flex-col bg-slate-50 text-slate-900 overflow-hidden">
           <OfflineSyncBar />
           <SetupBanner />
           {!currentUser ? (

@@ -1386,7 +1386,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
   useBackTabHistory(activeTab, setActiveTab, 'overview');
 
   return (
-    <div className="h-full w-full bg-gradient-to-br from-slate-50 to-slate-100/80 flex flex-col lg:flex-row select-none overflow-hidden">
+    <div className="h-full w-full bg-gradient-to-br from-slate-50 to-slate-100/80 flex flex-col lg:flex-row overflow-hidden">
 
       {/* DESKTOP LEFT SIDEBAR NAVIGATION */}
       <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:shrink-0 bg-white border-r border-slate-200 z-30 overflow-y-auto">
