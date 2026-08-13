@@ -16,6 +16,12 @@ export default function PullToRefresh({ onRefresh, children }: PullToRefreshProp
     const handleTouchStart = (e: TouchEvent) => {
       if (isRefreshing) return;
 
+      // Only allow pull-to-refresh if the touch starts at the top of the screen (e.g. within 150px)
+      if (e.touches[0].clientY > 150) {
+        isPullingRef.current = false;
+        return;
+      }
+
       let target = e.target as HTMLElement | null;
       let isAtTop = true;
 
