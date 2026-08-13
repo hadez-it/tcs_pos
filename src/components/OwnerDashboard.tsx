@@ -1141,7 +1141,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
       id,
       type: 'branch',
       title: 'Delete Branch Outlet?',
-      description: `Are you sure you want to delete branch outlet "${name}"? Cashiers and products currently assigned to this branch will become unassigned/global.`
+      description: `Are you sure you want to delete branch outlet "${name}"? Cashiers and products currently assigned to this branch will become unassigned and need to be reassigned.`
     });
     setDeleteError(null);
   };
@@ -1179,6 +1179,11 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
 
     if (!cashierForm.name || !cashierForm.email) {
       setFormError('Please fill in cashier name and username/email.');
+      return;
+    }
+
+    if (!cashierForm.branch_id) {
+      setFormError('Please assign a branch outlet.');
       return;
     }
 
@@ -4301,7 +4306,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                   onChange={(e) => setCashierForm({ ...cashierForm, branch_id: e.target.value })}
                   className="w-full p-2.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-gray-900 font-medium"
                 >
-                  <option value="">🏢 Unassigned / Global</option>
+                  <option value="" disabled>Select a Branch</option>
                   {branches.map(b => (
                     <option key={b.id} value={b.id}>
                       📍 {b.name} ({b.code})
