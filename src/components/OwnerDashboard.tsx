@@ -1998,7 +1998,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
 
                   {/* Filters with smooth animation */}
                   <div
-                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 overflow-hidden transition-all duration-300 ease-in-out"
+                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5 overflow-hidden transition-all duration-300 ease-in-out"
                     style={{
                       maxHeight: showCfFilters ? '500px' : '0',
                       opacity: showCfFilters ? 1 : 0,
@@ -2092,6 +2092,23 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                           .map(cat => <option key={cat} value={cat}>{cat}</option>)}
                       </select>
                     </div>
+
+                    {/* Branch */}
+                    {user.role !== 'manager' && branches.length > 0 && (
+                      <div>
+                        <span className="text-[9px] font-bold text-slate-500 uppercase tracking-wider mb-1.5 block">Branch</span>
+                        <select
+                          value={selectedBranchId}
+                          onChange={(e) => setSelectedBranchId(e.target.value)}
+                          className="w-full bg-white border border-slate-200 rounded-xl py-2 px-2.5 font-medium text-slate-800 text-xs focus:outline-none shadow-2xs cursor-pointer"
+                        >
+                          <option value="all">All Branches</option>
+                          {branches.map(b => (
+                            <option key={b.id} value={b.id}>{b.name}</option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
 
                     {/* Search */}
                     <div>
@@ -2467,7 +2484,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                 </div>
 
                 {/* Filters Row */}
-                <div className="p-3 sm:p-4 bg-slate-50/80 border-b border-slate-200 grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3">
+                <div className="p-3 sm:p-4 bg-slate-50/80 border-b border-slate-200 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
                   <div className="relative">
                     <Search className="absolute inset-y-0 left-0 pl-3 w-4 h-4 my-auto text-slate-400" />
                     <input
@@ -2480,6 +2497,21 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                   </div>
 
                   <div className="grid grid-cols-2 sm:contents gap-2">
+                    {user.role !== 'manager' && branches.length > 0 && (
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 text-xs">
+                        <span className="text-[11px] sm:text-xs text-slate-500 font-bold shrink-0">Branch:</span>
+                        <select
+                          value={selectedBranchId}
+                          onChange={(e) => setSelectedBranchId(e.target.value)}
+                          className="w-full bg-white border border-slate-200 rounded-xl py-2 px-2 font-medium text-slate-800 text-xs focus:outline-none shadow-2xs cursor-pointer"
+                        >
+                          <option value="all">All Branches</option>
+                          {branches.map(b => (
+                            <option key={b.id} value={b.id}>{b.name}</option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
                     <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 text-xs">
                       <span className="text-[11px] sm:text-xs text-slate-500 font-bold shrink-0">Category:</span>
                       <SearchableCategorySelect
@@ -2850,6 +2882,18 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                     <p className="text-xs text-slate-500 font-medium mt-1">Manage {filteredCashiers.length} store managers and cashiers</p>
                   </div>
                   <div className="flex items-center gap-3">
+                    {user.role !== 'manager' && branches.length > 0 && (
+                      <select
+                        value={selectedBranchId}
+                        onChange={(e) => setSelectedBranchId(e.target.value)}
+                        className="w-full sm:w-auto px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-semibold focus:bg-white focus:outline-none focus:border-gray-900 transition-all shadow-xs cursor-pointer"
+                      >
+                        <option value="all">All Branches</option>
+                        {branches.map(b => (
+                          <option key={b.id} value={b.id}>{b.name}</option>
+                        ))}
+                      </select>
+                    )}
                     <div className="relative w-full sm:w-64">
                       <Search className="absolute inset-y-0 left-0 pl-3.5 w-4 h-4 my-auto text-slate-400" />
                       <input
@@ -3011,6 +3055,18 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                         <X className="w-4 h-4" />
                       </button>
                     )}
+                    {user.role !== 'manager' && branches.length > 0 && (
+                      <select
+                        value={selectedBranchId}
+                        onChange={(e) => setSelectedBranchId(e.target.value)}
+                        className="px-3 py-1.5 ml-auto sm:ml-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:border-gray-900 cursor-pointer"
+                      >
+                        <option value="all">All Branches</option>
+                        {branches.map(b => (
+                          <option key={b.id} value={b.id}>{b.name}</option>
+                        ))}
+                      </select>
+                    )}
                   </div>
                 </div>
 
@@ -3161,7 +3217,19 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
             {/* SYSTEM AUDIT & TRANSACTION LOGS */}
             {activeTab === 'transactions' && (
               <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-                <div className="p-4 sm:p-5 border-b border-slate-200 flex justify-end">
+                <div className="p-4 sm:p-5 border-b border-slate-200 flex justify-end gap-3">
+                  {user.role !== 'manager' && branches.length > 0 && (
+                    <select
+                      value={selectedBranchId}
+                      onChange={(e) => setSelectedBranchId(e.target.value)}
+                      className="w-full sm:w-auto px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold focus:outline-none focus:border-gray-900 shadow-sm cursor-pointer"
+                    >
+                      <option value="all">All Branches</option>
+                      {branches.map(b => (
+                        <option key={b.id} value={b.id}>{b.name}</option>
+                      ))}
+                    </select>
+                  )}
                   <div className="relative max-w-xs w-full">
                     <Search className="absolute inset-y-0 left-0 pl-3 w-4 h-4 my-auto text-slate-400" />
                     <input
