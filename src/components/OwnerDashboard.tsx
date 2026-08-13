@@ -49,7 +49,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
 
   const [perfStartDate, setPerfStartDate] = useState('');
   const [perfEndDate, setPerfEndDate] = useState('');
-  const [perfDatePreset, setPerfDatePreset] = useState<'all' | 'prev-month' | 'this-month' | 'next-month' | 'custom'>('all');
+  const [perfDatePreset, setPerfDatePreset] = useState<'all' | 'prev-month' | 'this-month' | 'custom'>('all');
 
   // Business Profile & Branding State
   const [businessProfile, setBusinessProfile] = useState<BusinessProfile>(DEFAULT_BUSINESS_PROFILE);
@@ -903,7 +903,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
     }
   };
 
-  const handlePerfMonthPreset = (preset: 'all' | 'prev-month' | 'this-month' | 'next-month') => {
+  const handlePerfMonthPreset = (preset: 'all' | 'prev-month' | 'this-month') => {
     setPerfDatePreset(preset);
     if (preset === 'all') {
       setPerfStartDate('');
@@ -919,12 +919,6 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
       if (month < 0) {
         month = 11;
         year -= 1;
-      }
-    } else if (preset === 'next-month') {
-      month += 1;
-      if (month > 11) {
-        month = 0;
-        year += 1;
       }
     }
 
@@ -2998,16 +2992,6 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                       }`}
                     >
                       This Month
-                    </button>
-                    <button
-                      onClick={() => handlePerfMonthPreset('next-month')}
-                      className={`px-3 py-2 sm:py-1.5 rounded-xl text-xs font-bold transition-all text-center cursor-pointer ${
-                        perfDatePreset === 'next-month'
-                          ? 'bg-black text-white shadow-xs'
-                          : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
-                      }`}
-                    >
-                      Next Month
                     </button>
                     <button
                       onClick={() => handlePerfMonthPreset('all')}
