@@ -964,7 +964,6 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
       const totalItemsSold = cashierSales.reduce((sum, s) => {
         return sum + (s.items ? s.items.reduce((iSum, item) => iSum + (item.quantity || 0), 0) : 0);
       }, 0);
-      const avgReceipt = totalTransactions > 0 ? totalRevenue / totalTransactions : 0;
       const sortedSales = [...cashierSales].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
       const lastActive = sortedSales.length > 0 ? sortedSales[0].created_at : null;
 
@@ -973,7 +972,6 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
         totalRevenue,
         totalTransactions,
         totalItemsSold,
-        avgReceipt,
         lastActive,
         sales: sortedSales
       };
@@ -3092,7 +3090,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                       <div className="col-span-3">Staff</div>
                       <div className="col-span-2">Revenue</div>
                       <div className="col-span-2">Receipts</div>
-                      <div className="col-span-2">Avg Receipt</div>
+                      <div className="col-span-2">Units Sold</div>
                       <div className="col-span-2 text-right">Actions</div>
                     </div>
                     <div className="divide-y divide-slate-100">
@@ -3125,8 +3123,8 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                                 <span className="font-bold text-slate-800 text-sm">{item.totalTransactions}</span>
                               </div>
                               <div className="col-span-2 md:col-span-2 flex flex-col">
-                                <span className="md:hidden text-[9px] uppercase font-bold text-slate-400 mb-0.5">Avg Receipt</span>
-                                <span className="font-bold text-slate-800 text-xs font-mono">{formatCurrency(item.avgReceipt)}</span>
+                                <span className="md:hidden text-[9px] uppercase font-bold text-slate-400 mb-0.5">Units Sold</span>
+                                <span className="font-bold text-slate-800 text-sm">{item.totalItemsSold}</span>
                               </div>
                             </div>
 
