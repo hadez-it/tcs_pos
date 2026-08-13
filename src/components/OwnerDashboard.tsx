@@ -110,6 +110,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
   const [showProductModal, setShowProductModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [expandedProductId, setExpandedProductId] = useState<string | null>(null);
+  const [isProductNameFocused, setIsProductNameFocused] = useState(false);
   const [productForm, setProductForm] = useState({
     name: '',
     sku: '',
@@ -3936,16 +3937,39 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div className="sm:col-span-2">
+                    <div className="sm:col-span-2 relative">
                       <label className="block text-[10px] font-bold text-slate-600 uppercase tracking-wider mb-1">Product Name *</label>
                       <input
                         type="text"
                         required
                         value={productForm.name}
                         onChange={(e) => setProductForm({ ...productForm, name: e.target.value })}
+                        onFocus={() => setIsProductNameFocused(true)}
+                        onBlur={() => setTimeout(() => setIsProductNameFocused(false), 200)}
                         placeholder="e.g. Organic Whole Milk 1L"
                         className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-gray-900 font-medium"
                       />
+                      {isProductNameFocused && productForm.name.length >= 2 && (
+                        (() => {
+                          const matchingProducts = products.filter(p => p.name.toLowerCase().includes(productForm.name.toLowerCase()) && p.id !== editingProduct?.id).slice(0, 5);
+                          if (matchingProducts.length > 0) {
+                            return (
+                              <div className="absolute z-10 w-full mt-1 bg-white border border-slate-200 rounded-xl shadow-lg overflow-hidden">
+                                <div className="px-3 py-2 bg-slate-50 border-b border-slate-100 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                                  Similar Existing Products
+                                </div>
+                                {matchingProducts.map(p => (
+                                  <div key={p.id} className="px-3 py-2 text-xs font-medium text-slate-700 flex items-center justify-between border-b border-slate-50 last:border-0">
+                                    <span>{p.name}</span>
+                                    <span className="text-[10px] text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">{p.sku}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            );
+                          }
+                          return null;
+                        })()
+                      )}
                     </div>
 
                     <div>
