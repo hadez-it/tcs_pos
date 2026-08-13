@@ -1473,19 +1473,6 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
             </div>
           </div>
 
-          {user.role === 'owner' && (
-            <div>
-              <p className="px-3 text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-2">Data & Setup</p>
-              <div className="space-y-1">
-                <button onClick={() => setShowSqlModal(true)} className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-100 transition-all cursor-pointer">
-                  <Database className="w-4 h-4 text-slate-500" /><span>Supabase SQL Setup</span>
-                </button>
-                <button onClick={() => setShowCsvModal(true)} className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-100 transition-all cursor-pointer">
-                  <FileSpreadsheet className="w-4 h-4 text-slate-500" /><span>Import Products CSV</span>
-                </button>
-              </div>
-            </div>
-          )}
         </div>
 
         <div className="p-3 border-t border-slate-100 bg-slate-50/50 flex items-center justify-between">
@@ -5089,27 +5076,6 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                 <Printer className="w-5 h-5 text-gray-500" />
                 <span>Label Generator & Printer</span>
               </button>
-
-              <div className="border-t border-slate-100 my-2" />
-
-              {user.role === 'owner' && (
-                <>
-                  <button
-                    onClick={() => { setShowSqlModal(true); setShowMoreMenu(false); }}
-                    className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-bold text-slate-700 hover:bg-slate-50 transition-all cursor-pointer active-scale"
-                  >
-                    <Database className="w-5 h-5 text-gray-500" />
-                    <span>Supabase SQL Setup</span>
-                  </button>
-                  <button
-                    onClick={() => { setShowCsvModal(true); setShowMoreMenu(false); }}
-                    className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-bold text-slate-700 hover:bg-slate-50 transition-all cursor-pointer active-scale"
-                  >
-                    <FileSpreadsheet className="w-5 h-5 text-gray-500" />
-                    <span>Import Products CSV</span>
-                  </button>
-                </>
-              )}
 
               <div className="border-t border-slate-100 my-2" />
 
