@@ -11,7 +11,7 @@ import {
   ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend 
 } from 'recharts';
 import { dbService, isSupabaseConfigured, DEFAULT_BUSINESS_PROFILE, formatEmailWithDefaultDomain } from '../lib/supabase';
-import { Product, SaleWithItems, UserProfile, InventoryTransaction, SalesAnalytics, Branch, BusinessProfile, CashFlowEntry, CashFlowType, PaymentMethod, SaleDeleteRequest } from '../types';
+import { Product, SaleWithItems, UserProfile, InventoryTransaction, SalesAnalytics, Branch, BusinessProfile, CashFlowEntry, CashFlowType, PaymentMethod, SaleDeleteRequest, UserRole } from '../types';
 import { formatCurrency, formatDisplayEmail } from '../utils/format';
 import { useToast } from '../utils/toast';
 import { useBackDismiss, useBackTabHistory } from '../lib/backNavigation';
@@ -959,7 +959,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
   }, [displaySales, perfStartDate, perfEndDate]);
 
   const cashierPerformanceList = useMemo(() => {
-    return displayCashiers.map(cashier => {
+    return displayCashiers.filter(c => c.role !== 'manager').map(cashier => {
       const cashierSales = filteredSalesForPerformance.filter(s => 
         (s.cashier_id && s.cashier_id === cashier.id) ||
         (s.cashier_name && s.cashier_name.trim().toLowerCase() === cashier.name.trim().toLowerCase())
@@ -3071,144 +3071,101 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                 </div>
 
                 {/* Summary KPI Cards for Cashier Performance */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
-                  <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-xs flex items-center justify-between">
-                    <div>
-                      <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Active Staff</span>
-                      <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 mt-1">{displayCashiers.length} Cashiers</h3>
-                    </div>
-                    <div className="p-2.5 rounded-lg bg-gray-50 text-gray-900">
-                      <Users className="w-5 h-5" />
-                    </div>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                  <div className="bg-white border-b-2 border-black p-4 flex flex-col justify-center">
+                    <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Active Staff</span>
+                    <h3 className="text-xl sm:text-2xl font-black text-black mt-1">{cashierPerformanceList.length}</h3>
                   </div>
-
-                  <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-xs flex items-center justify-between">
-                    <div>
-                      <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Top Performer</span>
-                      <h3 className="text-sm sm:text-base font-extrabold text-slate-900 mt-1 truncate max-w-[120px]">
-                        {topCashierPerf ? topCashierPerf.cashier.name : 'N/A'}
-                      </h3>
-                      {topCashierPerf && (
-                        <p className="text-[10px] text-gray-900 font-bold">{formatCurrency(topCashierPerf.totalRevenue)}</p>
-                      )}
-                    </div>
-                    <div className="p-2.5 rounded-lg bg-gray-50 text-gray-900">
-                      <Award className="w-5 h-5" />
-                    </div>
+                  <div className="bg-white border-b-2 border-black p-4 flex flex-col justify-center">
+                    <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Top Performer</span>
+                    <h3 className="text-sm sm:text-base font-black text-black mt-1 truncate">
+                      {topCashierPerf ? topCashierPerf.cashier.name : 'N/A'}
+                    </h3>
                   </div>
-
-                  <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-xs flex items-center justify-between">
-                    <div>
-                      <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Total Staff Revenue</span>
-                      <h3 className="text-sm sm:text-lg font-extrabold text-gray-900 mt-1">{formatCurrency(totalCashierSalesVolume)}</h3>
-                    </div>
-                    <div className="p-2.5 rounded-lg bg-gray-50 text-gray-900">
-                      <DollarSign className="w-5 h-5" />
-                    </div>
+                  <div className="bg-white border-b-2 border-black p-4 flex flex-col justify-center">
+                    <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Total Revenue</span>
+                    <h3 className="text-lg sm:text-xl font-black text-black mt-1">{formatCurrency(totalCashierSalesVolume)}</h3>
                   </div>
-
-                  <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-xs flex items-center justify-between">
-                    <div>
-                      <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">POS Receipts</span>
-                      <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 mt-1">{totalCashierTxCount} Orders</h3>
-                    </div>
-                    <div className="p-2.5 rounded-lg bg-gray-50 text-gray-900">
-                      <Receipt className="w-5 h-5" />
-                    </div>
+                  <div className="bg-white border-b-2 border-black p-4 flex flex-col justify-center">
+                    <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">POS Receipts</span>
+                    <h3 className="text-xl sm:text-2xl font-black text-black mt-1">{totalCashierTxCount}</h3>
                   </div>
                 </div>
 
-                {/* Minimalist Grid Cards View for Staff Performance */}
+                {/* Minimalist List/Table View for Staff Performance */}
                 {cashierPerformanceList.length === 0 ? (
-                  <div className="bg-white rounded-2xl border border-slate-200 text-center py-16 text-slate-400 text-xs flex flex-col items-center justify-center space-y-3">
-                    <div className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-400">
-                      <Award className="w-6 h-6" />
-                    </div>
+                  <div className="bg-white border border-slate-200 text-center py-16 text-slate-400 text-xs flex flex-col items-center justify-center space-y-3">
+                    <Award className="w-8 h-8 text-slate-300" />
                     <div>
-                      <p className="font-semibold text-slate-700 text-sm">No Performance Metrics Recorded</p>
-                      <p className="text-slate-400 text-xs mt-0.5">No registered cashiers or sales activity match the current filters.</p>
+                      <p className="font-bold text-slate-700 text-sm">No Performance Metrics Recorded</p>
+                      <p className="text-slate-400 text-xs mt-0.5">No registered staff or sales activity match the filters.</p>
                     </div>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                    {cashierPerformanceList.map((item, idx) => {
-                      const percentOfMax = maxCashierRevenue > 0 ? (item.totalRevenue / maxCashierRevenue) * 100 : 0;
-                      const rankBadge = idx === 0 ? '🏆 #1 Top Seller' : idx === 1 ? '🥈 #2 Rank' : idx === 2 ? '🥉 #3 Rank' : `#${idx + 1} Rank`;
-                      
-                      return (
-                        <div key={item.cashier.id} className="bg-white rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-all p-5 flex flex-col justify-between space-y-4">
-                          <div className="space-y-3">
-                            <div className="flex items-start justify-between gap-2">
-                              <div className="flex items-center gap-3 min-w-0">
-                                <div className="w-12 h-12 rounded-2xl bg-black text-white font-extrabold text-base flex items-center justify-center uppercase shrink-0 shadow-xs">
-                                  {item.cashier.name ? item.cashier.name.split(' ').map(n => n[0]).join('').slice(0, 2) : 'C'}
-                                </div>
-                                <div className="min-w-0">
-                                  <h4 className="font-extrabold text-slate-900 text-base truncate">{item.cashier.name}</h4>
-                                  <p className="text-xs text-slate-400 font-mono truncate">{formatDisplayEmail(item.cashier.email)}</p>
-                                </div>
+                  <div className="bg-white border border-slate-200 flex flex-col">
+                    <div className="hidden md:grid grid-cols-12 gap-4 p-4 border-b border-slate-200 bg-slate-50 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                      <div className="col-span-1">Rank</div>
+                      <div className="col-span-3">Staff</div>
+                      <div className="col-span-2">Revenue</div>
+                      <div className="col-span-2">Receipts</div>
+                      <div className="col-span-2">Avg Receipt</div>
+                      <div className="col-span-2 text-right">Actions</div>
+                    </div>
+                    <div className="divide-y divide-slate-100">
+                      {cashierPerformanceList.map((item, idx) => {
+                        const rankBadge = idx === 0 ? '🏆 #1' : idx === 1 ? '🥈 #2' : idx === 2 ? '🥉 #3' : `#${idx + 1}`;
+                        return (
+                          <div key={item.cashier.id} className="grid grid-cols-1 md:grid-cols-12 gap-4 p-4 items-center hover:bg-slate-50 transition-colors">
+                            <div className="md:col-span-1 flex items-center justify-between md:justify-start">
+                              <span className="bg-black text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
+                                {rankBadge}
+                              </span>
+                            </div>
+                            <div className="md:col-span-3 flex items-center gap-3">
+                              <div className="w-10 h-10 bg-slate-100 text-black font-black text-sm flex items-center justify-center shrink-0 rounded-full">
+                                {item.cashier.name ? item.cashier.name.substring(0, 2).toUpperCase() : 'ST'}
+                              </div>
+                              <div className="min-w-0">
+                                <h4 className="font-bold text-black text-sm truncate">{item.cashier.name}</h4>
+                                <p className="text-[10px] text-slate-500 truncate">{item.cashier.branch_name || 'All Branches'}</p>
                               </div>
                             </div>
 
-                            <div className="flex flex-wrap items-center gap-1.5 pt-1">
-                              <span className="bg-black text-white text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase tracking-wider">
-                                {rankBadge}
-                              </span>
-                              <span className="bg-slate-100 text-slate-700 text-[10px] font-bold px-2.5 py-1 rounded-full border border-slate-200 flex items-center gap-1">
-                                <Building2 className="w-3 h-3 text-slate-500" />
-                                <span>{item.cashier.branch_name || 'All Branches'}</span>
-                              </span>
+                            <div className="grid grid-cols-2 gap-2 md:contents">
+                              <div className="md:col-span-2 flex flex-col">
+                                <span className="md:hidden text-[9px] uppercase font-bold text-slate-400 mb-0.5">Revenue</span>
+                                <span className="font-black text-black text-sm font-mono">{formatCurrency(item.totalRevenue)}</span>
+                              </div>
+                              <div className="md:col-span-2 flex flex-col">
+                                <span className="md:hidden text-[9px] uppercase font-bold text-slate-400 mb-0.5">Receipts</span>
+                                <span className="font-bold text-slate-800 text-sm">{item.totalTransactions}</span>
+                              </div>
+                              <div className="col-span-2 md:col-span-2 flex flex-col">
+                                <span className="md:hidden text-[9px] uppercase font-bold text-slate-400 mb-0.5">Avg Receipt</span>
+                                <span className="font-bold text-slate-800 text-xs font-mono">{formatCurrency(item.avgReceipt)}</span>
+                              </div>
                             </div>
-                          </div>
 
-                          <div className="space-y-1.5 pt-2 border-t border-slate-100">
-                            <div className="flex justify-between items-center text-xs">
-                              <span className="text-[10px] uppercase font-extrabold text-slate-400 tracking-wider">Revenue Contribution</span>
-                              <span className="font-mono font-bold text-slate-900">{Math.round(percentOfMax)}% of Peak</span>
-                            </div>
-                            <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                              <div className="bg-black h-full rounded-full transition-all duration-500" style={{ width: `${percentOfMax}%` }} />
-                            </div>
-                          </div>
-
-                          <div className="grid grid-cols-2 gap-2 bg-slate-50 p-3 rounded-xl border border-slate-200/60 text-xs">
-                            <div>
-                              <span className="text-[9px] uppercase font-bold text-slate-400 block">Total Revenue</span>
-                              <span className="font-black text-slate-900 text-sm font-mono">{formatCurrency(item.totalRevenue)}</span>
-                            </div>
-                            <div>
-                              <span className="text-[9px] uppercase font-bold text-slate-400 block">Receipts</span>
-                              <span className="font-bold text-slate-800 text-sm">{item.totalTransactions} Orders</span>
-                            </div>
-                            <div>
-                              <span className="text-[9px] uppercase font-bold text-slate-400 block">Avg Receipt</span>
-                              <span className="font-bold text-slate-800 text-xs font-mono">{formatCurrency(item.avgReceipt)}</span>
-                            </div>
-                            <div>
-                              <span className="text-[9px] uppercase font-bold text-slate-400 block">Units Sold</span>
-                              <span className="font-bold text-slate-800 text-xs">{item.totalItemsSold} Items</span>
+                            <div className="md:col-span-2 flex items-center gap-2 md:justify-end mt-2 md:mt-0">
+                              <button
+                                onClick={() => setSelectedCashierForHistory({ cashier: item.cashier, sales: item.sales })}
+                                className="flex-1 md:flex-none px-3 py-1.5 bg-black hover:bg-slate-800 text-white rounded text-xs font-bold transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                              >
+                                <Eye className="w-3.5 h-3.5" />
+                                <span className="md:hidden lg:inline">View</span>
+                              </button>
+                              <button
+                                onClick={() => startEditCashier(item.cashier)}
+                                className="px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-100 text-black rounded text-xs font-bold transition-colors cursor-pointer flex items-center justify-center"
+                                title="Edit Staff Account"
+                              >
+                                <Edit2 className="w-3.5 h-3.5" />
+                              </button>
                             </div>
                           </div>
-
-                          <div className="pt-2 border-t border-slate-100 flex items-center gap-2">
-                            <button
-                              onClick={() => setSelectedCashierForHistory({ cashier: item.cashier, sales: item.sales })}
-                              className="flex-1 py-2.5 bg-black hover:bg-gray-800 text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
-                            >
-                              <Eye className="w-4 h-4" />
-                              <span>View Receipts ({item.totalTransactions})</span>
-                            </button>
-                            <button
-                              onClick={() => startEditCashier(item.cashier)}
-                              className="p-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition-all font-bold text-xs cursor-pointer border border-slate-200"
-                              title="Edit Staff Account"
-                            >
-                              <Edit2 className="w-4 h-4" />
-                            </button>
-                          </div>
-                        </div>
-                      );
-                    })}
+                        );
+                      })}
+                    </div>
                   </div>
                 )}
               </div>
