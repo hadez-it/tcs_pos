@@ -184,8 +184,76 @@ const getMockData = <T>(key: string): T[] => {
   return data ? JSON.parse(data) : [];
 };
 
-const saveMockData = <T>(key: string, data: T[]) => {
+const SYNC_QUEUE_KEY = 'retail_shop_sync_queue';
+
+interface SyncOperation {
+  table: string;
+  action: 'UPSERT' | 'DELETE';
+  payload: any;
+  timestamp: string;
+}
+
+const keyToTable: Record<string, string> = {
+  [MOCK_BRANCHES_KEY]: 'branches',
+  [MOCK_PROFILES_KEY]: 'profiles',
+  [MOCK_PRODUCTS_KEY]: 'products',
+  [MOCK_SALES_KEY]: 'sales',
+  [MOCK_SALE_ITEMS_KEY]: 'sale_items',
+  [MOCK_TRANSACTIONS_KEY]: 'inventory_transactions',
+  [MOCK_CASHFLOW_KEY]: 'cash_flow',
+  [MOCK_DELETE_REQUESTS_KEY]: 'sale_delete_requests'
+};
+
+const saveMockData = <T extends { id?: string }>(key: string, data: T[]) => {
+  const oldData = getMockData<T>(key);
   localStorage.setItem(key, JSON.stringify(data));
+  
+  const tableName = keyToTable[key];
+  if (!tableName) return;
+
+  const oldMap = new Map(oldData.map(item => [item.id, item]));
+  const newMap = new Map(data.map(item => [item.id, item]));
+  
+  const operations: SyncOperation[] = [];
+  
+  data.forEach(item => {
+    if (!item.id) return;
+    const oldItem = oldMap.get(item.id);
+    if (!oldItem || JSON.stringify(oldItem) !== JSON.stringify(item)) {
+      operations.push({
+        table: tableName,
+        action: 'UPSERT',
+        payload: item,
+        timestamp: new Date().toISOString()
+      });
+    }
+  });
+  
+  oldData.forEach(item => {
+    if (!item.id) return;
+    if (!newMap.has(item.id)) {
+      operations.push({
+        table: tableName,
+        action: 'DELETE',
+        payload: { id: item.id },
+        timestamp: new Date().toISOString()
+      });
+    }
+  });
+
+  if (operations.length > 0) {
+    const queueJson = localStorage.getItem(SYNC_QUEUE_KEY);
+    const queue: SyncOperation[] = queueJson ? JSON.parse(queueJson) : [];
+    
+    // Deduplicate operations for the same ID/table
+    const newQueue = [...queue, ...operations].reduce((acc, curr) => {
+      // Overwrite previous operations for the same record
+      acc[curr.table + '_' + curr.payload.id] = curr;
+      return acc;
+    }, {});
+
+    localStorage.setItem(SYNC_QUEUE_KEY, JSON.stringify(Object.values(newQueue)));
+  }
 };
 
 // ==========================================
@@ -1667,69 +1735,47 @@ export const dbService = {
       }
 
       try {
+        const queueJson = localStorage.getItem(SYNC_QUEUE_KEY);
+        const queue: SyncOperation[] = queueJson ? JSON.parse(queueJson) : [];
+        if (queue.length === 0) {
+          return { syncedCount: 0, success: true, message: 'No offline operations to sync.' };
+        }
+
         let syncedCount = 0;
+        let errors = 0;
 
-        // 1. Sync local branches
-        const localBranches = getMockData<Branch>(MOCK_BRANCHES_KEY);
-        if (localBranches.length > 0) {
-          const { error } = await supabase.from('branches').upsert(localBranches);
-          if (!error) syncedCount += localBranches.length;
+        for (const op of queue) {
+          if (op.action === 'UPSERT') {
+            const { error } = await supabase.from(op.table).upsert(op.payload);
+            if (!error) syncedCount++;
+            else {
+              console.error('Failed to sync upsert:', error, op);
+              errors++;
+            }
+          } else if (op.action === 'DELETE') {
+            const { error } = await supabase.from(op.table).delete().eq('id', op.payload.id);
+            if (!error) syncedCount++;
+            else {
+              console.error('Failed to sync delete:', error, op);
+              errors++;
+            }
+          }
         }
 
-        // 2. Sync local profiles
-        const localProfiles = getMockData<UserProfile>(MOCK_PROFILES_KEY);
-        if (localProfiles.length > 0) {
-          const { error } = await supabase.from('profiles').upsert(localProfiles);
-          if (!error) syncedCount += localProfiles.length;
+        if (errors === 0) {
+          localStorage.removeItem(SYNC_QUEUE_KEY);
+          return {
+            syncedCount,
+            success: true,
+            message: `Successfully synced ${syncedCount} operations to Supabase!`
+          };
+        } else {
+          return {
+            syncedCount,
+            success: false,
+            message: `Synced ${syncedCount} operations, but ${errors} failed. Check console for details.`
+          };
         }
-
-        // 3. Sync local products
-        const localProducts = getMockData<Product>(MOCK_PRODUCTS_KEY);
-        if (localProducts.length > 0) {
-          const { error } = await supabase.from('products').upsert(localProducts);
-          if (!error) syncedCount += localProducts.length;
-        }
-
-        // 4. Sync local sales
-        const localSales = getMockData<Sale>(MOCK_SALES_KEY);
-        if (localSales.length > 0) {
-          const { error } = await supabase.from('sales').upsert(localSales);
-          if (!error) syncedCount += localSales.length;
-        }
-
-        // 5. Sync local sale_items
-        const localSaleItems = getMockData<SaleItem>(MOCK_SALE_ITEMS_KEY);
-        if (localSaleItems.length > 0) {
-          const { error } = await supabase.from('sale_items').upsert(localSaleItems);
-          if (!error) syncedCount += localSaleItems.length;
-        }
-
-        // 6. Sync local transactions
-        const localTxs = getMockData<InventoryTransaction>(MOCK_TRANSACTIONS_KEY);
-        if (localTxs.length > 0) {
-          const { error } = await supabase.from('inventory_transactions').upsert(localTxs);
-          if (!error) syncedCount += localTxs.length;
-        }
-
-        // 7. Sync local cash flow entries
-        const localCashFlow = getMockData<CashFlowEntry>(MOCK_CASHFLOW_KEY);
-        if (localCashFlow.length > 0) {
-          const { error } = await supabase.from('cash_flow').upsert(localCashFlow);
-          if (!error) syncedCount += localCashFlow.length;
-        }
-
-        // 8. Sync local sale delete requests
-        const localDelReqs = getMockData<SaleDeleteRequest>(MOCK_DELETE_REQUESTS_KEY);
-        if (localDelReqs.length > 0) {
-          const { error } = await supabase.from('sale_delete_requests').upsert(localDelReqs);
-          if (!error) syncedCount += localDelReqs.length;
-        }
-
-        return {
-          syncedCount,
-          success: true,
-          message: `Successfully synced ${syncedCount} records to Supabase!`
-        };
       } catch (err: any) {
         console.error('Sync error:', err);
         return {

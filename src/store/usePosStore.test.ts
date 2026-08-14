@@ -41,13 +41,13 @@ describe('usePosStore', () => {
   });
 
   it('should update products', () => {
-    const mockProducts = [{ id: '1', name: 'Test Product', barcode: '123', price: 100, cost: 50, stock: 10, category: 'Test', is_active: true, created_at: '' }];
+    const mockProducts = [{ id: '1', name: 'Test Product', barcode: '123', price: 100, cost: 50, stock: 10, category: 'Test', is_active: true, sku: "TEST", min_stock_level: 5, created_at: '' }];
     usePosStore.getState().setProducts(mockProducts);
     expect(usePosStore.getState().products).toEqual(mockProducts);
   });
 
   it('should loadData correctly', async () => {
-    const mockProducts = [{ id: '1', name: 'Test Product', barcode: '123', price: 100, cost: 50, stock: 10, category: 'Test', is_active: true, created_at: '' }];
+    const mockProducts = [{ id: '1', name: 'Test Product', barcode: '123', price: 100, cost: 50, stock: 10, category: 'Test', is_active: true, sku: "TEST", min_stock_level: 5, created_at: '' }];
     (dbService.products.getAll as any).mockResolvedValue(mockProducts);
 
     await usePosStore.getState().loadData();
