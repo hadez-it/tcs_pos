@@ -61,7 +61,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
 
   // Cash Flow State
   const [cashFlowEntries, setCashFlowEntries] = useState<CashFlowEntry[]>([]);
-  const [cfRange, setCfRange] = useState<'today' | '7d' | '30d' | 'month' | 'all' | 'custom'>('7d');
+  const [cfRange, setCfRange] = useState<'today' | 'this_week' | 'this_month' | 'last_month' | 'custom'>('this_month');
   const [cfTypeFilter, setCfTypeFilter] = useState<'all' | 'income' | 'expense'>('all');
   const [cfStartDate, setCfStartDate] = useState(''); // YYYY-MM-DD
   const [cfEndDate, setCfEndDate] = useState(''); // YYYY-MM-DD
@@ -567,18 +567,23 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
         const start = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
         return d.getTime() >= start;
       }
-      case '7d':
-        return d.getTime() >= now.getTime() - 6 * 24 * 60 * 60 * 1000;
-      case '30d':
-        return d.getTime() >= now.getTime() - 29 * 24 * 60 * 60 * 1000;
-      case 'month':
+      case 'this_week': {
+        const day = now.getDay();
+        const start = new Date(now.getFullYear(), now.getMonth(), now.getDate() - day).getTime();
+        return d.getTime() >= start;
+      }
+      case 'this_month':
         return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
-      case 'custom':
+      case 'last_month': {
+        const lastMonth = now.getMonth() === 0 ? 11 : now.getMonth() - 1;
+        const year = now.getMonth() === 0 ? now.getFullYear() - 1 : now.getFullYear();
+        return d.getFullYear() === year && d.getMonth() === lastMonth;
+      }
+      case 'custom': {
         if (!cfStartDate || !cfEndDate) return true;
-        const start = new Date(cfStartDate).getTime();
-        const end = new Date(cfEndDate).getTime();
-        return d.getTime() >= start && d.getTime() <= end;
-      case 'all':
+        const dateOnly = dateStr.slice(0, 10);
+        return dateOnly >= cfStartDate && dateOnly <= cfEndDate;
+      }
       default:
         return true;
     }
@@ -620,25 +625,46 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
     const now = new Date();
     const nowStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
 
-    let bucketCount: number;
-    if (cfRange === 'today') bucketCount = 1;
-    else if (cfRange === '7d') bucketCount = 7;
-    else if (cfRange === '30d') bucketCount = 30;
-    else if (cfRange === 'month') bucketCount = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-    else {
+    let startDate = nowStart;
+    let endDate = nowStart;
+    
+    if (cfRange === 'today') {
+      startDate = nowStart;
+      endDate = nowStart;
+    } else if (cfRange === 'this_week') {
+      const day = now.getDay();
+      startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - day).getTime();
+      endDate = nowStart;
+    } else if (cfRange === 'this_month') {
+      startDate = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+      endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0).getTime();
+    } else if (cfRange === 'last_month') {
+      const lastMonth = now.getMonth() === 0 ? 11 : now.getMonth() - 1;
+      const year = now.getMonth() === 0 ? now.getFullYear() - 1 : now.getFullYear();
+      startDate = new Date(year, lastMonth, 1).getTime();
+      endDate = new Date(year, lastMonth + 1, 0).getTime();
+    } else if (cfRange === 'custom' && cfStartDate && cfEndDate) {
+      startDate = new Date(cfStartDate).getTime();
+      endDate = new Date(cfEndDate).getTime();
+    } else {
       const allDates = [...cashFlowEntries.map(e => e.created_at), ...displaySales.map(s => s.created_at)];
       let earliest = nowStart;
       allDates.forEach(d => {
-        const t = new Date(d).getTime();
+        const t = new Date(d.slice(0, 10)).getTime();
         if (t < earliest) earliest = t;
       });
-      bucketCount = Math.max(7, Math.min(365, Math.floor((nowStart - earliest) / dayMs) + 1));
+      startDate = earliest;
+      endDate = nowStart;
     }
 
     const map: { [day: string]: { inflow: number; outflow: number; net: number } } = {};
-    for (let i = bucketCount - 1; i >= 0; i--) {
-      const day = new Date(nowStart - i * dayMs).toISOString().slice(0, 10);
-      map[day] = { inflow: 0, outflow: 0, net: 0 };
+    const currentDate = new Date(startDate);
+    while (currentDate.getTime() <= endDate) {
+      const yyyy = currentDate.getFullYear();
+      const mm = String(currentDate.getMonth() + 1).padStart(2, '0');
+      const dd = String(currentDate.getDate()).padStart(2, '0');
+      map[`${yyyy}-${mm}-${dd}`] = { inflow: 0, outflow: 0, net: 0 };
+      currentDate.setDate(currentDate.getDate() + 1);
     }
 
     cashFlowEntries.forEach(e => {
@@ -2004,11 +2030,10 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                         <span className="text-[9px] font-bold text-slate-500 uppercase tracking-wider mb-1.5 block">Period</span>
                         <div className="flex items-center bg-slate-100 rounded-xl p-1 gap-0.5">
                           {([
+                            ['last_month', 'Last Month'],
                             ['today', 'Today'],
-                            ['7d', '7 Days'],
-                            ['30d', '30 Days'],
-                            ['month', 'Month'],
-                            ['all', 'All'],
+                            ['this_week', 'This Week'],
+                            ['this_month', 'This Month'],
                             ['custom', 'Custom']
                           ] as const).map(([val, label]) => (
                             <button
