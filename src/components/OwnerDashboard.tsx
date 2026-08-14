@@ -596,19 +596,17 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
 
     const inRangeSales = displaySales.filter(s => isWithinCfRange(s.created_at));
     const salesIn = inRangeSales.reduce((s, sale) => s + sale.total_amount, 0);
-    const salesOut = inRangeSales.reduce((s, sale) => s + sale.items.reduce((c, it) => c + (it.unit_cost * it.quantity), 0), 0);
 
     const today = new Date().toISOString().slice(0, 10);
     const todayManualIn = manual.filter(e => e.type === 'income' && e.created_at.startsWith(today)).reduce((s, e) => s + e.amount, 0);
     const todayManualOut = manual.filter(e => e.type === 'expense' && e.created_at.startsWith(today)).reduce((s, e) => s + e.amount, 0);
     const todaySales = inRangeSales.filter(s => s.created_at.startsWith(today));
     const todaySalesIn = todaySales.reduce((s, sale) => s + sale.total_amount, 0);
-    const todaySalesOut = todaySales.reduce((s, sale) => s + sale.items.reduce((c, it) => c + (it.unit_cost * it.quantity), 0), 0);
 
     const cashIn = manualIn + salesIn;
-    const cashOut = manualOut + salesOut;
+    const cashOut = manualOut;
     const todayIn = todayManualIn + todaySalesIn;
-    const todayOut = todayManualOut + todaySalesOut;
+    const todayOut = todayManualOut;
 
     return {
       cashIn: Number(cashIn.toFixed(2)),
@@ -678,7 +676,6 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
       const day = sale.created_at.slice(0, 10);
       if (!map[day]) return;
       map[day].inflow += sale.total_amount;
-      sale.items.forEach(it => { map[day].outflow += it.unit_cost * it.quantity; });
     });
 
     return Object.entries(map)
@@ -702,8 +699,6 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
 
     displaySales.filter(s => isWithinCfRange(s.created_at)).forEach(sale => {
       income['POS Sales'] = (income['POS Sales'] || 0) + sale.total_amount;
-      const cogs = sale.items.reduce((c, it) => c + (it.unit_cost * it.quantity), 0);
-      expense['Cost of Goods Sold'] = (expense['Cost of Goods Sold'] || 0) + cogs;
     });
 
     return {
@@ -755,7 +750,6 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
 
     displaySales.forEach(sale => {
       if (!isWithinCfRange(sale.created_at)) return;
-      const cogs = sale.items.reduce((c, it) => c + (it.unit_cost * it.quantity), 0);
       const matchType = (t: CashFlowType) => cfTypeFilter === 'all' || cfTypeFilter === t;
       const matchCat = (c: string) => cfCategoryFilter === 'All' || cfCategoryFilter === c;
 
@@ -769,21 +763,6 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
           payment_method: sale.payment_method,
           branch_name: sale.branch_name,
           notes: `Checked out by ${sale.cashier_name}${sale.customer_name ? ` for ${sale.customer_name}` : ''}`,
-          performed_by: sale.cashier_name,
-          created_at: sale.created_at,
-          source: 'sale'
-        });
-      }
-      if (matchType('expense') && matchCat('Cost of Goods Sold')) {
-        rows.push({
-          key: `${sale.id}-cogs`,
-          type: 'expense',
-          category: 'Cost of Goods Sold',
-          title: `Inventory cost — ${sale.id.replace('sale-', '#').slice(0, 10)}`,
-          amount: Number(cogs.toFixed(2)),
-          payment_method: sale.payment_method,
-          branch_name: sale.branch_name,
-          notes: 'Auto-derived stock cost of the items sold at POS',
           performed_by: sale.cashier_name,
           created_at: sale.created_at,
           source: 'sale'
