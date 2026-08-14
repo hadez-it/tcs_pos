@@ -573,14 +573,17 @@ export const dbService = {
             console.warn('Could not unlink sale_delete_requests cashier_id before delete:', e);
           }
 
-          const { error } = await supabase
-            .from('profiles')
-            .delete()
-            .eq('id', id);
+          // Call RPC to securely delete user from auth.users and profiles
+          const { error } = await supabase.rpc('delete_user_account', { target_user_id: id });
 
           if (error) {
-            console.error('Supabase deleteCashier error:', error);
-            throw error;
+            // Fallback to just deleting from profiles if RPC doesn't exist yet
+            console.warn('RPC delete_user_account failed, falling back to profiles table delete', error);
+            const fallbackRes = await supabase.from('profiles').delete().eq('id', id);
+            if (fallbackRes.error) {
+              console.error('Supabase deleteCashier error:', fallbackRes.error);
+              throw fallbackRes.error;
+            }
           }
         } catch (err: any) {
           console.error('Supabase deleteCashier failed:', err);
