@@ -305,6 +305,24 @@ export const dbService = {
       return userStr ? JSON.parse(userStr) : null;
     },
 
+    async changePassword(newPassword: string): Promise<void> {
+      if (isSupabaseConfigured && supabase) {
+        const { error } = await supabase.auth.updateUser({ password: newPassword });
+        if (error) throw error;
+      } else {
+        const userStr = localStorage.getItem(CURRENT_USER_KEY);
+        if (userStr) {
+          const user = JSON.parse(userStr);
+          const profiles = getMockData<UserProfile>(MOCK_PROFILES_KEY);
+          const idx = profiles.findIndex(p => p.id === user.id);
+          if (idx !== -1) {
+            profiles[idx].password = newPassword;
+            saveMockData(MOCK_PROFILES_KEY, profiles);
+          }
+        }
+      }
+    },
+
     async logout(): Promise<void> {
       localStorage.removeItem(CURRENT_USER_KEY);
       if (isSupabaseConfigured && supabase) {

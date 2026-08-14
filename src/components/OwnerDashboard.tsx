@@ -5,7 +5,7 @@ import {
   Briefcase, CheckCircle, RefreshCw, Layers, Shield, FileText, Building2, Store, MapPin,
   Database, Copy, Download, Printer, Tag, FileSpreadsheet, Upload, Award, Eye, Receipt, CreditCard,
   Menu, X, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Image, Sparkles, Globe, Phone, Mail, Check, Settings,
-  ArrowUpRight, ArrowDownLeft, Wallet, Banknote, TrendingDown, PackagePlus
+  ArrowUpRight, ArrowDownLeft, Wallet, Banknote, TrendingDown, PackagePlus, Key
 } from 'lucide-react';
 import { 
   ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend 
@@ -24,6 +24,7 @@ import SearchableCategorySelect from './SearchableCategorySelect';
 import QuickRestockModal from './QuickRestockModal';
 import SaleReportTab from './SaleReportTab';
 import DeleteRequestsTab from './DeleteRequestsTab';
+import ChangePasswordTab from './ChangePasswordTab';
 
 interface OwnerDashboardProps {
   user: UserProfile;
@@ -41,7 +42,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
   const [deleteRequests, setDeleteRequests] = useState<SaleDeleteRequest[]>([]);
   const [selectedBranchId, setSelectedBranchId] = useState<string>(user.role === 'manager' && user.branch_id ? user.branch_id : 'all');
   const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'cashiers' | 'staff-performance' | 'transactions' | 'branches' | 'settings' | 'cash-flow' | 'label-generator' | 'sale-report' | 'delete-requests'>(user.role === 'manager' ? 'products' : 'overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'cashiers' | 'staff-performance' | 'transactions' | 'branches' | 'settings' | 'cash-flow' | 'label-generator' | 'sale-report' | 'delete-requests' | 'change-password'>(user.role === 'manager' ? 'products' : 'overview');
   const [selectedSingleProduct, setSelectedSingleProduct] = useState<Product | null>(null);
   const [showSingleLabelModal, setShowSingleLabelModal] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -88,7 +89,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
   const INCOME_CATEGORIES = ['POS Sales', 'Investment', 'Loan Received', 'Other Income'];
   const EXPENSE_CATEGORIES = ['Inventory / Stock', 'Rent', 'Salaries', 'Utilities', 'Transport', 'Supplies', 'Marketing', 'Repairs', 'Other Expense'];
 
-  const handleTabSwitch = (tab: 'overview' | 'products' | 'cashiers' | 'staff-performance' | 'transactions' | 'branches' | 'settings' | 'cash-flow' | 'label-generator' | 'sale-report' | 'delete-requests') => {
+  const handleTabSwitch = (tab: 'overview' | 'products' | 'cashiers' | 'staff-performance' | 'transactions' | 'branches' | 'settings' | 'cash-flow' | 'label-generator' | 'sale-report' | 'delete-requests' | 'change-password') => {
     // 1. Immediately close sidebar drawer for zero-lag menu response
     setIsSidebarOpen(false);
 
@@ -1362,8 +1363,8 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
     ? (['products', 'cash-flow'] as const)
     : (['overview', 'products', 'cashiers', 'cash-flow', 'branches'] as const);
   const moreTabs = user.role === 'manager'
-    ? (['staff-performance', 'label-generator', 'sale-report', 'delete-requests'] as const)
-    : (['staff-performance', 'transactions', 'settings', 'label-generator', 'sale-report', 'delete-requests'] as const);
+    ? (['staff-performance', 'label-generator', 'sale-report', 'delete-requests', 'change-password'] as const)
+    : (['staff-performance', 'transactions', 'settings', 'label-generator', 'sale-report', 'delete-requests', 'change-password'] as const);
   const pendingDeleteCount = useMemo(() => Array.isArray(deleteRequests) ? deleteRequests.filter(r => r && r.status === 'pending').length : 0, [deleteRequests]);
 
   // Back button: each surface pops in the reverse order it was opened, so a
@@ -1470,6 +1471,9 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
               <button onClick={() => handleTabSwitch('label-generator')} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeTab === 'label-generator' ? 'bg-black text-white shadow-xs' : 'text-slate-700 hover:bg-slate-100'}`}>
                 <Printer className="w-4 h-4" /><span>Label Generator</span>
               </button>
+              <button onClick={() => handleTabSwitch('change-password')} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeTab === 'change-password' ? 'bg-black text-white shadow-xs' : 'text-slate-700 hover:bg-slate-100'}`}>
+                <Key className="w-4 h-4" /><span>Change Password</span>
+              </button>
             </div>
           </div>
 
@@ -1523,6 +1527,8 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                     ? 'Label Designer'
                     : activeTab === 'sale-report'
                     ? 'Sale Report'
+                    : activeTab === 'change-password'
+                    ? 'Change Password'
                     : activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
                 </h1>
                 <p className="text-[10px] text-slate-500 font-semibold flex items-center gap-1">
@@ -1581,6 +1587,8 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                 ? 'Label Generator & Layout Designer'
                 : activeTab === 'sale-report'
                 ? 'Sale Report'
+                : activeTab === 'change-password'
+                ? 'Change Account Password'
                 : activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
             </h1>
             <p className="text-xs text-slate-500 font-medium">
@@ -3390,6 +3398,11 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
               />
             )}
 
+            {/* CHANGE PASSWORD TAB */}
+            {activeTab === 'change-password' && (
+              <ChangePasswordTab user={user} />
+            )}
+
             {/* BUSINESS PROFILE & BRANDING SETTINGS TAB */}
             {activeTab === 'settings' && (
               <div className="space-y-6 max-w-6xl mx-auto">
@@ -5075,6 +5088,16 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
               >
                 <Printer className="w-5 h-5 text-gray-500" />
                 <span>Label Generator & Printer</span>
+              </button>
+
+              <button
+                onClick={() => { handleTabSwitch('change-password'); setShowMoreMenu(false); }}
+                className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-bold transition-all cursor-pointer active-scale ${
+                  activeTab === 'change-password' ? 'bg-gray-50 text-gray-900' : 'text-slate-700 hover:bg-slate-50'
+                }`}
+              >
+                <Key className="w-5 h-5 text-gray-500" />
+                <span>Change Password</span>
               </button>
 
               <div className="border-t border-slate-100 my-2" />
