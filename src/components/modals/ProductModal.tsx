@@ -13,7 +13,6 @@ const productSchema = z.object({
   barcode: z.string().optional(),
   category: z.string().min(1, 'Category is required'),
   price_variant: z.string().optional(),
-  image: z.string().optional(),
   description: z.string().optional(),
   cost: z.number().min(0, 'Cost must be 0 or greater'),
   price: z.number().min(0, 'Price must be 0 or greater'),
@@ -61,7 +60,6 @@ export default function ProductModal({
       barcode: editingProduct?.barcode || '',
       category: editingProduct?.category || '',
       price_variant: editingProduct?.price_variant || 'Standard',
-      image: editingProduct?.image || '',
       description: editingProduct?.description || '',
       cost: editingProduct?.cost || 0,
       price: editingProduct?.price || 0,
@@ -121,7 +119,6 @@ export default function ProductModal({
         barcode: data.barcode || '',
         description: data.description || '',
         category: data.category,
-        image: data.image || null,
         use_stock: data.use_stock,
         price: data.price,
         cost: data.cost,
@@ -295,23 +292,6 @@ export default function ProductModal({
                     placeholder="Standard, Retail, Wholesale, VIP"
                     className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-gray-900 font-medium"
                   />
-                </div>
-
-                <div className="sm:col-span-2">
-                  <label className="block text-[10px] font-bold text-slate-600 uppercase tracking-wider mb-1">Product Image URL</label>
-                  <div className="flex gap-2">
-                    <input
-                      type="url"
-                      {...register('image')}
-                      placeholder="https://images.unsplash.com/... or image path"
-                      className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-gray-900 font-mono text-[11px]"
-                    />
-                    {formValues.image && (
-                      <div className="w-10 h-10 rounded-lg overflow-hidden border border-slate-200 shrink-0 bg-slate-100 flex items-center justify-center">
-                        <img src={formValues.image} alt="Preview" className="w-full h-full object-cover" onError={(e) => (e.currentTarget.style.display = 'none')} />
-                      </div>
-                    )}
-                  </div>
                 </div>
 
                 <div className="sm:col-span-2">
