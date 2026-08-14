@@ -25,6 +25,7 @@ import QuickRestockModal from './QuickRestockModal';
 import SaleReportTab from './SaleReportTab';
 import DeleteRequestsTab from './DeleteRequestsTab';
 import ChangePasswordTab from './ChangePasswordTab';
+import { usePosStore } from '../store/usePosStore';
 
 interface OwnerDashboardProps {
   user: UserProfile;
@@ -34,14 +35,21 @@ interface OwnerDashboardProps {
 export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) {
   const { toast } = useToast();
   // State for raw data
-  const [products, setProducts] = useState<Product[]>([]);
-  const [sales, setSales] = useState<SaleWithItems[]>([]);
-  const [cashiers, setCashiers] = useState<UserProfile[]>([]);
-  const [transactions, setTransactions] = useState<InventoryTransaction[]>([]);
-  const [branches, setBranches] = useState<Branch[]>([]);
-  const [deleteRequests, setDeleteRequests] = useState<SaleDeleteRequest[]>([]);
+  const {
+    products, setProducts,
+    sales, setSales,
+    cashiers, setCashiers,
+    transactions, setTransactions,
+    branches, setBranches,
+    deleteRequests, setDeleteRequests,
+    businessProfile: storeBusinessProfile, setBusinessProfile,
+    cashFlowEntries, setCashFlowEntries,
+    isLoading, loadData
+  } = usePosStore();
+
+  const businessProfile = storeBusinessProfile || DEFAULT_BUSINESS_PROFILE;
+
   const [selectedBranchId, setSelectedBranchId] = useState<string>(user.role === 'manager' && user.branch_id ? user.branch_id : 'all');
-  const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'cashiers' | 'staff-performance' | 'transactions' | 'branches' | 'settings' | 'cash-flow' | 'label-generator' | 'sale-report' | 'delete-requests' | 'change-password'>(user.role === 'manager' ? 'products' : 'overview');
   const [selectedSingleProduct, setSelectedSingleProduct] = useState<Product | null>(null);
   const [showSingleLabelModal, setShowSingleLabelModal] = useState(false);
@@ -53,14 +61,18 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
   const [perfDatePreset, setPerfDatePreset] = useState<'all' | 'prev-month' | 'this-month' | 'custom'>('all');
 
   // Business Profile & Branding State
-  const [businessProfile, setBusinessProfile] = useState<BusinessProfile>(DEFAULT_BUSINESS_PROFILE);
   const [businessForm, setBusinessForm] = useState<BusinessProfile>(DEFAULT_BUSINESS_PROFILE);
+
+  useEffect(() => {
+    if (storeBusinessProfile) {
+      setBusinessForm(storeBusinessProfile);
+    }
+  }, [storeBusinessProfile]);
   const [businessSaving, setBusinessSaving] = useState(false);
   const [businessSuccessMsg, setBusinessSuccessMsg] = useState<string | null>(null);
   const [businessErrorMsg, setBusinessErrorMsg] = useState<string | null>(null);
 
   // Cash Flow State
-  const [cashFlowEntries, setCashFlowEntries] = useState<CashFlowEntry[]>([]);
   const [cfRange, setCfRange] = useState<'today' | 'this_week' | 'this_month' | 'last_month' | 'custom'>('this_month');
   const [cfTypeFilter, setCfTypeFilter] = useState<'all' | 'income' | 'expense'>('all');
   const [cfStartDate, setCfStartDate] = useState(''); // YYYY-MM-DD
@@ -355,36 +367,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
     URL.revokeObjectURL(url);
   };
 
-  const loadData = async () => {
-    setIsLoading(true);
-    try {
-      const [allProducts, allSales, allCashiers, allTxs, allBranches, bizInfo, allCashFlow, allDelReqs] = await Promise.all([
-        dbService.products.getAll(),
-        dbService.sales.getAllWithItems(),
-        dbService.auth.getCashiers(),
-        dbService.transactions.getAll(),
-        dbService.branches.getAll(),
-        dbService.business.get(),
-        dbService.cashFlow.getAll(),
-        dbService.saleDeleteRequests.getAll()
-      ]);
-      setProducts(allProducts);
-      setSales(allSales);
-      setCashiers(allCashiers);
-      setTransactions(allTxs);
-      setBranches(allBranches);
-      setCashFlowEntries(allCashFlow);
-      setDeleteRequests(allDelReqs);
-      if (bizInfo) {
-        setBusinessProfile(bizInfo);
-        setBusinessForm(bizInfo);
-      }
-    } catch (err) {
-      console.error('Failed to load dashboard data:', err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+
 
   const handleLogoFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
