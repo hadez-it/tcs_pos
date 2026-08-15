@@ -1,5 +1,5 @@
-import React from 'react';
-import { X, Award, Eye, Edit2 } from 'lucide-react';
+import React, { useState } from 'react';
+import { X, Award, Eye, Edit2, Filter, ChevronUp, ChevronDown, Users } from 'lucide-react';
 import { formatCurrency } from '../../utils/format';
 import { UserProfile, Branch, SaleWithItems } from '../../types';
 
@@ -42,12 +42,38 @@ export default function StaffPerformanceTab({
   setSelectedCashierForHistory,
   startEditCashier
 }: StaffPerformanceTabProps) {
+  const [showFilters, setShowFilters] = useState(false);
+
   return (
-    <div className="space-y-6">
-      <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3">
-        <div className="grid grid-cols-4 gap-1.5 sm:flex sm:items-center sm:gap-2">
-          <button
-            onClick={() => handlePerfMonthPreset('prev-month')}
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-between items-start sm:items-center">
+        <div>
+          <h2 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight flex items-center gap-2">
+            <Users className="w-5 h-5 sm:w-6 sm:h-6 text-black" />
+            Staff Performance
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-500 mt-0.5">Track sales and performance metrics</p>
+        </div>
+
+        <button 
+          onClick={() => setShowFilters(!showFilters)}
+          className={`w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+            showFilters
+              ? 'bg-black text-white border-black shadow-xs' 
+              : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+          }`}
+        >
+          <Filter className="w-4 h-4" />
+          <span>{showFilters ? 'Hide Filters' : 'Filters'}</span>
+          {showFilters ? <ChevronUp className="w-4 h-4 ml-auto sm:ml-0" /> : <ChevronDown className="w-4 h-4 ml-auto sm:ml-0" />}
+        </button>
+      </div>
+
+      {showFilters && (
+        <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3">
+          <div className="grid grid-cols-3 gap-1.5 sm:flex sm:items-center sm:gap-2">
+            <button
+              onClick={() => handlePerfMonthPreset('prev-month')}
             className={`px-3 py-2 sm:py-1.5 rounded-xl text-xs font-bold transition-all text-center cursor-pointer ${
               perfDatePreset === 'prev-month'
                 ? 'bg-black text-white shadow-xs'
@@ -126,6 +152,7 @@ export default function StaffPerformanceTab({
           )}
         </div>
       </div>
+      )}
 
       {/* Summary KPI Cards for Cashier Performance */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
