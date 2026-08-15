@@ -119,7 +119,14 @@ export default function SaleReportTab({ sales, branches, cashiers, currency }: S
             <Receipt className="w-5 h-5 sm:w-6 sm:h-6 text-black" />
             Sale Report
           </h2>
-          <p className="text-xs sm:text-sm text-slate-500 mt-0.5">Comprehensive transactions & revenue report</p>
+          <div className="flex items-center gap-3 mt-1">
+            <p className="text-xs sm:text-sm text-slate-500">Comprehensive transactions & revenue report</p>
+            <div className="h-4 w-px bg-slate-300"></div>
+            <div className="flex items-center gap-1.5">
+              <span className="text-[10px] sm:text-xs font-extrabold text-slate-400 uppercase tracking-wider">Total Sales</span>
+              <span className="text-sm sm:text-base font-black text-black">{formatCurrency(totalAmount)}</span>
+            </div>
+          </div>
         </div>
 
         <button 
