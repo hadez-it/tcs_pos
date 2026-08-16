@@ -173,6 +173,15 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
   };
 
   const handleExportCsv = () => {
+    const sanitizeCsvCell = (val: any): string => {
+      const str = val === null || val === undefined ? '' : String(val);
+      const escaped = str.replace(/"/g, '""');
+      if (/^[=+\-@\t\r]/.test(escaped)) {
+        return `"'${escaped}"`;
+      }
+      return `"${escaped}"`;
+    };
+
     const headers = [
       'ID', 'Name', 'Image', 'Description', 'Category', 'Use Stock',
       'Purchased Price', 'Unit Amount', 'Unit Price', 'Unit Name',
@@ -180,21 +189,21 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
     ];
 
     const rows = products.map(p => [
-      `"${p.id || p.sku || ''}"`,
-      `"${(p.name || '').replace(/"/g, '""')}"`,
-      `"${p.image || 'null'}"`,
-      `"${(p.description || '').replace(/"/g, '""')}"`,
-      `"${p.category || ''}"`,
-      `"${p.use_stock !== false ? 'true' : 'false'}"`,
+      sanitizeCsvCell(p.id || p.sku || ''),
+      sanitizeCsvCell(p.name || ''),
+      sanitizeCsvCell(p.image || 'null'),
+      sanitizeCsvCell(p.description || ''),
+      sanitizeCsvCell(p.category || ''),
+      sanitizeCsvCell(p.use_stock !== false ? 'true' : 'false'),
       p.cost || 0,
       p.unit_amount || 1,
       p.price || 0,
-      `"${p.unit_name || 'ခု'}"`,
+      sanitizeCsvCell(p.unit_name || 'ခု'),
       p.stock || 0,
-      `"${p.price_variant || ''}"`,
-      `"${p.expiry_date || ''}"`,
-      `"${p.updated_at || new Date().toLocaleString()}"`,
-      `"${p.barcode || ''}"`
+      sanitizeCsvCell(p.price_variant || ''),
+      sanitizeCsvCell(p.expiry_date || ''),
+      sanitizeCsvCell(p.updated_at || new Date().toLocaleString()),
+      sanitizeCsvCell(p.barcode || '')
     ]);
 
     const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');

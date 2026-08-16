@@ -3,10 +3,12 @@
  * Generates raw byte arrays to send over Bluetooth serial.
  */
 
-// ── Helpers ──────────────────────────────────────────────────────────────────
+function sanitizeEscPos(str: string): string {
+  return (str || '').replace(/[\x00-\x09\x0B-\x1F\x7F]/g, '');
+}
 
 function strToBytes(str: string): Uint8Array {
-  return new TextEncoder().encode(str);
+  return new TextEncoder().encode(sanitizeEscPos(str));
 }
 
 function concat(...arrays: Uint8Array[]): Uint8Array {

@@ -140,7 +140,7 @@ export const dbService = {
 
       let profile = data;
       if (!profile) {
-        const determinedRole: UserRole = role || (cleanEmail.includes('manager') ? 'manager' : cleanEmail.includes('cashier') ? 'cashier' : 'owner');
+        const determinedRole: UserRole = role || (cleanEmail.includes('owner') ? 'owner' : cleanEmail.includes('manager') ? 'manager' : 'cashier');
         profile = {
           id: authData.user?.id || generateId(),
           email: cleanEmail,
@@ -166,7 +166,6 @@ export const dbService = {
         const { data: { session } } = await supabase.auth.getSession();
 
         if (session) {
-          if (userStr) return JSON.parse(userStr);
           const { data: profile } = await supabase
             .from('profiles')
             .select('*')
@@ -176,12 +175,12 @@ export const dbService = {
             localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(profile));
             return profile as UserProfile;
           }
+          if (userStr) return JSON.parse(userStr);
           return null;
         }
 
         const { data: refreshData, error: refreshError } = await supabase.auth.refreshSession();
         if (!refreshError && refreshData.session) {
-          if (userStr) return JSON.parse(userStr);
           const { data: profile } = await supabase
             .from('profiles')
             .select('*')
@@ -191,6 +190,7 @@ export const dbService = {
             localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(profile));
             return profile as UserProfile;
           }
+          if (userStr) return JSON.parse(userStr);
           return null;
         }
 
@@ -292,9 +292,10 @@ export const dbService = {
 
     async updateCashier(id: string, updates: Partial<UserProfile>): Promise<UserProfile> {
       if (!supabase) throw new Error('Supabase not configured.');
+      const { password, ...profileUpdates } = updates;
       const { data, error } = await supabase
         .from('profiles')
-        .update(updates)
+        .update(profileUpdates)
         .eq('id', id)
         .select()
         .single();
