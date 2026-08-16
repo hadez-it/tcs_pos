@@ -66,6 +66,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
   const [showSingleLabelModal, setShowSingleLabelModal] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isTabChanging, setIsTabChanging] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   const [perfStartDate, setPerfStartDate] = useState('');
   const [perfEndDate, setPerfEndDate] = useState('');
@@ -509,6 +510,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
   // Back button: each surface pops in the reverse order it was opened, so a
   // delete confirmation raised from inside a modal closes before that modal.
   useBackDismiss(showMoreMenu, () => setShowMoreMenu(false));
+  useBackDismiss(showLogoutConfirm, () => setShowLogoutConfirm(false));
   useBackDismiss(showProductModal, () => setShowProductModal(false));
   useBackDismiss(showCashierModal, () => setShowCashierModal(false));
   useBackDismiss(showBranchModal, () => setShowBranchModal(false));
@@ -544,7 +546,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
           <div className="min-w-0 flex-1">
             <h2 className="font-extrabold text-slate-900 text-sm truncate">{businessProfile.name || 'MiBayate POS'}</h2>
             <p className="text-[10px] text-slate-500 font-semibold flex items-center gap-1">
-              <span className={`w-1.5 h-1.5 rounded-full inline-block ${isSupabaseConfigured ? 'bg-black' : 'bg-black'} animate-pulse-soft`} />
+              <span className={`w-1.5 h-1.5 rounded-full inline-block ${isSupabaseConfigured ? 'bg-black' : 'bg-slate-400'} animate-pulse-soft`} />
               {isSupabaseConfigured ? 'Cloud Connected' : 'Offline Mode'}
             </p>
           </div>
@@ -623,7 +625,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
             <p className="text-xs font-extrabold text-slate-900 truncate">{user.name}</p>
             <p className="text-[10px] font-bold text-slate-400 capitalize">{user.role}</p>
           </div>
-          <button onClick={() => { if (confirm('Are you sure you want to log out?')) onLogout(); }} className="p-2 text-slate-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors cursor-pointer" title="Log out">
+          <button onClick={() => setShowLogoutConfirm(true)} className="p-2 text-slate-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors cursor-pointer" title="Log out">
             <LogOut className="w-4 h-4" />
           </button>
         </div>
@@ -671,7 +673,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                     : activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
                 </h1>
                 <p className="text-[10px] text-slate-500 font-semibold flex items-center gap-1">
-                  <span className={`w-1.5 h-1.5 rounded-full inline-block ${isSupabaseConfigured ? 'bg-black' : 'bg-black'} animate-pulse-soft`} />
+                  <span className={`w-1.5 h-1.5 rounded-full inline-block ${isSupabaseConfigured ? 'bg-black' : 'bg-slate-400'} animate-pulse-soft`} />
                   {isSupabaseConfigured ? 'Cloud Connected' : 'Offline Mode'}
                 </p>
               </div>
@@ -1895,12 +1897,42 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
               <div className="border-t border-slate-100 my-2" />
 
               <button
-                onClick={() => { if (confirm('Are you sure you want to log out?')) onLogout(); }}
+                onClick={() => { setShowMoreMenu(false); setShowLogoutConfirm(true); }}
                 className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-bold text-red-600 hover:bg-red-50 transition-all cursor-pointer active-scale"
               >
                 <LogOut className="w-5 h-5" />
                 <span>Log Out</span>
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showLogoutConfirm && (
+        <div className="bottom-sheet-overlay" onClick={() => setShowLogoutConfirm(false)}>
+          <div className="bottom-sheet" onClick={(e) => e.stopPropagation()}>
+            <div className="pt-3 pb-2">
+              <div className="pull-indicator" />
+            </div>
+            <div className="px-5 pb-6 space-y-4">
+              <div className="space-y-1">
+                <h4 className="font-extrabold text-base text-slate-900">Log out?</h4>
+                <p className="text-sm text-slate-500">You will be returned to the sign-in screen.</p>
+              </div>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowLogoutConfirm(false)}
+                  className="flex-1 py-3.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm rounded-2xl transition-all cursor-pointer active-scale"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={onLogout}
+                  className="flex-1 py-3.5 bg-red-600 hover:bg-red-700 text-white font-bold text-sm rounded-2xl transition-all cursor-pointer active-scale"
+                >
+                  Log Out
+                </button>
+              </div>
             </div>
           </div>
         </div>

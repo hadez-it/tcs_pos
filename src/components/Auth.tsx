@@ -52,11 +52,9 @@ export default function Auth({ onLoginSuccess }: AuthProps) {
   };
 
   return (
-    <div className="h-full w-full bg-gradient-to-br from-gray-700 via-gray-800 to-gray-800 flex flex-col overflow-hidden">
-      {/* Android status bar spacer */}
+    <div className="h-full w-full bg-gradient-to-b from-gray-900 via-gray-800 to-gray-700 flex flex-col overflow-hidden">
       <div className="safe-area-top" />
 
-      {/* Compact brand hero — collapses while the keyboard is open */}
       <div
         className={`shrink-0 px-6 overflow-hidden transition-all duration-300 ease-out ${
           keyboardOpen ? 'max-h-0 opacity-0 pt-0 pb-0' : 'max-h-40 opacity-100 pt-7 pb-6'
@@ -73,7 +71,7 @@ export default function Auth({ onLoginSuccess }: AuthProps) {
             <div className="flex items-center gap-1.5 mt-0.5">
               <span
                 className={`w-1.5 h-1.5 rounded-full animate-pulse-soft ${
-                  isSupabaseConfigured ? 'bg-gray-400' : 'bg-gray-400'
+                  isSupabaseConfigured ? 'bg-white' : 'bg-gray-400'
                 }`}
               />
               <span className="text-[10px] font-bold text-gray-300/80">
@@ -84,8 +82,7 @@ export default function Auth({ onLoginSuccess }: AuthProps) {
         </div>
       </div>
 
-      {/* Form card — floats over the gradient, owns all remaining height */}
-      <div className="flex-1 min-h-0 bg-white rounded-t-[28px] shadow-premium-xl flex flex-col animate-slide-up">
+      <div className="flex-1 min-h-0 bg-white rounded-t-3xl shadow-premium-xl flex flex-col animate-slide-up">
         <div className="flex-1 min-h-0 overflow-y-auto android-scroll px-6 pt-7 pb-6">
           <div className="mb-6">
             <h2 className="text-xl font-black text-slate-900 tracking-tight">Welcome back</h2>

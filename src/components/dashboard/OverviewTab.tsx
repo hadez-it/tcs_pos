@@ -152,30 +152,19 @@ export default function OverviewTab({
     <div className="space-y-8">
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
         {[
-          { label: 'Total Revenue', value: formatCurrency(analytics.totalRevenue), icon: DollarSign, color: 'indigo' },
-          { label: 'Gross Profit', value: formatCurrency(analytics.totalProfit), icon: TrendingUp, color: analytics.totalProfit >= 0 ? 'emerald' : 'red' },
-          { label: 'Sales Transacted', value: `${analytics.totalSalesCount} Orders`, icon: ShoppingCart, color: 'sky' },
-          { label: 'Low Stock', value: `${analytics.lowStockCount} Items`, icon: AlertTriangle, color: analytics.lowStockCount > 0 ? 'amber' : 'slate' },
+          { label: 'Total Revenue', value: formatCurrency(analytics.totalRevenue), icon: DollarSign, isError: false },
+          { label: 'Gross Profit', value: formatCurrency(analytics.totalProfit), icon: TrendingUp, isError: analytics.totalProfit < 0 },
+          { label: 'Sales Transacted', value: `${analytics.totalSalesCount} Orders`, icon: ShoppingCart, isError: false },
+          { label: 'Low Stock', value: `${analytics.lowStockCount} Items`, icon: AlertTriangle, isError: analytics.lowStockCount > 0 },
         ].map((card, i) => (
           <div key={i} className="bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-200/80 shadow-premium flex items-center justify-between card-hover">
             <div className="min-w-0">
               <span className="text-slate-400 text-[9px] sm:text-[10px] uppercase tracking-wider font-bold block truncate">{card.label}</span>
-              <h3 className={`text-sm sm:text-lg md:text-xl font-extrabold mt-1 truncate ${
-                card.color === 'emerald' ? 'text-gray-900' : 
-                card.color === 'red' ? 'text-red-600' : 
-                card.color === 'amber' ? 'text-gray-900' : 
-                'text-slate-900'
-              }`}>
+              <h3 className={`text-sm sm:text-lg md:text-xl font-extrabold mt-1 truncate ${card.isError ? 'text-red-600' : 'text-slate-900'}`}>
                 {card.value}
               </h3>
             </div>
-            <div className={`p-2 sm:p-3 rounded-xl shrink-0 ml-1 shadow-sm ${
-              card.color === 'indigo' ? 'bg-gray-50 text-gray-900' :
-              card.color === 'emerald' ? 'bg-gray-50 text-gray-900' :
-              card.color === 'sky' ? 'bg-gray-50 text-gray-900' :
-              card.color === 'amber' ? 'bg-gray-50 text-gray-900' :
-              'bg-slate-100 text-slate-500'
-            }`}>
+            <div className="p-2 sm:p-3 rounded-xl shrink-0 ml-1 shadow-sm bg-gray-50 text-gray-900">
               <card.icon className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
           </div>
@@ -188,17 +177,11 @@ export default function OverviewTab({
         <div className="bg-white p-6 rounded-xl border border-slate-200/80 shadow-sm lg:col-span-2">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
             <div>
-              <h4 className="font-bold text-sm text-slate-800 flex items-center gap-2">
-                <span>Daily Sales & Profit Performance</span>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-gray-50 text-gray-900 border border-gray-100/80">
-                  Supabase Realtime
-                </span>
-              </h4>
+              <h4 className="font-bold text-sm text-slate-800">Daily Sales & Profit Performance</h4>
               <p className="text-[10px] text-slate-400">Past 7 days revenue and gross profit trends</p>
             </div>
           </div>
 
-          {/* Recharts Responsive Line Chart */}
           <div className="w-full h-64 pt-2">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={analytics.salesOverTime} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
@@ -256,19 +239,19 @@ export default function OverviewTab({
                   type="monotone" 
                   dataKey="revenue" 
                   name="Revenue" 
-                  stroke="#4f46e5" 
+                  stroke="#111827" 
                   strokeWidth={3} 
-                  dot={{ r: 4, fill: '#4f46e5', stroke: '#ffffff', strokeWidth: 2 }} 
-                  activeDot={{ r: 7, fill: '#4f46e5', stroke: '#ffffff', strokeWidth: 2 }} 
+                  dot={{ r: 4, fill: '#111827', stroke: '#ffffff', strokeWidth: 2 }} 
+                  activeDot={{ r: 7, fill: '#111827', stroke: '#ffffff', strokeWidth: 2 }} 
                 />
                 <Line 
                   type="monotone" 
                   dataKey="profit" 
                   name="Gross Profit" 
-                  stroke="#10b981" 
+                  stroke="#6b7280" 
                   strokeWidth={3} 
-                  dot={{ r: 4, fill: '#10b981', stroke: '#ffffff', strokeWidth: 2 }} 
-                  activeDot={{ r: 7, fill: '#10b981', stroke: '#ffffff', strokeWidth: 2 }} 
+                  dot={{ r: 4, fill: '#6b7280', stroke: '#ffffff', strokeWidth: 2 }} 
+                  activeDot={{ r: 7, fill: '#6b7280', stroke: '#ffffff', strokeWidth: 2 }} 
                 />
               </LineChart>
             </ResponsiveContainer>

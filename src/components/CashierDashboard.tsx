@@ -73,7 +73,9 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
   const [businessProfile, setBusinessProfile] = useState<BusinessProfile>(DEFAULT_BUSINESS_PROFILE);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
   const [showScanner, setShowScanner] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
+  useBackDismiss(showLogoutConfirm, () => setShowLogoutConfirm(false));
   useBackDismiss(showCartModal, () => setShowCartModal(false));
   useBackDismiss(showHeldCartsModal, () => setShowHeldCartsModal(false));
   useBackDismiss(showReceipt, () => { setShowReceipt(false); setCompletedSale(null); });
@@ -286,9 +288,9 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
       <div className="flex-1 overflow-y-auto android-scroll px-4 py-3">
         {cart.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 text-slate-400">
-            <ShoppingCart className="w-12 h-12 text-slate-200 mb-2" />
+            <ShoppingCart className="w-14 h-14 text-slate-300 mb-3" />
             <p className="text-xs font-semibold">Cart is empty</p>
-            <p className="text-[11px] text-slate-400 mt-0.5">Click products to add them</p>
+            <p className="text-[11px] text-slate-400 mt-0.5">Tap products to add them</p>
           </div>
         ) : (
           <div className="space-y-2">
@@ -543,7 +545,13 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
                               {inCartCount}
                             </div>
                           )}
-                          
+
+                          {prod.image && (
+                            <div className="w-full h-20 mb-2 rounded-lg overflow-hidden bg-slate-100 shrink-0">
+                              <img src={prod.image} alt={prod.name} className="w-full h-full object-cover" />
+                            </div>
+                          )}
+
                           <div className="space-y-1">
                             <span className="block font-extrabold text-slate-900 text-[13px] leading-snug line-clamp-2 pr-4">{prod.name}</span>
                             <span className="block font-mono text-[10px] text-slate-400">{prod.sku}</span>
@@ -707,7 +715,7 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
               <div className="relative">
                 <ShoppingCart className="w-5 h-5" />
                 {cartCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-red-500 text-white font-bold text-[9px] w-4.5 h-4.5 rounded-full flex items-center justify-center border-2 border-gray-900 shadow-xs">
+                  <span className="absolute -top-2 -right-2 bg-white text-gray-900 font-bold text-[9px] w-4.5 h-4.5 rounded-full flex items-center justify-center border-2 border-gray-900 shadow-xs">
                     {cartCount}
                   </span>
                 )}
@@ -750,9 +758,7 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
             <span className="text-[10px] font-bold">History</span>
           </button>
           <button
-            onClick={() => {
-              if (confirm('Are you sure you want to log out?')) onLogout();
-            }}
+            onClick={() => setShowLogoutConfirm(true)}
             className="flex-1 flex flex-col items-center justify-center gap-1 text-slate-500 cursor-pointer nav-item-tap"
           >
             <LogOut className="w-5 h-5" />
@@ -1017,6 +1023,36 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {showLogoutConfirm && (
+        <div className="bottom-sheet-overlay" onClick={() => setShowLogoutConfirm(false)}>
+          <div className="bottom-sheet" onClick={(e) => e.stopPropagation()}>
+            <div className="pt-3 pb-2">
+              <div className="pull-indicator" />
+            </div>
+            <div className="px-5 pb-6 space-y-4">
+              <div className="space-y-1">
+                <h4 className="font-extrabold text-base text-slate-900">Log out?</h4>
+                <p className="text-sm text-slate-500">You will be returned to the sign-in screen.</p>
+              </div>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowLogoutConfirm(false)}
+                  className="flex-1 py-3.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm rounded-2xl transition-all cursor-pointer active-scale"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={onLogout}
+                  className="flex-1 py-3.5 bg-red-600 hover:bg-red-700 text-white font-bold text-sm rounded-2xl transition-all cursor-pointer active-scale"
+                >
+                  Log Out
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}

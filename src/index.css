@@ -1,22 +1,11 @@
 @import "tailwindcss";
 
 @theme {
-  --color-premium-50: #f0f0ff;
-  --color-premium-100: #e0e0ff;
-  --color-premium-200: #c4b5fd;
-  --color-premium-300: #a78bfa;
-  --color-premium-400: #8b5cf6;
-  --color-premium-500: #6d28d9;
-  --color-premium-600: #5b21b6;
-  --color-premium-700: #4c1d95;
-  --color-premium-800: #3b0764;
-  --color-premium-900: #2e1065;
-
   --color-android-surface: #ffffff;
   --color-android-background: #f1f5f9;
   --color-android-nav: #1e293b;
   --color-android-nav-active: #000000;
-  --color-android-status: #1e1b4b;
+  --color-android-status: #111827;
 
   --glass-bg: rgba(255, 255, 255, 0.7);
   --glass-border: rgba(255, 255, 255, 0.2);
@@ -138,7 +127,7 @@
   }
 
   .text-gradient {
-    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    background: linear-gradient(135deg, #111827, #374151);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -182,7 +171,7 @@
 
   /* Android status bar gradient */
   .android-status-bar {
-    background: linear-gradient(to right, #1e1b4b, #312e81);
+    background: linear-gradient(to right, #111827, #1f2937);
   }
 
   /* Pull indicator for bottom sheets */
@@ -205,7 +194,7 @@
 
   /* Android FAB shadow */
   .fab-shadow {
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4), 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35), 0 2px 4px rgba(0, 0, 0, 0.15);
   }
 }
 
