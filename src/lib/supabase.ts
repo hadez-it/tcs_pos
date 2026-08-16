@@ -370,6 +370,47 @@ export const dbService = {
 
     async getCurrentUser(): Promise<UserProfile | null> {
       const userStr = localStorage.getItem(CURRENT_USER_KEY);
+
+      if (isSupabaseConfigured && supabase) {
+        try {
+          const { data: { session } } = await supabase.auth.getSession();
+
+          if (session) {
+            if (userStr) return JSON.parse(userStr);
+            const { data: profile } = await supabase
+              .from('profiles')
+              .select('*')
+              .eq('email', session.user.email)
+              .maybeSingle();
+            if (profile) {
+              localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(profile));
+              return profile as UserProfile;
+            }
+            return null;
+          }
+
+          const { data: refreshData, error: refreshError } = await supabase.auth.refreshSession();
+          if (!refreshError && refreshData.session) {
+            if (userStr) return JSON.parse(userStr);
+            const { data: profile } = await supabase
+              .from('profiles')
+              .select('*')
+              .eq('email', refreshData.session.user.email)
+              .maybeSingle();
+            if (profile) {
+              localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(profile));
+              return profile as UserProfile;
+            }
+            return null;
+          }
+
+          localStorage.removeItem(CURRENT_USER_KEY);
+          return null;
+        } catch {
+          return userStr ? JSON.parse(userStr) : null;
+        }
+      }
+
       return userStr ? JSON.parse(userStr) : null;
     },
 
