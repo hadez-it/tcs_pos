@@ -118,8 +118,10 @@ CREATE POLICY "Only owners can modify branches"
   ON public.branches FOR ALL
   USING (public.current_user_is_owner());
 
+INSERT INTO public.branches (id, name, code, address, phone, is_active)
+VALUES ('branch-default', 'Main Store', 'MAIN', 'Yangon, Myanmar', '+95 9 123 456 789', true)
+ON CONFLICT (id) DO NOTHING;
 
--- Add FK constraint after branches table exists
 ALTER TABLE public.profiles ADD CONSTRAINT profiles_branch_id_fk FOREIGN KEY (branch_id) REFERENCES public.branches(id);
 -- ── 3. Products ──────────────────────────────────────────────
 CREATE TABLE public.products (
