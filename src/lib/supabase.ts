@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { Branch, Product, Sale, SaleItem, SaleWithItems, UserProfile, InventoryTransaction, UserRole, BusinessProfile, CashFlowEntry, SaleDeleteRequest } from '../types';
+import { notifyDataChanged } from './realtimeSync';
 
 const supabaseUrl = (import.meta as any).env.VITE_SUPABASE_URL;
 const supabaseAnonKey = (import.meta as any).env.VITE_SUPABASE_ANON_KEY || (import.meta as any).env.VITE_SUPABASE_PUBLISHABLE_KEY;
@@ -287,6 +288,7 @@ export const dbService = {
 
       if (profileRes.error) throw profileRes.error;
 
+      notifyDataChanged('profiles');
       return profileRes.data || newCashier;
     },
 
@@ -300,6 +302,7 @@ export const dbService = {
         .select()
         .single();
       if (error) throw error;
+      notifyDataChanged('profiles');
       return data;
     },
 
@@ -321,6 +324,7 @@ export const dbService = {
         const fallbackRes = await supabase.from('profiles').delete().eq('id', id);
         if (fallbackRes.error) throw fallbackRes.error;
       }
+      notifyDataChanged('profiles');
     }
   },
 
@@ -348,6 +352,7 @@ export const dbService = {
         .select()
         .single();
       if (error) throw error;
+      notifyDataChanged('branches');
       return data;
     },
 
@@ -360,6 +365,7 @@ export const dbService = {
         .select()
         .single();
       if (error) throw error;
+      notifyDataChanged('branches');
       return data;
     },
 
@@ -372,6 +378,7 @@ export const dbService = {
       await supabase.from('cash_flow').update({ branch_id: null, branch_name: null }).eq('branch_id', id);
       const { error } = await supabase.from('branches').delete().eq('id', id);
       if (error) throw error;
+      notifyDataChanged('branches');
     }
   },
 
@@ -442,6 +449,7 @@ export const dbService = {
         console.warn('inventory_transactions insert failed (non-fatal):', txErr);
       }
 
+      notifyDataChanged('products');
       return data;
     },
 
@@ -494,6 +502,7 @@ export const dbService = {
         }
       }
 
+      notifyDataChanged('products');
       return data;
     },
 
@@ -536,6 +545,7 @@ export const dbService = {
         console.warn('inventory_transactions insert failed (non-fatal):', txErr);
       }
 
+      notifyDataChanged('products');
       return { ...current, stock: newStock };
     },
 
@@ -612,6 +622,7 @@ export const dbService = {
       const { error } = await supabase.from('products').upsert(upsertItems);
       if (error) throw new Error(error.message || 'Failed to import products to database.');
 
+      notifyDataChanged('products');
       return importedItems.length;
     },
 
@@ -621,6 +632,7 @@ export const dbService = {
       await supabase.from('sale_items').update({ product_id: null }).eq('product_id', id);
       const { error } = await supabase.from('products').delete().eq('id', id);
       if (error) throw error;
+      notifyDataChanged('products');
     }
   },
 
@@ -714,6 +726,7 @@ export const dbService = {
         if (txErr) throw txErr;
       }
 
+      notifyDataChanged('sales');
       return { ...newSale, items: saleItems };
     }
   },
@@ -744,6 +757,7 @@ export const dbService = {
         .select()
         .single();
       if (error) throw error;
+      notifyDataChanged('cash_flow');
       return data;
     },
 
@@ -756,6 +770,7 @@ export const dbService = {
         .select()
         .single();
       if (error) throw error;
+      notifyDataChanged('cash_flow');
       return data;
     },
 
@@ -763,6 +778,7 @@ export const dbService = {
       if (!supabase) throw new Error('Supabase not configured.');
       const { error } = await supabase.from('cash_flow').delete().eq('id', id);
       if (error) throw error;
+      notifyDataChanged('cash_flow');
     }
   },
 
@@ -821,6 +837,7 @@ export const dbService = {
         }
       }
 
+      notifyDataChanged('business_settings');
       return updated;
     }
   },
@@ -850,6 +867,7 @@ export const dbService = {
         .select()
         .single();
       if (error) throw error;
+      notifyDataChanged('sale_delete_requests');
       return data;
     },
 
@@ -885,6 +903,7 @@ export const dbService = {
       if (req.sale_id) {
         await supabase.from('sales').delete().eq('id', req.sale_id);
       }
+      notifyDataChanged('sale_delete_requests');
     },
 
     async reject(requestId: string, reviewedBy: string, rejectionReason?: string): Promise<void> {
@@ -894,6 +913,7 @@ export const dbService = {
         .from('sale_delete_requests')
         .update({ status: 'rejected', reviewed_at: now, reviewed_by: reviewedBy, rejection_reason: rejectionReason || '' })
         .eq('id', requestId);
+      notifyDataChanged('sale_delete_requests');
     }
   },
 

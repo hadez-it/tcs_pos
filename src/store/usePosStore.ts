@@ -23,8 +23,10 @@ interface PosStore {
   setCashFlowEntries: (entries: CashFlowEntry[]) => void;
   setIsLoading: (isLoading: boolean) => void;
   
-  loadData: () => Promise<void>;
+  loadData: (silent?: boolean) => Promise<void>;
 }
+
+let activeFetchPromise: Promise<void> | null = null;
 
 export const usePosStore = create<PosStore>((set) => ({
   products: [],
@@ -47,33 +49,47 @@ export const usePosStore = create<PosStore>((set) => ({
   setCashFlowEntries: (cashFlowEntries) => set({ cashFlowEntries }),
   setIsLoading: (isLoading) => set({ isLoading }),
   
-  loadData: async () => {
-    set({ isLoading: true });
-    try {
-      const [products, sales, cashiers, transactions, branches, businessProfile, cashFlowEntries, deleteRequests] = await Promise.all([
-        dbService.products.getAll(),
-        dbService.sales.getAllWithItems(),
-        dbService.auth.getCashiers(),
-        dbService.transactions.getAll(),
-        dbService.branches.getAll(),
-        dbService.business.get(),
-        dbService.cashFlow.getAll(),
-        dbService.saleDeleteRequests.getAll()
-      ]);
-      set({
-        products,
-        sales,
-        cashiers,
-        transactions,
-        branches,
-        businessProfile: businessProfile || null,
-        cashFlowEntries,
-        deleteRequests
-      });
-    } catch (err) {
-      console.error('Failed to load dashboard data:', err);
-    } finally {
-      set({ isLoading: false });
+  loadData: async (silent = false) => {
+    if (activeFetchPromise) {
+      return activeFetchPromise;
     }
+
+    if (!silent) {
+      set({ isLoading: true });
+    }
+
+    activeFetchPromise = (async () => {
+      try {
+        const [products, sales, cashiers, transactions, branches, businessProfile, cashFlowEntries, deleteRequests] = await Promise.all([
+          dbService.products.getAll(),
+          dbService.sales.getAllWithItems(),
+          dbService.auth.getCashiers(),
+          dbService.transactions.getAll(),
+          dbService.branches.getAll(),
+          dbService.business.get(),
+          dbService.cashFlow.getAll(),
+          dbService.saleDeleteRequests.getAll()
+        ]);
+        set({
+          products,
+          sales,
+          cashiers,
+          transactions,
+          branches,
+          businessProfile: businessProfile || null,
+          cashFlowEntries,
+          deleteRequests
+        });
+      } catch (err) {
+        console.error('Failed to load dashboard data:', err);
+      } finally {
+        if (!silent) {
+          set({ isLoading: false });
+        }
+        activeFetchPromise = null;
+      }
+    })();
+
+    return activeFetchPromise;
   }
 }));

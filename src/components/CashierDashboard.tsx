@@ -6,6 +6,7 @@ import {
   FileText, Tag, ArrowRight, Printer, AlertCircle, Sparkles, Filter, ChevronDown, Menu, X, History, Camera
 } from 'lucide-react';
 import { dbService, DEFAULT_BUSINESS_PROFILE } from '../lib/supabase';
+import { subscribeToDataChanges } from '../lib/realtimeSync';
 import { Product, SaleWithItems, UserProfile, BusinessProfile, SaleDeleteRequest } from '../types';
 import { formatCurrency } from '../utils/format';
 import { useToast } from '../utils/toast';
@@ -93,8 +94,8 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
     React.startTransition(() => setActiveTab(tab));
   }, 'pos');
 
-  const loadRecentSales = async () => {
-    setIsHistoryLoading(true);
+  const loadRecentSales = async (silent = false) => {
+    if (!silent) setIsHistoryLoading(true);
     try {
       const [allSales, allDelReqs] = await Promise.all([
         dbService.sales.getAllWithItems(),
@@ -105,7 +106,7 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
     } catch (err) {
       console.error('Failed to load sales history:', err);
     } finally {
-      setIsHistoryLoading(false);
+      if (!silent) setIsHistoryLoading(false);
     }
   };
 
@@ -160,8 +161,8 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
     setShowHeldCartsModal(false);
   };
 
-  const loadProducts = async () => {
-    setIsLoading(true);
+  const loadProducts = async (silent = false) => {
+    if (!silent) setIsLoading(true);
     try {
       const [data, biz] = await Promise.all([
         dbService.products.getAll(),
@@ -172,13 +173,20 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
     } catch (err) {
       console.error('Failed to load products:', err);
     } finally {
-      setIsLoading(false);
+      if (!silent) setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    loadProducts();
-    loadRecentSales();
+    loadProducts(false);
+    loadRecentSales(false);
+    const unsubscribe = subscribeToDataChanges(async () => {
+      await Promise.all([
+        loadProducts(true),
+        loadRecentSales(true)
+      ]);
+    });
+    return unsubscribe;
   }, []);
 
   const addToCart = (product: Product) => {

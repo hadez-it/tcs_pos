@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { dbService } from '../lib/supabase';
+import { subscribeToDataChanges } from '../lib/realtimeSync';
 import { SaleDeleteRequest, Branch, UserProfile, SaleWithItems } from '../types';
 import { formatCurrency } from '../utils/format';
 import { useToast } from '../utils/toast';
@@ -26,8 +27,8 @@ export default function DeleteRequestsTab({ user, branches, selectedBranchId, on
   const [rejectionReason, setRejectionReason] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const loadRequestsData = async () => {
-    setIsLoading(true);
+  const loadRequestsData = async (silent = false) => {
+    if (!silent) setIsLoading(true);
     try {
       const [allReqs, allSales] = await Promise.all([
         dbService.saleDeleteRequests.getAll(),
@@ -40,12 +41,16 @@ export default function DeleteRequestsTab({ user, branches, selectedBranchId, on
       setRequests([]);
       setSales([]);
     } finally {
-      setIsLoading(false);
+      if (!silent) setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    loadRequestsData();
+    loadRequestsData(false);
+    const unsubscribe = subscribeToDataChanges(() => {
+      loadRequestsData(true);
+    });
+    return unsubscribe;
   }, []);
 
   const handleApprove = async () => {

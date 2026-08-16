@@ -1,6 +1,6 @@
 {
   "0": "OwnerDashboard.tsx",
-  "1": "App.tsx",
+  "1": "CashierDashboard.tsx",
   "2": "escpos.ts",
   "3": "compress.py",
   "4": "dependencies",
@@ -45,5 +45,6 @@
   "43": "caveman-explore/SKILL.md",
   "44": "caveman-learn/SKILL.md",
   "45": "setupTests.ts",
-  "46": "vitest.config.ts"
+  "46": "vitest.config.ts",
+  "47": "realtimeSync.ts"
 }

@@ -337,4 +337,15 @@ CREATE POLICY "Owners can update sale_delete_requests"
 CREATE POLICY "Owners can delete sale_delete_requests"
   ON public.sale_delete_requests FOR DELETE
   USING (public.current_user_is_owner());
+
+-- ── 10. Realtime Publication ─────────────────────────────────
+ALTER PUBLICATION supabase_realtime ADD TABLE public.products;
+ALTER PUBLICATION supabase_realtime ADD TABLE public.sales;
+ALTER PUBLICATION supabase_realtime ADD TABLE public.sale_items;
+ALTER PUBLICATION supabase_realtime ADD TABLE public.sale_delete_requests;
+ALTER PUBLICATION supabase_realtime ADD TABLE public.cash_flow;
+ALTER PUBLICATION supabase_realtime ADD TABLE public.inventory_transactions;
+ALTER PUBLICATION supabase_realtime ADD TABLE public.branches;
+ALTER PUBLICATION supabase_realtime ADD TABLE public.profiles;
+ALTER PUBLICATION supabase_realtime ADD TABLE public.business_settings;
 `;

@@ -99,6 +99,19 @@
       "norm_label": "cashierstabprops"
     },
     {
+      "label": "OverviewTabProps",
+      "file_type": "code",
+      "source_file": "src/components/dashboard/OverviewTab.tsx",
+      "source_location": "L36",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "id": "src_components_dashboard_overviewtab_overviewtabprops",
+      "community": 0,
+      "community_name": "OwnerDashboard.tsx",
+      "norm_label": "overviewtabprops"
+    },
+    {
       "label": "SalesAnalytics",
       "file_type": "code",
       "source_file": "src/components/dashboard/OverviewTab.tsx",
@@ -154,7 +167,7 @@
       "label": "DeleteRequestsTabProps",
       "file_type": "code",
       "source_file": "src/components/DeleteRequestsTab.tsx",
-      "source_location": "L8",
+      "source_location": "L9",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
@@ -232,7 +245,7 @@
       "label": "OwnerDashboardProps",
       "file_type": "code",
       "source_file": "src/components/OwnerDashboard.tsx",
-      "source_location": "L41",
+      "source_location": "L42",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
@@ -240,6 +253,19 @@
       "community": 0,
       "community_name": "OwnerDashboard.tsx",
       "norm_label": "ownerdashboardprops"
+    },
+    {
+      "label": "QuickRestockModalProps",
+      "file_type": "code",
+      "source_file": "src/components/QuickRestockModal.tsx",
+      "source_location": "L7",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "id": "src_components_quickrestockmodal_quickrestockmodalprops",
+      "community": 0,
+      "community_name": "OwnerDashboard.tsx",
+      "norm_label": "quickrestockmodalprops"
     },
     {
       "label": "SaleReportTabProps",
@@ -385,6 +411,19 @@
       "norm_label": "paymentmethod"
     },
     {
+      "label": "Product",
+      "file_type": "code",
+      "source_file": "src/types.ts",
+      "source_location": "L39",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "id": "src_types_product",
+      "community": 0,
+      "community_name": "OwnerDashboard.tsx",
+      "norm_label": "product"
+    },
+    {
       "label": "Sale",
       "file_type": "code",
       "source_file": "src/types.ts",
@@ -476,19 +515,6 @@
       "norm_label": "userrole"
     },
     {
-      "label": "BarcodePrintModalProps",
-      "file_type": "code",
-      "source_file": "src/components/BarcodePrintModal.tsx",
-      "source_location": "L16",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "id": "src_components_barcodeprintmodal_barcodeprintmodalprops",
-      "community": 1,
-      "community_name": "App.tsx",
-      "norm_label": "barcodeprintmodalprops"
-    },
-    {
       "label": "BarcodeScannerModalProps",
       "file_type": "code",
       "source_file": "src/components/BarcodeScannerModal.tsx",
@@ -498,46 +524,46 @@
       "_origin": "ast",
       "id": "src_components_barcodescannermodal_barcodescannermodalprops",
       "community": 1,
-      "community_name": "App.tsx",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "barcodescannermodalprops"
     },
     {
       "label": "CartItem",
       "file_type": "code",
       "source_file": "src/components/CashierDashboard.tsx",
-      "source_location": "L20",
+      "source_location": "L21",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_cashierdashboard_cartitem",
       "community": 1,
-      "community_name": "App.tsx",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "cartitem"
     },
     {
       "label": "CashierDashboardProps",
       "file_type": "code",
       "source_file": "src/components/CashierDashboard.tsx",
-      "source_location": "L15",
+      "source_location": "L16",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_cashierdashboard_cashierdashboardprops",
       "community": 1,
-      "community_name": "App.tsx",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "cashierdashboardprops"
     },
     {
       "label": "HeldCart",
       "file_type": "code",
       "source_file": "src/components/CashierDashboard.tsx",
-      "source_location": "L25",
+      "source_location": "L26",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_cashierdashboard_heldcart",
       "community": 1,
-      "community_name": "App.tsx",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "heldcart"
     },
     {
@@ -550,34 +576,8 @@
       "_origin": "ast",
       "id": "src_components_csvimportmodal_csvimportmodalprops",
       "community": 1,
-      "community_name": "App.tsx",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "csvimportmodalprops"
-    },
-    {
-      "label": "OverviewTabProps",
-      "file_type": "code",
-      "source_file": "src/components/dashboard/OverviewTab.tsx",
-      "source_location": "L36",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "id": "src_components_dashboard_overviewtab_overviewtabprops",
-      "community": 1,
-      "community_name": "App.tsx",
-      "norm_label": "overviewtabprops"
-    },
-    {
-      "label": "LabelGeneratorTabProps",
-      "file_type": "code",
-      "source_file": "src/components/LabelGeneratorTab.tsx",
-      "source_location": "L17",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "id": "src_components_labelgeneratortab_labelgeneratortabprops",
-      "community": 1,
-      "community_name": "App.tsx",
-      "norm_label": "labelgeneratortabprops"
     },
     {
       "label": "PullToRefreshProps",
@@ -589,34 +589,8 @@
       "_origin": "ast",
       "id": "src_components_pulltorefresh_pulltorefreshprops",
       "community": 1,
-      "community_name": "App.tsx",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "pulltorefreshprops"
-    },
-    {
-      "label": "QuickRestockModalProps",
-      "file_type": "code",
-      "source_file": "src/components/QuickRestockModal.tsx",
-      "source_location": "L7",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "id": "src_components_quickrestockmodal_quickrestockmodalprops",
-      "community": 1,
-      "community_name": "App.tsx",
-      "norm_label": "quickrestockmodalprops"
-    },
-    {
-      "label": "SingleLabelModalProps",
-      "file_type": "code",
-      "source_file": "src/components/SingleLabelModal.tsx",
-      "source_location": "L16",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "id": "src_components_singlelabelmodal_singlelabelmodalprops",
-      "community": 1,
-      "community_name": "App.tsx",
-      "norm_label": "singlelabelmodalprops"
     },
     {
       "label": "Layer",
@@ -628,21 +602,8 @@
       "_origin": "ast",
       "id": "src_lib_backnavigation_layer",
       "community": 1,
-      "community_name": "App.tsx",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "layer"
-    },
-    {
-      "label": "Product",
-      "file_type": "code",
-      "source_file": "src/types.ts",
-      "source_location": "L39",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "id": "src_types_product",
-      "community": 1,
-      "community_name": "App.tsx",
-      "norm_label": "product"
     },
     {
       "label": "Toast",
@@ -654,7 +615,7 @@
       "_origin": "ast",
       "id": "src_utils_toast_toast",
       "community": 1,
-      "community_name": "App.tsx",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "toast"
     },
     {
@@ -667,7 +628,7 @@
       "_origin": "ast",
       "id": "src_utils_toast_toastcontextvalue",
       "community": 1,
-      "community_name": "App.tsx",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "toastcontextvalue"
     },
     {
@@ -680,8 +641,21 @@
       "_origin": "ast",
       "id": "src_utils_toast_toasttype",
       "community": 1,
-      "community_name": "App.tsx",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "toasttype"
+    },
+    {
+      "label": "BarcodePrintModalProps",
+      "file_type": "code",
+      "source_file": "src/components/BarcodePrintModal.tsx",
+      "source_location": "L16",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "id": "src_components_barcodeprintmodal_barcodeprintmodalprops",
+      "community": 2,
+      "community_name": "escpos.ts",
+      "norm_label": "barcodeprintmodalprops"
     },
     {
       "label": "BarcodeSVGProps",
@@ -695,6 +669,19 @@
       "community": 2,
       "community_name": "escpos.ts",
       "norm_label": "barcodesvgprops"
+    },
+    {
+      "label": "LabelGeneratorTabProps",
+      "file_type": "code",
+      "source_file": "src/components/LabelGeneratorTab.tsx",
+      "source_location": "L17",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "id": "src_components_labelgeneratortab_labelgeneratortabprops",
+      "community": 2,
+      "community_name": "escpos.ts",
+      "norm_label": "labelgeneratortabprops"
     },
     {
       "label": "PrinterRole",
@@ -721,6 +708,19 @@
       "community": 2,
       "community_name": "escpos.ts",
       "norm_label": "printersettingsprops"
+    },
+    {
+      "label": "SingleLabelModalProps",
+      "file_type": "code",
+      "source_file": "src/components/SingleLabelModal.tsx",
+      "source_location": "L16",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "id": "src_components_singlelabelmodal_singlelabelmodalprops",
+      "community": 2,
+      "community_name": "escpos.ts",
+      "norm_label": "singlelabelmodalprops"
     },
     {
       "label": "Align",
@@ -838,6 +838,19 @@
       "community": 2,
       "community_name": "escpos.ts",
       "norm_label": "labelconfig"
+    },
+    {
+      "label": "SyncListener",
+      "file_type": "code",
+      "source_file": "src/lib/realtimeSync.ts",
+      "source_location": "L3",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "id": "src_lib_realtimesync_synclistener",
+      "community": 47,
+      "community_name": "realtimeSync.ts",
+      "norm_label": "synclistener"
     },
     {
       "label": "ValidationResult",
@@ -987,6 +1000,18 @@
       "norm_label": "transactionstab()"
     },
     {
+      "label": "DeleteRequestsTab()",
+      "file_type": "code",
+      "source_file": "src/components/DeleteRequestsTab.tsx",
+      "source_location": "L16",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_components_deleterequeststab_deleterequeststab",
+      "community": 0,
+      "community_name": "OwnerDashboard.tsx",
+      "norm_label": "deleterequeststab()"
+    },
+    {
       "label": "BranchModal()",
       "file_type": "code",
       "source_file": "src/components/modals/BranchModal.tsx",
@@ -1035,16 +1060,16 @@
       "norm_label": "productmodal()"
     },
     {
-      "label": "OwnerDashboard()",
+      "label": "QuickRestockModal()",
       "file_type": "code",
-      "source_file": "src/components/OwnerDashboard.tsx",
-      "source_location": "L46",
+      "source_file": "src/components/QuickRestockModal.tsx",
+      "source_location": "L14",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_components_ownerdashboard_ownerdashboard",
+      "id": "src_components_quickrestockmodal_quickrestockmodal",
       "community": 0,
       "community_name": "OwnerDashboard.tsx",
-      "norm_label": "ownerdashboard()"
+      "norm_label": "quickrestockmodal()"
     },
     {
       "label": "SaleReportTab()",
@@ -1071,22 +1096,10 @@
       "norm_label": "searchablecategoryselect()"
     },
     {
-      "label": "SetupBanner()",
-      "file_type": "code",
-      "source_file": "src/components/SetupBanner.tsx",
-      "source_location": "L6",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "src_components_setupbanner_setupbanner",
-      "community": 0,
-      "community_name": "OwnerDashboard.tsx",
-      "norm_label": "setupbanner()"
-    },
-    {
       "label": "collectProductCodes()",
       "file_type": "code",
       "source_file": "src/lib/supabase.ts",
-      "source_location": "L39",
+      "source_location": "L40",
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_supabase_collectproductcodes",
@@ -1098,7 +1111,7 @@
       "label": "formatEmailWithDefaultDomain()",
       "file_type": "code",
       "source_file": "src/lib/supabase.ts",
-      "source_location": "L95",
+      "source_location": "L96",
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_supabase_formatemailwithdefaultdomain",
@@ -1110,7 +1123,7 @@
       "label": "generateId()",
       "file_type": "code",
       "source_file": "src/lib/supabase.ts",
-      "source_location": "L18",
+      "source_location": "L19",
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_supabase_generateid",
@@ -1122,7 +1135,7 @@
       "label": "nextSequentialBarcode()",
       "file_type": "code",
       "source_file": "src/lib/supabase.ts",
-      "source_location": "L62",
+      "source_location": "L63",
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_supabase_nextsequentialbarcode",
@@ -1134,7 +1147,7 @@
       "label": "normalizeBarcode()",
       "file_type": "code",
       "source_file": "src/lib/supabase.ts",
-      "source_location": "L37",
+      "source_location": "L38",
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_supabase_normalizebarcode",
@@ -1146,7 +1159,7 @@
       "label": "normalizeSku()",
       "file_type": "code",
       "source_file": "src/lib/supabase.ts",
-      "source_location": "L36",
+      "source_location": "L37",
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_supabase_normalizesku",
@@ -1158,7 +1171,7 @@
       "label": "randomSku()",
       "file_type": "code",
       "source_file": "src/lib/supabase.ts",
-      "source_location": "L28",
+      "source_location": "L29",
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_supabase_randomsku",
@@ -1247,7 +1260,7 @@
       "_origin": "ast",
       "id": "src_app_app",
       "community": 1,
-      "community_name": "App.tsx",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "app()"
     },
     {
@@ -1259,7 +1272,7 @@
       "_origin": "ast",
       "id": "src_app_exitprompt",
       "community": 1,
-      "community_name": "App.tsx",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "exitprompt()"
     },
     {
@@ -1271,31 +1284,31 @@
       "_origin": "ast",
       "id": "src_components_barcodescannermodal_barcodescannermodal",
       "community": 1,
-      "community_name": "App.tsx",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "barcodescannermodal()"
     },
     {
       "label": "CashierDashboard()",
       "file_type": "code",
       "source_file": "src/components/CashierDashboard.tsx",
-      "source_location": "L48",
+      "source_location": "L49",
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_cashierdashboard_cashierdashboard",
       "community": 1,
-      "community_name": "App.tsx",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "cashierdashboard()"
     },
     {
       "label": "getQuickCashOptions()",
       "file_type": "code",
       "source_file": "src/components/CashierDashboard.tsx",
-      "source_location": "L33",
+      "source_location": "L34",
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_cashierdashboard_getquickcashoptions",
       "community": 1,
-      "community_name": "App.tsx",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "getquickcashoptions()"
     },
     {
@@ -1307,20 +1320,8 @@
       "_origin": "ast",
       "id": "src_components_csvimportmodal_csvimportmodal",
       "community": 1,
-      "community_name": "App.tsx",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "csvimportmodal()"
-    },
-    {
-      "label": "DeleteRequestsTab()",
-      "file_type": "code",
-      "source_file": "src/components/DeleteRequestsTab.tsx",
-      "source_location": "L15",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "src_components_deleterequeststab_deleterequeststab",
-      "community": 1,
-      "community_name": "App.tsx",
-      "norm_label": "deleterequeststab()"
     },
     {
       "label": "OfflineSyncBar()",
@@ -1331,8 +1332,20 @@
       "_origin": "ast",
       "id": "src_components_offlinesyncbar_offlinesyncbar",
       "community": 1,
-      "community_name": "App.tsx",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "offlinesyncbar()"
+    },
+    {
+      "label": "OwnerDashboard()",
+      "file_type": "code",
+      "source_file": "src/components/OwnerDashboard.tsx",
+      "source_location": "L47",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_components_ownerdashboard_ownerdashboard",
+      "community": 1,
+      "community_name": "CashierDashboard.tsx",
+      "norm_label": "ownerdashboard()"
     },
     {
       "label": "PullToRefresh()",
@@ -1343,20 +1356,20 @@
       "_origin": "ast",
       "id": "src_components_pulltorefresh_pulltorefresh",
       "community": 1,
-      "community_name": "App.tsx",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "pulltorefresh()"
     },
     {
-      "label": "QuickRestockModal()",
+      "label": "SetupBanner()",
       "file_type": "code",
-      "source_file": "src/components/QuickRestockModal.tsx",
-      "source_location": "L14",
+      "source_file": "src/components/SetupBanner.tsx",
+      "source_location": "L6",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_components_quickrestockmodal_quickrestockmodal",
+      "id": "src_components_setupbanner_setupbanner",
       "community": 1,
-      "community_name": "App.tsx",
-      "norm_label": "quickrestockmodal()"
+      "community_name": "CashierDashboard.tsx",
+      "norm_label": "setupbanner()"
     },
     {
       "label": "depthState()",
@@ -1367,7 +1380,7 @@
       "_origin": "ast",
       "id": "src_lib_backnavigation_depthstate",
       "community": 1,
-      "community_name": "App.tsx",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "depthstate()"
     },
     {
@@ -1379,7 +1392,7 @@
       "_origin": "ast",
       "id": "src_lib_backnavigation_handlecapacitorbackbutton",
       "community": 1,
-      "community_name": "App.tsx",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "handlecapacitorbackbutton()"
     },
     {
@@ -1391,7 +1404,7 @@
       "_origin": "ast",
       "id": "src_lib_backnavigation_handlekeydown",
       "community": 1,
-      "community_name": "App.tsx",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "handlekeydown()"
     },
     {
@@ -1403,7 +1416,7 @@
       "_origin": "ast",
       "id": "src_lib_backnavigation_handlepopstate",
       "community": 1,
-      "community_name": "App.tsx",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "handlepopstate()"
     },
     {
@@ -1415,7 +1428,7 @@
       "_origin": "ast",
       "id": "src_lib_backnavigation_registerlayer",
       "community": 1,
-      "community_name": "App.tsx",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "registerlayer()"
     },
     {
@@ -1427,7 +1440,7 @@
       "_origin": "ast",
       "id": "src_lib_backnavigation_releaselayer",
       "community": 1,
-      "community_name": "App.tsx",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "releaselayer()"
     },
     {
@@ -1439,7 +1452,7 @@
       "_origin": "ast",
       "id": "src_lib_backnavigation_setexitprompthandler",
       "community": 1,
-      "community_name": "App.tsx",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "setexitprompthandler()"
     },
     {
@@ -1451,7 +1464,7 @@
       "_origin": "ast",
       "id": "src_lib_backnavigation_startbacknavigation",
       "community": 1,
-      "community_name": "App.tsx",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "startbacknavigation()"
     },
     {
@@ -1463,7 +1476,7 @@
       "_origin": "ast",
       "id": "src_lib_backnavigation_stopbacknavigation",
       "community": 1,
-      "community_name": "App.tsx",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "stopbacknavigation()"
     },
     {
@@ -1475,7 +1488,7 @@
       "_origin": "ast",
       "id": "src_lib_backnavigation_usebackdismiss",
       "community": 1,
-      "community_name": "App.tsx",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "usebackdismiss()"
     },
     {
@@ -1487,7 +1500,7 @@
       "_origin": "ast",
       "id": "src_lib_backnavigation_usebacktabhistory",
       "community": 1,
-      "community_name": "App.tsx",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "usebacktabhistory()"
     },
     {
@@ -1499,7 +1512,7 @@
       "_origin": "ast",
       "id": "src_utils_toast_toastprovider",
       "community": 1,
-      "community_name": "App.tsx",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "toastprovider()"
     },
     {
@@ -1511,7 +1524,7 @@
       "_origin": "ast",
       "id": "src_utils_toast_usetoast",
       "community": 1,
-      "community_name": "App.tsx",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "usetoast()"
     },
     {
@@ -2475,6 +2488,138 @@
       "norm_label": "frontmatter()"
     },
     {
+      "label": "handleCustomDataChange()",
+      "file_type": "code",
+      "source_file": "src/lib/realtimeSync.ts",
+      "source_location": "L99",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_lib_realtimesync_handlecustomdatachange",
+      "community": 47,
+      "community_name": "realtimeSync.ts",
+      "norm_label": "handlecustomdatachange()"
+    },
+    {
+      "label": "handleOnline()",
+      "file_type": "code",
+      "source_file": "src/lib/realtimeSync.ts",
+      "source_location": "L95",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_lib_realtimesync_handleonline",
+      "community": 47,
+      "community_name": "realtimeSync.ts",
+      "norm_label": "handleonline()"
+    },
+    {
+      "label": "handleVisibilityOrFocus()",
+      "file_type": "code",
+      "source_file": "src/lib/realtimeSync.ts",
+      "source_location": "L89",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_lib_realtimesync_handlevisibilityorfocus",
+      "community": 47,
+      "community_name": "realtimeSync.ts",
+      "norm_label": "handlevisibilityorfocus()"
+    },
+    {
+      "label": "notifyDataChanged()",
+      "file_type": "code",
+      "source_file": "src/lib/realtimeSync.ts",
+      "source_location": "L39",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_lib_realtimesync_notifydatachanged",
+      "community": 47,
+      "community_name": "realtimeSync.ts",
+      "norm_label": "notifydatachanged()"
+    },
+    {
+      "label": "notifyListeners()",
+      "file_type": "code",
+      "source_file": "src/lib/realtimeSync.ts",
+      "source_location": "L15",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_lib_realtimesync_notifylisteners",
+      "community": 47,
+      "community_name": "realtimeSync.ts",
+      "norm_label": "notifylisteners()"
+    },
+    {
+      "label": "setupRealtimeChannel()",
+      "file_type": "code",
+      "source_file": "src/lib/realtimeSync.ts",
+      "source_location": "L55",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_lib_realtimesync_setuprealtimechannel",
+      "community": 47,
+      "community_name": "realtimeSync.ts",
+      "norm_label": "setuprealtimechannel()"
+    },
+    {
+      "label": "startSyncEngine()",
+      "file_type": "code",
+      "source_file": "src/lib/realtimeSync.ts",
+      "source_location": "L103",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_lib_realtimesync_startsyncengine",
+      "community": 47,
+      "community_name": "realtimeSync.ts",
+      "norm_label": "startsyncengine()"
+    },
+    {
+      "label": "stopSyncEngine()",
+      "file_type": "code",
+      "source_file": "src/lib/realtimeSync.ts",
+      "source_location": "L139",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_lib_realtimesync_stopsyncengine",
+      "community": 47,
+      "community_name": "realtimeSync.ts",
+      "norm_label": "stopsyncengine()"
+    },
+    {
+      "label": "subscribeToDataChanges()",
+      "file_type": "code",
+      "source_file": "src/lib/realtimeSync.ts",
+      "source_location": "L164",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_lib_realtimesync_subscribetodatachanges",
+      "community": 47,
+      "community_name": "realtimeSync.ts",
+      "norm_label": "subscribetodatachanges()"
+    },
+    {
+      "label": "teardownRealtimeChannel()",
+      "file_type": "code",
+      "source_file": "src/lib/realtimeSync.ts",
+      "source_location": "L78",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_lib_realtimesync_teardownrealtimechannel",
+      "community": 47,
+      "community_name": "realtimeSync.ts",
+      "norm_label": "teardownrealtimechannel()"
+    },
+    {
+      "label": "triggerSync()",
+      "file_type": "code",
+      "source_file": "src/lib/realtimeSync.ts",
+      "source_location": "L179",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_lib_realtimesync_triggersync",
+      "community": 47,
+      "community_name": "realtimeSync.ts",
+      "norm_label": "triggersync()"
+    },
+    {
       "label": "benchmark_pair()",
       "file_type": "code",
       "source_file": ".agents/skills/caveman-compress/scripts/benchmark.py",
@@ -3057,6 +3202,17 @@
       "norm_label": "ownerdashboard.tsx"
     },
     {
+      "label": "QuickRestockModal.tsx",
+      "file_type": "code",
+      "source_file": "src/components/QuickRestockModal.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_components_quickrestockmodal",
+      "community": 0,
+      "community_name": "OwnerDashboard.tsx",
+      "norm_label": "quickrestockmodal.tsx"
+    },
+    {
       "label": "SaleReportTab.tsx",
       "file_type": "code",
       "source_file": "src/components/SaleReportTab.tsx",
@@ -3079,39 +3235,6 @@
       "norm_label": "searchablecategoryselect.tsx"
     },
     {
-      "label": "SetupBanner.tsx",
-      "file_type": "code",
-      "source_file": "src/components/SetupBanner.tsx",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "src_components_setupbanner",
-      "community": 0,
-      "community_name": "OwnerDashboard.tsx",
-      "norm_label": "setupbanner.tsx"
-    },
-    {
-      "label": "schemaSql.ts",
-      "file_type": "code",
-      "source_file": "src/data/schemaSql.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "src_data_schemasql",
-      "community": 0,
-      "community_name": "OwnerDashboard.tsx",
-      "norm_label": "schemasql.ts"
-    },
-    {
-      "label": "SUPABASE_SCHEMA_SQL",
-      "file_type": "code",
-      "source_file": "src/data/schemaSql.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "src_data_schemasql_supabase_schema_sql",
-      "community": 0,
-      "community_name": "OwnerDashboard.tsx",
-      "norm_label": "supabase_schema_sql"
-    },
-    {
       "label": "supabase.ts",
       "file_type": "code",
       "source_file": "src/lib/supabase.ts",
@@ -3126,7 +3249,7 @@
       "label": "dbService",
       "file_type": "code",
       "source_file": "src/lib/supabase.ts",
-      "source_location": "L102",
+      "source_location": "L103",
       "_origin": "ast",
       "id": "src_lib_supabase_dbservice",
       "community": 0,
@@ -3134,26 +3257,26 @@
       "norm_label": "dbservice"
     },
     {
+      "label": "DEFAULT_BUSINESS_PROFILE",
+      "file_type": "code",
+      "source_file": "src/lib/supabase.ts",
+      "source_location": "L84",
+      "_origin": "ast",
+      "id": "src_lib_supabase_default_business_profile",
+      "community": 0,
+      "community_name": "OwnerDashboard.tsx",
+      "norm_label": "default_business_profile"
+    },
+    {
       "label": "isSupabaseConfigured",
       "file_type": "code",
       "source_file": "src/lib/supabase.ts",
-      "source_location": "L7",
+      "source_location": "L8",
       "_origin": "ast",
       "id": "src_lib_supabase_issupabaseconfigured",
       "community": 0,
       "community_name": "OwnerDashboard.tsx",
       "norm_label": "issupabaseconfigured"
-    },
-    {
-      "label": "supabase",
-      "file_type": "code",
-      "source_file": "src/lib/supabase.ts",
-      "source_location": "L14",
-      "_origin": "ast",
-      "id": "src_lib_supabase_supabase",
-      "community": 0,
-      "community_name": "OwnerDashboard.tsx",
-      "norm_label": "supabase"
     },
     {
       "label": "usePosStore.ts",
@@ -3181,7 +3304,7 @@
       "label": "usePosStore",
       "file_type": "code",
       "source_file": "src/store/usePosStore.ts",
-      "source_location": "L29",
+      "source_location": "L31",
       "_origin": "ast",
       "id": "src_store_useposstore_useposstore",
       "community": 0,
@@ -3218,7 +3341,7 @@
       "_origin": "ast",
       "id": "src_app",
       "community": 1,
-      "community_name": "App.tsx",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "app.tsx"
     },
     {
@@ -3229,7 +3352,7 @@
       "_origin": "ast",
       "id": "src_components_barcodescannermodal",
       "community": 1,
-      "community_name": "App.tsx",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "barcodescannermodal.tsx"
     },
     {
@@ -3240,7 +3363,7 @@
       "_origin": "ast",
       "id": "src_components_cashierdashboard",
       "community": 1,
-      "community_name": "App.tsx",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "cashierdashboard.tsx"
     },
     {
@@ -3251,7 +3374,7 @@
       "_origin": "ast",
       "id": "src_components_csvimportmodal",
       "community": 1,
-      "community_name": "App.tsx",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "csvimportmodal.tsx"
     },
     {
@@ -3262,7 +3385,7 @@
       "_origin": "ast",
       "id": "src_components_offlinesyncbar",
       "community": 1,
-      "community_name": "App.tsx",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "offlinesyncbar.tsx"
     },
     {
@@ -3273,19 +3396,41 @@
       "_origin": "ast",
       "id": "src_components_pulltorefresh",
       "community": 1,
-      "community_name": "App.tsx",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "pulltorefresh.tsx"
     },
     {
-      "label": "QuickRestockModal.tsx",
+      "label": "SetupBanner.tsx",
       "file_type": "code",
-      "source_file": "src/components/QuickRestockModal.tsx",
+      "source_file": "src/components/SetupBanner.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "src_components_quickrestockmodal",
+      "id": "src_components_setupbanner",
       "community": 1,
-      "community_name": "App.tsx",
-      "norm_label": "quickrestockmodal.tsx"
+      "community_name": "CashierDashboard.tsx",
+      "norm_label": "setupbanner.tsx"
+    },
+    {
+      "label": "schemaSql.ts",
+      "file_type": "code",
+      "source_file": "src/data/schemaSql.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_data_schemasql",
+      "community": 1,
+      "community_name": "CashierDashboard.tsx",
+      "norm_label": "schemasql.ts"
+    },
+    {
+      "label": "SUPABASE_SCHEMA_SQL",
+      "file_type": "code",
+      "source_file": "src/data/schemaSql.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_data_schemasql_supabase_schema_sql",
+      "community": 1,
+      "community_name": "CashierDashboard.tsx",
+      "norm_label": "supabase_schema_sql"
     },
     {
       "label": "backNavigation.ts",
@@ -3295,7 +3440,7 @@
       "_origin": "ast",
       "id": "src_lib_backnavigation",
       "community": 1,
-      "community_name": "App.tsx",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "backnavigation.ts"
     },
     {
@@ -3306,19 +3451,8 @@
       "_origin": "ast",
       "id": "src_lib_backnavigation_layers",
       "community": 1,
-      "community_name": "App.tsx",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "layers"
-    },
-    {
-      "label": "DEFAULT_BUSINESS_PROFILE",
-      "file_type": "code",
-      "source_file": "src/lib/supabase.ts",
-      "source_location": "L83",
-      "_origin": "ast",
-      "id": "src_lib_supabase_default_business_profile",
-      "community": 1,
-      "community_name": "App.tsx",
-      "norm_label": "default_business_profile"
     },
     {
       "label": "main.tsx",
@@ -3328,7 +3462,7 @@
       "_origin": "ast",
       "id": "src_main",
       "community": 1,
-      "community_name": "App.tsx",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "main.tsx"
     },
     {
@@ -3339,7 +3473,7 @@
       "_origin": "ast",
       "id": "src_utils_toast",
       "community": 1,
-      "community_name": "App.tsx",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "toast.tsx"
     },
     {
@@ -3350,7 +3484,7 @@
       "_origin": "ast",
       "id": "src_utils_toast_toastcontext",
       "community": 1,
-      "community_name": "App.tsx",
+      "community_name": "CashierDashboard.tsx",
       "norm_label": "toastcontext"
     },
     {
@@ -6434,6 +6568,39 @@
       "norm_label": "vitest.config.ts"
     },
     {
+      "label": "realtimeSync.ts",
+      "file_type": "code",
+      "source_file": "src/lib/realtimeSync.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_lib_realtimesync",
+      "community": 47,
+      "community_name": "realtimeSync.ts",
+      "norm_label": "realtimesync.ts"
+    },
+    {
+      "label": "listeners",
+      "file_type": "code",
+      "source_file": "src/lib/realtimeSync.ts",
+      "source_location": "L5",
+      "_origin": "ast",
+      "id": "src_lib_realtimesync_listeners",
+      "community": 47,
+      "community_name": "realtimeSync.ts",
+      "norm_label": "listeners"
+    },
+    {
+      "label": "supabase",
+      "file_type": "code",
+      "source_file": "src/lib/supabase.ts",
+      "source_location": "L15",
+      "_origin": "ast",
+      "id": "src_lib_supabase_supabase",
+      "community": 47,
+      "community_name": "realtimeSync.ts",
+      "norm_label": "supabase"
+    },
+    {
       "label": "package.json",
       "file_type": "code",
       "source_file": "package.json",
@@ -8292,7 +8459,19 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/CashierDashboard.tsx",
-      "source_location": "L301",
+      "source_location": "L183",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_cashierdashboard_cashierdashboard",
+      "target": "src_lib_realtimesync_subscribetodatachanges"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/components/CashierDashboard.tsx",
+      "source_location": "L309",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard_cashierdashboard",
@@ -8303,7 +8482,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/components/CashierDashboard.tsx",
-      "source_location": "L395",
+      "source_location": "L403",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard_cashierdashboard",
@@ -8316,7 +8495,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/CashierDashboard.tsx",
-      "source_location": "L49",
+      "source_location": "L50",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard_cashierdashboard",
@@ -8328,7 +8507,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/CashierDashboard.tsx",
-      "source_location": "L78",
+      "source_location": "L79",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard_cashierdashboard",
@@ -8340,7 +8519,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/CashierDashboard.tsx",
-      "source_location": "L91",
+      "source_location": "L92",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard_cashierdashboard",
@@ -8472,7 +8651,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/DeleteRequestsTab.tsx",
-      "source_location": "L16",
+      "source_location": "L17",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_deleterequeststab_deleterequeststab",
@@ -8484,11 +8663,23 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/DeleteRequestsTab.tsx",
-      "source_location": "L249",
+      "source_location": "L254",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_deleterequeststab_deleterequeststab",
       "target": "src_utils_format_formatcurrency"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/components/DeleteRequestsTab.tsx",
+      "source_location": "L50",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_deleterequeststab_deleterequeststab",
+      "target": "src_lib_realtimesync_subscribetodatachanges"
     },
     {
       "relation": "calls",
@@ -8784,7 +8975,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/OwnerDashboard.tsx",
-      "source_location": "L1704",
+      "source_location": "L1709",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_ownerdashboard_ownerdashboard",
@@ -8796,7 +8987,19 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/OwnerDashboard.tsx",
-      "source_location": "L368",
+      "source_location": "L333",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_ownerdashboard_ownerdashboard",
+      "target": "src_lib_realtimesync_subscribetodatachanges"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/components/OwnerDashboard.tsx",
+      "source_location": "L373",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_ownerdashboard_ownerdashboard",
@@ -8808,7 +9011,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/OwnerDashboard.tsx",
-      "source_location": "L47",
+      "source_location": "L48",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_ownerdashboard_ownerdashboard",
@@ -8820,7 +9023,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/OwnerDashboard.tsx",
-      "source_location": "L544",
+      "source_location": "L549",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_ownerdashboard_ownerdashboard",
@@ -8832,7 +9035,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/OwnerDashboard.tsx",
-      "source_location": "L559",
+      "source_location": "L564",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_ownerdashboard_ownerdashboard",
@@ -8844,7 +9047,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/OwnerDashboard.tsx",
-      "source_location": "L59",
+      "source_location": "L60",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_ownerdashboard_ownerdashboard",
@@ -10570,8 +10773,140 @@
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
+      "source_file": "src/lib/realtimeSync.ts",
+      "source_location": "L100",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_realtimesync_handlecustomdatachange",
+      "target": "src_lib_realtimesync_notifylisteners",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/realtimeSync.ts",
+      "source_location": "L96",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_realtimesync_handleonline",
+      "target": "src_lib_realtimesync_notifylisteners",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/realtimeSync.ts",
+      "source_location": "L91",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_realtimesync_handlevisibilityorfocus",
+      "target": "src_lib_realtimesync_notifylisteners",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/realtimeSync.ts",
+      "source_location": "L52",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_realtimesync_notifydatachanged",
+      "target": "src_lib_realtimesync_notifylisteners",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/realtimeSync.ts",
+      "source_location": "L65",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_realtimesync_setuprealtimechannel",
+      "target": "src_lib_realtimesync_notifylisteners",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/realtimeSync.ts",
+      "source_location": "L111",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_realtimesync_startsyncengine",
+      "target": "src_lib_realtimesync_notifylisteners",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/realtimeSync.ts",
+      "source_location": "L119",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_realtimesync_startsyncengine",
+      "target": "src_lib_realtimesync_setuprealtimechannel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/realtimeSync.ts",
+      "source_location": "L145",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_realtimesync_stopsyncengine",
+      "target": "src_lib_realtimesync_teardownrealtimechannel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/realtimeSync.ts",
+      "source_location": "L168",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_realtimesync_subscribetodatachanges",
+      "target": "src_lib_realtimesync_startsyncengine",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/realtimeSync.ts",
+      "source_location": "L174",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_realtimesync_subscribetodatachanges",
+      "target": "src_lib_realtimesync_stopsyncengine",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/realtimeSync.ts",
+      "source_location": "L180",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_realtimesync_triggersync",
+      "target": "src_lib_realtimesync_notifylisteners",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
       "source_file": "src/lib/supabase.ts",
-      "source_location": "L50",
+      "source_location": "L51",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_supabase_collectproductcodes",
@@ -10583,7 +10918,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/supabase.ts",
-      "source_location": "L51",
+      "source_location": "L52",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_supabase_collectproductcodes",
@@ -10619,7 +10954,7 @@
       "context": "field",
       "confidence": "EXTRACTED",
       "source_file": "src/components/CashierDashboard.tsx",
-      "source_location": "L21",
+      "source_location": "L22",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard_cartitem",
@@ -10631,7 +10966,7 @@
       "context": "field",
       "confidence": "EXTRACTED",
       "source_file": "src/components/CashierDashboard.tsx",
-      "source_location": "L16",
+      "source_location": "L17",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard_cashierdashboardprops",
@@ -10839,7 +11174,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_deleterequeststab_deleterequeststabprops",
-      "target": "src_types_branch",
+      "target": "src_types_userprofile",
       "confidence_score": 1.0
     },
     {
@@ -10847,11 +11182,11 @@
       "context": "field",
       "confidence": "EXTRACTED",
       "source_file": "src/components/DeleteRequestsTab.tsx",
-      "source_location": "L9",
+      "source_location": "L11",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_deleterequeststab_deleterequeststabprops",
-      "target": "src_types_userprofile",
+      "target": "src_types_branch",
       "confidence_score": 1.0
     },
     {
@@ -10979,7 +11314,7 @@
       "context": "field",
       "confidence": "EXTRACTED",
       "source_file": "src/components/OwnerDashboard.tsx",
-      "source_location": "L42",
+      "source_location": "L43",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_ownerdashboard_ownerdashboardprops",
@@ -12063,7 +12398,55 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard",
-      "target": "src_utils_format_formatcurrency",
+      "target": "src_types_businessprofile",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/CashierDashboard.tsx",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_cashierdashboard",
+      "target": "src_types_product",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/CashierDashboard.tsx",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_cashierdashboard",
+      "target": "src_types_saledeleterequest",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/CashierDashboard.tsx",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_cashierdashboard",
+      "target": "src_types_salewithitems",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/CashierDashboard.tsx",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_cashierdashboard",
+      "target": "src_types_userprofile",
       "confidence_score": 1.0
     },
     {
@@ -12075,7 +12458,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard",
-      "target": "src_utils_toast_usetoast",
+      "target": "src_utils_format_formatcurrency",
       "confidence_score": 1.0
     },
     {
@@ -12087,7 +12470,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard",
-      "target": "src_components_searchablecategoryselect_searchablecategoryselect",
+      "target": "src_utils_toast_usetoast",
       "confidence_score": 1.0
     },
     {
@@ -12096,6 +12479,18 @@
       "confidence": "EXTRACTED",
       "source_file": "src/components/CashierDashboard.tsx",
       "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_cashierdashboard",
+      "target": "src_components_searchablecategoryselect_searchablecategoryselect",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/CashierDashboard.tsx",
+      "source_location": "L14",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard",
@@ -12159,55 +12554,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard",
-      "target": "src_types_businessprofile",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/components/CashierDashboard.tsx",
-      "source_location": "L9",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_components_cashierdashboard",
-      "target": "src_types_product",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/components/CashierDashboard.tsx",
-      "source_location": "L9",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_components_cashierdashboard",
-      "target": "src_types_saledeleterequest",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/components/CashierDashboard.tsx",
-      "source_location": "L9",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_components_cashierdashboard",
-      "target": "src_types_salewithitems",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/components/CashierDashboard.tsx",
-      "source_location": "L9",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_components_cashierdashboard",
-      "target": "src_types_userprofile",
+      "target": "src_lib_realtimesync_subscribetodatachanges",
       "confidence_score": 1.0
     },
     {
@@ -12591,43 +12938,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_deleterequeststab",
-      "target": "src_types_branch",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/components/DeleteRequestsTab.tsx",
-      "source_location": "L3",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_components_deleterequeststab",
-      "target": "src_types_saledeleterequest",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/components/DeleteRequestsTab.tsx",
-      "source_location": "L3",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_components_deleterequeststab",
-      "target": "src_types_salewithitems",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/components/DeleteRequestsTab.tsx",
-      "source_location": "L3",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_components_deleterequeststab",
-      "target": "src_types_userprofile",
+      "target": "src_lib_realtimesync_subscribetodatachanges",
       "confidence_score": 1.0
     },
     {
@@ -12639,7 +12950,43 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_deleterequeststab",
-      "target": "src_utils_format_formatcurrency",
+      "target": "src_types_branch",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/DeleteRequestsTab.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_deleterequeststab",
+      "target": "src_types_saledeleterequest",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/DeleteRequestsTab.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_deleterequeststab",
+      "target": "src_types_salewithitems",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/DeleteRequestsTab.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_deleterequeststab",
+      "target": "src_types_userprofile",
       "confidence_score": 1.0
     },
     {
@@ -12648,6 +12995,18 @@
       "confidence": "EXTRACTED",
       "source_file": "src/components/DeleteRequestsTab.tsx",
       "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_deleterequeststab",
+      "target": "src_utils_format_formatcurrency",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/DeleteRequestsTab.tsx",
+      "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_deleterequeststab",
@@ -13395,7 +13754,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_ownerdashboard",
-      "target": "src_components_dashboard_branchestab_branchestab",
+      "target": "src_lib_realtimesync_subscribetodatachanges",
       "confidence_score": 1.0
     },
     {
@@ -13407,7 +13766,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_ownerdashboard",
-      "target": "src_components_dashboard_transactionstab_transactionstab",
+      "target": "src_components_dashboard_branchestab_branchestab",
       "confidence_score": 1.0
     },
     {
@@ -13419,7 +13778,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_ownerdashboard",
-      "target": "src_components_dashboard_cashierstab_cashierstab",
+      "target": "src_components_dashboard_transactionstab_transactionstab",
       "confidence_score": 1.0
     },
     {
@@ -13431,7 +13790,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_ownerdashboard",
-      "target": "src_components_dashboard_staffperformancetab_staffperformancetab",
+      "target": "src_components_dashboard_cashierstab_cashierstab",
       "confidence_score": 1.0
     },
     {
@@ -13443,7 +13802,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_ownerdashboard",
-      "target": "src_components_dashboard_productstab_productstab",
+      "target": "src_components_dashboard_staffperformancetab_staffperformancetab",
       "confidence_score": 1.0
     },
     {
@@ -13455,7 +13814,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_ownerdashboard",
-      "target": "src_components_dashboard_cashflowtab_cashflowtab",
+      "target": "src_components_dashboard_productstab_productstab",
       "confidence_score": 1.0
     },
     {
@@ -13467,7 +13826,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_ownerdashboard",
-      "target": "src_components_dashboard_overviewtab_overviewtab",
+      "target": "src_components_dashboard_cashflowtab_cashflowtab",
       "confidence_score": 1.0
     },
     {
@@ -13479,7 +13838,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_ownerdashboard",
-      "target": "src_components_modals_productmodal_productmodal",
+      "target": "src_components_dashboard_overviewtab_overviewtab",
       "confidence_score": 1.0
     },
     {
@@ -13491,7 +13850,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_ownerdashboard",
-      "target": "src_components_modals_cashiermodal_cashiermodal",
+      "target": "src_components_modals_productmodal_productmodal",
       "confidence_score": 1.0
     },
     {
@@ -13503,7 +13862,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_ownerdashboard",
-      "target": "src_components_modals_branchmodal_branchmodal",
+      "target": "src_components_modals_cashiermodal_cashiermodal",
       "confidence_score": 1.0
     },
     {
@@ -13512,6 +13871,18 @@
       "confidence": "EXTRACTED",
       "source_file": "src/components/OwnerDashboard.tsx",
       "source_location": "L39",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_ownerdashboard",
+      "target": "src_components_modals_branchmodal_branchmodal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/OwnerDashboard.tsx",
+      "source_location": "L40",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_ownerdashboard",
@@ -13894,6 +14265,30 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "src/lib/realtimeSync.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_realtimesync",
+      "target": "src_lib_supabase_issupabaseconfigured",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/realtimeSync.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_realtimesync",
+      "target": "src_lib_supabase_supabase",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "src/lib/supabase.ts",
       "source_location": "L2",
       "weight": 1.0,
@@ -14020,6 +14415,18 @@
       "_origin": "ast",
       "source": "src_lib_supabase",
       "target": "src_types_userrole",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/supabase.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_supabase",
+      "target": "src_lib_realtimesync_notifydatachanged",
       "confidence_score": 1.0
     },
     {
@@ -14463,7 +14870,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard",
-      "target": "src_utils_format",
+      "target": "src_types",
       "confidence_score": 1.0
     },
     {
@@ -14475,7 +14882,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard",
-      "target": "src_utils_toast",
+      "target": "src_utils_format",
       "confidence_score": 1.0
     },
     {
@@ -14487,7 +14894,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard",
-      "target": "src_components_searchablecategoryselect",
+      "target": "src_utils_toast",
       "confidence_score": 1.0
     },
     {
@@ -14496,6 +14903,18 @@
       "confidence": "EXTRACTED",
       "source_file": "src/components/CashierDashboard.tsx",
       "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_cashierdashboard",
+      "target": "src_components_searchablecategoryselect",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/CashierDashboard.tsx",
+      "source_location": "L14",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard",
@@ -14535,7 +14954,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard",
-      "target": "src_types",
+      "target": "src_lib_realtimesync",
       "confidence_score": 1.0
     },
     {
@@ -14811,7 +15230,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_deleterequeststab",
-      "target": "src_types",
+      "target": "src_lib_realtimesync",
       "confidence_score": 1.0
     },
     {
@@ -14823,7 +15242,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_deleterequeststab",
-      "target": "src_utils_format",
+      "target": "src_types",
       "confidence_score": 1.0
     },
     {
@@ -14832,6 +15251,18 @@
       "confidence": "EXTRACTED",
       "source_file": "src/components/DeleteRequestsTab.tsx",
       "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_deleterequeststab",
+      "target": "src_utils_format",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/DeleteRequestsTab.tsx",
+      "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_deleterequeststab",
@@ -15207,7 +15638,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_ownerdashboard",
-      "target": "src_components_dashboard_branchestab",
+      "target": "src_lib_realtimesync",
       "confidence_score": 1.0
     },
     {
@@ -15219,7 +15650,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_ownerdashboard",
-      "target": "src_components_dashboard_transactionstab",
+      "target": "src_components_dashboard_branchestab",
       "confidence_score": 1.0
     },
     {
@@ -15231,7 +15662,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_ownerdashboard",
-      "target": "src_components_dashboard_cashierstab",
+      "target": "src_components_dashboard_transactionstab",
       "confidence_score": 1.0
     },
     {
@@ -15243,7 +15674,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_ownerdashboard",
-      "target": "src_components_dashboard_staffperformancetab",
+      "target": "src_components_dashboard_cashierstab",
       "confidence_score": 1.0
     },
     {
@@ -15255,7 +15686,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_ownerdashboard",
-      "target": "src_components_dashboard_productstab",
+      "target": "src_components_dashboard_staffperformancetab",
       "confidence_score": 1.0
     },
     {
@@ -15267,7 +15698,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_ownerdashboard",
-      "target": "src_components_dashboard_cashflowtab",
+      "target": "src_components_dashboard_productstab",
       "confidence_score": 1.0
     },
     {
@@ -15279,7 +15710,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_ownerdashboard",
-      "target": "src_components_dashboard_overviewtab",
+      "target": "src_components_dashboard_cashflowtab",
       "confidence_score": 1.0
     },
     {
@@ -15291,7 +15722,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_ownerdashboard",
-      "target": "src_components_modals_productmodal",
+      "target": "src_components_dashboard_overviewtab",
       "confidence_score": 1.0
     },
     {
@@ -15303,7 +15734,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_ownerdashboard",
-      "target": "src_components_modals_cashiermodal",
+      "target": "src_components_modals_productmodal",
       "confidence_score": 1.0
     },
     {
@@ -15315,7 +15746,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_ownerdashboard",
-      "target": "src_components_modals_branchmodal",
+      "target": "src_components_modals_cashiermodal",
       "confidence_score": 1.0
     },
     {
@@ -15324,6 +15755,18 @@
       "confidence": "EXTRACTED",
       "source_file": "src/components/OwnerDashboard.tsx",
       "source_location": "L39",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_ownerdashboard",
+      "target": "src_components_modals_branchmodal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/OwnerDashboard.tsx",
+      "source_location": "L40",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_ownerdashboard",
@@ -15544,6 +15987,18 @@
       "_origin": "ast",
       "source": "src_lib_printerbridge",
       "target": "src_lib_bluetoothprinter",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/realtimeSync.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_realtimesync",
+      "target": "src_lib_supabase",
       "confidence_score": 1.0
     },
     {
@@ -18637,7 +19092,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/CashierDashboard.tsx",
-      "source_location": "L15",
+      "source_location": "L16",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard",
@@ -18648,7 +19103,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/CashierDashboard.tsx",
-      "source_location": "L20",
+      "source_location": "L21",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard",
@@ -18659,7 +19114,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/CashierDashboard.tsx",
-      "source_location": "L25",
+      "source_location": "L26",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard",
@@ -18670,7 +19125,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/CashierDashboard.tsx",
-      "source_location": "L33",
+      "source_location": "L34",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard",
@@ -18681,7 +19136,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/CashierDashboard.tsx",
-      "source_location": "L48",
+      "source_location": "L49",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard",
@@ -18901,7 +19356,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/DeleteRequestsTab.tsx",
-      "source_location": "L15",
+      "source_location": "L16",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_deleterequeststab",
@@ -18912,7 +19367,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/DeleteRequestsTab.tsx",
-      "source_location": "L8",
+      "source_location": "L9",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_deleterequeststab",
@@ -19110,7 +19565,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/OwnerDashboard.tsx",
-      "source_location": "L41",
+      "source_location": "L42",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_ownerdashboard",
@@ -19121,7 +19576,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/OwnerDashboard.tsx",
-      "source_location": "L46",
+      "source_location": "L47",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_ownerdashboard",
@@ -20297,8 +20752,151 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "src/lib/realtimeSync.ts",
+      "source_location": "L103",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_realtimesync",
+      "target": "src_lib_realtimesync_startsyncengine",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/realtimeSync.ts",
+      "source_location": "L139",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_realtimesync",
+      "target": "src_lib_realtimesync_stopsyncengine",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/realtimeSync.ts",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_realtimesync",
+      "target": "src_lib_realtimesync_notifylisteners",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/realtimeSync.ts",
+      "source_location": "L164",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_realtimesync",
+      "target": "src_lib_realtimesync_subscribetodatachanges",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/realtimeSync.ts",
+      "source_location": "L179",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_realtimesync",
+      "target": "src_lib_realtimesync_triggersync",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/realtimeSync.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_realtimesync",
+      "target": "src_lib_realtimesync_synclistener",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/realtimeSync.ts",
+      "source_location": "L39",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_realtimesync",
+      "target": "src_lib_realtimesync_notifydatachanged",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/realtimeSync.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_realtimesync",
+      "target": "src_lib_realtimesync_listeners",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/realtimeSync.ts",
+      "source_location": "L55",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_realtimesync",
+      "target": "src_lib_realtimesync_setuprealtimechannel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/realtimeSync.ts",
+      "source_location": "L78",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_realtimesync",
+      "target": "src_lib_realtimesync_teardownrealtimechannel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/realtimeSync.ts",
+      "source_location": "L89",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_realtimesync",
+      "target": "src_lib_realtimesync_handlevisibilityorfocus",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/realtimeSync.ts",
+      "source_location": "L95",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_realtimesync",
+      "target": "src_lib_realtimesync_handleonline",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/realtimeSync.ts",
+      "source_location": "L99",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_realtimesync",
+      "target": "src_lib_realtimesync_handlecustomdatachange",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "src/lib/supabase.ts",
-      "source_location": "L102",
+      "source_location": "L103",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_supabase",
@@ -20309,7 +20907,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/supabase.ts",
-      "source_location": "L14",
+      "source_location": "L15",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_supabase",
@@ -20320,7 +20918,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/supabase.ts",
-      "source_location": "L18",
+      "source_location": "L19",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_supabase",
@@ -20331,7 +20929,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/supabase.ts",
-      "source_location": "L28",
+      "source_location": "L29",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_supabase",
@@ -20342,7 +20940,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/supabase.ts",
-      "source_location": "L36",
+      "source_location": "L37",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_supabase",
@@ -20353,7 +20951,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/supabase.ts",
-      "source_location": "L37",
+      "source_location": "L38",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_supabase",
@@ -20364,7 +20962,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/supabase.ts",
-      "source_location": "L39",
+      "source_location": "L40",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_supabase",
@@ -20375,7 +20973,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/supabase.ts",
-      "source_location": "L62",
+      "source_location": "L63",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_supabase",
@@ -20386,7 +20984,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/supabase.ts",
-      "source_location": "L7",
+      "source_location": "L8",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_supabase",
@@ -20397,7 +20995,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/supabase.ts",
-      "source_location": "L83",
+      "source_location": "L84",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_supabase",
@@ -20408,7 +21006,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/supabase.ts",
-      "source_location": "L95",
+      "source_location": "L96",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_supabase",
@@ -20419,7 +21017,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/store/usePosStore.ts",
-      "source_location": "L29",
+      "source_location": "L31",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_store_useposstore",
@@ -21335,6 +21933,78 @@
       "confidence_score": 0.5
     },
     {
+      "relation": "indirect_call",
+      "context": "argument",
+      "confidence": "INFERRED",
+      "source_file": "src/lib/realtimeSync.ts",
+      "source_location": "L133",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_realtimesync_startsyncengine",
+      "target": "src_lib_realtimesync_handlevisibilityorfocus",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "indirect_call",
+      "context": "argument",
+      "confidence": "INFERRED",
+      "source_file": "src/lib/realtimeSync.ts",
+      "source_location": "L135",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_realtimesync_startsyncengine",
+      "target": "src_lib_realtimesync_handleonline",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "indirect_call",
+      "context": "argument",
+      "confidence": "INFERRED",
+      "source_file": "src/lib/realtimeSync.ts",
+      "source_location": "L136",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_realtimesync_startsyncengine",
+      "target": "src_lib_realtimesync_handlecustomdatachange",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "indirect_call",
+      "context": "argument",
+      "confidence": "INFERRED",
+      "source_file": "src/lib/realtimeSync.ts",
+      "source_location": "L157",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_realtimesync_stopsyncengine",
+      "target": "src_lib_realtimesync_handlevisibilityorfocus",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "indirect_call",
+      "context": "argument",
+      "confidence": "INFERRED",
+      "source_file": "src/lib/realtimeSync.ts",
+      "source_location": "L159",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_realtimesync_stopsyncengine",
+      "target": "src_lib_realtimesync_handleonline",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "indirect_call",
+      "context": "argument",
+      "confidence": "INFERRED",
+      "source_file": "src/lib/realtimeSync.ts",
+      "source_location": "L160",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_realtimesync_stopsyncengine",
+      "target": "src_lib_realtimesync_handlecustomdatachange",
+      "confidence_score": 0.5
+    },
+    {
       "relation": "conceptually_related_to",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
@@ -21540,5 +22210,5 @@
       "source_file": "supabase_schema.txt"
     }
   ],
-  "built_at_commit": "c3b46383187f073cb1753cd456fad67c35e87d67"
+  "built_at_commit": "5851f1fcd3321ef68df28e53e92ad1c3cd24b073"
 }

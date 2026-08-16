@@ -26,6 +26,7 @@ import SaleReportTab from './SaleReportTab';
 import DeleteRequestsTab from './DeleteRequestsTab';
 import ChangePasswordTab from './ChangePasswordTab';
 import { usePosStore } from '../store/usePosStore';
+import { subscribeToDataChanges } from '../lib/realtimeSync';
 import BranchesTab from './dashboard/BranchesTab';
 import TransactionsTab from './dashboard/TransactionsTab';
 import CashiersTab from './dashboard/CashiersTab';
@@ -328,7 +329,11 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
   };
 
   useEffect(() => {
-    loadData();
+    loadData(false);
+    const unsubscribe = subscribeToDataChanges(() => {
+      loadData(true);
+    });
+    return unsubscribe;
   }, []);
 
   // Filter sales/products by selectedBranchId
