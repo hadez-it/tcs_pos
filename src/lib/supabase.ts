@@ -564,11 +564,19 @@ export const dbService = {
           idKey = generateId();
         }
 
-        const barcode = nextSequentialBarcode(usedBarcodes);
+        const candidateBarcode = normalizeBarcode(item.barcode);
+        let barcode = candidateBarcode;
+        if (!barcode || usedBarcodes.has(barcode)) {
+          barcode = nextSequentialBarcode(usedBarcodes);
+        }
 
-        let sku = normalizeSku(idKey);
-        while (usedSkus.has(sku)) {
-          sku = normalizeSku(generateId());
+        const candidateSku = normalizeSku(item.sku || idKey);
+        let sku = candidateSku;
+        if (!sku || usedSkus.has(sku)) {
+          sku = normalizeSku(idKey);
+          while (usedSkus.has(sku)) {
+            sku = normalizeSku(generateId());
+          }
         }
 
         usedIds.add(idKey);

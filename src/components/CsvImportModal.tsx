@@ -120,7 +120,8 @@ export const CsvImportModal: React.FC<CsvImportModalProps> = ({
       const priceVariant = getVal('pricevariant', 'price variant', 'variant');
       const expiryDate = getVal('expirydate', 'expiry date', 'exp date', 'expiry');
       const updatedDate = getVal('updateddate', 'updated date', 'updated at') || new Date().toLocaleString();
-      const barcode = getVal('barcode', 'bar code', 'upc', 'ean') || id;
+      const rawBarcode = getVal('barcode', 'bar code', 'upc', 'ean');
+      const barcode = rawBarcode ? rawBarcode.trim() : '';
 
       items.push({
         id,
