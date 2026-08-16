@@ -50,9 +50,9 @@
     "semantic_hash": ""
   },
   "src/components/CsvImportModal.tsx": {
-    "mtime": 1786537661.1702683,
-    "ast_hash": "2205be830ccbead0ca572cbf1c72554a",
-    "semantic_hash": "2205be830ccbead0ca572cbf1c72554a"
+    "mtime": 1786855663.9040854,
+    "ast_hash": "1b2cfa6ed87f47cd6e63ec3dddb317e0",
+    "semantic_hash": ""
   },
   "src/components/LabelGeneratorTab.tsx": {
     "mtime": 1786537661.1742687,
@@ -65,8 +65,8 @@
     "semantic_hash": ""
   },
   "src/components/OwnerDashboard.tsx": {
-    "mtime": 1786854915.1015196,
-    "ast_hash": "31240721027b9ae37dc4b6cfe4802187",
+    "mtime": 1786882823.599488,
+    "ast_hash": "a8287b048da5cc5f95dee1bbca75337a",
     "semantic_hash": ""
   },
   "src/components/PrinterSettings.tsx": {
@@ -135,8 +135,8 @@
     "semantic_hash": "f93aee73eb3d4ab2c5d337793019a773"
   },
   "src/lib/supabase.ts": {
-    "mtime": 1786854925.3504853,
-    "ast_hash": "a5ec6bb2c49c4e13796381a903f3f2d0",
+    "mtime": 1786855666.7683554,
+    "ast_hash": "ab9962f35a0e167f131675c91fe3f891",
     "semantic_hash": ""
   },
   "src/main.tsx": {
