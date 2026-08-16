@@ -39,7 +39,6 @@ export const CsvImportModal: React.FC<CsvImportModalProps> = ({
       throw new Error('CSV file is empty or missing data rows.');
     }
 
-    // Split CSV line respecting quoted strings
     const splitCSVLine = (line: string): string[] => {
       const result: string[] = [];
       let current = '';
@@ -47,7 +46,14 @@ export const CsvImportModal: React.FC<CsvImportModalProps> = ({
 
       for (let i = 0; i < line.length; i++) {
         const char = line[i];
-        if (char === '"' || char === "'") {
+        if (char === '"') {
+          if (inQuotes && i + 1 < line.length && line[i + 1] === '"') {
+            current += '"';
+            i++;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (char === "'" && !inQuotes) {
           inQuotes = !inQuotes;
         } else if (char === ',' && !inQuotes) {
           result.push(current.trim());
@@ -57,18 +63,39 @@ export const CsvImportModal: React.FC<CsvImportModalProps> = ({
         }
       }
       result.push(current.trim());
-      return result.map(s => s.replace(/^["']|["']$/g, '').trim());
+      return result.map(s => {
+        let val = s.trim();
+        if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+          val = val.slice(1, -1);
+        }
+        return val.trim();
+      });
+    };
+
+    const cleanCode = (val: string): string => {
+      if (!val) return '';
+      let s = String(val).trim();
+      if (s.startsWith('=')) {
+        s = s.slice(1).trim();
+      }
+      s = s.replace(/^["']+|["']+$/g, '').trim();
+      if (s.startsWith('=')) {
+        s = s.slice(1).trim().replace(/^["']+|["']+$/g, '').trim();
+      }
+      if (s.startsWith('\t')) {
+        s = s.slice(1).trim();
+      }
+      return s;
     };
 
     const rawHeaders = splitCSVLine(lines[0]);
-    // Clean and normalize headers
     const headers = rawHeaders.map(h => h.toLowerCase().replace(/[^a-z0-9]/g, ''));
 
     const items: Partial<Product>[] = [];
 
     for (let i = 1; i < lines.length; i++) {
       const lineStr = lines[i].trim();
-      if (!lineStr) continue; // Skip empty lines
+      if (!lineStr) continue;
 
       const values = splitCSVLine(lineStr);
       const rowObj: Record<string, string> = {};
@@ -79,7 +106,6 @@ export const CsvImportModal: React.FC<CsvImportModalProps> = ({
         rowObj[origHeader.toLowerCase().trim()] = values[idx] !== undefined ? values[idx] : '';
       });
 
-      // Helper to extract value by multiple possible header keys
       const getVal = (...keys: string[]): string => {
         for (const k of keys) {
           const normKey = k.toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -94,9 +120,10 @@ export const CsvImportModal: React.FC<CsvImportModalProps> = ({
       };
 
       const name = getVal('name', 'product name', 'item name', 'product');
-      if (!name) continue; // skip rows without name
+      if (!name) continue;
 
-      const id = getVal('id', 'sku', 'code') || Math.random().toString(36).substring(2, 12);
+      const rawId = getVal('id', 'sku', 'code');
+      const id = cleanCode(rawId) || Math.random().toString(36).substring(2, 12);
       const image = getVal('image', 'img', 'photo') || null;
       const description = getVal('description', 'desc', 'details') || '';
       const category = getVal('category', 'cat', 'group') || 'General';
@@ -121,7 +148,7 @@ export const CsvImportModal: React.FC<CsvImportModalProps> = ({
       const expiryDate = getVal('expirydate', 'expiry date', 'exp date', 'expiry');
       const updatedDate = getVal('updateddate', 'updated date', 'updated at') || new Date().toLocaleString();
       const rawBarcode = getVal('barcode', 'bar code', 'upc', 'ean');
-      const barcode = rawBarcode ? rawBarcode.trim() : '';
+      const barcode = cleanCode(rawBarcode);
 
       items.push({
         id,
@@ -224,19 +251,18 @@ export const CsvImportModal: React.FC<CsvImportModalProps> = ({
     }
   };
 
-  // Download Sample CSV file matching user's screenshot format
   const handleDownloadSampleCsv = () => {
     const csvContent = 
 `ID,Name,Image,Description,Category,Use Stock,Purchased Price,Unit Amount,Unit Price,Unit Name,Stock,Price Variant,Expiry Date,Updated Date,Barcode
 706ikmnn872toh,Nova ရိုတ်စက်,null,ဆိပ်ညှပ်စက်,ST,true,25000,1,35000,ခု,3,,,02:14:03 PM 22/07/2026,
 m6eoqizkd5cek9,ခွက်ရိုက်ဘက်တံ,null,ခွက်ရိုက်ဘက်တံ,ST,true,25000,1,33000,ခု,5,,,01:58:49 PM 22/07/2026,
 6cx3wkj19i5w3v,Saga ခွက်ရိုက်ဘက်တံ,null,ခြံရိုက်ဘက်တံ,ST,true,28000,1,38000,ခု,5,,,01:57:54 PM 22/07/2026,
-lmo5ud6uyktfw6,MILL 27W C to lp,null,အားသွင်းကြိုး,KWT,true,4000,1,10000,ကြိုး,5,,,10:45:25 AM 21/07/2026,6971604616598
-enr7i62p8dwq4u,kailidi D20 135w ကြိုးခေါင်း,null,အားသွင်းကြိုး,KWT,true,6900,1,12000,ကြိုး,10,,,10:30:30 AM 21/07/2026,73995396939
-06qayhc5xubvqt,R 37 135W QC,null,အားသွင်းကြိုး,KWT,true,8200,1,20000,ကြိုး,10,,,10:15:08 AM 21/07/2026,6920702726982
-gamdvdstpnrqlk,R33 135w QC Adaptor ခေါင်းလွတ်,null,အားသွင်းကြိုး,KWT,true,6100,1,15000,ကြိုး,10,,,10:08:07 AM 21/07/2026,6920702726982`;
+lmo5ud6uyktfw6,MILL 27W C to lp,null,အားသွင်းကြိုး,KWT,true,4000,1,10000,ကြိုး,5,,,10:45:25 AM 21/07/2026,="6971604616598"
+enr7i62p8dwq4u,kailidi D20 135w ကြိုးခေါင်း,null,အားသွင်းကြိုး,KWT,true,6900,1,12000,ကြိုး,10,,,10:30:30 AM 21/07/2026,="000342"
+06qayhc5xubvqt,R 37 135W QC,null,အားသွင်းကြိုး,KWT,true,8200,1,20000,ကြိုး,10,,,10:15:08 AM 21/07/2026,="6920702726982"
+gamdvdstpnrqlk,R33 135w QC Adaptor ခေါင်းလွတ်,null,အားသွင်းကြိုး,KWT,true,6100,1,15000,ကြိုး,10,,,10:08:07 AM 21/07/2026,="6920702726982"`;
 
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
@@ -244,6 +270,7 @@ gamdvdstpnrqlk,R33 135w QC Adaptor ခေါင်းလွတ်,null,အား
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   return (

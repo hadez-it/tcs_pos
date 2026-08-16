@@ -182,6 +182,28 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
       return `"${escaped}"`;
     };
 
+    const formatBarcodeCell = (val: any): string => {
+      if (val === null || val === undefined) return '""';
+      const str = String(val).trim();
+      if (!str) return '""';
+      const escaped = str.replace(/"/g, '""');
+      return `="""${escaped}"""`;
+    };
+
+    const formatIdCell = (val: any): string => {
+      if (val === null || val === undefined) return '""';
+      const str = String(val).trim();
+      if (!str) return '""';
+      const escaped = str.replace(/"/g, '""');
+      if (/^0\d+$/.test(str) || /^\d{10,}$/.test(str)) {
+        return `="""${escaped}"""`;
+      }
+      if (/^[=+\-@\t\r]/.test(escaped)) {
+        return `"'${escaped}"`;
+      }
+      return `"${escaped}"`;
+    };
+
     const headers = [
       'ID', 'Name', 'Image', 'Description', 'Category', 'Use Stock',
       'Purchased Price', 'Unit Amount', 'Unit Price', 'Unit Name',
@@ -189,7 +211,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
     ];
 
     const rows = products.map(p => [
-      sanitizeCsvCell(p.id || p.sku || ''),
+      formatIdCell(p.id || p.sku || ''),
       sanitizeCsvCell(p.name || ''),
       sanitizeCsvCell(p.image || 'null'),
       sanitizeCsvCell(p.description || ''),
@@ -203,11 +225,11 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
       sanitizeCsvCell(p.price_variant || ''),
       sanitizeCsvCell(p.expiry_date || ''),
       sanitizeCsvCell(p.updated_at || new Date().toLocaleString()),
-      sanitizeCsvCell(p.barcode || '')
+      formatBarcodeCell(p.barcode || '')
     ]);
 
     const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
@@ -215,6 +237,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   const handleImportCsvSuccess = async (importedItems: Partial<Product>[], branchId: string, branchName: string) => {

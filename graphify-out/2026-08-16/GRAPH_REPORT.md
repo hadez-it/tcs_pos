@@ -1,51 +1,82 @@
-# Graph Report - .  (2026-08-12)
+# Graph Report - mibayate_pos  (2026-08-16)
 
 ## Corpus Check
-- 47 files · ~64,829 words
+- 106 files · ~81,422 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 324 nodes · 681 edges · 17 communities (13 shown, 4 thin omitted)
+- 644 nodes · 1212 edges · 47 communities (34 shown, 13 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 7 edges (avg confidence: 0.55)
 - Token cost: 0 input · 0 output
 
+## Graph Freshness
+- Built from commit: `39a72194`
+- Run `git rev-parse HEAD` and compare to check if the graph is stale.
+- Run `graphify update .` after code changes (no API cost).
+
 ## Community Hubs (Navigation)
-- Core App Components
-- Routing & App Shell
-- Printer Settings
-- Barcode Printing
-- Capacitor Config
-- Package Config
-- Android Build Files
-- Printer Bridge
-- Bluetooth Printer
-- Agent Dashboards
-- Web Manifest
-- Vercel Config
-- Graphify Rules
-- Capacitor Settings
-- Index HTML
-- Supabase Schema
+- OwnerDashboard.tsx
+- App.tsx
+- escpos.ts
+- compress.py
+- dependencies
+- devDependencies
+- compilerOptions
+- validate.py
+- bluetoothPrinter.ts
+- Branches Table
+- manifest.json
+- vercel.json
+- Graphify Rule
+- capacitor.config.ts
+- Application Web Entry Point
+- Business Settings Table
+- caveman-compress/README.md
+- cavecrew/SKILL.md
+- Caveman Help
+- Caveman Compress
+- caveman/SKILL.md
+- caveman-commit
+- caveman-explore/package.json
+- caveman-learn/package.json
+- caveman-review
+- Review Caveman evidence
+- Manage eval-gated experiments
+- caveman-setup/SKILL.md
+- Evaluate an optimization observation
+- caveman-stats
+- caveman-discover/SKILL.md
+- public/skills/caveman-learn — the Caveman Learn editing skill (MIT, public)
+- caveman-learn skill
+- caveman-explore/tests/skill-file.test.mjs
+- __init__.py
+- caveman-learn/tests/skill-file.test.mjs
+- investigate-first/SKILL.md
+- lean-build/SKILL.md
+- migration/SKILL.md
+- safe-refactor/SKILL.md
+- surgical-patch/SKILL.md
+- verify-and-stop/SKILL.md
 
 ## God Nodes (most connected - your core abstractions)
-1. `buildThermalLabel()` - 23 edges
-2. `buildCustomThermalLabel()` - 16 edges
-3. `Product` - 15 edges
-4. `useToast()` - 15 edges
-5. `compilerOptions` - 15 edges
-6. `concat()` - 14 edges
-7. `testPrint()` - 13 edges
-8. `UserProfile` - 13 edges
-9. `BarcodePrintModal()` - 12 edges
-10. `LabelGeneratorTab()` - 12 edges
+1. `UserProfile` - 33 edges
+2. `LabelGeneratorTab()` - 25 edges
+3. `Branch` - 25 edges
+4. `SingleLabelModal()` - 24 edges
+5. `buildThermalLabel()` - 23 edges
+6. `Product` - 23 edges
+7. `BarcodePrintModal()` - 22 edges
+8. `formatCurrency()` - 21 edges
+9. `PrinterSettings()` - 20 edges
+10. `buildCustomThermalLabel()` - 16 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `Supabase Offline Fallback Rationale` --semantically_similar_to--> `Profiles Table`  [INFERRED] [semantically similar]
   AGENTS.md → supabase_schema.txt
 - `CashierDashboardProps` --references--> `UserProfile`  [EXTRACTED]
   src/components/CashierDashboard.tsx → src/types.ts
-- `ExitPrompt()` --calls--> `useToast()`  [EXTRACTED]
-  src/App.tsx → src/utils/toast.tsx
+- `compress_file()` --calls--> `validate()`  [EXTRACTED]
+  .agents/skills/caveman-compress/scripts/compress.py → .agents/skills/caveman-compress/scripts/validate.py
 - `AuthProps` --references--> `UserProfile`  [EXTRACTED]
   src/components/Auth.tsx → src/types.ts
 - `BarcodePrintModalProps` --references--> `Product`  [EXTRACTED]
@@ -55,78 +86,146 @@
 - None detected.
 
 ## Hyperedges (group relationships)
-- **Sales Transaction Processing Flow** — supabase_schema_sales, supabase_schema_sale_items, supabase_schema_inventory_transactions [EXTRACTED 1.00]
 - **Multi-branch Architecture Data Models** — supabase_schema_branches, supabase_schema_products, supabase_schema_sales, supabase_schema_cash_flow [EXTRACTED 1.00]
+- **Sales Transaction Processing Flow** — supabase_schema_sales, supabase_schema_sale_items, supabase_schema_inventory_transactions [EXTRACTED 1.00]
 
-## Communities (17 total, 4 thin omitted)
+## Communities (47 total, 13 thin omitted)
 
-### Community 0 - "Core App Components"
+### Community 0 - "OwnerDashboard.tsx"
+Cohesion: 0.06
+Nodes (65): Auth(), AuthProps, ChangePasswordTab(), ChangePasswordTabProps, BranchesTab(), BranchesTabProps, CashFlowTab(), CashFlowTabProps (+57 more)
+
+### Community 1 - "App.tsx"
 Cohesion: 0.08
-Nodes (42): Auth(), AuthProps, CsvImportModal(), DeleteRequestsTab(), DeleteRequestsTabProps, OfflineSyncBar(), OwnerDashboard(), OwnerDashboardProps (+34 more)
+Nodes (42): App(), ExitPrompt(), BarcodePrintModalProps, BarcodeScannerModal(), BarcodeScannerModalProps, CartItem, CashierDashboard(), CashierDashboardProps (+34 more)
 
-### Community 1 - "Routing & App Shell"
+### Community 2 - "escpos.ts"
+Cohesion: 0.09
+Nodes (76): BarcodePrintModal(), clamp(), parseMm(), BarcodeSVG(), BarcodeSVGProps, CODE128_PATTERNS, clamp(), LabelGeneratorTab() (+68 more)
+
+### Community 3 - "compress.py"
 Cohesion: 0.10
-Nodes (31): App(), ExitPrompt(), BarcodeScannerModal(), BarcodeScannerModalProps, CashierDashboard(), CashierDashboardProps, getQuickCashOptions(), HeldCart (+23 more)
+Nodes (33): main(), print_usage(), backup_dir_for(), build_compress_prompt(), build_fix_prompt(), call_claude(), compress_file(), first_nonblank_line() (+25 more)
 
-### Community 2 - "Printer Settings"
-Cohesion: 0.15
-Nodes (35): loadAssignedName(), PrinterRole, PrinterSettings(), PrinterSettingsProps, saveAssignedName(), absoluteTextLines(), Align, barcode() (+27 more)
+### Community 4 - "dependencies"
+Cohesion: 0.05
+Nodes (37): @capacitor/android, @capacitor/app, @capacitor/cli, @capacitor/core, @hookform/resolvers, lucide-react, dependencies, @capacitor/android (+29 more)
 
-### Community 3 - "Barcode Printing"
-Cohesion: 0.15
-Nodes (30): BarcodePrintModal(), BarcodePrintModalProps, clamp(), parseMm(), BarcodeSVG(), BarcodeSVGProps, CODE128_PATTERNS, CartItem (+22 more)
+### Community 5 - "devDependencies"
+Cohesion: 0.05
+Nodes (37): autoprefixer, jsdom, devDependencies, autoprefixer, jsdom, tailwindcss, @testing-library/jest-dom, @testing-library/react (+29 more)
 
-### Community 4 - "Capacitor Config"
-Cohesion: 0.07
-Nodes (29): @capacitor/android, @capacitor/app, @capacitor/cli, @capacitor/core, lucide-react, dependencies, @capacitor/android, @capacitor/app (+21 more)
-
-### Community 5 - "Package Config"
-Cohesion: 0.07
-Nodes (26): autoprefixer, devDependencies, autoprefixer, tailwindcss, tsx, @types/node, @types/web-bluetooth, typescript (+18 more)
-
-### Community 6 - "Android Build Files"
+### Community 6 - "compilerOptions"
 Cohesion: 0.08
 Nodes (24): android, dist, DOM, DOM.Iterable, ES2022, node_modules, src/**/*, compilerOptions (+16 more)
 
-### Community 7 - "Printer Bridge"
-Cohesion: 0.23
-Nodes (17): autoConnectLastPrinter(), bytesToLatin1(), connect(), disconnect(), getDeviceName(), getLastPrinter(), getPairedPrinters(), isBluetoothAvailable() (+9 more)
+### Community 7 - "validate.py"
+Cohesion: 0.13
+Nodes (23): benchmark_pair(), count_tokens(), main(), print_table(), Path, count_bullets(), extract_code_blocks(), extract_headings() (+15 more)
 
-### Community 8 - "Bluetooth Printer"
+### Community 8 - "bluetoothPrinter.ts"
 Cohesion: 0.17
 Nodes (10): BluetoothPrinterState, connect(), disconnect(), DisconnectCallback, FALLBACK_SERVICES, handleDisconnect(), send(), sendWithProgress() (+2 more)
 
-### Community 9 - "Agent Dashboards"
+### Community 9 - "Branches Table"
 Cohesion: 0.19
 Nodes (13): Cashier Dashboard, Owner Dashboard, Mibayate POS System Architecture, Supabase Offline Fallback Rationale, Branches Table, Cash Flow Table, current_user_is_owner Function, handle_new_user Trigger (+5 more)
 
-### Community 10 - "Web Manifest"
+### Community 10 - "manifest.json"
 Cohesion: 0.20
 Nodes (9): background_color, description, display, icons, name, orientation, short_name, start_url (+1 more)
 
-### Community 11 - "Vercel Config"
+### Community 11 - "vercel.json"
 Cohesion: 0.40
 Nodes (4): buildCommand, framework, outputDirectory, rewrites
 
+### Community 17 - "caveman-compress/README.md"
+Cohesion: 0.09
+Nodes (20): Before / After, Benchmarks, How It Work, <img src="../../docs/assets/dancing-rock.svg" width="20" height="20" alt="rock"/> Caveman (285 tokens), Install, 📄 Original (706 tokens), Part of Caveman, Security (+12 more)
+
+### Community 18 - "cavecrew/SKILL.md"
+Cohesion: 0.14
+Nodes (12): cavecrew, Example chaining, How to invoke, Model overrides, See also, What it does, Auto-clarity (inherited), Chaining patterns (+4 more)
+
+### Community 19 - "Caveman Help"
+Cohesion: 0.14
+Nodes (12): caveman-help, Example output, How to invoke, See also, What it does, Caveman Help, Configure Default Mode, Deactivate (+4 more)
+
+### Community 20 - "Caveman Compress"
+Cohesion: 0.17
+Nodes (11): Boundaries, Caveman Compress, Compress, Compression Rules, Pattern, Preserve EXACTLY (never modify), Preserve Structure, Process (+3 more)
+
+### Community 21 - "caveman/SKILL.md"
+Cohesion: 0.17
+Nodes (10): caveman, Example output, How to invoke, See also, What it does, Auto-Clarity, Boundaries, Intensity (+2 more)
+
+### Community 22 - "caveman-commit"
+Cohesion: 0.18
+Nodes (9): caveman-commit, Example output, How to invoke, See also, What it does, Auto-Clarity, Boundaries, Examples (+1 more)
+
+### Community 23 - "caveman-explore/package.json"
+Cohesion: 0.18
+Nodes (10): description, files, SKILL.md, license, name, private, scripts, test (+2 more)
+
+### Community 24 - "caveman-learn/package.json"
+Cohesion: 0.18
+Nodes (10): description, files, SKILL.md, license, name, private, scripts, test (+2 more)
+
+### Community 25 - "caveman-review"
+Cohesion: 0.18
+Nodes (9): caveman-review, Example output, How to invoke, See also, What it does, Auto-Clarity, Boundaries, Examples (+1 more)
+
+### Community 26 - "Review Caveman evidence"
+Cohesion: 0.25
+Nodes (7): Hard rules, Review Caveman evidence, Step 1 — Load context, Step 2 — Establish baseline, Step 3 — Test the leading explanation with traces, Step 4 — Inspect representative traces, Step 5 — Report
+
+### Community 27 - "Manage eval-gated experiments"
+Cohesion: 0.25
+Nodes (7): Manage eval-gated experiments, Non-negotiable gates, Step 1 — Load project and experiment, Step 2 — Evaluate evidence, Step 3 — Propose one action, Step 4 — Block unsafe execution, Step 5 — Re-read after external operator action
+
+### Community 28 - "caveman-setup/SKILL.md"
+Cohesion: 0.25
+Nodes (7): Failure templates (use verbatim, filled in — never soften), Rules (non-negotiable), Step 1 — Find every live LLM callsite, Step 2 — Pick the app slug, Step 3 — Wire each callsite, Step 4 — Verify with one real request, Step 5 — Report
+
+### Community 29 - "Evaluate an optimization observation"
+Cohesion: 0.29
+Nodes (6): 1. Read the exact observations, 2. Ask the operator to choose, 3. Design a candidate and paired eval, 4. Apply only the approved candidate, 5. Report observations, not savings, Evaluate an optimization observation
+
+### Community 30 - "caveman-stats"
+Cohesion: 0.29
+Nodes (5): caveman-stats, Example output, How to invoke, See also, What it does
+
+### Community 31 - "caveman-discover/SKILL.md"
+Cohesion: 0.33
+Nodes (5): Step 1 — Inventory the workflows, Step 2 — Name them, Step 3 — Propose, then apply, Step 4 — Verify, Step 5 — Report
+
+### Community 32 - "public/skills/caveman-learn — the Caveman Learn editing skill (MIT, public)"
+Cohesion: 0.40
+Nodes (4): Boundary (binding), Install path, Layout, public/skills/caveman-learn — the Caveman Learn editing skill (MIT, public)
+
+### Community 33 - "caveman-learn skill"
+Cohesion: 0.40
+Nodes (4): caveman-learn skill, Honesty, Install, What it does
+
 ## Knowledge Gaps
-- **107 isolated node(s):** `config`, `name`, `private`, `version`, `type` (+102 more)
+- **254 isolated node(s):** `name`, `version`, `license`, `private`, `type` (+249 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **4 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **13 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Product` connect `Barcode Printing` to `Core App Components`, `Routing & App Shell`?**
-  _High betweenness centrality (0.023) - this node is a cross-community bridge._
-- **Why does `dependencies` connect `Capacitor Config` to `Package Config`?**
-  _High betweenness centrality (0.022) - this node is a cross-community bridge._
-- **Why does `buildThermalLabel()` connect `Printer Settings` to `Barcode Printing`?**
-  _High betweenness centrality (0.018) - this node is a cross-community bridge._
-- **What connects `config`, `name`, `private` to the rest of the system?**
-  _107 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `Core App Components` be split into smaller, more focused modules?**
-  _Cohesion score 0.07578084997439836 - nodes in this community are weakly interconnected._
-- **Should `Routing & App Shell` be split into smaller, more focused modules?**
-  _Cohesion score 0.09986504723346828 - nodes in this community are weakly interconnected._
-- **Should `Printer Settings` be split into smaller, more focused modules?**
-  _Cohesion score 0.14714714714714713 - nodes in this community are weakly interconnected._
+- **Why does `dependencies` connect `dependencies` to `devDependencies`?**
+  _High betweenness centrality (0.010) - this node is a cross-community bridge._
+- **Why does `Product` connect `App.tsx` to `OwnerDashboard.tsx`, `escpos.ts`?**
+  _High betweenness centrality (0.009) - this node is a cross-community bridge._
+- **Why does `UserProfile` connect `OwnerDashboard.tsx` to `App.tsx`?**
+  _High betweenness centrality (0.008) - this node is a cross-community bridge._
+- **What connects `name`, `version`, `license` to the rest of the system?**
+  _254 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Should `OwnerDashboard.tsx` be split into smaller, more focused modules?**
+  _Cohesion score 0.06491228070175438 - nodes in this community are weakly interconnected._
+- **Should `App.tsx` be split into smaller, more focused modules?**
+  _Cohesion score 0.07541478129713423 - nodes in this community are weakly interconnected._
+- **Should `escpos.ts` be split into smaller, more focused modules?**
+  _Cohesion score 0.08548479632816983 - nodes in this community are weakly interconnected._

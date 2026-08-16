@@ -50,8 +50,8 @@
     "semantic_hash": ""
   },
   "src/components/CsvImportModal.tsx": {
-    "mtime": 1786855663.9040854,
-    "ast_hash": "1b2cfa6ed87f47cd6e63ec3dddb317e0",
+    "mtime": 1786884400.6040735,
+    "ast_hash": "825433d6a6a020fc19aad28503c85680",
     "semantic_hash": ""
   },
   "src/components/LabelGeneratorTab.tsx": {
@@ -65,8 +65,8 @@
     "semantic_hash": ""
   },
   "src/components/OwnerDashboard.tsx": {
-    "mtime": 1786882823.599488,
-    "ast_hash": "a8287b048da5cc5f95dee1bbca75337a",
+    "mtime": 1786884386.1627128,
+    "ast_hash": "72c25c37bd638d79549a95c1fcf2899f",
     "semantic_hash": ""
   },
   "src/components/PrinterSettings.tsx": {
@@ -280,8 +280,8 @@
     "semantic_hash": ""
   },
   "src/components/dashboard/CashFlowTab.tsx": {
-    "mtime": 1786708054.3286333,
-    "ast_hash": "f5444f2b398c9d28a84fc99e85a19f51",
+    "mtime": 1786884404.17641,
+    "ast_hash": "00bd2ee247026446b3e7fe15532414c5",
     "semantic_hash": ""
   },
   "src/components/dashboard/CashiersTab.tsx": {
