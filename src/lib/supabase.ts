@@ -20,9 +20,6 @@ const generateId = () => Math.random().toString(36).substring(2, 15) + Math.rand
 const DEFAULT_BRANCH_NAME = 'Main Store';
 const DEFAULT_BRANCH_ID = 'branch-default';
 
-// ==========================================
-// PRODUCT CODE GENERATION (SKU / BARCODE)
-// ==========================================
 const SKU_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 const SKU_LENGTH = 14;
 const BARCODE_LENGTH = 6;
@@ -39,45 +36,29 @@ const randomSku = () => {
 const normalizeSku = (value?: string | null) => (value || '').trim().toUpperCase();
 const normalizeBarcode = (value?: string | null) => (value || '').trim();
 
-/**
- * Every SKU / barcode already in use, unioned across Supabase and LocalStorage.
- * Both stores matter: the app writes to LocalStorage whenever Supabase is
- * unreachable, so a code can exist in either one.
- */
 const collectProductCodes = async (excludeId?: string): Promise<{ skus: Set<string>; barcodes: Set<string> }> => {
   const skus = new Set<string>();
   const barcodes = new Set<string>();
 
-  const absorb = (rows: Array<{ id?: string | null; sku?: string | null; barcode?: string | null }>) => {
-    rows.forEach(row => {
+  if (!supabase) return { skus, barcodes };
+
+  try {
+    const { data, error } = await supabase.from('products').select('id, sku, barcode');
+    if (error) throw error;
+    (data || []).forEach(row => {
       if (excludeId && row.id === excludeId) return;
       const sku = normalizeSku(row.sku);
       const barcode = normalizeBarcode(row.barcode);
       if (sku) skus.add(sku);
       if (barcode) barcodes.add(barcode);
     });
-  };
-
-  absorb(getMockData<Product>(MOCK_PRODUCTS_KEY));
-
-  if (isSupabaseConfigured && supabase) {
-    try {
-      const { data, error } = await supabase.from('products').select('id, sku, barcode');
-      if (error) throw error;
-      absorb(data || []);
-    } catch (err) {
-      console.warn('Supabase product code lookup failed, using LocalStorage codes only:', err);
-    }
+  } catch (err) {
+    console.warn('Product code lookup failed:', err);
   }
 
   return { skus, barcodes };
 };
 
-/**
- * Next sequential 6-digit barcode. Only codes that already fit in 6 digits seed
- * the sequence, so a scanned EAN-13 on some product cannot push the counter
- * past its width.
- */
 const nextSequentialBarcode = (taken: Set<string>): string => {
   let highest = 0;
   taken.forEach(code => {
@@ -96,20 +77,8 @@ const nextSequentialBarcode = (taken: Set<string>): string => {
   return String(candidate).padStart(BARCODE_LENGTH, '0');
 };
 
-// ==========================================
-// MOCK DATABASE & SEED DATA (LOCAL STORAGE)
-// ==========================================
-
-const MOCK_PROFILES_KEY = 'retail_shop_profiles';
-const MOCK_PRODUCTS_KEY = 'retail_shop_products';
-const MOCK_SALES_KEY = 'retail_shop_sales';
-const MOCK_SALE_ITEMS_KEY = 'retail_shop_sale_items';
-const MOCK_TRANSACTIONS_KEY = 'retail_shop_transactions';
-const MOCK_CASHFLOW_KEY = 'retail_shop_cash_flow';
-const MOCK_DELETE_REQUESTS_KEY = 'retail_shop_sale_delete_requests';
-const MOCK_BRANCHES_KEY = 'retail_shop_branches';
-const MOCK_BUSINESS_KEY = 'retail_shop_business_profile';
 const CURRENT_USER_KEY = 'retail_shop_current_user';
+const MOCK_BUSINESS_KEY = 'retail_shop_business_profile';
 
 export const DEFAULT_BUSINESS_PROFILE: BusinessProfile = {
   name: 'RetailHub',
@@ -123,143 +92,6 @@ export const DEFAULT_BUSINESS_PROFILE: BusinessProfile = {
   currency: 'Ks'
 };
 
-const INITIAL_BRANCHES: Branch[] = [];
-
-const INITIAL_PROFILES: UserProfile[] = [];
-
-const INITIAL_PRODUCTS: Product[] = [];
-
-// Helper to seed localStorage (starts completely clean)
-const seedLocalStorage = () => {
-  // Clear any existing demo data from earlier sessions
-  if (!localStorage.getItem('has_cleared_demo_data_v3')) {
-    localStorage.removeItem(MOCK_BRANCHES_KEY);
-    localStorage.removeItem(MOCK_PRODUCTS_KEY);
-    localStorage.removeItem(MOCK_PROFILES_KEY);
-    localStorage.removeItem(MOCK_SALES_KEY);
-    localStorage.removeItem(MOCK_SALE_ITEMS_KEY);
-    localStorage.removeItem(MOCK_TRANSACTIONS_KEY);
-    localStorage.removeItem(MOCK_CASHFLOW_KEY);
-    localStorage.removeItem(MOCK_DELETE_REQUESTS_KEY);
-    localStorage.setItem('has_cleared_demo_data_v3', 'true');
-  }
-
-  if (!localStorage.getItem(MOCK_BRANCHES_KEY)) {
-    localStorage.setItem(MOCK_BRANCHES_KEY, JSON.stringify([]));
-  }
-  if (!localStorage.getItem(MOCK_PROFILES_KEY)) {
-    localStorage.setItem(MOCK_PROFILES_KEY, JSON.stringify([]));
-  }
-  if (!localStorage.getItem(MOCK_PRODUCTS_KEY)) {
-    localStorage.setItem(MOCK_PRODUCTS_KEY, JSON.stringify([]));
-  }
-  if (!localStorage.getItem(MOCK_SALES_KEY)) {
-    localStorage.setItem(MOCK_SALES_KEY, JSON.stringify([]));
-  }
-  if (!localStorage.getItem(MOCK_SALE_ITEMS_KEY)) {
-    localStorage.setItem(MOCK_SALE_ITEMS_KEY, JSON.stringify([]));
-  }
-  if (!localStorage.getItem(MOCK_TRANSACTIONS_KEY)) {
-    localStorage.setItem(MOCK_TRANSACTIONS_KEY, JSON.stringify([]));
-  }
-  if (!localStorage.getItem(MOCK_CASHFLOW_KEY)) {
-    localStorage.setItem(MOCK_CASHFLOW_KEY, JSON.stringify([]));
-  }
-  if (!localStorage.getItem(MOCK_DELETE_REQUESTS_KEY)) {
-    localStorage.setItem(MOCK_DELETE_REQUESTS_KEY, JSON.stringify([]));
-  }
-};
-
-// Seed storage now
-if (typeof window !== 'undefined') {
-  seedLocalStorage();
-}
-
-// Get helper keys
-const getMockData = <T>(key: string): T[] => {
-  const data = localStorage.getItem(key);
-  if (!data && key === MOCK_BRANCHES_KEY) {
-    return INITIAL_BRANCHES as unknown as T[];
-  }
-  return data ? JSON.parse(data) : [];
-};
-
-const SYNC_QUEUE_KEY = 'retail_shop_sync_queue';
-
-interface SyncOperation {
-  table: string;
-  action: 'UPSERT' | 'DELETE';
-  payload: any;
-  timestamp: string;
-}
-
-const keyToTable: Record<string, string> = {
-  [MOCK_BRANCHES_KEY]: 'branches',
-  [MOCK_PROFILES_KEY]: 'profiles',
-  [MOCK_PRODUCTS_KEY]: 'products',
-  [MOCK_SALES_KEY]: 'sales',
-  [MOCK_SALE_ITEMS_KEY]: 'sale_items',
-  [MOCK_TRANSACTIONS_KEY]: 'inventory_transactions',
-  [MOCK_CASHFLOW_KEY]: 'cash_flow',
-  [MOCK_DELETE_REQUESTS_KEY]: 'sale_delete_requests'
-};
-
-const saveMockData = <T extends { id?: string }>(key: string, data: T[]) => {
-  const oldData = getMockData<T>(key);
-  localStorage.setItem(key, JSON.stringify(data));
-  
-  const tableName = keyToTable[key];
-  if (!tableName) return;
-
-  const oldMap = new Map(oldData.map(item => [item.id, item]));
-  const newMap = new Map(data.map(item => [item.id, item]));
-  
-  const operations: SyncOperation[] = [];
-  
-  data.forEach(item => {
-    if (!item.id) return;
-    const oldItem = oldMap.get(item.id);
-    if (!oldItem || JSON.stringify(oldItem) !== JSON.stringify(item)) {
-      operations.push({
-        table: tableName,
-        action: 'UPSERT',
-        payload: item,
-        timestamp: new Date().toISOString()
-      });
-    }
-  });
-  
-  oldData.forEach(item => {
-    if (!item.id) return;
-    if (!newMap.has(item.id)) {
-      operations.push({
-        table: tableName,
-        action: 'DELETE',
-        payload: { id: item.id },
-        timestamp: new Date().toISOString()
-      });
-    }
-  });
-
-  if (operations.length > 0) {
-    const queueJson = localStorage.getItem(SYNC_QUEUE_KEY);
-    const queue: SyncOperation[] = queueJson ? JSON.parse(queueJson) : [];
-    
-    // Deduplicate operations for the same ID/table
-    const newQueue = [...queue, ...operations].reduce((acc, curr) => {
-      // Overwrite previous operations for the same record
-      acc[curr.table + '_' + curr.payload.id] = curr;
-      return acc;
-    }, {});
-
-    localStorage.setItem(SYNC_QUEUE_KEY, JSON.stringify(Object.values(newQueue)));
-  }
-};
-
-// ==========================================
-// DATABASE APIs (TRANSPARENT ROUTING)
-// ==========================================
-
 export const formatEmailWithDefaultDomain = (input: string): string => {
   const trimmed = input.trim().toLowerCase();
   if (!trimmed) return '';
@@ -268,9 +100,6 @@ export const formatEmailWithDefaultDomain = (input: string): string => {
 };
 
 export const dbService = {
-  // ----------------------------------------
-  // AUTHENTICATION
-  // ----------------------------------------
   auth: {
     async login(email: string, arg2?: string | UserRole, arg3?: string): Promise<UserProfile> {
       let role: UserRole | undefined = undefined;
@@ -286,155 +115,101 @@ export const dbService = {
 
       const cleanEmail = formatEmailWithDefaultDomain(email);
 
-      if (isSupabaseConfigured && supabase) {
-        try {
-          if (!password) {
-            throw new Error('Password is required for Supabase authentication.');
-          }
-
-          // Authenticate with Supabase Auth
-          const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-            email: cleanEmail,
-            password: password
-          });
-
-          if (authError) throw authError;
-
-          // Fetch user profile to get the actual role registered in Supabase
-          const { data, error } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('email', cleanEmail)
-            .maybeSingle();
-
-          if (error) throw error;
-          
-          let profile = data;
-          if (!profile) {
-            // If the user created an account in Supabase Auth but there's no profile record yet,
-            // create a profile with inferred or provided role
-            const determinedRole: UserRole = role || (cleanEmail.includes('manager') ? 'manager' : cleanEmail.includes('cashier') ? 'cashier' : 'owner');
-            profile = {
-              id: authData.user?.id || generateId(),
-              email: cleanEmail,
-              name: cleanEmail.split('@')[0],
-              role: determinedRole,
-              created_at: new Date().toISOString()
-            };
-            
-            await supabase.from('profiles').insert(profile).select().maybeSingle();
-          }
-
-          // Keep session in localStorage
-          localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(profile));
-          return profile as UserProfile;
-        } catch (err: any) {
-          console.warn('Supabase login failed:', err);
-          if (err.message && (err.message.includes('Invalid login') || err.message.includes('Password') || err.message.includes('credentials'))) {
-             throw err;
-          }
-          
-          const profiles = getMockData<UserProfile>(MOCK_PROFILES_KEY);
-          const user = profiles.find(p => p.email.toLowerCase() === cleanEmail);
-          
-          if (!user) {
-            throw new Error(err.message || 'Account credentials not found.');
-          }
-
-          localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
-          return user;
-        }
-      } else {
-        // Mock Mode login
-        const profiles = getMockData<UserProfile>(MOCK_PROFILES_KEY);
-        let user = profiles.find(p => p.email.toLowerCase() === cleanEmail);
-        
-        if (!user) {
-          // Dynamically create user profile in mock storage with inferred or default role
-          const determinedRole: UserRole = role || (cleanEmail.includes('manager') ? 'manager' : cleanEmail.includes('cashier') ? 'cashier' : 'owner');
-          user = {
-            id: generateId(),
-            email: cleanEmail,
-            name: cleanEmail.split('@')[0],
-            role: determinedRole,
-            created_at: new Date().toISOString()
-          };
-          profiles.push(user);
-          saveMockData(MOCK_PROFILES_KEY, profiles);
-        }
-
-        localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
-        return user;
+      if (!isSupabaseConfigured || !supabase) {
+        throw new Error('Supabase is not configured. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.');
       }
+
+      if (!password) {
+        throw new Error('Password is required.');
+      }
+
+      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+        email: cleanEmail,
+        password: password
+      });
+
+      if (authError) throw authError;
+
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('email', cleanEmail)
+        .maybeSingle();
+
+      if (error) throw error;
+
+      let profile = data;
+      if (!profile) {
+        const determinedRole: UserRole = role || (cleanEmail.includes('manager') ? 'manager' : cleanEmail.includes('cashier') ? 'cashier' : 'owner');
+        profile = {
+          id: authData.user?.id || generateId(),
+          email: cleanEmail,
+          name: cleanEmail.split('@')[0],
+          role: determinedRole,
+          created_at: new Date().toISOString()
+        };
+        await supabase.from('profiles').insert(profile).select().maybeSingle();
+      }
+
+      localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(profile));
+      return profile as UserProfile;
     },
 
     async getCurrentUser(): Promise<UserProfile | null> {
       const userStr = localStorage.getItem(CURRENT_USER_KEY);
 
-      if (isSupabaseConfigured && supabase) {
-        try {
-          const { data: { session } } = await supabase.auth.getSession();
-
-          if (session) {
-            if (userStr) return JSON.parse(userStr);
-            const { data: profile } = await supabase
-              .from('profiles')
-              .select('*')
-              .eq('email', session.user.email)
-              .maybeSingle();
-            if (profile) {
-              localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(profile));
-              return profile as UserProfile;
-            }
-            return null;
-          }
-
-          const { data: refreshData, error: refreshError } = await supabase.auth.refreshSession();
-          if (!refreshError && refreshData.session) {
-            if (userStr) return JSON.parse(userStr);
-            const { data: profile } = await supabase
-              .from('profiles')
-              .select('*')
-              .eq('email', refreshData.session.user.email)
-              .maybeSingle();
-            if (profile) {
-              localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(profile));
-              return profile as UserProfile;
-            }
-            return null;
-          }
-
-          localStorage.removeItem(CURRENT_USER_KEY);
-          return null;
-        } catch {
-          return userStr ? JSON.parse(userStr) : null;
-        }
+      if (!isSupabaseConfigured || !supabase) {
+        return null;
       }
 
-      return userStr ? JSON.parse(userStr) : null;
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+
+        if (session) {
+          if (userStr) return JSON.parse(userStr);
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('email', session.user.email)
+            .maybeSingle();
+          if (profile) {
+            localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(profile));
+            return profile as UserProfile;
+          }
+          return null;
+        }
+
+        const { data: refreshData, error: refreshError } = await supabase.auth.refreshSession();
+        if (!refreshError && refreshData.session) {
+          if (userStr) return JSON.parse(userStr);
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('email', refreshData.session.user.email)
+            .maybeSingle();
+          if (profile) {
+            localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(profile));
+            return profile as UserProfile;
+          }
+          return null;
+        }
+
+        localStorage.removeItem(CURRENT_USER_KEY);
+        return null;
+      } catch {
+        return userStr ? JSON.parse(userStr) : null;
+      }
     },
 
     async changePassword(newPassword: string): Promise<void> {
-      if (isSupabaseConfigured && supabase) {
-        const { error } = await supabase.auth.updateUser({ password: newPassword });
-        if (error) throw error;
-      } else {
-        const userStr = localStorage.getItem(CURRENT_USER_KEY);
-        if (userStr) {
-          const user = JSON.parse(userStr);
-          const profiles = getMockData<UserProfile>(MOCK_PROFILES_KEY);
-          const idx = profiles.findIndex(p => p.id === user.id);
-          if (idx !== -1) {
-            profiles[idx].password = newPassword;
-            saveMockData(MOCK_PROFILES_KEY, profiles);
-          }
-        }
-      }
+      if (!supabase) throw new Error('Supabase not configured.');
+      const { error } = await supabase.auth.updateUser({ password: newPassword });
+      if (error) throw error;
     },
 
     async logout(): Promise<void> {
       localStorage.removeItem(CURRENT_USER_KEY);
-      if (isSupabaseConfigured && supabase) {
+      if (supabase) {
         try {
           await supabase.auth.signOut();
         } catch (err) {
@@ -443,366 +218,186 @@ export const dbService = {
       }
     },
 
-    // Get all cashiers and managers
     async getCashiers(): Promise<UserProfile[]> {
-      if (isSupabaseConfigured && supabase) {
-        try {
-          const { data, error } = await supabase
-            .from('profiles')
-            .select('*')
-            .in('role', ['cashier', 'manager']);
-          if (error) throw error;
-          return data || [];
-        } catch (err) {
-          console.warn('Supabase getCashiers failed, falling back to LocalStorage:', err);
-          const profiles = getMockData<UserProfile>(MOCK_PROFILES_KEY);
-          return profiles.filter(p => p.role === 'cashier' || p.role === 'manager');
-        }
-      } else {
-        const profiles = getMockData<UserProfile>(MOCK_PROFILES_KEY);
-        return profiles.filter(p => p.role === 'cashier' || p.role === 'manager');
-      }
+      if (!supabase) throw new Error('Supabase not configured.');
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .in('role', ['cashier', 'manager']);
+      if (error) throw error;
+      return data || [];
     },
 
     async addCashier(
-      email: string, 
-      name: string, 
-      password?: string, 
-      branch_id?: string, 
+      email: string,
+      name: string,
+      password?: string,
+      branch_id?: string,
       branch_name?: string,
       role: UserRole = 'cashier'
     ): Promise<UserProfile> {
+      if (!supabase) throw new Error('Supabase not configured.');
       const staffPassword = password && password.trim() ? password : null;
-      if (isSupabaseConfigured && supabase) {
-        try {
-          if (!staffPassword) {
-            throw new Error('Password is required for creating a cashier account.');
-          }
-          // Use a temporary client to sign up the new user without logging out the current user
-          const tempClient = createClient(supabaseUrl, supabaseAnonKey, {
-            auth: {
-              persistSession: false,
-              autoRefreshToken: false,
-              detectSessionInUrl: false
-            }
-          });
-
-          const { data: authData, error: authError } = await tempClient.auth.signUp({
-            email: formatEmailWithDefaultDomain(email),
-            password: staffPassword,
-          });
-
-          if (authError) throw authError;
-
-          if (!authData.user?.id) {
-            throw new Error('User creation returned no ID from Supabase Auth.');
-          }
-
-          const newCashier: UserProfile = {
-            id: authData.user.id,
-            email: formatEmailWithDefaultDomain(email),
-            name,
-            role,
-            branch_id,
-            branch_name,
-            created_at: new Date().toISOString()
-          };
-
-          // Try to insert profile using tempClient first, then fallback to main client
-          let profileRes = await tempClient
-            .from('profiles')
-            .upsert(newCashier)
-            .select()
-            .single();
-
-          if (profileRes.error) {
-            profileRes = await supabase
-              .from('profiles')
-              .upsert(newCashier)
-              .select()
-              .single();
-          }
-
-          if (profileRes.error) {
-            throw profileRes.error;
-          }
-
-          return profileRes.data || newCashier;
-        } catch (err: any) {
-          console.error('Supabase addCashier error:', err);
-          const rawMsg = typeof err === 'string' ? err : (err?.message || err?.error_description || err?.msg || '');
-          let errorMsg = rawMsg && rawMsg !== '{}' 
-            ? rawMsg 
-            : 'Failed to add cashier to Supabase. Make sure the user does not already exist and your SQL schema is applied.';
-
-          if (rawMsg.toLowerCase().includes('rate limit') || rawMsg.toLowerCase().includes('rate_limit')) {
-            errorMsg = 'Supabase Email Rate Limit Exceeded: Supabase limits how many account confirmation emails can be sent per hour (default 3/hr on default SMTP). Please wait a few minutes before adding another cashier, or disable "Confirm email" in your Supabase Dashboard (Authentication -> Providers -> Email -> Confirm email: OFF).';
-          }
-
-          throw new Error(errorMsg);
-        }
-      } else {
-        const newCashier: UserProfile = {
-          id: generateId(),
-          email: formatEmailWithDefaultDomain(email),
-          name,
-          role,
-          branch_id,
-          branch_name,
-          created_at: new Date().toISOString()
-        };
-        const profiles = getMockData<UserProfile>(MOCK_PROFILES_KEY);
-        if (profiles.some(p => p.email === newCashier.email)) {
-          throw new Error('A user with this email already exists.');
-        }
-        profiles.push(newCashier);
-        saveMockData(MOCK_PROFILES_KEY, profiles);
-        return newCashier;
+      if (!staffPassword) {
+        throw new Error('Password is required for creating a cashier account.');
       }
+
+      const tempClient = createClient(supabaseUrl, supabaseAnonKey, {
+        auth: {
+          persistSession: false,
+          autoRefreshToken: false,
+          detectSessionInUrl: false
+        }
+      });
+
+      const { data: authData, error: authError } = await tempClient.auth.signUp({
+        email: formatEmailWithDefaultDomain(email),
+        password: staffPassword,
+      });
+
+      if (authError) throw authError;
+
+      if (!authData.user?.id) {
+        throw new Error('User creation returned no ID from Supabase Auth.');
+      }
+
+      const newCashier: UserProfile = {
+        id: authData.user.id,
+        email: formatEmailWithDefaultDomain(email),
+        name,
+        role,
+        branch_id,
+        branch_name,
+        created_at: new Date().toISOString()
+      };
+
+      let profileRes = await tempClient
+        .from('profiles')
+        .upsert(newCashier)
+        .select()
+        .single();
+
+      if (profileRes.error) {
+        profileRes = await supabase
+          .from('profiles')
+          .upsert(newCashier)
+          .select()
+          .single();
+      }
+
+      if (profileRes.error) throw profileRes.error;
+
+      return profileRes.data || newCashier;
     },
 
     async updateCashier(id: string, updates: Partial<UserProfile>): Promise<UserProfile> {
-      if (isSupabaseConfigured && supabase) {
-        try {
-          const { data, error } = await supabase
-            .from('profiles')
-            .update(updates)
-            .eq('id', id)
-            .select()
-            .single();
-          if (error) throw error;
-          return data;
-        } catch (err) {
-          console.warn('Supabase updateCashier failed, falling back to LocalStorage:', err);
-          const profiles = getMockData<UserProfile>(MOCK_PROFILES_KEY);
-          const idx = profiles.findIndex(p => p.id === id);
-          if (idx !== -1) {
-            profiles[idx] = { ...profiles[idx], ...updates };
-            saveMockData(MOCK_PROFILES_KEY, profiles);
-            return profiles[idx];
-          }
-          throw new Error('Cashier not found');
-        }
-      } else {
-        const profiles = getMockData<UserProfile>(MOCK_PROFILES_KEY);
-        const idx = profiles.findIndex(p => p.id === id);
-        if (idx !== -1) {
-          profiles[idx] = { ...profiles[idx], ...updates };
-          saveMockData(MOCK_PROFILES_KEY, profiles);
-          return profiles[idx];
-        }
-        throw new Error('Cashier not found');
-      }
+      if (!supabase) throw new Error('Supabase not configured.');
+      const { data, error } = await supabase
+        .from('profiles')
+        .update(updates)
+        .eq('id', id)
+        .select()
+        .single();
+      if (error) throw error;
+      return data;
     },
 
     async deleteCashier(id: string): Promise<void> {
-      const profiles = getMockData<UserProfile>(MOCK_PROFILES_KEY);
-      const updated = profiles.filter(p => p.id !== id);
-      saveMockData(MOCK_PROFILES_KEY, updated);
+      if (!supabase) throw new Error('Supabase not configured.');
+      try {
+        await supabase.from('sales').update({ cashier_id: null }).eq('cashier_id', id);
+      } catch (e) {
+        console.warn('Could not unlink sales cashier_id before delete:', e);
+      }
+      try {
+        await supabase.from('sale_delete_requests').update({ cashier_id: null }).eq('cashier_id', id);
+      } catch (e) {
+        console.warn('Could not unlink sale_delete_requests cashier_id before delete:', e);
+      }
 
-      if (isSupabaseConfigured && supabase) {
-        try {
-          try {
-            await supabase.from('sales').update({ cashier_id: null }).eq('cashier_id', id);
-          } catch (e) {
-            console.warn('Could not unlink sales cashier_id before delete:', e);
-          }
-
-          try {
-            await supabase.from('sale_delete_requests').update({ cashier_id: null }).eq('cashier_id', id);
-          } catch (e) {
-            console.warn('Could not unlink sale_delete_requests cashier_id before delete:', e);
-          }
-
-          // Call RPC to securely delete user from auth.users and profiles
-          const { error } = await supabase.rpc('delete_user_account', { target_user_id: id });
-
-          if (error) {
-            // Fallback to just deleting from profiles if RPC doesn't exist yet
-            console.warn('RPC delete_user_account failed, falling back to profiles table delete', error);
-            const fallbackRes = await supabase.from('profiles').delete().eq('id', id);
-            if (fallbackRes.error) {
-              console.error('Supabase deleteCashier error:', fallbackRes.error);
-              throw fallbackRes.error;
-            }
-          }
-        } catch (err: any) {
-          console.error('Supabase deleteCashier failed:', err);
-          throw new Error(err.message || 'Failed to delete cashier from Supabase');
-        }
+      const { error } = await supabase.rpc('delete_user_account', { target_user_id: id });
+      if (error) {
+        const fallbackRes = await supabase.from('profiles').delete().eq('id', id);
+        if (fallbackRes.error) throw fallbackRes.error;
       }
     }
   },
 
-  // ----------------------------------------
-  // BRANCH MANAGEMENT
-  // ----------------------------------------
   branches: {
     async getAll(): Promise<Branch[]> {
-      if (isSupabaseConfigured && supabase) {
-        try {
-          const { data, error } = await supabase
-            .from('branches')
-            .select('*')
-            .order('name', { ascending: true });
-          if (error) throw error;
-          if (!data || data.length === 0) {
-            return getMockData<Branch>(MOCK_BRANCHES_KEY);
-          }
-          return data;
-        } catch (err) {
-          console.warn('Supabase branches.getAll failed, falling back to LocalStorage:', err);
-          return getMockData<Branch>(MOCK_BRANCHES_KEY);
-        }
-      } else {
-        return getMockData<Branch>(MOCK_BRANCHES_KEY);
-      }
+      if (!supabase) throw new Error('Supabase not configured.');
+      const { data, error } = await supabase
+        .from('branches')
+        .select('*')
+        .order('name', { ascending: true });
+      if (error) throw error;
+      return data || [];
     },
 
     async create(branchData: Omit<Branch, 'id' | 'created_at'>): Promise<Branch> {
+      if (!supabase) throw new Error('Supabase not configured.');
       const newBranch: Branch = {
         ...branchData,
         id: 'branch-' + generateId(),
         created_at: new Date().toISOString()
       };
-
-      if (isSupabaseConfigured && supabase) {
-        try {
-          const { data, error } = await supabase
-            .from('branches')
-            .insert(newBranch)
-            .select()
-            .single();
-          if (error) throw error;
-          return data;
-        } catch (err) {
-          console.warn('Supabase branches.create failed, falling back to LocalStorage:', err);
-          const branches = getMockData<Branch>(MOCK_BRANCHES_KEY);
-          branches.push(newBranch);
-          saveMockData(MOCK_BRANCHES_KEY, branches);
-          return newBranch;
-        }
-      } else {
-        const branches = getMockData<Branch>(MOCK_BRANCHES_KEY);
-        branches.push(newBranch);
-        saveMockData(MOCK_BRANCHES_KEY, branches);
-        return newBranch;
-      }
+      const { data, error } = await supabase
+        .from('branches')
+        .insert(newBranch)
+        .select()
+        .single();
+      if (error) throw error;
+      return data;
     },
 
     async update(id: string, updates: Partial<Omit<Branch, 'id' | 'created_at'>>): Promise<Branch> {
-      if (isSupabaseConfigured && supabase) {
-        try {
-          const { data, error } = await supabase
-            .from('branches')
-            .update(updates)
-            .eq('id', id)
-            .select()
-            .single();
-          if (error) throw error;
-          return data;
-        } catch (err) {
-          console.warn('Supabase branches.update failed, falling back to LocalStorage:', err);
-          const branches = getMockData<Branch>(MOCK_BRANCHES_KEY);
-          const idx = branches.findIndex(b => b.id === id);
-          if (idx !== -1) {
-            branches[idx] = { ...branches[idx], ...updates };
-            saveMockData(MOCK_BRANCHES_KEY, branches);
-            return branches[idx];
-          }
-          throw new Error('Branch not found');
-        }
-      } else {
-        const branches = getMockData<Branch>(MOCK_BRANCHES_KEY);
-        const idx = branches.findIndex(b => b.id === id);
-        if (idx !== -1) {
-          branches[idx] = { ...branches[idx], ...updates };
-          saveMockData(MOCK_BRANCHES_KEY, branches);
-          return branches[idx];
-        }
-        throw new Error('Branch not found');
-      }
+      if (!supabase) throw new Error('Supabase not configured.');
+      const { data, error } = await supabase
+        .from('branches')
+        .update(updates)
+        .eq('id', id)
+        .select()
+        .single();
+      if (error) throw error;
+      return data;
     },
 
     async delete(id: string): Promise<void> {
-      // Clean up LocalStorage mock data first
-      const branches = getMockData<Branch>(MOCK_BRANCHES_KEY);
-      const updatedBranches = branches.filter(b => b.id !== id);
-      saveMockData(MOCK_BRANCHES_KEY, updatedBranches);
-
-      const profiles = getMockData<UserProfile>(MOCK_PROFILES_KEY);
-      saveMockData(MOCK_PROFILES_KEY, profiles.map(p => p.branch_id === id ? { ...p, branch_id: undefined, branch_name: undefined } : p));
-
-      const products = getMockData<Product>(MOCK_PRODUCTS_KEY);
-      saveMockData(MOCK_PRODUCTS_KEY, products.map(p => p.branch_id === id ? { ...p, branch_id: undefined, branch_name: undefined } : p));
-
-      if (isSupabaseConfigured && supabase) {
-        try {
-          // Unlink branch references in Supabase tables before deleting
-          await supabase.from('profiles').update({ branch_id: null, branch_name: null }).eq('branch_id', id);
-          await supabase.from('products').update({ branch_id: null, branch_name: null }).eq('branch_id', id);
-          await supabase.from('sales').update({ branch_id: null, branch_name: null }).eq('branch_id', id);
-          await supabase.from('inventory_transactions').update({ branch_id: null, branch_name: null }).eq('branch_id', id);
-          await supabase.from('cash_flow').update({ branch_id: null, branch_name: null }).eq('branch_id', id);
-
-          const { error } = await supabase.from('branches').delete().eq('id', id);
-          if (error) {
-            console.error('Supabase branches.delete error:', error);
-            throw error;
-          }
-        } catch (err: any) {
-          console.error('Supabase branches.delete failed:', err);
-          throw new Error(err.message || 'Failed to delete branch from Supabase');
-        }
-      }
+      if (!supabase) throw new Error('Supabase not configured.');
+      await supabase.from('profiles').update({ branch_id: null, branch_name: null }).eq('branch_id', id);
+      await supabase.from('products').update({ branch_id: null, branch_name: null }).eq('branch_id', id);
+      await supabase.from('sales').update({ branch_id: null, branch_name: null }).eq('branch_id', id);
+      await supabase.from('inventory_transactions').update({ branch_id: null, branch_name: null }).eq('branch_id', id);
+      await supabase.from('cash_flow').update({ branch_id: null, branch_name: null }).eq('branch_id', id);
+      const { error } = await supabase.from('branches').delete().eq('id', id);
+      if (error) throw error;
     }
   },
 
-  // ----------------------------------------
-  // PRODUCTS & INVENTORY
-  // ----------------------------------------
   products: {
     async getAll(): Promise<Product[]> {
-      if (isSupabaseConfigured && supabase) {
-        try {
-          const { data, error } = await supabase
-            .from('products')
-            .select('*')
-            .order('name', { ascending: true });
-          if (error) throw error;
-          return data || [];
-        } catch (err) {
-          console.warn('Supabase products.getAll failed, falling back to LocalStorage:', err);
-          const products = getMockData<Product>(MOCK_PRODUCTS_KEY);
-          return products.sort((a, b) => a.name.localeCompare(b.name));
-        }
-      } else {
-        const products = getMockData<Product>(MOCK_PRODUCTS_KEY);
-        return products.sort((a, b) => a.name.localeCompare(b.name));
-      }
+      if (!supabase) throw new Error('Supabase not configured.');
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .order('name', { ascending: true });
+      if (error) throw error;
+      return data || [];
     },
 
-    /**
-     * Mints a fresh SKU + barcode pair that collides with nothing currently
-     * stored. Used to prefill the new-product form; `create` re-checks at write
-     * time in case another device claimed the code in between.
-     */
     async generateCodes(): Promise<{ sku: string; barcode: string }> {
       const { skus, barcodes } = await collectProductCodes();
-
       let sku = randomSku();
       let attempts = 0;
       while (skus.has(sku)) {
         if (++attempts > 50) throw new Error('Could not generate a unique SKU. Please enter one manually.');
         sku = randomSku();
       }
-
       return { sku, barcode: nextSequentialBarcode(barcodes) };
     },
 
     async create(prod: Omit<Product, 'id' | 'created_at'>, performedBy: string): Promise<Product> {
-      // Re-validate the codes against live data — the form may have been open a
-      // while, or another device may have taken the same barcode meanwhile.
+      if (!supabase) throw new Error('Supabase not configured.');
       const { skus, barcodes } = await collectProductCodes();
       const requestedSku = normalizeSku(prod.sku);
       const requestedBarcode = normalizeBarcode(prod.barcode);
@@ -822,95 +417,39 @@ export const dbService = {
         created_at: new Date().toISOString()
       };
 
-      if (isSupabaseConfigured && supabase) {
-        try {
-          // Insert product
-          const { data, error } = await supabase
-            .from('products')
-            .insert(newProd)
-            .select()
-            .single();
-          if (error) throw error;
+      const { data, error } = await supabase
+        .from('products')
+        .insert(newProd)
+        .select()
+        .single();
+      if (error) throw error;
 
-          // Log transaction — non-fatal, don't let a logging failure lose the product
-          try {
-            await supabase.from('inventory_transactions').insert({
-              id: generateId(),
-              product_id: data.id,
-              product_name: data.name,
-              branch_id: newProd.branch_id || DEFAULT_BRANCH_ID,
-              branch_name: newProd.branch_name || DEFAULT_BRANCH_NAME,
-              type: 'stock-in',
-              quantity: data.stock,
-              notes: 'Initial stock load on product creation',
-              performed_by: performedBy,
-              created_at: new Date().toISOString()
-            });
-          } catch (txErr) {
-            console.warn('inventory_transactions insert failed (non-fatal):', txErr);
-          }
-
-          return data;
-        } catch (err) {
-          console.warn('Supabase products.create failed, falling back to LocalStorage:', err);
-          const products = getMockData<Product>(MOCK_PRODUCTS_KEY);
-          if (products.some(p => normalizeSku(p.sku) === newProd.sku)) {
-            throw new Error(`Product with SKU "${newProd.sku}" already exists.`);
-          }
-          products.push(newProd);
-          saveMockData(MOCK_PRODUCTS_KEY, products);
-
-          // Record log
-          const transactions = getMockData<InventoryTransaction>(MOCK_TRANSACTIONS_KEY);
-          transactions.push({
-            id: generateId(),
-            product_id: newProd.id,
-            product_name: newProd.name,
-            branch_id: newProd.branch_id || DEFAULT_BRANCH_ID,
-            branch_name: newProd.branch_name || DEFAULT_BRANCH_NAME,
-            type: 'stock-in',
-            quantity: newProd.stock,
-            notes: 'Initial stock load on product creation',
-            performed_by: performedBy,
-            created_at: new Date().toISOString()
-          });
-          saveMockData(MOCK_TRANSACTIONS_KEY, transactions);
-
-          return newProd;
-        }
-      } else {
-        const products = getMockData<Product>(MOCK_PRODUCTS_KEY);
-        if (products.some(p => normalizeSku(p.sku) === newProd.sku)) {
-          throw new Error(`Product with SKU "${newProd.sku}" already exists.`);
-        }
-        products.push(newProd);
-        saveMockData(MOCK_PRODUCTS_KEY, products);
-
-        // Record log
-        const transactions = getMockData<InventoryTransaction>(MOCK_TRANSACTIONS_KEY);
-        transactions.push({
+      try {
+        await supabase.from('inventory_transactions').insert({
           id: generateId(),
-          product_id: newProd.id,
-          product_name: newProd.name,
+          product_id: data.id,
+          product_name: data.name,
+          branch_id: newProd.branch_id || DEFAULT_BRANCH_ID,
+          branch_name: newProd.branch_name || DEFAULT_BRANCH_NAME,
           type: 'stock-in',
-          quantity: newProd.stock,
+          quantity: data.stock,
           notes: 'Initial stock load on product creation',
           performed_by: performedBy,
           created_at: new Date().toISOString()
         });
-        saveMockData(MOCK_TRANSACTIONS_KEY, transactions);
-
-        return newProd;
+      } catch (txErr) {
+        console.warn('inventory_transactions insert failed (non-fatal):', txErr);
       }
+
+      return data;
     },
 
     async update(id: string, updates: Partial<Omit<Product, 'id' | 'created_at'>>, performedBy: string): Promise<Product> {
-      // Reject a SKU/barcode edit that would collide with a *different* product.
+      if (!supabase) throw new Error('Supabase not configured.');
       if (updates.sku !== undefined || updates.barcode !== undefined) {
         const { skus, barcodes } = await collectProductCodes(id);
         const nextSku = normalizeSku(updates.sku);
         const nextBarcode = normalizeBarcode(updates.barcode);
-
         if (nextSku && skus.has(nextSku)) {
           throw new Error(`SKU "${nextSku}" is already used by another product.`);
         }
@@ -919,127 +458,68 @@ export const dbService = {
         }
       }
 
-      if (isSupabaseConfigured && supabase) {
+      const { data: current, error: fetchErr } = await supabase
+        .from('products')
+        .select('*')
+        .eq('id', id)
+        .single();
+      if (fetchErr) throw fetchErr;
+
+      const { data, error } = await supabase
+        .from('products')
+        .update(updates)
+        .eq('id', id)
+        .select()
+        .single();
+      if (error) throw error;
+
+      if (updates.stock !== undefined && updates.stock !== current.stock) {
+        const diff = updates.stock - current.stock;
         try {
-          // Fetch existing first to check if stock changed
-          const { data: current, error: fetchErr } = await supabase
-            .from('products')
-            .select('*')
-            .eq('id', id)
-            .single();
-          if (fetchErr) throw fetchErr;
-
-          const { data, error } = await supabase
-            .from('products')
-            .update(updates)
-            .eq('id', id)
-            .select()
-            .single();
-          if (error) throw error;
-
-          // Record stock adjustments if stock was updated — non-fatal
-          if (updates.stock !== undefined && updates.stock !== current.stock) {
-            const diff = updates.stock - current.stock;
-            try {
-              await supabase.from('inventory_transactions').insert({
-                id: generateId(),
-                product_id: id,
-                product_name: data.name,
-                branch_id: data.branch_id || DEFAULT_BRANCH_ID,
-                branch_name: data.branch_name || DEFAULT_BRANCH_NAME,
-                type: diff > 0 ? 'stock-in' : 'stock-out',
-                quantity: Math.abs(diff),
-                notes: `Stock adjusted manually. Old stock: ${current.stock}, New stock: ${updates.stock}`,
-                performed_by: performedBy,
-                created_at: new Date().toISOString()
-              });
-            } catch (txErr) {
-              console.warn('inventory_transactions insert failed (non-fatal):', txErr);
-            }
-          }
-
-          return data;
-        } catch (err) {
-          console.warn('Supabase products.update failed, falling back to LocalStorage:', err);
-          const products = getMockData<Product>(MOCK_PRODUCTS_KEY);
-          const idx = products.findIndex(p => p.id === id);
-          if (idx === -1) throw new Error('Product not found');
-
-          const current = products[idx];
-          const updatedProduct = { ...current, ...updates };
-          products[idx] = updatedProduct;
-          saveMockData(MOCK_PRODUCTS_KEY, products);
-
-          // Log transaction if stock changed
-          if (updates.stock !== undefined && updates.stock !== current.stock) {
-            const diff = updates.stock - current.stock;
-            const transactions = getMockData<InventoryTransaction>(MOCK_TRANSACTIONS_KEY);
-            transactions.push({
-              id: generateId(),
-              product_id: id,
-              product_name: updatedProduct.name,
-              type: diff > 0 ? 'stock-in' : 'stock-out',
-              quantity: Math.abs(diff),
-              notes: `Stock adjusted manually. Old stock: ${current.stock}, New stock: ${updates.stock}`,
-              performed_by: performedBy,
-              created_at: new Date().toISOString()
-            });
-            saveMockData(MOCK_TRANSACTIONS_KEY, transactions);
-          }
-
-          return updatedProduct;
-        }
-      } else {
-        const products = getMockData<Product>(MOCK_PRODUCTS_KEY);
-        const idx = products.findIndex(p => p.id === id);
-        if (idx === -1) throw new Error('Product not found');
-
-        const current = products[idx];
-        const updatedProduct = { ...current, ...updates };
-        products[idx] = updatedProduct;
-        saveMockData(MOCK_PRODUCTS_KEY, products);
-
-        // Log transaction if stock changed
-        if (updates.stock !== undefined && updates.stock !== current.stock) {
-          const diff = updates.stock - current.stock;
-          const transactions = getMockData<InventoryTransaction>(MOCK_TRANSACTIONS_KEY);
-          transactions.push({
+          await supabase.from('inventory_transactions').insert({
             id: generateId(),
             product_id: id,
-            product_name: updatedProduct.name,
-            branch_id: updatedProduct.branch_id || DEFAULT_BRANCH_ID,
-            branch_name: updatedProduct.branch_name || DEFAULT_BRANCH_NAME,
+            product_name: data.name,
+            branch_id: data.branch_id || DEFAULT_BRANCH_ID,
+            branch_name: data.branch_name || DEFAULT_BRANCH_NAME,
             type: diff > 0 ? 'stock-in' : 'stock-out',
             quantity: Math.abs(diff),
             notes: `Stock adjusted manually. Old stock: ${current.stock}, New stock: ${updates.stock}`,
             performed_by: performedBy,
             created_at: new Date().toISOString()
           });
-          saveMockData(MOCK_TRANSACTIONS_KEY, transactions);
+        } catch (txErr) {
+          console.warn('inventory_transactions insert failed (non-fatal):', txErr);
         }
-
-        return updatedProduct;
       }
+
+      return data;
     },
 
-    /**
-     * Adds to a product's current stock (additive "fill stock") and records a
-     * stock-in transaction. Throws if quantity is not a positive number.
-     */
     async restock(id: string, quantity: number, performedBy: string): Promise<Product> {
+      if (!supabase) throw new Error('Supabase not configured.');
       if (!quantity || quantity <= 0) {
         throw new Error('Restock quantity must be a positive number.');
       }
 
-      const buildUpdated = (current: Product): { product: Product; tx: InventoryTransaction } => {
-        const oldStock = current.stock || 0;
-        const newStock = oldStock + quantity;
-        const updatedProduct: Product = {
-          ...current,
-          stock: newStock,
-          updated_at: new Date().toLocaleString()
-        };
-        const tx: InventoryTransaction = {
+      const { data: current, error: fetchErr } = await supabase
+        .from('products')
+        .select('*')
+        .eq('id', id)
+        .single();
+      if (fetchErr) throw fetchErr;
+
+      const oldStock = current.stock || 0;
+      const newStock = oldStock + quantity;
+
+      const { error } = await supabase
+        .from('products')
+        .update({ stock: newStock })
+        .eq('id', id);
+      if (error) throw error;
+
+      try {
+        await supabase.from('inventory_transactions').insert({
           id: generateId(),
           product_id: id,
           product_name: current.name,
@@ -1050,100 +530,34 @@ export const dbService = {
           notes: `Restocked +${quantity}. Old stock: ${oldStock}, New stock: ${newStock}`,
           performed_by: performedBy,
           created_at: new Date().toISOString()
-        };
-        return { product: updatedProduct, tx };
-      };
-
-      if (isSupabaseConfigured && supabase) {
-        try {
-          // Read from the database (the authoritative source when online).
-          const { data: current, error: fetchErr } = await supabase
-            .from('products')
-            .select('*')
-            .eq('id', id)
-            .single();
-          if (fetchErr) throw fetchErr;
-
-          const { product, tx } = buildUpdated(current);
-          const { error } = await supabase
-            .from('products')
-            .update({ stock: product.stock })
-            .eq('id', id);
-          if (error) throw error;
-
-          try {
-            await supabase.from('inventory_transactions').insert(tx);
-          } catch (txErr) {
-            console.warn('inventory_transactions insert failed (non-fatal):', txErr);
-          }
-
-          return product;
-        } catch (err: any) {
-          console.warn('Supabase products.restock failed, falling back to LocalStorage:', err);
-          const products = getMockData<Product>(MOCK_PRODUCTS_KEY);
-          const idx = products.findIndex(p => p.id === id);
-          if (idx === -1) throw new Error('Product not found');
-          const { product, tx } = buildUpdated(products[idx]);
-          products[idx] = product;
-          saveMockData(MOCK_PRODUCTS_KEY, products);
-          const transactions = getMockData<InventoryTransaction>(MOCK_TRANSACTIONS_KEY);
-          transactions.push(tx);
-          saveMockData(MOCK_TRANSACTIONS_KEY, transactions);
-          return product;
-        }
-      } else {
-        const products = getMockData<Product>(MOCK_PRODUCTS_KEY);
-        const idx = products.findIndex(p => p.id === id);
-        if (idx === -1) throw new Error('Product not found');
-        const { product, tx } = buildUpdated(products[idx]);
-        products[idx] = product;
-        saveMockData(MOCK_PRODUCTS_KEY, products);
-        const transactions = getMockData<InventoryTransaction>(MOCK_TRANSACTIONS_KEY);
-        transactions.push(tx);
-        saveMockData(MOCK_TRANSACTIONS_KEY, transactions);
-        return product;
+        });
+      } catch (txErr) {
+        console.warn('inventory_transactions insert failed (non-fatal):', txErr);
       }
+
+      return { ...current, stock: newStock };
     },
 
     async bulkImport(importedItems: Partial<Product>[], performedBy: string, branchId?: string, branchName?: string): Promise<number> {
-      const existingProducts = getMockData<Product>(MOCK_PRODUCTS_KEY);
-      const updatedList: Product[] = [...existingProducts];
+      if (!supabase) throw new Error('Supabase not configured.');
 
       const targetBranchId = branchId || null;
       const targetBranchName = branchName || null;
 
-      // Seed taken codes from BOTH localStorage and Supabase so the dedupe
-      // below can never mint a code that already lives in the database.
       const usedBarcodes = new Set<string>();
       const usedSkus = new Set<string>();
       const usedIds = new Set<string>();
 
-      existingProducts.forEach(p => {
+      const { data: remoteRows } = await supabase.from('products').select('id, sku, barcode');
+      (remoteRows || []).forEach(p => {
         if (p.barcode) usedBarcodes.add(normalizeBarcode(p.barcode));
         if (p.sku) usedSkus.add(normalizeSku(p.sku));
         if (p.id) usedIds.add(p.id);
       });
 
-      if (isSupabaseConfigured && supabase) {
-        try {
-          const { data: remoteRows } = await supabase
-            .from('products')
-            .select('id, sku, barcode');
-          (remoteRows || []).forEach(p => {
-            if (p.barcode) usedBarcodes.add(normalizeBarcode(p.barcode));
-            if (p.sku) usedSkus.add(normalizeSku(p.sku));
-            if (p.id) usedIds.add(p.id);
-          });
-        } catch (err) {
-          console.warn('Could not fetch remote product codes for import dedupe:', err);
-        }
-      }
-
       const upsertItems: Product[] = [];
 
       importedItems.forEach(item => {
-        // Never reuse CSV identifiers: every imported row gets a brand-new id,
-        // barcode, and sku so a re-import can never clash with existing rows.
         let idKey = generateId();
         while (usedIds.has(idKey)) {
           idKey = generateId();
@@ -1183,101 +597,42 @@ export const dbService = {
           branch_name: targetBranchName,
         };
 
-        updatedList.push(fullItem);
         upsertItems.push(fullItem);
       });
 
-      saveMockData(MOCK_PRODUCTS_KEY, updatedList);
-
-      if (isSupabaseConfigured && supabase) {
-        const { error } = await supabase.from('products').upsert(upsertItems);
-        if (error) {
-          console.error('Supabase bulkImport upsert error:', error);
-          throw new Error(error.message || 'Failed to import products to database.');
-        }
-      }
+      const { error } = await supabase.from('products').upsert(upsertItems);
+      if (error) throw new Error(error.message || 'Failed to import products to database.');
 
       return importedItems.length;
     },
 
     async delete(id: string): Promise<void> {
-      // Always update LocalStorage
-      const products = getMockData<Product>(MOCK_PRODUCTS_KEY);
-      const updated = products.filter(p => p.id !== id);
-      saveMockData(MOCK_PRODUCTS_KEY, updated);
-
-      if (isSupabaseConfigured && supabase) {
-        try {
-          await supabase.from('inventory_transactions').update({ product_id: null }).eq('product_id', id);
-          await supabase.from('sale_items').update({ product_id: null }).eq('product_id', id);
-
-          const { error } = await supabase
-            .from('products')
-            .delete()
-            .eq('id', id);
-
-          if (error) {
-            console.error('Supabase products.delete error:', error);
-            throw error;
-          }
-        } catch (err: any) {
-          console.error('Supabase products.delete failed:', err);
-          throw new Error(err.message || 'Failed to delete product from Supabase');
-        }
-      }
+      if (!supabase) throw new Error('Supabase not configured.');
+      await supabase.from('inventory_transactions').update({ product_id: null }).eq('product_id', id);
+      await supabase.from('sale_items').update({ product_id: null }).eq('product_id', id);
+      const { error } = await supabase.from('products').delete().eq('id', id);
+      if (error) throw error;
     }
   },
 
-  // ----------------------------------------
-  // SALES (POINT OF SALE)
-  // ----------------------------------------
   sales: {
     async getAllWithItems(): Promise<SaleWithItems[]> {
-      if (isSupabaseConfigured && supabase) {
-        try {
-          // Fetch sales
-          const { data: sales, error: salesErr } = await supabase
-            .from('sales')
-            .select('*')
-            .order('created_at', { ascending: false });
-          if (salesErr) throw salesErr;
+      if (!supabase) throw new Error('Supabase not configured.');
+      const { data: sales, error: salesErr } = await supabase
+        .from('sales')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (salesErr) throw salesErr;
 
-          // Fetch sale items
-          const { data: items, error: itemsErr } = await supabase
-            .from('sale_items')
-            .select('*');
-          if (itemsErr) throw itemsErr;
+      const { data: items, error: itemsErr } = await supabase
+        .from('sale_items')
+        .select('*');
+      if (itemsErr) throw itemsErr;
 
-          // Combine them
-          return (sales || []).map(sale => ({
-            ...sale,
-            items: (items || []).filter(item => item.sale_id === sale.id)
-          }));
-        } catch (err) {
-          console.warn('Supabase sales.getAllWithItems failed, falling back to LocalStorage:', err);
-          const sales = getMockData<Sale>(MOCK_SALES_KEY);
-          const items = getMockData<SaleItem>(MOCK_SALE_ITEMS_KEY);
-
-          const combined = sales.map(sale => ({
-            ...sale,
-            items: items.filter(item => item.sale_id === sale.id)
-          }));
-
-          // Sort descending by date
-          return combined.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-        }
-      } else {
-        const sales = getMockData<Sale>(MOCK_SALES_KEY);
-        const items = getMockData<SaleItem>(MOCK_SALE_ITEMS_KEY);
-
-        const combined = sales.map(sale => ({
-          ...sale,
-          items: items.filter(item => item.sale_id === sale.id)
-        }));
-
-        // Sort descending by date
-        return combined.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-      }
+      return (sales || []).map(sale => ({
+        ...sale,
+        items: (items || []).filter(item => item.sale_id === sale.id)
+      }));
     },
 
     async checkout(
@@ -1287,12 +642,12 @@ export const dbService = {
       cashier: UserProfile,
       customer?: { name?: string; phone?: string }
     ): Promise<SaleWithItems> {
+      if (!supabase) throw new Error('Supabase not configured.');
       if (cart.length === 0) throw new Error('Cannot checkout an empty shopping cart');
 
       const saleId = 'sale-' + generateId();
       const now = new Date().toISOString();
 
-      // Compute total amount
       const rawTotal = cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
       const totalAmount = Number(Math.max(0, rawTotal - discount).toFixed(2));
 
@@ -1321,151 +676,52 @@ export const dbService = {
         total: Number((item.product.price * item.quantity).toFixed(2))
       }));
 
-      if (isSupabaseConfigured && supabase) {
-        try {
-          // Start a batch or linear process in Supabase
-          // 1. Insert Sales header
-          const { error: saleErr } = await supabase.from('sales').insert(newSale);
-          if (saleErr) throw saleErr;
+      const { error: saleErr } = await supabase.from('sales').insert(newSale);
+      if (saleErr) throw saleErr;
 
-          // 2. Insert Sale Items
-          const { error: itemsErr } = await supabase.from('sale_items').insert(saleItems);
-          if (itemsErr) throw itemsErr;
+      const { error: itemsErr } = await supabase.from('sale_items').insert(saleItems);
+      if (itemsErr) throw itemsErr;
 
-          // 3. For each item: deduct stock & add transaction
-          for (const item of cart) {
-            const newStock = Math.max(0, item.product.stock - item.quantity);
-            // Update Stock
-            const { error: stockErr } = await supabase
-              .from('products')
-              .update({ stock: newStock })
-              .eq('id', item.product.id);
-            if (stockErr) throw stockErr;
+      for (const item of cart) {
+        const newStock = Math.max(0, item.product.stock - item.quantity);
+        const { error: stockErr } = await supabase
+          .from('products')
+          .update({ stock: newStock })
+          .eq('id', item.product.id);
+        if (stockErr) throw stockErr;
 
-            // Log transaction
-            const { error: txErr } = await supabase.from('inventory_transactions').insert({
-              id: generateId(),
-              product_id: item.product.id,
-              product_name: item.product.name,
-              branch_id: cashier.branch_id || DEFAULT_BRANCH_ID,
-              branch_name: cashier.branch_name || DEFAULT_BRANCH_NAME,
-              type: 'sale',
-              quantity: item.quantity,
-              notes: `Sold at POS to ${customer?.name || 'Walk-in Customer'}`,
-              performed_by: cashier.name,
-              created_at: now
-            });
-            if (txErr) throw txErr;
-          }
-
-          return { ...newSale, items: saleItems };
-        } catch (err) {
-          console.warn('Supabase sales.checkout failed, falling back to LocalStorage:', err);
-          // Mock DB implementation
-          const sales = getMockData<Sale>(MOCK_SALES_KEY);
-          const savedItems = getMockData<SaleItem>(MOCK_SALE_ITEMS_KEY);
-          const products = getMockData<Product>(MOCK_PRODUCTS_KEY);
-          const transactions = getMockData<InventoryTransaction>(MOCK_TRANSACTIONS_KEY);
-
-          // Update local products stock
-          cart.forEach(item => {
-            const pIdx = products.findIndex(p => p.id === item.product.id);
-            if (pIdx !== -1) {
-              products[pIdx].stock = Math.max(0, products[pIdx].stock - item.quantity);
-            }
-
-            // Record Inventory Transaction
-            transactions.push({
-              id: generateId(),
-              product_id: item.product.id,
-              product_name: item.product.name,
-              branch_id: cashier.branch_id || DEFAULT_BRANCH_ID,
-              branch_name: cashier.branch_name || DEFAULT_BRANCH_NAME,
-              type: 'sale',
-              quantity: item.quantity,
-              notes: `Sold at POS to ${customer?.name || 'Walk-in Customer'}`,
-              performed_by: cashier.name,
-              created_at: now
-            });
-          });
-
-          sales.push(newSale);
-          savedItems.push(...saleItems);
-
-          saveMockData(MOCK_SALES_KEY, sales);
-          saveMockData(MOCK_SALE_ITEMS_KEY, savedItems);
-          saveMockData(MOCK_PRODUCTS_KEY, products);
-          saveMockData(MOCK_TRANSACTIONS_KEY, transactions);
-
-          return { ...newSale, items: saleItems };
-        }
-      } else {
-        // Mock DB implementation
-        const sales = getMockData<Sale>(MOCK_SALES_KEY);
-        const savedItems = getMockData<SaleItem>(MOCK_SALE_ITEMS_KEY);
-        const products = getMockData<Product>(MOCK_PRODUCTS_KEY);
-        const transactions = getMockData<InventoryTransaction>(MOCK_TRANSACTIONS_KEY);
-
-        // Update local products stock
-        cart.forEach(item => {
-          const pIdx = products.findIndex(p => p.id === item.product.id);
-          if (pIdx !== -1) {
-            products[pIdx].stock = Math.max(0, products[pIdx].stock - item.quantity);
-          }
-
-          // Record Inventory Transaction
-          transactions.push({
-            id: generateId(),
-            product_id: item.product.id,
-            product_name: item.product.name,
-            branch_id: cashier.branch_id || DEFAULT_BRANCH_ID,
-            branch_name: cashier.branch_name || DEFAULT_BRANCH_NAME,
-            type: 'sale',
-            quantity: item.quantity,
-            notes: `Sold at POS to ${customer?.name || 'Walk-in Customer'}`,
-            performed_by: cashier.name,
-            created_at: now
-          });
+        const { error: txErr } = await supabase.from('inventory_transactions').insert({
+          id: generateId(),
+          product_id: item.product.id,
+          product_name: item.product.name,
+          branch_id: cashier.branch_id || DEFAULT_BRANCH_ID,
+          branch_name: cashier.branch_name || DEFAULT_BRANCH_NAME,
+          type: 'sale',
+          quantity: item.quantity,
+          notes: `Sold at POS to ${customer?.name || 'Walk-in Customer'}`,
+          performed_by: cashier.name,
+          created_at: now
         });
-
-        sales.push(newSale);
-        savedItems.push(...saleItems);
-
-        saveMockData(MOCK_SALES_KEY, sales);
-        saveMockData(MOCK_SALE_ITEMS_KEY, savedItems);
-        saveMockData(MOCK_PRODUCTS_KEY, products);
-        saveMockData(MOCK_TRANSACTIONS_KEY, transactions);
-
-        return { ...newSale, items: saleItems };
+        if (txErr) throw txErr;
       }
+
+      return { ...newSale, items: saleItems };
     }
   },
 
-  // ----------------------------------------
-  // CASH FLOW (INCOME / EXPENSE LEDGER)
-  // ----------------------------------------
   cashFlow: {
     async getAll(): Promise<CashFlowEntry[]> {
-      if (isSupabaseConfigured && supabase) {
-        try {
-          const { data, error } = await supabase
-            .from('cash_flow')
-            .select('*')
-            .order('created_at', { ascending: false });
-          if (error) throw error;
-          return data || [];
-        } catch (err) {
-          console.warn('Supabase cashFlow.getAll failed, falling back to LocalStorage:', err);
-          const entries = getMockData<CashFlowEntry>(MOCK_CASHFLOW_KEY);
-          return entries.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-        }
-      } else {
-        const entries = getMockData<CashFlowEntry>(MOCK_CASHFLOW_KEY);
-        return entries.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-      }
+      if (!supabase) throw new Error('Supabase not configured.');
+      const { data, error } = await supabase
+        .from('cash_flow')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return data || [];
     },
 
     async create(entry: Omit<CashFlowEntry, 'id' | 'created_at'>, performedBy: string): Promise<CashFlowEntry> {
+      if (!supabase) throw new Error('Supabase not configured.');
       const newEntry: CashFlowEntry = {
         ...entry,
         amount: Number(Number(entry.amount).toFixed(2)),
@@ -1473,120 +729,58 @@ export const dbService = {
         id: 'cf-' + generateId(),
         created_at: new Date().toISOString()
       };
-
-      if (isSupabaseConfigured && supabase) {
-        try {
-          const { data, error } = await supabase
-            .from('cash_flow')
-            .insert(newEntry)
-            .select()
-            .single();
-          if (error) throw error;
-          return data;
-        } catch (err) {
-          console.warn('Supabase cashFlow.create failed, falling back to LocalStorage:', err);
-          const entries = getMockData<CashFlowEntry>(MOCK_CASHFLOW_KEY);
-          entries.push(newEntry);
-          saveMockData(MOCK_CASHFLOW_KEY, entries);
-          return newEntry;
-        }
-      } else {
-        const entries = getMockData<CashFlowEntry>(MOCK_CASHFLOW_KEY);
-        entries.push(newEntry);
-        saveMockData(MOCK_CASHFLOW_KEY, entries);
-        return newEntry;
-      }
+      const { data, error } = await supabase
+        .from('cash_flow')
+        .insert(newEntry)
+        .select()
+        .single();
+      if (error) throw error;
+      return data;
     },
 
     async update(id: string, updates: Partial<Omit<CashFlowEntry, 'id' | 'created_at'>>): Promise<CashFlowEntry> {
-      if (isSupabaseConfigured && supabase) {
-        try {
-          const { data, error } = await supabase
-            .from('cash_flow')
-            .update(updates)
-            .eq('id', id)
-            .select()
-            .single();
-          if (error) throw error;
-          return data;
-        } catch (err) {
-          console.warn('Supabase cashFlow.update failed, falling back to LocalStorage:', err);
-          const entries = getMockData<CashFlowEntry>(MOCK_CASHFLOW_KEY);
-          const idx = entries.findIndex(e => e.id === id);
-          if (idx === -1) throw new Error('Cash flow entry not found');
-          entries[idx] = { ...entries[idx], ...updates };
-          saveMockData(MOCK_CASHFLOW_KEY, entries);
-          return entries[idx];
-        }
-      } else {
-        const entries = getMockData<CashFlowEntry>(MOCK_CASHFLOW_KEY);
-        const idx = entries.findIndex(e => e.id === id);
-        if (idx === -1) throw new Error('Cash flow entry not found');
-        entries[idx] = { ...entries[idx], ...updates };
-        saveMockData(MOCK_CASHFLOW_KEY, entries);
-        return entries[idx];
-      }
+      if (!supabase) throw new Error('Supabase not configured.');
+      const { data, error } = await supabase
+        .from('cash_flow')
+        .update(updates)
+        .eq('id', id)
+        .select()
+        .single();
+      if (error) throw error;
+      return data;
     },
 
     async delete(id: string): Promise<void> {
-      const entries = getMockData<CashFlowEntry>(MOCK_CASHFLOW_KEY);
-      saveMockData(MOCK_CASHFLOW_KEY, entries.filter(e => e.id !== id));
-
-      if (isSupabaseConfigured && supabase) {
-        try {
-          const { error } = await supabase.from('cash_flow').delete().eq('id', id);
-          if (error) {
-            console.error('Supabase cashFlow.delete error:', error);
-            throw error;
-          }
-        } catch (err: any) {
-          console.error('Supabase cashFlow.delete failed:', err);
-          throw new Error(err.message || 'Failed to delete cash flow entry from Supabase');
-        }
-      }
+      if (!supabase) throw new Error('Supabase not configured.');
+      const { error } = await supabase.from('cash_flow').delete().eq('id', id);
+      if (error) throw error;
     }
   },
 
-  // ----------------------------------------
-  // TRANSACTION LOGS
-  // ----------------------------------------
   transactions: {
     async getAll(): Promise<InventoryTransaction[]> {
-      if (isSupabaseConfigured && supabase) {
-        try {
-          const { data, error } = await supabase
-            .from('inventory_transactions')
-            .select('*')
-            .order('created_at', { ascending: false });
-          if (error) throw error;
-          return data || [];
-        } catch (err) {
-          console.warn('Supabase transactions.getAll failed, falling back to LocalStorage:', err);
-          const txs = getMockData<InventoryTransaction>(MOCK_TRANSACTIONS_KEY);
-          return txs.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-        }
-      } else {
-        const txs = getMockData<InventoryTransaction>(MOCK_TRANSACTIONS_KEY);
-        return txs.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-      }
+      if (!supabase) throw new Error('Supabase not configured.');
+      const { data, error } = await supabase
+        .from('inventory_transactions')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return data || [];
     }
   },
 
-  // ----------------------------------------
-  // BUSINESS BRANDING & SETTINGS
-  // ----------------------------------------
   business: {
     async get(): Promise<BusinessProfile> {
-      if (isSupabaseConfigured && supabase) {
+      if (supabase) {
         try {
-          const { data, error } = await supabase
+          const { data } = await supabase
             .from('business_settings')
             .select('*')
             .limit(1)
             .maybeSingle();
           if (data) return { ...DEFAULT_BUSINESS_PROFILE, ...data };
         } catch (err) {
-          console.warn('Supabase business.get failed, falling back to LocalStorage:', err);
+          console.warn('business.get failed, using local cache:', err);
         }
       }
       const stored = localStorage.getItem(MOCK_BUSINESS_KEY);
@@ -1610,11 +804,11 @@ export const dbService = {
 
       localStorage.setItem(MOCK_BUSINESS_KEY, JSON.stringify(updated));
 
-      if (isSupabaseConfigured && supabase) {
+      if (supabase) {
         try {
           await supabase.from('business_settings').upsert({ id: 'main', ...updated });
         } catch (err) {
-          console.warn('Supabase business.update failed:', err);
+          console.warn('business.update Supabase write failed (local cache saved):', err);
         }
       }
 
@@ -1624,77 +818,45 @@ export const dbService = {
 
   saleDeleteRequests: {
     async getAll(): Promise<SaleDeleteRequest[]> {
-      if (isSupabaseConfigured && supabase) {
-        try {
-          const { data, error } = await supabase
-            .from('sale_delete_requests')
-            .select('*')
-            .order('requested_at', { ascending: false });
-          if (error) throw error;
-          return data || [];
-        } catch (err) {
-          console.warn('Supabase saleDeleteRequests.getAll failed, falling back to LocalStorage:', err);
-          const reqs = getMockData<SaleDeleteRequest>(MOCK_DELETE_REQUESTS_KEY);
-          return reqs.sort((a, b) => new Date(b.requested_at).getTime() - new Date(a.requested_at).getTime());
-        }
-      } else {
-        const reqs = getMockData<SaleDeleteRequest>(MOCK_DELETE_REQUESTS_KEY);
-        return reqs.sort((a, b) => new Date(b.requested_at).getTime() - new Date(a.requested_at).getTime());
-      }
+      if (!supabase) throw new Error('Supabase not configured.');
+      const { data, error } = await supabase
+        .from('sale_delete_requests')
+        .select('*')
+        .order('requested_at', { ascending: false });
+      if (error) throw error;
+      return data || [];
     },
 
     async create(requestData: Omit<SaleDeleteRequest, 'id' | 'requested_at' | 'status'>): Promise<SaleDeleteRequest> {
+      if (!supabase) throw new Error('Supabase not configured.');
       const newReq: SaleDeleteRequest = {
         ...requestData,
         id: 'delreq-' + generateId(),
         status: 'pending',
         requested_at: new Date().toISOString()
       };
-
-      if (isSupabaseConfigured && supabase) {
-        try {
-          const { data, error } = await supabase
-            .from('sale_delete_requests')
-            .insert(newReq)
-            .select()
-            .single();
-          if (error) throw error;
-          return data;
-        } catch (err) {
-          console.warn('Supabase saleDeleteRequests.create failed, falling back to LocalStorage:', err);
-          const reqs = getMockData<SaleDeleteRequest>(MOCK_DELETE_REQUESTS_KEY);
-          reqs.push(newReq);
-          saveMockData(MOCK_DELETE_REQUESTS_KEY, reqs);
-          return newReq;
-        }
-      } else {
-        const reqs = getMockData<SaleDeleteRequest>(MOCK_DELETE_REQUESTS_KEY);
-        reqs.push(newReq);
-        saveMockData(MOCK_DELETE_REQUESTS_KEY, reqs);
-        return newReq;
-      }
+      const { data, error } = await supabase
+        .from('sale_delete_requests')
+        .insert(newReq)
+        .select()
+        .single();
+      if (error) throw error;
+      return data;
     },
 
     async approve(requestId: string, reviewedBy: string): Promise<void> {
+      if (!supabase) throw new Error('Supabase not configured.');
       const now = new Date().toISOString();
-      const allSales = await dbService.sales.getAllWithItems();
 
-      let req: SaleDeleteRequest | undefined;
-      if (isSupabaseConfigured && supabase) {
-        try {
-          const { data } = await supabase.from('sale_delete_requests').select('*').eq('id', requestId).single();
-          req = data;
-        } catch (err) {
-          const reqs = getMockData<SaleDeleteRequest>(MOCK_DELETE_REQUESTS_KEY);
-          req = reqs.find(r => r.id === requestId);
-        }
-      } else {
-        const reqs = getMockData<SaleDeleteRequest>(MOCK_DELETE_REQUESTS_KEY);
-        req = reqs.find(r => r.id === requestId);
-      }
-
+      const { data: req, error: reqErr } = await supabase
+        .from('sale_delete_requests')
+        .select('*')
+        .eq('id', requestId)
+        .single();
+      if (reqErr) throw reqErr;
       if (!req) throw new Error('Delete request not found');
 
+      const allSales = await dbService.sales.getAllWithItems();
       const targetSale = allSales.find(s => s.id === req.sale_id);
       if (targetSale && targetSale.items && targetSale.items.length > 0) {
         const products = await dbService.products.getAll();
@@ -1706,128 +868,29 @@ export const dbService = {
         }
       }
 
-      if (isSupabaseConfigured && supabase) {
-        try {
-          await supabase
-            .from('sale_delete_requests')
-            .update({ status: 'approved', reviewed_at: now, reviewed_by: reviewedBy })
-            .eq('id', requestId);
-
-          if (req.sale_id) {
-            await supabase.from('sales').delete().eq('id', req.sale_id);
-          }
-        } catch (err) {
-          console.warn('Supabase approve delete request failed, falling back to LocalStorage:', err);
-        }
-      }
-
-      const reqs = getMockData<SaleDeleteRequest>(MOCK_DELETE_REQUESTS_KEY);
-      const rIdx = reqs.findIndex(r => r.id === requestId);
-      if (rIdx !== -1) {
-        reqs[rIdx] = { ...reqs[rIdx], status: 'approved', reviewed_at: now, reviewed_by: reviewedBy };
-        saveMockData(MOCK_DELETE_REQUESTS_KEY, reqs);
-      }
+      await supabase
+        .from('sale_delete_requests')
+        .update({ status: 'approved', reviewed_at: now, reviewed_by: reviewedBy })
+        .eq('id', requestId);
 
       if (req.sale_id) {
-        const sales = getMockData<Sale>(MOCK_SALES_KEY).filter(s => s.id !== req.sale_id);
-        const saleItems = getMockData<SaleItem>(MOCK_SALE_ITEMS_KEY).filter(si => si.sale_id !== req.sale_id);
-        saveMockData(MOCK_SALES_KEY, sales);
-        saveMockData(MOCK_SALE_ITEMS_KEY, saleItems);
+        await supabase.from('sales').delete().eq('id', req.sale_id);
       }
     },
 
     async reject(requestId: string, reviewedBy: string, rejectionReason?: string): Promise<void> {
+      if (!supabase) throw new Error('Supabase not configured.');
       const now = new Date().toISOString();
-
-      if (isSupabaseConfigured && supabase) {
-        try {
-          await supabase
-            .from('sale_delete_requests')
-            .update({ status: 'rejected', reviewed_at: now, reviewed_by: reviewedBy, rejection_reason: rejectionReason || '' })
-            .eq('id', requestId);
-        } catch (err) {
-          console.warn('Supabase reject delete request failed:', err);
-        }
-      }
-
-      const reqs = getMockData<SaleDeleteRequest>(MOCK_DELETE_REQUESTS_KEY);
-      const rIdx = reqs.findIndex(r => r.id === requestId);
-      if (rIdx !== -1) {
-        reqs[rIdx] = {
-          ...reqs[rIdx],
-          status: 'rejected',
-          reviewed_at: now,
-          reviewed_by: reviewedBy,
-          rejection_reason: rejectionReason || ''
-        };
-        saveMockData(MOCK_DELETE_REQUESTS_KEY, reqs);
-      }
+      await supabase
+        .from('sale_delete_requests')
+        .update({ status: 'rejected', reviewed_at: now, reviewed_by: reviewedBy, rejection_reason: rejectionReason || '' })
+        .eq('id', requestId);
     }
   },
 
-  // ----------------------------------------
-  // OFFLINE SYNC ENGINE
-  // ----------------------------------------
   sync: {
     async syncOfflineData(): Promise<{ syncedCount: number; success: boolean; message: string }> {
-      if (!isSupabaseConfigured || !supabase) {
-        return { syncedCount: 0, success: false, message: 'Supabase is not configured yet.' };
-      }
-
-      if (typeof navigator !== 'undefined' && !navigator.onLine) {
-        return { syncedCount: 0, success: false, message: 'Device is currently offline.' };
-      }
-
-      try {
-        const queueJson = localStorage.getItem(SYNC_QUEUE_KEY);
-        const queue: SyncOperation[] = queueJson ? JSON.parse(queueJson) : [];
-        if (queue.length === 0) {
-          return { syncedCount: 0, success: true, message: 'No offline operations to sync.' };
-        }
-
-        let syncedCount = 0;
-        let errors = 0;
-
-        for (const op of queue) {
-          if (op.action === 'UPSERT') {
-            const { error } = await supabase.from(op.table).upsert(op.payload);
-            if (!error) syncedCount++;
-            else {
-              console.error('Failed to sync upsert:', error, op);
-              errors++;
-            }
-          } else if (op.action === 'DELETE') {
-            const { error } = await supabase.from(op.table).delete().eq('id', op.payload.id);
-            if (!error) syncedCount++;
-            else {
-              console.error('Failed to sync delete:', error, op);
-              errors++;
-            }
-          }
-        }
-
-        if (errors === 0) {
-          localStorage.removeItem(SYNC_QUEUE_KEY);
-          return {
-            syncedCount,
-            success: true,
-            message: `Successfully synced ${syncedCount} operations to Supabase!`
-          };
-        } else {
-          return {
-            syncedCount,
-            success: false,
-            message: `Synced ${syncedCount} operations, but ${errors} failed. Check console for details.`
-          };
-        }
-      } catch (err: any) {
-        console.error('Sync error:', err);
-        return {
-          syncedCount: 0,
-          success: false,
-          message: err.message || 'Failed to sync offline data.'
-        };
-      }
+      return { syncedCount: 0, success: true, message: 'App is running in online-only mode.' };
     }
   }
 };
