@@ -8957,6 +8957,18 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/CashierSalesHistory.tsx",
+      "source_location": "L615",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_cashiersaleshistory_cashiersaleshistory",
+      "target": "src_utils_format_formatdate"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/components/CashierSalesHistory.tsx",
       "source_location": "L63",
       "weight": 1.0,
       "_origin": "ast",
@@ -8969,19 +8981,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/CashierSalesHistory.tsx",
-      "source_location": "L666",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_components_cashiersaleshistory_cashiersaleshistory",
-      "target": "src_utils_format_formatdate"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/components/CashierSalesHistory.tsx",
-      "source_location": "L700",
+      "source_location": "L649",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashiersaleshistory_cashiersaleshistory",
@@ -8993,7 +8993,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/CashierSalesHistory.tsx",
-      "source_location": "L779",
+      "source_location": "L728",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashiersaleshistory_cashiersaleshistory",
@@ -24012,5 +24012,5 @@
       "source_file": "supabase_schema.txt"
     }
   ],
-  "built_at_commit": "16888acd2e1a04aab663247598812cde60e22a51"
+  "built_at_commit": "b3ea7bc1e34d9736947d220fbe0188a741135e1d"
 }

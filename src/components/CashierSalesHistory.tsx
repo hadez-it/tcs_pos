@@ -466,57 +466,6 @@ export default function CashierSalesHistory({
           </div>
         </div>
 
-        {/* Date Presets and Payment Pills */}
-        <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100">
-          <div className="flex items-center gap-1.5 overflow-x-auto android-scroll pb-1 -mb-1 w-full sm:w-auto">
-            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mr-1 shrink-0">Date:</span>
-            {[
-              { id: 'all', label: 'All Time' },
-              { id: 'today', label: 'Today' },
-              { id: 'yesterday', label: 'Yesterday' },
-              { id: 'week', label: '7 Days' },
-              { id: 'month', label: 'This Month' }
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => setDatePreset(tab.id as DatePreset)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 ${
-                  datePreset === tab.id
-                    ? 'bg-black text-white shadow-xs'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-
-          <div className="flex items-center gap-1.5 overflow-x-auto android-scroll pb-1 -mb-1 w-full sm:w-auto">
-            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mr-1 shrink-0">Payment:</span>
-            {[
-              { id: 'all', label: 'All' },
-              { id: 'cash', label: 'Cash' },
-              { id: 'mobile', label: 'Mobile' },
-              { id: 'card', label: 'Card' }
-            ].map((pm) => (
-              <button
-                key={pm.id}
-                type="button"
-                onClick={() => setPaymentFilter(pm.id as PaymentFilter)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 ${
-                  paymentFilter === pm.id
-                    ? 'bg-black text-white shadow-xs'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                }`}
-              >
-                {pm.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Active Filter Chips with 1-click remove */}
         {activeFilterCount > 0 && (
           <div className="flex items-center gap-2 flex-wrap pt-2 border-t border-slate-100 text-xs">
             <span className="text-[11px] font-bold text-slate-500">Active Filters:</span>
