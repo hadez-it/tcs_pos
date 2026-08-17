@@ -47,7 +47,14 @@ export default function Auth({ onLoginSuccess }: AuthProps) {
       const user = await dbService.auth.login(formatEmailWithDefaultDomain(email), password);
       onLoginSuccess(user);
     } catch (err: any) {
-      setError(err.message || 'Authentication failed. Please check your credentials.');
+      const msg = err?.message || '';
+      if (/failed to fetch|networkerror|load failed|network request failed/i.test(msg)) {
+        setError('Cannot connect to database server (Failed to fetch). If using Supabase Free Tier, the project may be paused — please restore it from your Supabase Dashboard. Also check your internet connection.');
+      } else if (/invalid login credentials/i.test(msg)) {
+        setError('Invalid username or password. Please check your credentials.');
+      } else {
+        setError(msg || 'Authentication failed. Please check your credentials.');
+      }
     } finally {
       setIsLoading(false);
     }
