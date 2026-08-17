@@ -15,6 +15,7 @@ import { exportSalesReportToXlsx } from '../utils/excelExport';
 import SearchableCategorySelect from './SearchableCategorySelect';
 import BarcodeScannerModal from './BarcodeScannerModal';
 import UiSizeModal from './UiSizeModal';
+import FilterDrawer from './FilterDrawer';
 
 interface CashierDashboardProps {
   user: UserProfile;
@@ -62,6 +63,9 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
   const [salesHistory, setSalesHistory] = useState<SaleWithItems[]>([]);
   const [deleteRequests, setDeleteRequests] = useState<SaleDeleteRequest[]>([]);
   const [isHistoryLoading, setIsHistoryLoading] = useState(false);
+  const [historySearch, setHistorySearch] = useState('');
+  const [historyPaymentFilter, setHistoryPaymentFilter] = useState('all');
+  const [showHistoryFilters, setShowHistoryFilters] = useState(false);
   const [saleToDelete, setSaleToDelete] = useState<SaleWithItems | null>(null);
   const [deleteReason, setDeleteReason] = useState('');
   const [isSubmittingDeleteRequest, setIsSubmittingDeleteRequest] = useState(false);
@@ -87,6 +91,31 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
   useBackDismiss(showReceipt, () => { setShowReceipt(false); setCompletedSale(null); });
   useBackDismiss(showScanner, () => setShowScanner(false));
   useBackDismiss(saleToDelete !== null, () => setSaleToDelete(null));
+  useBackDismiss(showHistoryFilters, () => setShowHistoryFilters(false));
+
+  const activeHistoryFilterCount = useMemo(() => {
+    let count = 0;
+    if (historySearch.trim()) count++;
+    if (historyPaymentFilter !== 'all') count++;
+    return count;
+  }, [historySearch, historyPaymentFilter]);
+
+  const resetHistoryFilters = () => {
+    setHistorySearch('');
+    setHistoryPaymentFilter('all');
+  };
+
+  const filteredSalesHistory = useMemo(() => {
+    return salesHistory.filter(sale => {
+      const q = historySearch.toLowerCase();
+      const matchesSearch = !q ||
+        sale.id.toLowerCase().includes(q) ||
+        (sale.customer_name || '').toLowerCase().includes(q) ||
+        (sale.customer_phone || '').toLowerCase().includes(q);
+      const matchesPayment = historyPaymentFilter === 'all' || sale.payment_method === historyPaymentFilter;
+      return matchesSearch && matchesPayment;
+    });
+  }, [salesHistory, historySearch, historyPaymentFilter]);
 
   const handleTabSwitch = (tab: 'pos' | 'history') => {
     if (tab === activeTab) return;
@@ -640,15 +669,31 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
                 </div>
                 <div className="flex items-center gap-2">
                   <button
+                    onClick={() => setShowHistoryFilters(true)}
+                    className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer shadow-2xs ${
+                      activeHistoryFilterCount > 0
+                        ? 'bg-black text-white'
+                        : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                    }`}
+                  >
+                    <Filter className="w-3.5 h-3.5" />
+                    <span>Filters</span>
+                    {activeHistoryFilterCount > 0 && (
+                      <span className="w-4.5 h-4.5 rounded-full bg-white text-black text-[10px] font-black flex items-center justify-center">
+                        {activeHistoryFilterCount}
+                      </span>
+                    )}
+                  </button>
+                  <button
                     onClick={() => {
-                      if (salesHistory.length === 0) {
+                      if (filteredSalesHistory.length === 0) {
                         toast('No sales history to export', 'warning');
                         return;
                       }
-                      exportSalesReportToXlsx(salesHistory, `cashier_sales_${user.name.toLowerCase().replace(/\s+/g, '_')}_${new Date().toISOString().slice(0, 10)}.xlsx`);
-                      toast(`Exported ${salesHistory.length} sales to Excel`, 'success');
+                      exportSalesReportToXlsx(filteredSalesHistory, `cashier_sales_${user.name.toLowerCase().replace(/\s+/g, '_')}_${new Date().toISOString().slice(0, 10)}.xlsx`);
+                      toast(`Exported ${filteredSalesHistory.length} sales to Excel`, 'success');
                     }}
-                    disabled={salesHistory.length === 0}
+                    disabled={filteredSalesHistory.length === 0}
                     className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 font-bold text-xs text-slate-700 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                     title="Export your sales to Excel (.xlsx)"
                   >
@@ -662,22 +707,71 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
                 </div>
               </div>
 
+              <FilterDrawer
+                isOpen={showHistoryFilters}
+                onClose={() => setShowHistoryFilters(false)}
+                title="Sales History Filters"
+                subtitle="Filter your processed transactions"
+                activeCount={activeHistoryFilterCount}
+                onReset={resetHistoryFilters}
+              >
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">Search</label>
+                    <div className="relative">
+                      <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                      <input
+                        type="text"
+                        placeholder="Receipt ID, customer name or phone..."
+                        value={historySearch}
+                        onChange={(e) => setHistorySearch(e.target.value)}
+                        className="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:border-black focus:bg-white"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2 pt-2 border-t border-slate-100">
+                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">Payment Method</label>
+                    <div className="grid grid-cols-2 gap-2">
+                      {[
+                        { val: 'all', label: 'All Methods' },
+                        { val: 'cash', label: 'Cash' },
+                        { val: 'card', label: 'Card' },
+                        { val: 'mobile', label: 'Mobile' }
+                      ].map(opt => (
+                        <button
+                          key={opt.val}
+                          onClick={() => setHistoryPaymentFilter(opt.val)}
+                          className={`py-2 px-3 rounded-xl text-xs font-bold transition-all cursor-pointer text-center ${
+                            historyPaymentFilter === opt.val
+                              ? 'bg-black text-white shadow-xs'
+                              : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                          }`}
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </FilterDrawer>
+
               {isHistoryLoading ? (
                 <div className="flex flex-col items-center justify-center py-16">
                   <div className="w-8 h-8 border-[3px] border-gray-900/20 border-t-gray-900 rounded-full animate-spin" />
                   <span className="text-slate-400 text-xs mt-3">Loading sales...</span>
                 </div>
-              ) : salesHistory.length === 0 ? (
+              ) : filteredSalesHistory.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-16 text-slate-400">
                   <FileText className="w-12 h-12 text-slate-200 mb-3" />
-                  <p className="text-sm font-semibold">No sales yet</p>
+                  <p className="text-sm font-semibold">No sales found</p>
                   <button onClick={() => setActiveTab('pos')} className="mt-4 px-5 py-2.5 bg-black hover:bg-gray-800 text-white rounded-xl text-xs font-bold transition-all cursor-pointer">
                     Start Selling
                   </button>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {salesHistory.map((sale) => {
+                  {filteredSalesHistory.map((sale) => {
                     const existingReq = Array.isArray(deleteRequests) ? deleteRequests.find(r => r && r.sale_id === sale.id) : undefined;
                     return (
                       <div key={sale.id} className="android-card p-4 border border-slate-100 flex flex-col justify-between">

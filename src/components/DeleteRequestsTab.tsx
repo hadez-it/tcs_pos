@@ -6,6 +6,9 @@ import { formatCurrency } from '../utils/format';
 import { useToast } from '../utils/toast';
 import { Search, Filter, RefreshCw, CheckCircle, XCircle, Clock, AlertTriangle, ChevronDown, ChevronUp, FileText, Check, X } from 'lucide-react';
 
+import FilterDrawer from './FilterDrawer';
+import { Building2 } from 'lucide-react';
+
 interface DeleteRequestsTabProps {
   user: UserProfile;
   branches: Branch[];
@@ -21,6 +24,19 @@ export default function DeleteRequestsTab({ user, branches, selectedBranchId, on
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'pending' | 'approved' | 'rejected'>('pending');
   const [expandedRequestId, setExpandedRequestId] = useState<string | null>(null);
+  const [showFilterDrawer, setShowFilterDrawer] = useState(false);
+
+  const activeFilterCount = useMemo(() => {
+    let count = 0;
+    if (statusFilter !== 'pending') count++;
+    if (searchQuery.trim()) count++;
+    return count;
+  }, [statusFilter, searchQuery]);
+
+  const resetFilters = () => {
+    setStatusFilter('pending');
+    setSearchQuery('');
+  };
 
   const [confirmApproveModal, setConfirmApproveModal] = useState<SaleDeleteRequest | null>(null);
   const [confirmRejectModal, setConfirmRejectModal] = useState<SaleDeleteRequest | null>(null);
@@ -189,6 +205,23 @@ export default function DeleteRequestsTab({ user, branches, selectedBranchId, on
             </div>
 
             <button
+              onClick={() => setShowFilterDrawer(true)}
+              className={`inline-flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-bold rounded-xl border transition-all cursor-pointer shadow-2xs shrink-0 ${
+                activeFilterCount > 0
+                  ? 'bg-black text-white border-black'
+                  : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+              }`}
+            >
+              <Filter className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Filters</span>
+              {activeFilterCount > 0 && (
+                <span className="w-4.5 h-4.5 rounded-full bg-white text-black text-[10px] font-black flex items-center justify-center">
+                  {activeFilterCount}
+                </span>
+              )}
+            </button>
+
+            <button
               onClick={loadRequestsData}
               className="p-2 text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl cursor-pointer shrink-0 transition-colors"
               title="Refresh requests"
@@ -197,6 +230,50 @@ export default function DeleteRequestsTab({ user, branches, selectedBranchId, on
             </button>
           </div>
         </div>
+
+        <FilterDrawer
+          isOpen={showFilterDrawer}
+          onClose={() => setShowFilterDrawer(false)}
+          title="Delete Request Filters"
+          subtitle="Filter pending, approved, and rejected requests"
+          activeCount={activeFilterCount}
+          onReset={resetFilters}
+        >
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">Status</label>
+              <div className="grid grid-cols-3 gap-2">
+                {(['pending', 'approved', 'rejected'] as const).map(st => (
+                  <button
+                    key={st}
+                    onClick={() => setStatusFilter(st)}
+                    className={`py-2 px-2 rounded-xl text-xs font-bold capitalize transition-all cursor-pointer text-center ${
+                      statusFilter === st
+                        ? 'bg-black text-white shadow-xs'
+                        : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                    }`}
+                  >
+                    {st}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-2 pt-2 border-t border-slate-100">
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">Search</label>
+              <div className="relative">
+                <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                <input
+                  type="text"
+                  placeholder="Cashier, sale ID, reason..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:border-black focus:bg-white"
+                />
+              </div>
+            </div>
+          </div>
+        </FilterDrawer>
 
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-12">

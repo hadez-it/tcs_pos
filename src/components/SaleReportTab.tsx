@@ -9,6 +9,8 @@ import {
   CreditCard, Wallet, Banknote, User, FileSpreadsheet
 } from 'lucide-react';
 
+import FilterDrawer from './FilterDrawer';
+
 interface SaleReportTabProps {
   sales: SaleWithItems[];
   branches: Branch[];
@@ -113,8 +115,6 @@ export default function SaleReportTab({ sales, branches, cashiers, currency }: S
     return filteredSales.reduce((sum, s) => sum + s.total_amount, 0);
   }, [filteredSales]);
 
-
-
   const toggleExpand = (id: string) => {
     setExpandedSaleId(prev => prev === id ? null : id);
   };
@@ -162,46 +162,50 @@ export default function SaleReportTab({ sales, branches, cashiers, currency }: S
           </button>
 
           <button 
-            onClick={() => setShowFilters(!showFilters)}
+            onClick={() => setShowFilters(true)}
             className={`flex-1 sm:flex-initial flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border text-xs sm:text-sm font-bold transition-all cursor-pointer ${
-              showFilters || activeFilterCount > 0 
+              activeFilterCount > 0 
                 ? 'bg-black text-white border-black shadow-xs' 
                 : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
             }`}
           >
             <Filter className="w-4 h-4" />
-            <span>{showFilters ? 'Hide Filters' : 'Filters'}</span>
+            <span>Filters</span>
             {activeFilterCount > 0 && (
               <span className="w-5 h-5 rounded-full bg-white text-black text-[10px] font-black flex items-center justify-center">
                 {activeFilterCount}
               </span>
             )}
-            {showFilters ? <ChevronUp className="w-4 h-4 ml-auto sm:ml-0" /> : <ChevronDown className="w-4 h-4 ml-auto sm:ml-0" />}
           </button>
         </div>
       </div>
 
-
-
-      {showFilters && (
-        <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-xs space-y-4">
-          <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-            <h4 className="text-xs font-extrabold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
-              <Filter className="w-3.5 h-3.5" /> Filter Options
-            </h4>
-            {activeFilterCount > 0 && (
-              <button
-                onClick={resetFilters}
-                className="text-xs font-bold text-slate-500 hover:text-black flex items-center gap-1 cursor-pointer transition-colors"
-              >
-                <RotateCcw className="w-3 h-3" /> Reset Filters
-              </button>
-            )}
+      <FilterDrawer
+        isOpen={showFilters}
+        onClose={() => setShowFilters(false)}
+        title="Sale Report Filters"
+        subtitle="Filter transactions by date, branch & cashier"
+        activeCount={activeFilterCount}
+        onReset={resetFilters}
+      >
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">Search</label>
+            <div className="relative">
+              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+              <input 
+                type="text" 
+                placeholder="ID, Customer, Cashier..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:border-black focus:bg-white transition-colors"
+              />
+            </div>
           </div>
 
-          <div className="space-y-1.5">
-            <label className="block text-xs font-bold text-slate-600">Date Range</label>
-            <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2">
+          <div className="space-y-2 pt-2 border-t border-slate-100">
+            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">Date Range</label>
+            <div className="grid grid-cols-2 gap-2">
               <button
                 onClick={() => setDateFilter('all')}
                 className={`py-2 px-3 rounded-xl text-xs font-bold transition-all cursor-pointer text-center ${
@@ -232,13 +236,13 @@ export default function SaleReportTab({ sales, branches, cashiers, currency }: S
                   dateFilter === 'custom' ? 'bg-black text-white shadow-xs' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                 }`}
               >
-                Custom
+                Custom Range
               </button>
             </div>
           </div>
 
           {dateFilter === 'custom' && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200">
               <div>
                 <label className="block text-[11px] font-bold text-slate-500 mb-1">Start Date</label>
                 <div className="relative">
@@ -247,7 +251,7 @@ export default function SaleReportTab({ sales, branches, cashiers, currency }: S
                     type="date" 
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:border-black focus:bg-white"
+                    className="w-full pl-9 pr-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:border-black"
                   />
                 </div>
               </div>
@@ -259,64 +263,46 @@ export default function SaleReportTab({ sales, branches, cashiers, currency }: S
                     type="date" 
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:border-black focus:bg-white"
+                    className="w-full pl-9 pr-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:border-black"
                   />
                 </div>
               </div>
             </div>
           )}
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 border-t border-slate-100">
-            <div>
-              <label className="block text-xs font-bold text-slate-600 mb-1 flex items-center gap-1">
-                <Building2 className="w-3.5 h-3.5 text-slate-400" /> Branch
-              </label>
-              <select 
-                value={branchFilter}
-                onChange={(e) => setBranchFilter(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:border-black focus:bg-white"
-              >
-                <option value="all">All Branches</option>
-                {branches.map(b => (
-                  <option key={b.id} value={b.id}>{b.name}</option>
-                ))}
-              </select>
-            </div>
+          <div className="space-y-2 pt-2 border-t border-slate-100">
+            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1">
+              <Building2 className="w-3.5 h-3.5 text-slate-400" /> Branch
+            </label>
+            <select 
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:border-black focus:bg-white transition-colors"
+            >
+              <option value="all">All Branches</option>
+              {branches.map(b => (
+                <option key={b.id} value={b.id}>{b.name}</option>
+              ))}
+            </select>
+          </div>
 
-            <div>
-              <label className="block text-xs font-bold text-slate-600 mb-1 flex items-center gap-1">
-                <Users className="w-3.5 h-3.5 text-slate-400" /> Cashier
-              </label>
-              <select 
-                value={cashierFilter}
-                onChange={(e) => setCashierFilter(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:border-black focus:bg-white"
-              >
-                <option value="all">All Cashiers</option>
-                {cashiers.map(c => (
-                  <option key={c.id} value={c.id}>{c.name}</option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-slate-600 mb-1 flex items-center gap-1">
-                <Search className="w-3.5 h-3.5 text-slate-400" /> Search
-              </label>
-              <div className="relative">
-                <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                <input 
-                  type="text" 
-                  placeholder="ID, Customer, Cashier..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-8 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:border-black focus:bg-white"
-                />
-              </div>
-            </div>
+          <div className="space-y-2 pt-2 border-t border-slate-100">
+            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1">
+              <Users className="w-3.5 h-3.5 text-slate-400" /> Cashier
+            </label>
+            <select 
+              value={cashierFilter}
+              onChange={(e) => setCashierFilter(e.target.value)}
+              className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:border-black focus:bg-white transition-colors"
+            >
+              <option value="all">All Cashiers</option>
+              {cashiers.map(c => (
+                <option key={c.id} value={c.id}>{c.name}</option>
+              ))}
+            </select>
           </div>
         </div>
-      )}
+      </FilterDrawer>
 
       <div className="space-y-3 sm:hidden">
         {filteredSales.map(sale => {

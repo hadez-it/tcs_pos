@@ -1,8 +1,9 @@
 import React, { useState, useMemo } from 'react';
-import { Search, FileSpreadsheet, Download, Package, ChevronDown, Printer, Edit2, PackagePlus, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Search, FileSpreadsheet, Download, Package, ChevronDown, Printer, Edit2, PackagePlus, Trash2, ChevronLeft, ChevronRight, Filter, Building2, Layers } from 'lucide-react';
 import { formatCurrency } from '../../utils/format';
 import { UserProfile, Branch, Product } from '../../types';
 import SearchableCategorySelect from '../SearchableCategorySelect';
+import FilterDrawer from '../FilterDrawer';
 
 interface ProductsTabProps {
   user: UserProfile;
@@ -40,6 +41,26 @@ export default function ProductsTab({
   const [stockFilter, setStockFilter] = useState('All');
   const [productPage, setProductPage] = useState(1);
   const [expandedProductId, setExpandedProductId] = useState<string | null>(null);
+  const [showFilterDrawer, setShowFilterDrawer] = useState(false);
+
+  const activeFilterCount = useMemo(() => {
+    let count = 0;
+    if (productSearch.trim()) count++;
+    if (categoryFilter !== 'All') count++;
+    if (stockFilter !== 'All') count++;
+    if (selectedBranchId !== 'all') count++;
+    return count;
+  }, [productSearch, categoryFilter, stockFilter, selectedBranchId]);
+
+  const resetFilters = () => {
+    setProductSearch('');
+    setCategoryFilter('All');
+    setStockFilter('All');
+    if (user.role !== 'manager') {
+      setSelectedBranchId('all');
+    }
+    setProductPage(1);
+  };
 
   const filteredProducts = useMemo(() => {
     return displayProducts.filter(p => {
@@ -69,9 +90,38 @@ export default function ProductsTab({
 
   return (
     <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden w-full max-w-full min-w-0">
-      <div className="p-4 sm:p-6 border-b border-slate-200/90 bg-gradient-to-b from-white to-slate-50/60">
-        {/* Secondary Action Tools Row */}
-        <div className="grid grid-cols-3 sm:flex sm:items-center sm:justify-end gap-2">
+      <div className="p-3.5 sm:p-5 border-b border-slate-200/90 bg-gradient-to-b from-white to-slate-50/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex-1 flex items-center gap-2">
+          <div className="relative flex-1">
+            <Search className="absolute inset-y-0 left-0 pl-3 w-4 h-4 my-auto text-slate-400 pointer-events-none" />
+            <input
+              type="text"
+              placeholder="Search Name, SKU, or Barcode..."
+              value={productSearch}
+              onChange={(e) => { setProductSearch(e.target.value); setProductPage(1); }}
+              className="w-full pl-9 pr-3 py-2 bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-gray-900 shadow-2xs transition-colors"
+            />
+          </div>
+
+          <button
+            onClick={() => setShowFilterDrawer(true)}
+            className={`inline-flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-bold rounded-xl border transition-all cursor-pointer shadow-2xs shrink-0 ${
+              activeFilterCount > 0
+                ? 'bg-black text-white border-black'
+                : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+            }`}
+          >
+            <Filter className="w-3.5 h-3.5" />
+            <span>Filters</span>
+            {activeFilterCount > 0 && (
+              <span className="w-4.5 h-4.5 rounded-full bg-white text-black text-[10px] font-black flex items-center justify-center">
+                {activeFilterCount}
+              </span>
+            )}
+          </button>
+        </div>
+
+        <div className="flex items-center justify-end gap-2 shrink-0">
           <button
             onClick={() => setShowCsvModal(true)}
             className="inline-flex items-center justify-center gap-1.5 px-2.5 sm:px-3.5 py-2 bg-gray-50 hover:bg-gray-100 text-gray-900 font-bold text-[11px] sm:text-xs rounded-xl border border-gray-200/80 transition-all cursor-pointer active:scale-95"
@@ -92,27 +142,38 @@ export default function ProductsTab({
         </div>
       </div>
 
-      {/* Filters Row */}
-      <div className="p-3 sm:p-4 bg-slate-50/80 border-b border-slate-200 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
-        <div className="relative">
-          <Search className="absolute inset-y-0 left-0 pl-3 w-4 h-4 my-auto text-slate-400" />
-          <input
-            type="text"
-            placeholder="Search Name, SKU, or Barcode..."
-            value={productSearch}
-            onChange={(e) => { setProductSearch(e.target.value); setProductPage(1); }}
-            className="w-full pl-9 pr-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-gray-900 shadow-2xs"
-          />
-        </div>
+      <FilterDrawer
+        isOpen={showFilterDrawer}
+        onClose={() => setShowFilterDrawer(false)}
+        title="Product Filters"
+        subtitle="Filter inventory by branch, category & stock"
+        activeCount={activeFilterCount}
+        onReset={resetFilters}
+      >
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">Search Keyword</label>
+            <div className="relative">
+              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                placeholder="Product name, SKU, barcode..."
+                value={productSearch}
+                onChange={(e) => { setProductSearch(e.target.value); setProductPage(1); }}
+                className="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:border-black focus:bg-white"
+              />
+            </div>
+          </div>
 
-        <div className="grid grid-cols-2 sm:contents gap-2">
           {user.role !== 'manager' && branches.length > 0 && (
-            <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 text-xs">
-              <span className="text-[11px] sm:text-xs text-slate-500 font-bold shrink-0">Branch:</span>
+            <div className="space-y-2 pt-2 border-t border-slate-100">
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1">
+                <Building2 className="w-3.5 h-3.5 text-slate-400" /> Branch
+              </label>
               <select
                 value={selectedBranchId}
                 onChange={(e) => { setSelectedBranchId(e.target.value); setProductPage(1); }}
-                className="w-full bg-white border border-slate-200 rounded-xl py-2 px-2 font-medium text-slate-800 text-xs focus:outline-none shadow-2xs cursor-pointer"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3 font-medium text-slate-800 text-xs focus:outline-none focus:border-black focus:bg-white cursor-pointer"
               >
                 <option value="all">All Branches</option>
                 {branches.map(b => (
@@ -121,8 +182,11 @@ export default function ProductsTab({
               </select>
             </div>
           )}
-          <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 text-xs">
-            <span className="text-[11px] sm:text-xs text-slate-500 font-bold shrink-0">Category:</span>
+
+          <div className="space-y-2 pt-2 border-t border-slate-100">
+            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1">
+              <Layers className="w-3.5 h-3.5 text-slate-400" /> Category
+            </label>
             <SearchableCategorySelect
               options={categories.map(cat => ({
                 value: cat,
@@ -135,20 +199,32 @@ export default function ProductsTab({
             />
           </div>
 
-          <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 text-xs">
-            <span className="text-[11px] sm:text-xs text-slate-500 font-bold shrink-0">Stock Status:</span>
-            <select
-              value={stockFilter}
-              onChange={(e) => { setStockFilter(e.target.value); setProductPage(1); }}
-              className="w-full bg-white border border-slate-200 rounded-xl py-2 px-2 font-medium text-slate-800 text-xs focus:outline-none shadow-2xs"
-            >
-              <option value="All">All Stocks</option>
-              <option value="Low Stock">Low Stock Warnings</option>
-              <option value="Out of Stock">Out of Stock</option>
-            </select>
+          <div className="space-y-2 pt-2 border-t border-slate-100">
+            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1">
+              <Package className="w-3.5 h-3.5 text-slate-400" /> Stock Status
+            </label>
+            <div className="grid grid-cols-1 gap-1.5">
+              {[
+                { val: 'All', label: 'All Stock Levels' },
+                { val: 'Low Stock', label: 'Low Stock Warnings' },
+                { val: 'Out of Stock', label: 'Out of Stock Only' }
+              ].map(opt => (
+                <button
+                  key={opt.val}
+                  onClick={() => { setStockFilter(opt.val); setProductPage(1); }}
+                  className={`py-2 px-3 rounded-xl text-xs font-bold transition-all cursor-pointer text-left flex items-center justify-between ${
+                    stockFilter === opt.val
+                      ? 'bg-black text-white shadow-xs'
+                      : 'bg-slate-50 text-slate-700 hover:bg-slate-100 border border-slate-200/80'
+                  }`}
+                >
+                  <span>{opt.label}</span>
+                </button>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      </FilterDrawer>
 
       {/* Product Table & Mobile Cards */}
       <div className="p-0">

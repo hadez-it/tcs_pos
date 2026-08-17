@@ -34,6 +34,45 @@
   },
   "nodes": [
     {
+      "label": "AuthProps",
+      "file_type": "code",
+      "source_file": "src/components/Auth.tsx",
+      "source_location": "L7",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "id": "src_components_auth_authprops",
+      "community": 0,
+      "community_name": "OwnerDashboard.tsx",
+      "norm_label": "authprops"
+    },
+    {
+      "label": "BarcodePrintModalProps",
+      "file_type": "code",
+      "source_file": "src/components/BarcodePrintModal.tsx",
+      "source_location": "L16",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "id": "src_components_barcodeprintmodal_barcodeprintmodalprops",
+      "community": 0,
+      "community_name": "OwnerDashboard.tsx",
+      "norm_label": "barcodeprintmodalprops"
+    },
+    {
+      "label": "CartItem",
+      "file_type": "code",
+      "source_file": "src/components/CashierDashboard.tsx",
+      "source_location": "L24",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "id": "src_components_cashierdashboard_cartitem",
+      "community": 0,
+      "community_name": "OwnerDashboard.tsx",
+      "norm_label": "cartitem"
+    },
+    {
       "label": "ChangePasswordTabProps",
       "file_type": "code",
       "source_file": "src/components/ChangePasswordTab.tsx",
@@ -177,6 +216,19 @@
       "norm_label": "deleterequeststabprops"
     },
     {
+      "label": "LabelGeneratorTabProps",
+      "file_type": "code",
+      "source_file": "src/components/LabelGeneratorTab.tsx",
+      "source_location": "L17",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "id": "src_components_labelgeneratortab_labelgeneratortabprops",
+      "community": 0,
+      "community_name": "OwnerDashboard.tsx",
+      "norm_label": "labelgeneratortabprops"
+    },
+    {
       "label": "BranchModalProps",
       "file_type": "code",
       "source_file": "src/components/modals/BranchModal.tsx",
@@ -255,23 +307,10 @@
       "norm_label": "ownerdashboardprops"
     },
     {
-      "label": "QuickRestockModalProps",
-      "file_type": "code",
-      "source_file": "src/components/QuickRestockModal.tsx",
-      "source_location": "L7",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "id": "src_components_quickrestockmodal_quickrestockmodalprops",
-      "community": 0,
-      "community_name": "OwnerDashboard.tsx",
-      "norm_label": "quickrestockmodalprops"
-    },
-    {
       "label": "SaleReportTabProps",
       "file_type": "code",
       "source_file": "src/components/SaleReportTab.tsx",
-      "source_location": "L10",
+      "source_location": "L12",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
@@ -305,6 +344,19 @@
       "community": 0,
       "community_name": "OwnerDashboard.tsx",
       "norm_label": "searchablecategoryselectprops"
+    },
+    {
+      "label": "SingleLabelModalProps",
+      "file_type": "code",
+      "source_file": "src/components/SingleLabelModal.tsx",
+      "source_location": "L16",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "id": "src_components_singlelabelmodal_singlelabelmodalprops",
+      "community": 0,
+      "community_name": "OwnerDashboard.tsx",
+      "norm_label": "singlelabelmodalprops"
     },
     {
       "label": "PosStore",
@@ -515,19 +567,6 @@
       "norm_label": "userrole"
     },
     {
-      "label": "AuthProps",
-      "file_type": "code",
-      "source_file": "src/components/Auth.tsx",
-      "source_location": "L7",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "id": "src_components_auth_authprops",
-      "community": 1,
-      "community_name": "CashierDashboard.tsx",
-      "norm_label": "authprops"
-    },
-    {
       "label": "BarcodeScannerModalProps",
       "file_type": "code",
       "source_file": "src/components/BarcodeScannerModal.tsx",
@@ -541,23 +580,10 @@
       "norm_label": "barcodescannermodalprops"
     },
     {
-      "label": "CartItem",
-      "file_type": "code",
-      "source_file": "src/components/CashierDashboard.tsx",
-      "source_location": "L23",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "id": "src_components_cashierdashboard_cartitem",
-      "community": 1,
-      "community_name": "CashierDashboard.tsx",
-      "norm_label": "cartitem"
-    },
-    {
       "label": "CashierDashboardProps",
       "file_type": "code",
       "source_file": "src/components/CashierDashboard.tsx",
-      "source_location": "L18",
+      "source_location": "L19",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
@@ -570,7 +596,7 @@
       "label": "HeldCart",
       "file_type": "code",
       "source_file": "src/components/CashierDashboard.tsx",
-      "source_location": "L28",
+      "source_location": "L29",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
@@ -591,6 +617,19 @@
       "community": 1,
       "community_name": "CashierDashboard.tsx",
       "norm_label": "pulltorefreshprops"
+    },
+    {
+      "label": "QuickRestockModalProps",
+      "file_type": "code",
+      "source_file": "src/components/QuickRestockModal.tsx",
+      "source_location": "L7",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "id": "src_components_quickrestockmodal_quickrestockmodalprops",
+      "community": 1,
+      "community_name": "CashierDashboard.tsx",
+      "norm_label": "quickrestockmodalprops"
     },
     {
       "label": "UiSizeModalProps",
@@ -671,19 +710,6 @@
       "norm_label": "toasttype"
     },
     {
-      "label": "BarcodePrintModalProps",
-      "file_type": "code",
-      "source_file": "src/components/BarcodePrintModal.tsx",
-      "source_location": "L16",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "id": "src_components_barcodeprintmodal_barcodeprintmodalprops",
-      "community": 2,
-      "community_name": "escpos.ts",
-      "norm_label": "barcodeprintmodalprops"
-    },
-    {
       "label": "BarcodeSVGProps",
       "file_type": "code",
       "source_file": "src/components/BarcodeSVG.tsx",
@@ -695,19 +721,6 @@
       "community": 2,
       "community_name": "escpos.ts",
       "norm_label": "barcodesvgprops"
-    },
-    {
-      "label": "LabelGeneratorTabProps",
-      "file_type": "code",
-      "source_file": "src/components/LabelGeneratorTab.tsx",
-      "source_location": "L17",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "id": "src_components_labelgeneratortab_labelgeneratortabprops",
-      "community": 2,
-      "community_name": "escpos.ts",
-      "norm_label": "labelgeneratortabprops"
     },
     {
       "label": "PrinterRole",
@@ -734,19 +747,6 @@
       "community": 2,
       "community_name": "escpos.ts",
       "norm_label": "printersettingsprops"
-    },
-    {
-      "label": "SingleLabelModalProps",
-      "file_type": "code",
-      "source_file": "src/components/SingleLabelModal.tsx",
-      "source_location": "L16",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "id": "src_components_singlelabelmodal_singlelabelmodalprops",
-      "community": 2,
-      "community_name": "escpos.ts",
-      "norm_label": "singlelabelmodalprops"
     },
     {
       "label": "Align",
@@ -918,6 +918,18 @@
       "norm_label": "disconnectcallback"
     },
     {
+      "label": "Auth()",
+      "file_type": "code",
+      "source_file": "src/components/Auth.tsx",
+      "source_location": "L11",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_components_auth_auth",
+      "community": 0,
+      "community_name": "OwnerDashboard.tsx",
+      "norm_label": "auth()"
+    },
+    {
       "label": "ChangePasswordTab()",
       "file_type": "code",
       "source_file": "src/components/ChangePasswordTab.tsx",
@@ -952,18 +964,6 @@
       "community": 0,
       "community_name": "OwnerDashboard.tsx",
       "norm_label": "branchestab()"
-    },
-    {
-      "label": "CashFlowTab()",
-      "file_type": "code",
-      "source_file": "src/components/dashboard/CashFlowTab.tsx",
-      "source_location": "L25",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "src_components_dashboard_cashflowtab_cashflowtab",
-      "community": 0,
-      "community_name": "OwnerDashboard.tsx",
-      "norm_label": "cashflowtab()"
     },
     {
       "label": "CashiersTab()",
@@ -1002,18 +1002,6 @@
       "norm_label": "productstab()"
     },
     {
-      "label": "StaffPerformanceTab()",
-      "file_type": "code",
-      "source_file": "src/components/dashboard/StaffPerformanceTab.tsx",
-      "source_location": "L26",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "src_components_dashboard_staffperformancetab_staffperformancetab",
-      "community": 0,
-      "community_name": "OwnerDashboard.tsx",
-      "norm_label": "staffperformancetab()"
-    },
-    {
       "label": "TransactionsTab()",
       "file_type": "code",
       "source_file": "src/components/dashboard/TransactionsTab.tsx",
@@ -1024,18 +1012,6 @@
       "community": 0,
       "community_name": "OwnerDashboard.tsx",
       "norm_label": "transactionstab()"
-    },
-    {
-      "label": "DeleteRequestsTab()",
-      "file_type": "code",
-      "source_file": "src/components/DeleteRequestsTab.tsx",
-      "source_location": "L16",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "src_components_deleterequeststab_deleterequeststab",
-      "community": 0,
-      "community_name": "OwnerDashboard.tsx",
-      "norm_label": "deleterequeststab()"
     },
     {
       "label": "BranchModal()",
@@ -1062,6 +1038,18 @@
       "norm_label": "cashflowmodal()"
     },
     {
+      "label": "CashierModal()",
+      "file_type": "code",
+      "source_file": "src/components/modals/CashierModal.tsx",
+      "source_location": "L16",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_components_modals_cashiermodal_cashiermodal",
+      "community": 0,
+      "community_name": "OwnerDashboard.tsx",
+      "norm_label": "cashiermodal()"
+    },
+    {
       "label": "ProductModal()",
       "file_type": "code",
       "source_file": "src/components/modals/ProductModal.tsx",
@@ -1072,42 +1060,6 @@
       "community": 0,
       "community_name": "OwnerDashboard.tsx",
       "norm_label": "productmodal()"
-    },
-    {
-      "label": "OwnerDashboard()",
-      "file_type": "code",
-      "source_file": "src/components/OwnerDashboard.tsx",
-      "source_location": "L49",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "src_components_ownerdashboard_ownerdashboard",
-      "community": 0,
-      "community_name": "OwnerDashboard.tsx",
-      "norm_label": "ownerdashboard()"
-    },
-    {
-      "label": "QuickRestockModal()",
-      "file_type": "code",
-      "source_file": "src/components/QuickRestockModal.tsx",
-      "source_location": "L14",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "src_components_quickrestockmodal_quickrestockmodal",
-      "community": 0,
-      "community_name": "OwnerDashboard.tsx",
-      "norm_label": "quickrestockmodal()"
-    },
-    {
-      "label": "SaleReportTab()",
-      "file_type": "code",
-      "source_file": "src/components/SaleReportTab.tsx",
-      "source_location": "L17",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "src_components_salereporttab_salereporttab",
-      "community": 0,
-      "community_name": "OwnerDashboard.tsx",
-      "norm_label": "salereporttab()"
     },
     {
       "label": "SearchableCategorySelect()",
@@ -1122,6 +1074,18 @@
       "norm_label": "searchablecategoryselect()"
     },
     {
+      "label": "SetupBanner()",
+      "file_type": "code",
+      "source_file": "src/components/SetupBanner.tsx",
+      "source_location": "L6",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_components_setupbanner_setupbanner",
+      "community": 0,
+      "community_name": "OwnerDashboard.tsx",
+      "norm_label": "setupbanner()"
+    },
+    {
       "label": "collectProductCodes()",
       "file_type": "code",
       "source_file": "src/lib/supabase.ts",
@@ -1132,6 +1096,18 @@
       "community": 0,
       "community_name": "OwnerDashboard.tsx",
       "norm_label": "collectproductcodes()"
+    },
+    {
+      "label": "formatEmailWithDefaultDomain()",
+      "file_type": "code",
+      "source_file": "src/lib/supabase.ts",
+      "source_location": "L96",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_lib_supabase_formatemailwithdefaultdomain",
+      "community": 0,
+      "community_name": "OwnerDashboard.tsx",
+      "norm_label": "formatemailwithdefaultdomain()"
     },
     {
       "label": "generateId()",
@@ -1194,18 +1170,6 @@
       "norm_label": "randomsku()"
     },
     {
-      "label": "formatCurrency()",
-      "file_type": "code",
-      "source_file": "src/utils/format.ts",
-      "source_location": "L1",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "src_utils_format_formatcurrency",
-      "community": 0,
-      "community_name": "OwnerDashboard.tsx",
-      "norm_label": "formatcurrency()"
-    },
-    {
       "label": "formatDate()",
       "file_type": "code",
       "source_file": "src/utils/format.ts",
@@ -1266,18 +1230,6 @@
       "norm_label": "generateid()"
     },
     {
-      "label": "useToast()",
-      "file_type": "code",
-      "source_file": "src/utils/toast.tsx",
-      "source_location": "L18",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "src_utils_toast_usetoast",
-      "community": 0,
-      "community_name": "OwnerDashboard.tsx",
-      "norm_label": "usetoast()"
-    },
-    {
       "label": "App()",
       "file_type": "code",
       "source_file": "src/App.tsx",
@@ -1302,18 +1254,6 @@
       "norm_label": "exitprompt()"
     },
     {
-      "label": "Auth()",
-      "file_type": "code",
-      "source_file": "src/components/Auth.tsx",
-      "source_location": "L11",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "src_components_auth_auth",
-      "community": 1,
-      "community_name": "CashierDashboard.tsx",
-      "norm_label": "auth()"
-    },
-    {
       "label": "BarcodeScannerModal()",
       "file_type": "code",
       "source_file": "src/components/BarcodeScannerModal.tsx",
@@ -1329,7 +1269,7 @@
       "label": "CashierDashboard()",
       "file_type": "code",
       "source_file": "src/components/CashierDashboard.tsx",
-      "source_location": "L51",
+      "source_location": "L52",
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_cashierdashboard_cashierdashboard",
@@ -1341,7 +1281,7 @@
       "label": "getQuickCashOptions()",
       "file_type": "code",
       "source_file": "src/components/CashierDashboard.tsx",
-      "source_location": "L36",
+      "source_location": "L37",
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_cashierdashboard_getquickcashoptions",
@@ -1350,16 +1290,28 @@
       "norm_label": "getquickcashoptions()"
     },
     {
-      "label": "CashierModal()",
+      "label": "CashFlowTab()",
       "file_type": "code",
-      "source_file": "src/components/modals/CashierModal.tsx",
-      "source_location": "L16",
+      "source_file": "src/components/dashboard/CashFlowTab.tsx",
+      "source_location": "L25",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_components_modals_cashiermodal_cashiermodal",
+      "id": "src_components_dashboard_cashflowtab_cashflowtab",
       "community": 1,
       "community_name": "CashierDashboard.tsx",
-      "norm_label": "cashiermodal()"
+      "norm_label": "cashflowtab()"
+    },
+    {
+      "label": "StaffPerformanceTab()",
+      "file_type": "code",
+      "source_file": "src/components/dashboard/StaffPerformanceTab.tsx",
+      "source_location": "L26",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_components_dashboard_staffperformancetab_staffperformancetab",
+      "community": 1,
+      "community_name": "CashierDashboard.tsx",
+      "norm_label": "staffperformancetab()"
     },
     {
       "label": "OfflineSyncBar()",
@@ -1374,6 +1326,18 @@
       "norm_label": "offlinesyncbar()"
     },
     {
+      "label": "OwnerDashboard()",
+      "file_type": "code",
+      "source_file": "src/components/OwnerDashboard.tsx",
+      "source_location": "L49",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_components_ownerdashboard_ownerdashboard",
+      "community": 1,
+      "community_name": "CashierDashboard.tsx",
+      "norm_label": "ownerdashboard()"
+    },
+    {
       "label": "PullToRefresh()",
       "file_type": "code",
       "source_file": "src/components/PullToRefresh.tsx",
@@ -1386,16 +1350,28 @@
       "norm_label": "pulltorefresh()"
     },
     {
-      "label": "SetupBanner()",
+      "label": "QuickRestockModal()",
       "file_type": "code",
-      "source_file": "src/components/SetupBanner.tsx",
-      "source_location": "L6",
+      "source_file": "src/components/QuickRestockModal.tsx",
+      "source_location": "L14",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_components_setupbanner_setupbanner",
+      "id": "src_components_quickrestockmodal_quickrestockmodal",
       "community": 1,
       "community_name": "CashierDashboard.tsx",
-      "norm_label": "setupbanner()"
+      "norm_label": "quickrestockmodal()"
+    },
+    {
+      "label": "SaleReportTab()",
+      "file_type": "code",
+      "source_file": "src/components/SaleReportTab.tsx",
+      "source_location": "L19",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_components_salereporttab_salereporttab",
+      "community": 1,
+      "community_name": "CashierDashboard.tsx",
+      "norm_label": "salereporttab()"
     },
     {
       "label": "UiSizeModal()",
@@ -1542,18 +1518,6 @@
       "norm_label": "usebacktabhistory()"
     },
     {
-      "label": "formatEmailWithDefaultDomain()",
-      "file_type": "code",
-      "source_file": "src/lib/supabase.ts",
-      "source_location": "L96",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "src_lib_supabase_formatemailwithdefaultdomain",
-      "community": 1,
-      "community_name": "CashierDashboard.tsx",
-      "norm_label": "formatemailwithdefaultdomain()"
-    },
-    {
       "label": "applyUiScale()",
       "file_type": "code",
       "source_file": "src/lib/uiScale.ts",
@@ -1614,6 +1578,54 @@
       "norm_label": "useuiscale()"
     },
     {
+      "label": "autoFitColumns()",
+      "file_type": "code",
+      "source_file": "src/utils/excelExport.ts",
+      "source_location": "L4",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_utils_excelexport_autofitcolumns",
+      "community": 1,
+      "community_name": "CashierDashboard.tsx",
+      "norm_label": "autofitcolumns()"
+    },
+    {
+      "label": "exportSalesReportToXlsx()",
+      "file_type": "code",
+      "source_file": "src/utils/excelExport.ts",
+      "source_location": "L151",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_utils_excelexport_exportsalesreporttoxlsx",
+      "community": 1,
+      "community_name": "CashierDashboard.tsx",
+      "norm_label": "exportsalesreporttoxlsx()"
+    },
+    {
+      "label": "generateSalesReportWorkbook()",
+      "file_type": "code",
+      "source_file": "src/utils/excelExport.ts",
+      "source_location": "L16",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_utils_excelexport_generatesalesreportworkbook",
+      "community": 1,
+      "community_name": "CashierDashboard.tsx",
+      "norm_label": "generatesalesreportworkbook()"
+    },
+    {
+      "label": "formatCurrency()",
+      "file_type": "code",
+      "source_file": "src/utils/format.ts",
+      "source_location": "L1",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_utils_format_formatcurrency",
+      "community": 1,
+      "community_name": "CashierDashboard.tsx",
+      "norm_label": "formatcurrency()"
+    },
+    {
       "label": "ToastProvider()",
       "file_type": "code",
       "source_file": "src/utils/toast.tsx",
@@ -1624,6 +1636,18 @@
       "community": 1,
       "community_name": "CashierDashboard.tsx",
       "norm_label": "toastprovider()"
+    },
+    {
+      "label": "useToast()",
+      "file_type": "code",
+      "source_file": "src/utils/toast.tsx",
+      "source_location": "L18",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_utils_toast_usetoast",
+      "community": 1,
+      "community_name": "CashierDashboard.tsx",
+      "norm_label": "usetoast()"
     },
     {
       "label": "BarcodePrintModal()",
@@ -2586,6 +2610,18 @@
       "norm_label": "frontmatter()"
     },
     {
+      "label": "DeleteRequestsTab()",
+      "file_type": "code",
+      "source_file": "src/components/DeleteRequestsTab.tsx",
+      "source_location": "L16",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_components_deleterequeststab_deleterequeststab",
+      "community": 47,
+      "community_name": "realtimeSync.ts",
+      "norm_label": "deleterequeststab()"
+    },
+    {
       "label": "handleCustomDataChange()",
       "file_type": "code",
       "source_file": "src/lib/realtimeSync.ts",
@@ -3102,6 +3138,17 @@
       "norm_label": "sleep()"
     },
     {
+      "label": "Auth.tsx",
+      "file_type": "code",
+      "source_file": "src/components/Auth.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_components_auth",
+      "community": 0,
+      "community_name": "OwnerDashboard.tsx",
+      "norm_label": "auth.tsx"
+    },
+    {
       "label": "ChangePasswordTab.tsx",
       "file_type": "code",
       "source_file": "src/components/ChangePasswordTab.tsx",
@@ -3300,17 +3347,6 @@
       "norm_label": "ownerdashboard.tsx"
     },
     {
-      "label": "QuickRestockModal.tsx",
-      "file_type": "code",
-      "source_file": "src/components/QuickRestockModal.tsx",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "src_components_quickrestockmodal",
-      "community": 0,
-      "community_name": "OwnerDashboard.tsx",
-      "norm_label": "quickrestockmodal.tsx"
-    },
-    {
       "label": "SaleReportTab.tsx",
       "file_type": "code",
       "source_file": "src/components/SaleReportTab.tsx",
@@ -3333,6 +3369,39 @@
       "norm_label": "searchablecategoryselect.tsx"
     },
     {
+      "label": "SetupBanner.tsx",
+      "file_type": "code",
+      "source_file": "src/components/SetupBanner.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_components_setupbanner",
+      "community": 0,
+      "community_name": "OwnerDashboard.tsx",
+      "norm_label": "setupbanner.tsx"
+    },
+    {
+      "label": "schemaSql.ts",
+      "file_type": "code",
+      "source_file": "src/data/schemaSql.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_data_schemasql",
+      "community": 0,
+      "community_name": "OwnerDashboard.tsx",
+      "norm_label": "schemasql.ts"
+    },
+    {
+      "label": "SUPABASE_SCHEMA_SQL",
+      "file_type": "code",
+      "source_file": "src/data/schemaSql.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_data_schemasql_supabase_schema_sql",
+      "community": 0,
+      "community_name": "OwnerDashboard.tsx",
+      "norm_label": "supabase_schema_sql"
+    },
+    {
       "label": "supabase.ts",
       "file_type": "code",
       "source_file": "src/lib/supabase.ts",
@@ -3353,6 +3422,17 @@
       "community": 0,
       "community_name": "OwnerDashboard.tsx",
       "norm_label": "dbservice"
+    },
+    {
+      "label": "isSupabaseConfigured",
+      "file_type": "code",
+      "source_file": "src/lib/supabase.ts",
+      "source_location": "L8",
+      "_origin": "ast",
+      "id": "src_lib_supabase_issupabaseconfigured",
+      "community": 0,
+      "community_name": "OwnerDashboard.tsx",
+      "norm_label": "issupabaseconfigured"
     },
     {
       "label": "usePosStore.ts",
@@ -3421,17 +3501,6 @@
       "norm_label": "app.tsx"
     },
     {
-      "label": "Auth.tsx",
-      "file_type": "code",
-      "source_file": "src/components/Auth.tsx",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "src_components_auth",
-      "community": 1,
-      "community_name": "CashierDashboard.tsx",
-      "norm_label": "auth.tsx"
-    },
-    {
       "label": "BarcodeScannerModal.tsx",
       "file_type": "code",
       "source_file": "src/components/BarcodeScannerModal.tsx",
@@ -3476,15 +3545,15 @@
       "norm_label": "pulltorefresh.tsx"
     },
     {
-      "label": "SetupBanner.tsx",
+      "label": "QuickRestockModal.tsx",
       "file_type": "code",
-      "source_file": "src/components/SetupBanner.tsx",
+      "source_file": "src/components/QuickRestockModal.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "src_components_setupbanner",
+      "id": "src_components_quickrestockmodal",
       "community": 1,
       "community_name": "CashierDashboard.tsx",
-      "norm_label": "setupbanner.tsx"
+      "norm_label": "quickrestockmodal.tsx"
     },
     {
       "label": "UiSizeModal.tsx",
@@ -3496,28 +3565,6 @@
       "community": 1,
       "community_name": "CashierDashboard.tsx",
       "norm_label": "uisizemodal.tsx"
-    },
-    {
-      "label": "schemaSql.ts",
-      "file_type": "code",
-      "source_file": "src/data/schemaSql.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "src_data_schemasql",
-      "community": 1,
-      "community_name": "CashierDashboard.tsx",
-      "norm_label": "schemasql.ts"
-    },
-    {
-      "label": "SUPABASE_SCHEMA_SQL",
-      "file_type": "code",
-      "source_file": "src/data/schemaSql.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "src_data_schemasql_supabase_schema_sql",
-      "community": 1,
-      "community_name": "CashierDashboard.tsx",
-      "norm_label": "supabase_schema_sql"
     },
     {
       "label": "backNavigation.ts",
@@ -3551,17 +3598,6 @@
       "community": 1,
       "community_name": "CashierDashboard.tsx",
       "norm_label": "default_business_profile"
-    },
-    {
-      "label": "isSupabaseConfigured",
-      "file_type": "code",
-      "source_file": "src/lib/supabase.ts",
-      "source_location": "L8",
-      "_origin": "ast",
-      "id": "src_lib_supabase_issupabaseconfigured",
-      "community": 1,
-      "community_name": "CashierDashboard.tsx",
-      "norm_label": "issupabaseconfigured"
     },
     {
       "label": "uiScale.ts",
@@ -3650,6 +3686,39 @@
       "community": 1,
       "community_name": "CashierDashboard.tsx",
       "norm_label": "main.tsx"
+    },
+    {
+      "label": "excelExport.ts",
+      "file_type": "code",
+      "source_file": "src/utils/excelExport.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_utils_excelexport",
+      "community": 1,
+      "community_name": "CashierDashboard.tsx",
+      "norm_label": "excelexport.ts"
+    },
+    {
+      "label": "excelExport.test.ts",
+      "file_type": "code",
+      "source_file": "src/utils/excelExport.test.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_utils_excelexport_test",
+      "community": 1,
+      "community_name": "CashierDashboard.tsx",
+      "norm_label": "excelexport.test.ts"
+    },
+    {
+      "label": "mockSales",
+      "file_type": "code",
+      "source_file": "src/utils/excelExport.test.ts",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "src_utils_excelexport_test_mocksales",
+      "community": 1,
+      "community_name": "CashierDashboard.tsx",
+      "norm_label": "mocksales"
     },
     {
       "label": "toast.tsx",
@@ -6424,10 +6493,21 @@
       "norm_label": "@vitejs/plugin-react"
     },
     {
-      "label": "zod",
+      "label": "xlsx",
       "file_type": "code",
       "source_file": "package.json",
       "source_location": "L34",
+      "_origin": "ast",
+      "id": "package_dependencies_xlsx",
+      "community": 4,
+      "community_name": "dependencies",
+      "norm_label": "xlsx"
+    },
+    {
+      "label": "zod",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L35",
       "_origin": "ast",
       "id": "package_dependencies_zod",
       "community": 4,
@@ -6438,7 +6518,7 @@
       "label": "zustand",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L35",
+      "source_location": "L36",
       "_origin": "ast",
       "id": "package_dependencies_zustand",
       "community": 4,
@@ -6622,10 +6702,21 @@
       "norm_label": "@vitejs/plugin-react"
     },
     {
-      "label": "zod",
+      "label": "xlsx",
       "file_type": "concept",
       "source_file": "package.json",
       "source_location": "L34",
+      "_origin": "ast",
+      "id": "xlsx",
+      "community": 4,
+      "community_name": "dependencies",
+      "norm_label": "xlsx"
+    },
+    {
+      "label": "zod",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L35",
       "_origin": "ast",
       "id": "zod",
       "community": 4,
@@ -6636,7 +6727,7 @@
       "label": "zustand",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L35",
+      "source_location": "L36",
       "_origin": "ast",
       "id": "zustand",
       "community": 4,
@@ -6801,7 +6892,7 @@
       "label": "devDependencies",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L37",
+      "source_location": "L38",
       "_origin": "ast",
       "id": "package_devdependencies",
       "community": 5,
@@ -6812,7 +6903,7 @@
       "label": "autoprefixer",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L43",
+      "source_location": "L44",
       "_origin": "ast",
       "id": "package_devdependencies_autoprefixer",
       "community": 5,
@@ -6823,7 +6914,7 @@
       "label": "jsdom",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L44",
+      "source_location": "L45",
       "_origin": "ast",
       "id": "package_devdependencies_jsdom",
       "community": 5,
@@ -6834,7 +6925,7 @@
       "label": "tailwindcss",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L45",
+      "source_location": "L46",
       "_origin": "ast",
       "id": "package_devdependencies_tailwindcss",
       "community": 5,
@@ -6845,7 +6936,7 @@
       "label": "@testing-library/jest-dom",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L38",
+      "source_location": "L39",
       "_origin": "ast",
       "id": "package_devdependencies_testing_library_jest_dom",
       "community": 5,
@@ -6856,7 +6947,7 @@
       "label": "@testing-library/react",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L39",
+      "source_location": "L40",
       "_origin": "ast",
       "id": "package_devdependencies_testing_library_react",
       "community": 5,
@@ -6867,7 +6958,7 @@
       "label": "@testing-library/user-event",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L40",
+      "source_location": "L41",
       "_origin": "ast",
       "id": "package_devdependencies_testing_library_user_event",
       "community": 5,
@@ -6878,7 +6969,7 @@
       "label": "tsx",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L46",
+      "source_location": "L47",
       "_origin": "ast",
       "id": "package_devdependencies_tsx",
       "community": 5,
@@ -6889,7 +6980,7 @@
       "label": "@types/node",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L41",
+      "source_location": "L42",
       "_origin": "ast",
       "id": "package_devdependencies_types_node",
       "community": 5,
@@ -6900,7 +6991,7 @@
       "label": "@types/web-bluetooth",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L42",
+      "source_location": "L43",
       "_origin": "ast",
       "id": "package_devdependencies_types_web_bluetooth",
       "community": 5,
@@ -6911,7 +7002,7 @@
       "label": "typescript",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L47",
+      "source_location": "L48",
       "_origin": "ast",
       "id": "package_devdependencies_typescript",
       "community": 5,
@@ -6922,7 +7013,7 @@
       "label": "vitest",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L48",
+      "source_location": "L49",
       "_origin": "ast",
       "id": "package_devdependencies_vitest",
       "community": 5,
@@ -7087,7 +7178,7 @@
       "label": "autoprefixer",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L43",
+      "source_location": "L44",
       "_origin": "ast",
       "id": "autoprefixer",
       "community": 5,
@@ -7098,7 +7189,7 @@
       "label": "jsdom",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L44",
+      "source_location": "L45",
       "_origin": "ast",
       "id": "jsdom",
       "community": 5,
@@ -7109,7 +7200,7 @@
       "label": "tailwindcss",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L45",
+      "source_location": "L46",
       "_origin": "ast",
       "id": "tailwindcss",
       "community": 5,
@@ -7120,7 +7211,7 @@
       "label": "@testing-library/jest-dom",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L38",
+      "source_location": "L39",
       "_origin": "ast",
       "id": "testing_library_jest_dom",
       "community": 5,
@@ -7131,7 +7222,7 @@
       "label": "@testing-library/react",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L39",
+      "source_location": "L40",
       "_origin": "ast",
       "id": "testing_library_react",
       "community": 5,
@@ -7142,7 +7233,7 @@
       "label": "@testing-library/user-event",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L40",
+      "source_location": "L41",
       "_origin": "ast",
       "id": "testing_library_user_event",
       "community": 5,
@@ -7153,7 +7244,7 @@
       "label": "tsx",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L46",
+      "source_location": "L47",
       "_origin": "ast",
       "id": "tsx",
       "community": 5,
@@ -7164,7 +7255,7 @@
       "label": "@types/node",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L41",
+      "source_location": "L42",
       "_origin": "ast",
       "id": "types_node",
       "community": 5,
@@ -7175,7 +7266,7 @@
       "label": "@types/web-bluetooth",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L42",
+      "source_location": "L43",
       "_origin": "ast",
       "id": "types_web_bluetooth",
       "community": 5,
@@ -7186,7 +7277,7 @@
       "label": "typescript",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L47",
+      "source_location": "L48",
       "_origin": "ast",
       "id": "typescript",
       "community": 5,
@@ -7197,7 +7288,7 @@
       "label": "vitest",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L48",
+      "source_location": "L49",
       "_origin": "ast",
       "id": "vitest",
       "community": 5,
@@ -8645,7 +8736,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/CashierDashboard.tsx",
-      "source_location": "L187",
+      "source_location": "L188",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard_cashierdashboard",
@@ -8657,7 +8748,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/CashierDashboard.tsx",
-      "source_location": "L313",
+      "source_location": "L314",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard_cashierdashboard",
@@ -8668,7 +8759,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/components/CashierDashboard.tsx",
-      "source_location": "L407",
+      "source_location": "L408",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard_cashierdashboard",
@@ -8681,7 +8772,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/CashierDashboard.tsx",
-      "source_location": "L52",
+      "source_location": "L53",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard_cashierdashboard",
@@ -8693,7 +8784,19 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/CashierDashboard.tsx",
-      "source_location": "L82",
+      "source_location": "L648",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_cashierdashboard_cashierdashboard",
+      "target": "src_utils_excelexport_exportsalesreporttoxlsx"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/components/CashierDashboard.tsx",
+      "source_location": "L83",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard_cashierdashboard",
@@ -8705,7 +8808,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/CashierDashboard.tsx",
-      "source_location": "L96",
+      "source_location": "L97",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard_cashierdashboard",
@@ -9509,11 +9612,35 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/SaleReportTab.tsx",
-      "source_location": "L127",
+      "source_location": "L148",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_salereporttab_salereporttab",
       "target": "src_utils_format_formatcurrency"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/components/SaleReportTab.tsx",
+      "source_location": "L20",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_salereporttab_salereporttab",
+      "target": "src_utils_toast_usetoast"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/components/SaleReportTab.tsx",
+      "source_location": "L38",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_salereporttab_salereporttab",
+      "target": "src_utils_excelexport_exportsalesreporttoxlsx"
     },
     {
       "relation": "calls",
@@ -11232,6 +11359,30 @@
       "confidence_score": 1.0
     },
     {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/utils/excelExport.ts",
+      "source_location": "L152",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_utils_excelexport_exportsalesreporttoxlsx",
+      "target": "src_utils_excelexport_generatesalesreportworkbook",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/utils/excelExport.ts",
+      "source_location": "L54",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_utils_excelexport_generatesalesreportworkbook",
+      "target": "src_utils_excelexport_autofitcolumns",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "references",
       "context": "field",
       "confidence": "EXTRACTED",
@@ -11260,7 +11411,7 @@
       "context": "field",
       "confidence": "EXTRACTED",
       "source_file": "src/components/CashierDashboard.tsx",
-      "source_location": "L24",
+      "source_location": "L25",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard_cartitem",
@@ -11272,7 +11423,7 @@
       "context": "field",
       "confidence": "EXTRACTED",
       "source_file": "src/components/CashierDashboard.tsx",
-      "source_location": "L19",
+      "source_location": "L20",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard_cashierdashboardprops",
@@ -11644,7 +11795,7 @@
       "context": "field",
       "confidence": "EXTRACTED",
       "source_file": "src/components/SaleReportTab.tsx",
-      "source_location": "L11",
+      "source_location": "L13",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_salereporttab_salereporttabprops",
@@ -11656,7 +11807,7 @@
       "context": "field",
       "confidence": "EXTRACTED",
       "source_file": "src/components/SaleReportTab.tsx",
-      "source_location": "L12",
+      "source_location": "L14",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_salereporttab_salereporttabprops",
@@ -11668,7 +11819,7 @@
       "context": "field",
       "confidence": "EXTRACTED",
       "source_file": "src/components/SaleReportTab.tsx",
-      "source_location": "L13",
+      "source_location": "L15",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_salereporttab_salereporttabprops",
@@ -12199,6 +12350,18 @@
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
+      "source": "package_dependencies_xlsx",
+      "target": "xlsx",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L35",
+      "weight": 1.0,
+      "context": "import",
+      "_origin": "ast",
       "source": "package_dependencies_zod",
       "target": "zod",
       "confidence_score": 1.0
@@ -12207,7 +12370,7 @@
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L35",
+      "source_location": "L36",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
@@ -12219,7 +12382,7 @@
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L43",
+      "source_location": "L44",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
@@ -12231,7 +12394,7 @@
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L44",
+      "source_location": "L45",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
@@ -12243,7 +12406,7 @@
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L45",
+      "source_location": "L46",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
@@ -12255,7 +12418,7 @@
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L38",
+      "source_location": "L39",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
@@ -12267,7 +12430,7 @@
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L39",
+      "source_location": "L40",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
@@ -12279,7 +12442,7 @@
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L40",
+      "source_location": "L41",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
@@ -12291,7 +12454,7 @@
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L46",
+      "source_location": "L47",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
@@ -12303,7 +12466,7 @@
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L41",
+      "source_location": "L42",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
@@ -12315,7 +12478,7 @@
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L42",
+      "source_location": "L43",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
@@ -12327,7 +12490,7 @@
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L47",
+      "source_location": "L48",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
@@ -12339,7 +12502,7 @@
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L48",
+      "source_location": "L49",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
@@ -12812,7 +12975,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard",
-      "target": "src_components_searchablecategoryselect_searchablecategoryselect",
+      "target": "src_utils_excelexport_exportsalesreporttoxlsx",
       "confidence_score": 1.0
     },
     {
@@ -12824,7 +12987,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard",
-      "target": "src_components_barcodescannermodal_barcodescannermodal",
+      "target": "src_components_searchablecategoryselect_searchablecategoryselect",
       "confidence_score": 1.0
     },
     {
@@ -12833,6 +12996,18 @@
       "confidence": "EXTRACTED",
       "source_file": "src/components/CashierDashboard.tsx",
       "source_location": "L16",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_cashierdashboard",
+      "target": "src_components_barcodescannermodal_barcodescannermodal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/CashierDashboard.tsx",
+      "source_location": "L17",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard",
@@ -14427,6 +14602,30 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "src/components/SaleReportTab.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_salereporttab",
+      "target": "src_utils_toast_usetoast",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/SaleReportTab.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_salereporttab",
+      "target": "src_utils_excelexport_exportsalesreporttoxlsx",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "src/components/SetupBanner.tsx",
       "source_location": "L3",
       "weight": 1.0,
@@ -14976,6 +15175,54 @@
       "confidence_score": 1.0
     },
     {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/utils/excelExport.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_utils_excelexport",
+      "target": "src_types_salewithitems",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/utils/excelExport.test.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_utils_excelexport_test",
+      "target": "src_utils_excelexport_exportsalesreporttoxlsx",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/utils/excelExport.test.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_utils_excelexport_test",
+      "target": "src_utils_excelexport_generatesalesreportworkbook",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/utils/excelExport.test.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_utils_excelexport_test",
+      "target": "src_types_salewithitems",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -15332,7 +15579,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard",
-      "target": "src_components_searchablecategoryselect",
+      "target": "src_utils_excelexport",
       "confidence_score": 1.0
     },
     {
@@ -15344,7 +15591,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard",
-      "target": "src_components_barcodescannermodal",
+      "target": "src_components_searchablecategoryselect",
       "confidence_score": 1.0
     },
     {
@@ -15353,6 +15600,18 @@
       "confidence": "EXTRACTED",
       "source_file": "src/components/CashierDashboard.tsx",
       "source_location": "L16",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_cashierdashboard",
+      "target": "src_components_barcodescannermodal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/CashierDashboard.tsx",
+      "source_location": "L17",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard",
@@ -16323,6 +16582,30 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "src/components/SaleReportTab.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_salereporttab",
+      "target": "src_utils_toast",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/SaleReportTab.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_salereporttab",
+      "target": "src_utils_excelexport",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "src/components/SetupBanner.tsx",
       "source_location": "L3",
       "weight": 1.0,
@@ -16569,6 +16852,42 @@
       "_origin": "ast",
       "source": "src_store_useposstore_test",
       "target": "src_lib_supabase",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/utils/excelExport.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_utils_excelexport",
+      "target": "src_types",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/utils/excelExport.test.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_utils_excelexport_test",
+      "target": "src_utils_excelexport",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/utils/excelExport.test.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_utils_excelexport_test",
+      "target": "src_types",
       "confidence_score": 1.0
     },
     {
@@ -18886,7 +19205,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L37",
+      "source_location": "L38",
       "weight": 1.0,
       "_origin": "ast",
       "source": "package",
@@ -19110,7 +19429,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_dependencies",
-      "target": "package_dependencies_zod",
+      "target": "package_dependencies_xlsx",
       "confidence_score": 1.0
     },
     {
@@ -19121,18 +19440,18 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_dependencies",
-      "target": "package_dependencies_zustand",
+      "target": "package_dependencies_zod",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L38",
+      "source_location": "L36",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "package_devdependencies",
-      "target": "package_devdependencies_testing_library_jest_dom",
+      "source": "package_dependencies",
+      "target": "package_dependencies_zustand",
       "confidence_score": 1.0
     },
     {
@@ -19143,7 +19462,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_devdependencies",
-      "target": "package_devdependencies_testing_library_react",
+      "target": "package_devdependencies_testing_library_jest_dom",
       "confidence_score": 1.0
     },
     {
@@ -19154,7 +19473,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_devdependencies",
-      "target": "package_devdependencies_testing_library_user_event",
+      "target": "package_devdependencies_testing_library_react",
       "confidence_score": 1.0
     },
     {
@@ -19165,7 +19484,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_devdependencies",
-      "target": "package_devdependencies_types_node",
+      "target": "package_devdependencies_testing_library_user_event",
       "confidence_score": 1.0
     },
     {
@@ -19176,7 +19495,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_devdependencies",
-      "target": "package_devdependencies_types_web_bluetooth",
+      "target": "package_devdependencies_types_node",
       "confidence_score": 1.0
     },
     {
@@ -19187,7 +19506,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_devdependencies",
-      "target": "package_devdependencies_autoprefixer",
+      "target": "package_devdependencies_types_web_bluetooth",
       "confidence_score": 1.0
     },
     {
@@ -19198,7 +19517,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_devdependencies",
-      "target": "package_devdependencies_jsdom",
+      "target": "package_devdependencies_autoprefixer",
       "confidence_score": 1.0
     },
     {
@@ -19209,7 +19528,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_devdependencies",
-      "target": "package_devdependencies_tailwindcss",
+      "target": "package_devdependencies_jsdom",
       "confidence_score": 1.0
     },
     {
@@ -19220,7 +19539,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_devdependencies",
-      "target": "package_devdependencies_tsx",
+      "target": "package_devdependencies_tailwindcss",
       "confidence_score": 1.0
     },
     {
@@ -19231,7 +19550,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_devdependencies",
-      "target": "package_devdependencies_typescript",
+      "target": "package_devdependencies_tsx",
       "confidence_score": 1.0
     },
     {
@@ -19239,6 +19558,17 @@
       "confidence": "EXTRACTED",
       "source_file": "package.json",
       "source_location": "L48",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "package_devdependencies",
+      "target": "package_devdependencies_typescript",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L49",
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_devdependencies",
@@ -19590,7 +19920,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/CashierDashboard.tsx",
-      "source_location": "L18",
+      "source_location": "L19",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard",
@@ -19601,7 +19931,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/CashierDashboard.tsx",
-      "source_location": "L23",
+      "source_location": "L24",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard",
@@ -19612,7 +19942,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/CashierDashboard.tsx",
-      "source_location": "L28",
+      "source_location": "L29",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard",
@@ -19623,7 +19953,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/CashierDashboard.tsx",
-      "source_location": "L36",
+      "source_location": "L37",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard",
@@ -19634,7 +19964,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/CashierDashboard.tsx",
-      "source_location": "L51",
+      "source_location": "L52",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard",
@@ -20184,7 +20514,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/SaleReportTab.tsx",
-      "source_location": "L10",
+      "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_salereporttab",
@@ -20195,7 +20525,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/SaleReportTab.tsx",
-      "source_location": "L17",
+      "source_location": "L19",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_salereporttab",
@@ -21866,6 +22196,50 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "src/utils/excelExport.ts",
+      "source_location": "L151",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_utils_excelexport",
+      "target": "src_utils_excelexport_exportsalesreporttoxlsx",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/utils/excelExport.ts",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_utils_excelexport",
+      "target": "src_utils_excelexport_generatesalesreportworkbook",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/utils/excelExport.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_utils_excelexport",
+      "target": "src_utils_excelexport_autofitcolumns",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/utils/excelExport.test.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_utils_excelexport_test",
+      "target": "src_utils_excelexport_test_mocksales",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "src/utils/format.ts",
       "source_location": "L1",
       "weight": 1.0,
@@ -22862,5 +23236,5 @@
       "source_file": "supabase_schema.txt"
     }
   ],
-  "built_at_commit": "b499bb8650817a1e79c3fb97dd4d8e11b88dc4a6"
+  "built_at_commit": "54a43820f5a0c3181ef6e8eb84723d48008365ba"
 }

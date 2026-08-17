@@ -1,16 +1,16 @@
 # Graph Report - mibayate_pos  (2026-08-17)
 
 ## Corpus Check
-- 111 files · ~85,554 words
+- 113 files · ~86,661 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 674 nodes · 1295 edges · 48 communities (35 shown, 13 thin omitted)
+- 682 nodes · 1319 edges · 48 communities (35 shown, 13 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 13 edges (avg confidence: 0.53)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `b499bb86`
+- Built from commit: `54a43820`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -69,19 +69,19 @@
 7. `formatCurrency()` - 23 edges
 8. `BarcodePrintModal()` - 22 edges
 9. `PrinterSettings()` - 20 edges
-10. `buildCustomThermalLabel()` - 16 edges
+10. `useToast()` - 17 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `Supabase Offline Fallback Rationale` --semantically_similar_to--> `Profiles Table`  [INFERRED] [semantically similar]
   AGENTS.md → supabase_schema.txt
-- `AuthProps` --references--> `UserProfile`  [EXTRACTED]
-  src/components/Auth.tsx → src/types.ts
-- `BarcodePrintModalProps` --references--> `Product`  [EXTRACTED]
-  src/components/BarcodePrintModal.tsx → src/types.ts
 - `CashierDashboardProps` --references--> `UserProfile`  [EXTRACTED]
   src/components/CashierDashboard.tsx → src/types.ts
-- `CartItem` --references--> `Product`  [EXTRACTED]
-  src/components/CashierDashboard.tsx → src/types.ts
+- `QuickRestockModalProps` --references--> `Product`  [EXTRACTED]
+  src/components/QuickRestockModal.tsx → src/types.ts
+- `compress_file()` --calls--> `validate()`  [EXTRACTED]
+  .agents/skills/caveman-compress/scripts/compress.py → .agents/skills/caveman-compress/scripts/validate.py
+- `AuthProps` --references--> `UserProfile`  [EXTRACTED]
+  src/components/Auth.tsx → src/types.ts
 
 ## Import Cycles
 - None detected.
@@ -93,16 +93,16 @@
 ## Communities (48 total, 13 thin omitted)
 
 ### Community 0 - "OwnerDashboard.tsx"
-Cohesion: 0.07
-Nodes (65): ChangePasswordTab(), ChangePasswordTabProps, CsvImportModal(), CsvImportModalProps, BranchesTab(), BranchesTabProps, CashFlowTab(), CashFlowTabProps (+57 more)
+Cohesion: 0.06
+Nodes (67): Auth(), AuthProps, BarcodePrintModalProps, CartItem, ChangePasswordTab(), ChangePasswordTabProps, CsvImportModal(), CsvImportModalProps (+59 more)
 
 ### Community 1 - "CashierDashboard.tsx"
 Cohesion: 0.06
-Nodes (52): App(), ExitPrompt(), Auth(), AuthProps, BarcodeScannerModal(), BarcodeScannerModalProps, CartItem, CashierDashboard() (+44 more)
+Nodes (56): App(), ExitPrompt(), BarcodeScannerModal(), BarcodeScannerModalProps, CashierDashboard(), CashierDashboardProps, getQuickCashOptions(), HeldCart (+48 more)
 
 ### Community 2 - "escpos.ts"
-Cohesion: 0.08
-Nodes (79): BarcodePrintModal(), BarcodePrintModalProps, clamp(), parseMm(), BarcodeSVG(), BarcodeSVGProps, CODE128_PATTERNS, clamp() (+71 more)
+Cohesion: 0.09
+Nodes (76): BarcodePrintModal(), clamp(), parseMm(), BarcodeSVG(), BarcodeSVGProps, CODE128_PATTERNS, clamp(), LabelGeneratorTab() (+68 more)
 
 ### Community 3 - "compress.py"
 Cohesion: 0.10
@@ -110,7 +110,7 @@ Nodes (33): main(), print_usage(), backup_dir_for(), build_compress_prompt(), bu
 
 ### Community 4 - "dependencies"
 Cohesion: 0.05
-Nodes (37): @capacitor/android, @capacitor/app, @capacitor/cli, @capacitor/core, @hookform/resolvers, lucide-react, dependencies, @capacitor/android (+29 more)
+Nodes (39): @capacitor/android, @capacitor/app, @capacitor/cli, @capacitor/core, @hookform/resolvers, lucide-react, dependencies, @capacitor/android (+31 more)
 
 ### Community 5 - "devDependencies"
 Cohesion: 0.05
@@ -209,11 +209,11 @@ Cohesion: 0.40
 Nodes (4): caveman-learn skill, Honesty, Install, What it does
 
 ### Community 47 - "realtimeSync.ts"
-Cohesion: 0.30
-Nodes (14): handleCustomDataChange(), handleOnline(), handleVisibilityOrFocus(), listeners, notifyDataChanged(), notifyListeners(), setupRealtimeChannel(), startSyncEngine() (+6 more)
+Cohesion: 0.27
+Nodes (15): DeleteRequestsTab(), handleCustomDataChange(), handleOnline(), handleVisibilityOrFocus(), listeners, notifyDataChanged(), notifyListeners(), setupRealtimeChannel() (+7 more)
 
 ## Knowledge Gaps
-- **263 isolated node(s):** `name`, `version`, `license`, `private`, `type` (+258 more)
+- **265 isolated node(s):** `name`, `version`, `license`, `private`, `type` (+260 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **13 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -227,10 +227,10 @@ _Questions this graph is uniquely positioned to answer:_
 - **Why does `UserProfile` connect `OwnerDashboard.tsx` to `CashierDashboard.tsx`?**
   _High betweenness centrality (0.008) - this node is a cross-community bridge._
 - **What connects `name`, `version`, `license` to the rest of the system?**
-  _263 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _265 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `OwnerDashboard.tsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.06942889137737962 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.06060606060606061 - nodes in this community are weakly interconnected._
 - **Should `CashierDashboard.tsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.058173076923076925 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.060528559249786874 - nodes in this community are weakly interconnected._
 - **Should `escpos.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.08045977011494253 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.08548479632816983 - nodes in this community are weakly interconnected._

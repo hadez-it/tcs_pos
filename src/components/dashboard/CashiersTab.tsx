@@ -1,8 +1,9 @@
 import React, { useState, useMemo } from 'react';
-import { Search, Users, Building2, Edit2, Trash2 } from 'lucide-react';
+import { Search, Users, Building2, Edit2, Trash2, Filter, ShieldCheck } from 'lucide-react';
 import { usePosStore } from '../../store/usePosStore';
 import { formatDisplayEmail } from '../../utils/format';
 import { UserProfile } from '../../types';
+import FilterDrawer from '../FilterDrawer';
 
 interface CashiersTabProps {
   user: UserProfile;
@@ -21,6 +22,24 @@ export default function CashiersTab({
 }: CashiersTabProps) {
   const { branches, cashiers } = usePosStore();
   const [cashierSearch, setCashierSearch] = useState('');
+  const [roleFilter, setRoleFilter] = useState('all');
+  const [showFilterDrawer, setShowFilterDrawer] = useState(false);
+
+  const activeFilterCount = useMemo(() => {
+    let count = 0;
+    if (cashierSearch.trim()) count++;
+    if (roleFilter !== 'all') count++;
+    if (selectedBranchId !== 'all') count++;
+    return count;
+  }, [cashierSearch, roleFilter, selectedBranchId]);
+
+  const resetFilters = () => {
+    setCashierSearch('');
+    setRoleFilter('all');
+    if (user.role !== 'manager') {
+      setSelectedBranchId('all');
+    }
+  };
 
   const displayCashiers = useMemo(() => {
     return selectedBranchId === 'all'
@@ -31,14 +50,15 @@ export default function CashiersTab({
   const filteredCashiers = useMemo(() => {
     return displayCashiers.filter(c => {
       const q = cashierSearch.trim().toLowerCase();
-      if (!q) return true;
-      return (
+      const matchesSearch = !q || (
         (c.name && c.name.toLowerCase().includes(q)) ||
         (c.email && c.email.toLowerCase().includes(q)) ||
         (c.branch_name && c.branch_name.toLowerCase().includes(q))
       );
+      const matchesRole = roleFilter === 'all' || c.role === roleFilter;
+      return matchesSearch && matchesRole;
     });
-  }, [displayCashiers, cashierSearch]);
+  }, [displayCashiers, cashierSearch, roleFilter]);
 
   return (
     <div className="space-y-6">
@@ -48,31 +68,104 @@ export default function CashiersTab({
           <h2 className="text-xl font-extrabold text-slate-900 tracking-tight">Staff Accounts</h2>
           <p className="text-xs text-slate-500 font-medium mt-1">Manage {filteredCashiers.length} store managers and cashiers</p>
         </div>
-        <div className="flex items-center gap-3">
-          {user.role !== 'manager' && branches.length > 0 && (
-            <select
-              value={selectedBranchId}
-              onChange={(e) => setSelectedBranchId(e.target.value)}
-              className="w-full sm:w-auto px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-semibold focus:bg-white focus:outline-none focus:border-gray-900 transition-all shadow-xs cursor-pointer"
-            >
-              <option value="all">All Branches</option>
-              {branches.map(b => (
-                <option key={b.id} value={b.id}>{b.name}</option>
-              ))}
-            </select>
-          )}
-          <div className="relative w-full sm:w-64">
-            <Search className="absolute inset-y-0 left-0 pl-3.5 w-4 h-4 my-auto text-slate-400" />
+        <div className="flex items-center gap-2.5">
+          <div className="relative max-w-xs w-full">
+            <Search className="absolute inset-y-0 left-0 pl-3 w-4 h-4 my-auto text-slate-400 pointer-events-none" />
             <input
               type="text"
-              placeholder="Search name or email..."
+              placeholder="Search staff name or email..."
               value={cashierSearch}
               onChange={(e) => setCashierSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm font-semibold focus:bg-white focus:outline-none focus:ring-2 focus:ring-black/20 focus:border-gray-900 transition-all shadow-xs"
+              className="w-full pl-9 pr-3 py-2 bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-900 focus:outline-none focus:border-gray-900 shadow-2xs transition-colors"
             />
           </div>
+
+          <button
+            onClick={() => setShowFilterDrawer(true)}
+            className={`inline-flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-bold rounded-xl border transition-all cursor-pointer shadow-2xs shrink-0 ${
+              activeFilterCount > 0
+                ? 'bg-black text-white border-black'
+                : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+            }`}
+          >
+            <Filter className="w-3.5 h-3.5" />
+            <span>Filters</span>
+            {activeFilterCount > 0 && (
+              <span className="w-4.5 h-4.5 rounded-full bg-white text-black text-[10px] font-black flex items-center justify-center">
+                {activeFilterCount}
+              </span>
+            )}
+          </button>
         </div>
       </div>
+
+      <FilterDrawer
+        isOpen={showFilterDrawer}
+        onClose={() => setShowFilterDrawer(false)}
+        title="Staff Filters"
+        subtitle="Filter accounts by branch and role"
+        activeCount={activeFilterCount}
+        onReset={resetFilters}
+      >
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">Search</label>
+            <div className="relative">
+              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                placeholder="Name, email, or branch..."
+                value={cashierSearch}
+                onChange={(e) => setCashierSearch(e.target.value)}
+                className="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:border-black focus:bg-white"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-2 pt-2 border-t border-slate-100">
+            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1">
+              <ShieldCheck className="w-3.5 h-3.5 text-slate-400" /> Account Role
+            </label>
+            <div className="grid grid-cols-3 gap-2">
+              {[
+                { val: 'all', label: 'All Roles' },
+                { val: 'manager', label: 'Manager' },
+                { val: 'cashier', label: 'Cashier' }
+              ].map(opt => (
+                <button
+                  key={opt.val}
+                  onClick={() => setRoleFilter(opt.val)}
+                  className={`py-2 px-2 rounded-xl text-xs font-bold capitalize transition-all cursor-pointer text-center ${
+                    roleFilter === opt.val
+                      ? 'bg-black text-white shadow-xs'
+                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {user.role !== 'manager' && branches.length > 0 && (
+            <div className="space-y-2 pt-2 border-t border-slate-100">
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1">
+                <Building2 className="w-3.5 h-3.5 text-slate-400" /> Branch
+              </label>
+              <select
+                value={selectedBranchId}
+                onChange={(e) => setSelectedBranchId(e.target.value)}
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3 font-medium text-slate-800 text-xs focus:outline-none focus:border-black focus:bg-white cursor-pointer"
+              >
+                <option value="all">All Branches</option>
+                {branches.map(b => (
+                  <option key={b.id} value={b.id}>{b.name}</option>
+                ))}
+              </select>
+            </div>
+          )}
+        </div>
+      </FilterDrawer>
 
       {/* Staff List */}
       <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
