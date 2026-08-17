@@ -8,17 +8,26 @@ let realtimeChannel: any = null;
 let broadcastChannel: BroadcastChannel | null = null;
 let debounceTimer: ReturnType<typeof setTimeout> | null = null;
 let isSyncing = false;
+let lastSyncTimestamp = 0;
 
-const DEFAULT_POLL_INTERVAL_MS = 8000;
-const DEBOUNCE_DELAY_MS = 300;
+const DEFAULT_POLL_INTERVAL_MS = 45000;
+const DEBOUNCE_DELAY_MS = 600;
+const MIN_SYNC_INTERVAL_MS = 2500;
 
-const notifyListeners = () => {
+const notifyListeners = (force = false) => {
+  const now = Date.now();
+  if (!force && now - lastSyncTimestamp < MIN_SYNC_INTERVAL_MS) {
+    return;
+  }
+
   if (debounceTimer) {
     clearTimeout(debounceTimer);
   }
+
   debounceTimer = setTimeout(async () => {
     if (isSyncing) return;
     isSyncing = true;
+    lastSyncTimestamp = Date.now();
     try {
       const callbacks = Array.from(listeners);
       await Promise.all(callbacks.map(cb => {
@@ -41,7 +50,6 @@ export const notifyDataChanged = (table?: string) => {
     try {
       broadcastChannel.postMessage({ type: 'DATA_CHANGED', table, timestamp: Date.now() });
     } catch {
-      // BroadcastChannel post error ignored
     }
   }
 
@@ -49,7 +57,7 @@ export const notifyDataChanged = (table?: string) => {
     window.dispatchEvent(new CustomEvent('pos:data-change', { detail: { table, timestamp: Date.now() } }));
   }
 
-  notifyListeners();
+  notifyListeners(true);
 };
 
 const setupRealtimeChannel = () => {
@@ -66,8 +74,8 @@ const setupRealtimeChannel = () => {
         }
       )
       .subscribe((status: string) => {
-        if (status === 'SUBSCRIBED') {
-          // Channel connected
+        if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+          console.warn('Supabase realtime channel issue:', status);
         }
       });
   } catch (err) {
@@ -80,7 +88,6 @@ const teardownRealtimeChannel = () => {
     try {
       supabase.removeChannel(realtimeChannel);
     } catch {
-      // Channel removal error ignored
     }
     realtimeChannel = null;
   }
@@ -93,11 +100,11 @@ const handleVisibilityOrFocus = () => {
 };
 
 const handleOnline = () => {
-  notifyListeners();
+  notifyListeners(true);
 };
 
 const handleCustomDataChange = () => {
-  notifyListeners();
+  notifyListeners(true);
 };
 
 const startSyncEngine = () => {
@@ -108,7 +115,7 @@ const startSyncEngine = () => {
       broadcastChannel = new BroadcastChannel('pos_data_sync_channel');
       broadcastChannel.onmessage = (event) => {
         if (event.data && event.data.type === 'DATA_CHANGED') {
-          notifyListeners();
+          notifyListeners(true);
         }
       };
     } catch {
@@ -148,7 +155,6 @@ const stopSyncEngine = () => {
     try {
       broadcastChannel.close();
     } catch {
-      // Close error ignored
     }
     broadcastChannel = null;
   }
@@ -177,5 +183,5 @@ export const subscribeToDataChanges = (listener: SyncListener): (() => void) => 
 };
 
 export const triggerSync = () => {
-  notifyListeners();
+  notifyListeners(true);
 };
