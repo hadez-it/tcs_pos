@@ -210,8 +210,13 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
     });
   };
 
+  const branchProducts = useMemo(() => {
+    if (!user.branch_id) return products;
+    return products.filter(p => !p.branch_id || p.branch_id === user.branch_id);
+  }, [products, user.branch_id]);
+
   const handleBarcodeScan = useCallback((barcode: string) => {
-    const match = products.find(p =>
+    const match = branchProducts.find(p =>
       p.barcode === barcode || p.sku === barcode
     );
     if (match) {
@@ -220,7 +225,7 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
     } else {
       toast(`No product found for barcode: ${barcode}`, 'error');
     }
-  }, [products, toast]);
+  }, [branchProducts, toast]);
 
   const updateQuantity = (productId: string, delta: number) => {
     setCart(prev => {
@@ -273,25 +278,25 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
   };
 
 
-  const categories = useMemo(() => ['All', ...Array.from(new Set(products.map(p => p.category)))], [products]);
+  const categories = useMemo(() => ['All', ...Array.from(new Set(branchProducts.map(p => p.category)))], [branchProducts]);
 
   const categoryOptions = useMemo(() => {
-    const opts = [{ value: 'All', label: 'All Categories', count: products.length }];
+    const opts = [{ value: 'All', label: 'All Categories', count: branchProducts.length }];
     categories.filter(c => c !== 'All').forEach(cat => {
-      opts.push({ value: cat, label: cat, count: products.filter(p => p.category === cat).length });
+      opts.push({ value: cat, label: cat, count: branchProducts.filter(p => p.category === cat).length });
     });
     return opts;
-  }, [categories, products]);
+  }, [categories, branchProducts]);
 
   const filteredProducts = useMemo(() => {
-    return products.filter(p => {
+    return branchProducts.filter(p => {
       const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                             p.sku.toLowerCase().includes(searchQuery.toLowerCase()) ||
                             p.barcode.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesCategory = selectedCategory === 'All' || p.category === selectedCategory;
       return matchesSearch && matchesCategory;
     });
-  }, [products, searchQuery, selectedCategory]);
+  }, [branchProducts, searchQuery, selectedCategory]);
 
   const cartCount = cart.reduce((sum, i) => sum + i.quantity, 0);
 

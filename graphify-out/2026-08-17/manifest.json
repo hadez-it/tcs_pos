@@ -25,8 +25,8 @@
     "semantic_hash": ""
   },
   "src/components/Auth.tsx": {
-    "mtime": 1786929826.8686912,
-    "ast_hash": "56f3116569dc44aaf418af115aa507da",
+    "mtime": 1786951130.8921463,
+    "ast_hash": "bd999f19f32bc21836e285a8e3252c94",
     "semantic_hash": ""
   },
   "src/components/BarcodePrintModal.tsx": {
@@ -45,8 +45,8 @@
     "semantic_hash": "1a6ac864f8a87546b561d6b7527571bc"
   },
   "src/components/CashierDashboard.tsx": {
-    "mtime": 1786932657.7073731,
-    "ast_hash": "dc9eb07e1c8f35569b40430b1b6fe239",
+    "mtime": 1786937168.508549,
+    "ast_hash": "c3207b6e6bb8296e9486ebb851111d1f",
     "semantic_hash": ""
   },
   "src/components/CsvImportModal.tsx": {
@@ -65,8 +65,8 @@
     "semantic_hash": ""
   },
   "src/components/OwnerDashboard.tsx": {
-    "mtime": 1786929944.3437693,
-    "ast_hash": "07bb16f77dbcb2eb9baf96d3d53d8e16",
+    "mtime": 1786937064.434739,
+    "ast_hash": "74333c838dc030408adc00affad422fe",
     "semantic_hash": ""
   },
   "src/components/PrinterSettings.tsx": {
@@ -555,8 +555,13 @@
     "semantic_hash": ""
   },
   "src/components/FilterDrawer.tsx": {
-    "mtime": 1786932516.7821019,
-    "ast_hash": "bbd5e94585c968524bd5dc9c78a53253",
+    "mtime": 1786937058.566186,
+    "ast_hash": "4df44803800d66e331730d89589e2e32",
+    "semantic_hash": ""
+  },
+  "src/components/CashierSalesHistory.tsx": {
+    "mtime": 1786937184.5100572,
+    "ast_hash": "4299bf69191273c6e3a275e848062ba7",
     "semantic_hash": ""
   }
 }
