@@ -10,7 +10,6 @@ import {
   Copy,
   Printer,
   Trash2,
-  Calendar,
   CreditCard,
   Banknote,
   Smartphone,
@@ -24,7 +23,6 @@ import {
   ShoppingBag,
   Clock,
   ChevronRight,
-  TrendingUp,
   AlertCircle
 } from 'lucide-react';
 import { SaleWithItems, SaleDeleteRequest, UserProfile, BusinessProfile } from '../types';
@@ -254,74 +252,6 @@ export default function CashierSalesHistory({
     deleteRequestMap
   ]);
 
-  const metrics = useMemo(() => {
-    let totalRev = 0;
-    let cashRev = 0;
-    let cashCount = 0;
-    let mobileRev = 0;
-    let mobileCount = 0;
-    let cardRev = 0;
-    let cardCount = 0;
-    let totalDiscounts = 0;
-    let pendingDeleteCount = 0;
-
-    let todayRev = 0;
-    let todayCount = 0;
-
-    const now = new Date();
-
-    for (const sale of sales) {
-      const sDate = new Date(sale.created_at);
-      if (
-        sDate.getFullYear() === now.getFullYear() &&
-        sDate.getMonth() === now.getMonth() &&
-        sDate.getDate() === now.getDate()
-      ) {
-        todayRev += sale.total_amount;
-        todayCount++;
-      }
-    }
-
-    for (const sale of filteredSales) {
-      totalRev += sale.total_amount;
-      totalDiscounts += sale.discount || 0;
-
-      if (sale.payment_method === 'cash') {
-        cashRev += sale.total_amount;
-        cashCount++;
-      } else if (sale.payment_method === 'mobile') {
-        mobileRev += sale.total_amount;
-        mobileCount++;
-      } else if (sale.payment_method === 'card') {
-        cardRev += sale.total_amount;
-        cardCount++;
-      }
-
-      const req = deleteRequestMap.get(sale.id);
-      if (req?.status === 'pending') {
-        pendingDeleteCount++;
-      }
-    }
-
-    const avgSale = filteredSales.length > 0 ? totalRev / filteredSales.length : 0;
-
-    return {
-      totalRev,
-      count: filteredSales.length,
-      cashRev,
-      cashCount,
-      mobileRev,
-      mobileCount,
-      cardRev,
-      cardCount,
-      totalDiscounts,
-      avgSale,
-      todayRev,
-      todayCount,
-      pendingDeleteCount
-    };
-  }, [sales, filteredSales, deleteRequestMap]);
-
   const handleExportExcel = () => {
     if (filteredSales.length === 0) {
       toast('No sales history to export', 'warning');
@@ -470,73 +400,6 @@ export default function CashierSalesHistory({
         </div>
       </div>
 
-      {/* KPI Metric Summary Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5">
-        <div className="android-card p-3.5 sm:p-4 border border-slate-200/80 bg-white">
-          <div className="flex items-center justify-between text-slate-400 mb-1.5">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Filtered Total</span>
-            <Banknote className="w-4 h-4 text-slate-700" />
-          </div>
-          <div className="font-mono text-base sm:text-xl font-black text-slate-950 truncate">
-            {formatCurrency(metrics.totalRev)}
-          </div>
-          <div className="flex items-center gap-1 mt-1 text-[11px] font-medium text-slate-500">
-            <span>{metrics.count} {metrics.count === 1 ? 'sale' : 'sales'} in view</span>
-          </div>
-        </div>
-
-        <div className="android-card p-3.5 sm:p-4 border border-slate-200/80 bg-white">
-          <div className="flex items-center justify-between text-slate-400 mb-1.5">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Today's Sales</span>
-            <Calendar className="w-4 h-4 text-slate-700" />
-          </div>
-          <div className="font-mono text-base sm:text-xl font-black text-slate-950 truncate">
-            {formatCurrency(metrics.todayRev)}
-          </div>
-          <div className="flex items-center gap-1 mt-1 text-[11px] font-medium text-slate-500">
-            <span>{metrics.todayCount} processed today</span>
-          </div>
-        </div>
-
-        <div className="android-card p-3.5 sm:p-4 border border-slate-200/80 bg-white">
-          <div className="flex items-center justify-between text-slate-400 mb-1.5">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Payment Breakdown</span>
-            <Smartphone className="w-4 h-4 text-slate-700" />
-          </div>
-          <div className="text-xs font-bold text-slate-800 space-y-0.5">
-            <div className="flex justify-between items-center">
-              <span className="text-slate-500">Cash:</span>
-              <span className="font-mono">{formatCurrency(metrics.cashRev)}</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-slate-500">Mobile:</span>
-              <span className="font-mono">{formatCurrency(metrics.mobileRev)}</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="android-card p-3.5 sm:p-4 border border-slate-200/80 bg-white">
-          <div className="flex items-center justify-between text-slate-400 mb-1.5">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Avg Value & Voids</span>
-            <TrendingUp className="w-4 h-4 text-slate-700" />
-          </div>
-          <div className="font-mono text-base sm:text-xl font-black text-slate-950 truncate">
-            {formatCurrency(metrics.avgSale)}
-          </div>
-          <div className="mt-1 text-[11px] font-medium">
-            {metrics.pendingDeleteCount > 0 ? (
-              <span className="text-red-600 font-bold flex items-center gap-1">
-                <AlertCircle className="w-3 h-3" />
-                {metrics.pendingDeleteCount} pending void review
-              </span>
-            ) : (
-              <span className="text-slate-500">0 pending delete requests</span>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Control Bar: Search, Date Presets, Payment Chips, View Mode */}
       <div className="android-card p-3 sm:p-4 border border-slate-200/80 bg-white space-y-3">
         <div className="flex flex-col md:flex-row items-stretch md:items-center gap-2.5">
           {/* Search Input */}

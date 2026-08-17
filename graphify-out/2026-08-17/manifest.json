@@ -45,8 +45,8 @@
     "semantic_hash": "1a6ac864f8a87546b561d6b7527571bc"
   },
   "src/components/CashierDashboard.tsx": {
-    "mtime": 1786937168.508549,
-    "ast_hash": "c3207b6e6bb8296e9486ebb851111d1f",
+    "mtime": 1786952140.3072155,
+    "ast_hash": "352c80096f3cb5577d774a112676575f",
     "semantic_hash": ""
   },
   "src/components/CsvImportModal.tsx": {

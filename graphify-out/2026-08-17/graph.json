@@ -8885,7 +8885,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/CashierDashboard.tsx",
-      "source_location": "L313",
+      "source_location": "L318",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard_cashierdashboard",
@@ -8896,7 +8896,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/components/CashierDashboard.tsx",
-      "source_location": "L407",
+      "source_location": "L412",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_cashierdashboard_cashierdashboard",
@@ -24012,5 +24012,5 @@
       "source_file": "supabase_schema.txt"
     }
   ],
-  "built_at_commit": "e7fac2daf51348be92f55d3244ba8ccd53f56402"
+  "built_at_commit": "bb78ac16b7d7079c32b9423db461b9efb4072726"
 }
