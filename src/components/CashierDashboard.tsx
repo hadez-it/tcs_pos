@@ -3,7 +3,8 @@ import { useBackDismiss, useBackTabHistory } from '../lib/backNavigation';
 import { 
   Search, ShoppingCart, LogOut, RefreshCw, User, ShoppingBag, 
   Minus, Plus, Trash2, DollarSign, CreditCard, Smartphone, Check, 
-  FileText, Tag, ArrowRight, Printer, AlertCircle, Sparkles, Filter, ChevronDown, Menu, X, History, Camera
+  FileText, Tag, ArrowRight, Printer, AlertCircle, Sparkles, Filter, ChevronDown, Menu, X, History, Camera,
+  SlidersHorizontal
 } from 'lucide-react';
 import { dbService, DEFAULT_BUSINESS_PROFILE } from '../lib/supabase';
 import { subscribeToDataChanges } from '../lib/realtimeSync';
@@ -12,6 +13,7 @@ import { formatCurrency } from '../utils/format';
 import { useToast } from '../utils/toast';
 import SearchableCategorySelect from './SearchableCategorySelect';
 import BarcodeScannerModal from './BarcodeScannerModal';
+import UiSizeModal from './UiSizeModal';
 
 interface CashierDashboardProps {
   user: UserProfile;
@@ -75,8 +77,10 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
   const [showScanner, setShowScanner] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [showUiSizeModal, setShowUiSizeModal] = useState(false);
 
   useBackDismiss(showLogoutConfirm, () => setShowLogoutConfirm(false));
+  useBackDismiss(showUiSizeModal, () => setShowUiSizeModal(false));
   useBackDismiss(showCartModal, () => setShowCartModal(false));
   useBackDismiss(showHeldCartsModal, () => setShowHeldCartsModal(false));
   useBackDismiss(showReceipt, () => { setShowReceipt(false); setCompletedSale(null); });
@@ -459,6 +463,13 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
             >
               {activeTab === 'pos' ? <History className="w-3.5 h-3.5" /> : <ShoppingCart className="w-3.5 h-3.5" />}
               <span>{activeTab === 'pos' ? 'Sales History' : 'POS Terminal'}</span>
+            </button>
+            <button 
+              onClick={() => setShowUiSizeModal(true)} 
+              className="p-2.5 text-slate-500 hover:text-gray-900 hover:bg-gray-50 rounded-xl transition-all cursor-pointer"
+              title="Adjust UI & Display size"
+            >
+              <SlidersHorizontal className="w-4.5 h-4.5" />
             </button>
             <button 
               onClick={() => { loadProducts(); }} 
@@ -1064,6 +1075,11 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
           </div>
         </div>
       )}
+
+      <UiSizeModal
+        isOpen={showUiSizeModal}
+        onClose={() => setShowUiSizeModal(false)}
+      />
     </div>
   );
 }

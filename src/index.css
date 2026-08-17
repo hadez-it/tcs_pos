@@ -419,6 +419,9 @@
 }
 
 @media print {
+  html, body {
+    zoom: 1 !important;
+  }
   body * {
     visibility: hidden;
   }

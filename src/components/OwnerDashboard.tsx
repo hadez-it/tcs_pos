@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { 
-  TrendingUp, Users, Package, AlertTriangle, LogOut, Plus, Search, 
+  TrendingUp, Users, Package, AlertTriangle, LogOut, Plus, Minus, Search, 
   Edit2, Trash2, Calendar, Clipboard, ShoppingCart, UserPlus, DollarSign,
   Briefcase, CheckCircle, RefreshCw, Layers, Shield, FileText, Building2, Store, MapPin,
   Database, Copy, Download, Printer, Tag, FileSpreadsheet, Upload, Award, Eye, Receipt, CreditCard,
   Menu, X, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Image, Sparkles, Globe, Phone, Mail, Check, Settings,
-  ArrowUpRight, ArrowDownLeft, Wallet, Banknote, TrendingDown, PackagePlus, Key
+  ArrowUpRight, ArrowDownLeft, Wallet, Banknote, TrendingDown, PackagePlus, Key, SlidersHorizontal
 } from 'lucide-react';
 import { 
   ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend 
@@ -25,6 +25,8 @@ import QuickRestockModal from './QuickRestockModal';
 import SaleReportTab from './SaleReportTab';
 import DeleteRequestsTab from './DeleteRequestsTab';
 import ChangePasswordTab from './ChangePasswordTab';
+import UiSizeModal from './UiSizeModal';
+import { useUiScale } from '../lib/uiScale';
 import { usePosStore } from '../store/usePosStore';
 import { subscribeToDataChanges } from '../lib/realtimeSync';
 import BranchesTab from './dashboard/BranchesTab';
@@ -68,6 +70,8 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isTabChanging, setIsTabChanging] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [showUiSizeModal, setShowUiSizeModal] = useState(false);
+  const { scale: uiScale, setScale: setUiScale, resetScale: resetUiScale, presets: uiPresets, minScale: minUiScale, maxScale: maxUiScale, stepScale: stepUiScale } = useUiScale();
 
   const [perfStartDate, setPerfStartDate] = useState('');
   const [perfEndDate, setPerfEndDate] = useState('');
@@ -548,6 +552,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
   // delete confirmation raised from inside a modal closes before that modal.
   useBackDismiss(showMoreMenu, () => setShowMoreMenu(false));
   useBackDismiss(showLogoutConfirm, () => setShowLogoutConfirm(false));
+  useBackDismiss(showUiSizeModal, () => setShowUiSizeModal(false));
   useBackDismiss(showProductModal, () => setShowProductModal(false));
   useBackDismiss(showCashierModal, () => setShowCashierModal(false));
   useBackDismiss(showBranchModal, () => setShowBranchModal(false));
@@ -652,6 +657,15 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
               <button onClick={() => handleTabSwitch('change-password')} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeTab === 'change-password' ? 'bg-black text-white shadow-xs' : 'text-slate-700 hover:bg-slate-100'}`}>
                 <Key className="w-4 h-4" /><span>Change Password</span>
               </button>
+              <button onClick={() => setShowUiSizeModal(true)} className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-100 transition-all cursor-pointer">
+                <div className="flex items-center gap-3">
+                  <SlidersHorizontal className="w-4 h-4 text-slate-500" />
+                  <span>Display & UI Size</span>
+                </div>
+                <span className="font-mono text-[10px] font-bold px-2 py-0.5 bg-slate-100 text-slate-700 rounded-md">
+                  {Math.round(uiScale * 100)}%
+                </span>
+              </button>
             </div>
           </div>
 
@@ -717,6 +731,13 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
             </div>
 
             <div className="flex items-center gap-2">
+              <button
+                onClick={() => setShowUiSizeModal(true)}
+                className="p-2 text-slate-500 hover:text-gray-900 hover:bg-slate-100 rounded-xl transition-all cursor-pointer"
+                title="Display & UI Size"
+              >
+                <SlidersHorizontal className="w-4.5 h-4.5" />
+              </button>
               {activeTab === 'products' && (
                 <button onClick={openNewProductModal} className="p-2 bg-black hover:bg-gray-800 text-white rounded-xl shadow-xs transition-all cursor-pointer">
                   <Plus className="w-4.5 h-4.5" />
@@ -775,6 +796,15 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
           </div>
 
           <div className="flex items-center space-x-3">
+            <button
+              onClick={() => setShowUiSizeModal(true)}
+              className="px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
+              title="Adjust Display & UI Scale"
+            >
+              <SlidersHorizontal className="w-3.5 h-3.5" />
+              <span>UI Size ({Math.round(uiScale * 100)}%)</span>
+            </button>
+
             {branches.length > 0 && user.role !== 'manager' && (
               <select
                 value={selectedBranchId}
@@ -1297,6 +1327,117 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                           placeholder="Thank you for shopping with us! Please come again."
                           className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-medium text-xs text-slate-900 focus:outline-none focus:border-gray-900 resize-none"
                         />
+                      </div>
+                    </div>
+
+                    <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-5 sm:p-6 space-y-5">
+                      <div className="border-b border-slate-100 pb-3 flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <SlidersHorizontal className="w-5 h-5 text-gray-900" />
+                          <div>
+                            <h4 className="font-extrabold text-slate-900 text-sm">Display & UI Scale</h4>
+                            <p className="text-[11px] text-slate-400">Adjust UI scaling, font sizes, and layout density</p>
+                          </div>
+                        </div>
+                        <span className="font-mono text-xs font-extrabold px-2.5 py-0.5 bg-black text-white rounded-full">
+                          {Math.round(uiScale * 100)}%
+                        </span>
+                      </div>
+
+                      <div className="space-y-4">
+                        <div>
+                          <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-2">
+                            Preset Scale Options
+                          </label>
+                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                            {uiPresets.map((preset) => {
+                              const isActive = Math.abs(uiScale - preset.value) < 0.01;
+                              return (
+                                <button
+                                  key={preset.id}
+                                  type="button"
+                                  onClick={() => setUiScale(preset.value)}
+                                  className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                                    isActive
+                                      ? 'bg-black text-white border-black shadow-xs'
+                                      : 'bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-800'
+                                  }`}
+                                >
+                                  <div className="flex items-center justify-between">
+                                    <span className="text-xs font-extrabold">{preset.label}</span>
+                                    {isActive && <Check className="w-3.5 h-3.5" />}
+                                  </div>
+                                  <span className={`text-[10px] font-mono mt-1 ${isActive ? 'text-gray-300' : 'text-slate-500'}`}>
+                                    {Math.round(preset.value * 100)}%
+                                  </span>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+
+                        <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 space-y-3">
+                          <div className="flex items-center justify-between">
+                            <label className="text-[11px] font-bold text-slate-700 uppercase tracking-wider">
+                              Custom Scale Slider
+                            </label>
+                            <span className="text-[10px] font-medium text-slate-500">
+                              Range: {Math.round(minUiScale * 100)}% – {Math.round(maxUiScale * 100)}%
+                            </span>
+                          </div>
+
+                          <div className="flex items-center gap-3">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const next = Math.round((uiScale - stepUiScale) * 100) / 100;
+                                if (next >= minUiScale) setUiScale(next);
+                              }}
+                              disabled={uiScale <= minUiScale}
+                              className="w-8 h-8 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-700 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer shadow-xs active-scale"
+                              title="Decrease scale"
+                            >
+                              <Minus className="w-4 h-4" />
+                            </button>
+
+                            <input
+                              type="range"
+                              min={minUiScale}
+                              max={maxUiScale}
+                              step={stepUiScale}
+                              value={uiScale}
+                              onChange={(e) => setUiScale(parseFloat(e.target.value))}
+                              className="flex-1 accent-black cursor-pointer"
+                            />
+
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const next = Math.round((uiScale + stepUiScale) * 100) / 100;
+                                if (next <= maxUiScale) setUiScale(next);
+                              }}
+                              disabled={uiScale >= maxUiScale}
+                              className="w-8 h-8 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-700 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer shadow-xs active-scale"
+                              title="Increase scale"
+                            >
+                              <Plus className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center justify-between pt-1">
+                          <p className="text-[11px] text-slate-500 font-medium">
+                            Saved automatically in local storage on this device.
+                          </p>
+                          <button
+                            type="button"
+                            onClick={resetUiScale}
+                            className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs active-scale"
+                          >
+                            <RefreshCw className="w-3.5 h-3.5" />
+                            <span>Reset (100%)</span>
+                          </button>
+                        </div>
                       </div>
                     </div>
 
@@ -1931,6 +2072,19 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                 <span>Change Password</span>
               </button>
 
+              <button
+                onClick={() => { setShowMoreMenu(false); setShowUiSizeModal(true); }}
+                className="w-full flex items-center justify-between px-4 py-3.5 rounded-xl text-sm font-bold text-slate-700 hover:bg-slate-50 transition-all cursor-pointer active-scale"
+              >
+                <div className="flex items-center gap-3">
+                  <SlidersHorizontal className="w-5 h-5 text-gray-500" />
+                  <span>Display & UI Size</span>
+                </div>
+                <span className="font-mono text-xs font-bold px-2.5 py-0.5 bg-slate-100 text-slate-700 rounded-full">
+                  {Math.round(uiScale * 100)}%
+                </span>
+              </button>
+
               <div className="border-t border-slate-100 my-2" />
 
               <button
@@ -1974,6 +2128,11 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
           </div>
         </div>
       )}
+
+      <UiSizeModal
+        isOpen={showUiSizeModal}
+        onClose={() => setShowUiSizeModal(false)}
+      />
       </div>
     </div>
   );

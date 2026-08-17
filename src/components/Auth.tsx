@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { ShieldCheck, Lock, AlertCircle, Eye, EyeOff, User } from 'lucide-react';
+import { ShieldCheck, Lock, AlertCircle, Eye, EyeOff, User, SlidersHorizontal } from 'lucide-react';
 import { dbService, isSupabaseConfigured, formatEmailWithDefaultDomain } from '../lib/supabase';
 import { UserProfile } from '../types';
+import UiSizeModal from './UiSizeModal';
 
 interface AuthProps {
   onLoginSuccess: (user: UserProfile) => void;
@@ -14,6 +15,7 @@ export default function Auth({ onLoginSuccess }: AuthProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [keyboardOpen, setKeyboardOpen] = useState(false);
+  const [showUiSizeModal, setShowUiSizeModal] = useState(false);
 
   // Collapse the hero when the Android soft keyboard covers the viewport,
   // so the inputs and Sign in button stay reachable on short screens.
@@ -60,25 +62,36 @@ export default function Auth({ onLoginSuccess }: AuthProps) {
           keyboardOpen ? 'max-h-0 opacity-0 pt-0 pb-0' : 'max-h-40 opacity-100 pt-7 pb-6'
         }`}
       >
-        <div className="flex items-center gap-3">
-          <div className="w-11 h-11 shrink-0 bg-white/15 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/25 shadow-lg">
-            <span className="font-black text-xl text-white leading-none">M</span>
-          </div>
-          <div className="min-w-0">
-            <h1 className="text-lg font-black text-white tracking-tight leading-tight truncate">
-              Mibayate POS
-            </h1>
-            <div className="flex items-center gap-1.5 mt-0.5">
-              <span
-                className={`w-1.5 h-1.5 rounded-full animate-pulse-soft ${
-                  isSupabaseConfigured ? 'bg-white' : 'bg-gray-400'
-                }`}
-              />
-              <span className="text-[10px] font-bold text-gray-300/80">
-                {isSupabaseConfigured ? 'Connected to Cloud' : 'Offline Mode'}
-              </span>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-11 h-11 shrink-0 bg-white/15 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/25 shadow-lg">
+              <span className="font-black text-xl text-white leading-none">M</span>
+            </div>
+            <div className="min-w-0">
+              <h1 className="text-lg font-black text-white tracking-tight leading-tight truncate">
+                Mibayate POS
+              </h1>
+              <div className="flex items-center gap-1.5 mt-0.5">
+                <span
+                  className={`w-1.5 h-1.5 rounded-full animate-pulse-soft ${
+                    isSupabaseConfigured ? 'bg-white' : 'bg-gray-400'
+                  }`}
+                />
+                <span className="text-[10px] font-bold text-gray-300/80">
+                  {isSupabaseConfigured ? 'Connected to Cloud' : 'Offline Mode'}
+                </span>
+              </div>
             </div>
           </div>
+
+          <button
+            type="button"
+            onClick={() => setShowUiSizeModal(true)}
+            className="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white transition-all cursor-pointer shadow-xs active-scale"
+            title="Display & UI Size"
+          >
+            <SlidersHorizontal className="w-4.5 h-4.5" />
+          </button>
         </div>
       </div>
 
@@ -171,6 +184,11 @@ export default function Auth({ onLoginSuccess }: AuthProps) {
         {/* Bottom safe area */}
         <div className="safe-area-bottom bg-white" />
       </div>
+
+      <UiSizeModal
+        isOpen={showUiSizeModal}
+        onClose={() => setShowUiSizeModal(false)}
+      />
     </div>
   );
 }
