@@ -10,8 +10,8 @@
     "semantic_hash": ""
   },
   "package.json": {
-    "mtime": 1786810685.4015548,
-    "ast_hash": "dcb274036e863b902443a95baadd9110",
+    "mtime": 1786931907.4967535,
+    "ast_hash": "451c3d56bd27f54641e1afb3e2636199",
     "semantic_hash": ""
   },
   "public/manifest.json": {
@@ -45,8 +45,8 @@
     "semantic_hash": "1a6ac864f8a87546b561d6b7527571bc"
   },
   "src/components/CashierDashboard.tsx": {
-    "mtime": 1786929850.0468771,
-    "ast_hash": "faeb93bea3c9927bd1755e640e927a9c",
+    "mtime": 1786932021.9515207,
+    "ast_hash": "29ea277623f2a38db984186a1aa3fb00",
     "semantic_hash": ""
   },
   "src/components/CsvImportModal.tsx": {
@@ -85,8 +85,8 @@
     "semantic_hash": "58d35a2962309cc03a689ad85d345e7b"
   },
   "src/components/SaleReportTab.tsx": {
-    "mtime": 1786760296.4722707,
-    "ast_hash": "21271745460c86701785b5734423b1c7",
+    "mtime": 1786932008.7462783,
+    "ast_hash": "037b9d9925895224e77e8770f0ea80b7",
     "semantic_hash": ""
   },
   "src/components/SearchableCategorySelect.tsx": {
@@ -542,6 +542,16 @@
   "src/lib/uiScale.ts": {
     "mtime": 1786929940.3273907,
     "ast_hash": "6957b5aa7d626bf56032eac1ea381f92",
+    "semantic_hash": ""
+  },
+  "src/utils/excelExport.test.ts": {
+    "mtime": 1786931974.4190488,
+    "ast_hash": "0f9c790af444721764fcecf704d149d0",
+    "semantic_hash": ""
+  },
+  "src/utils/excelExport.ts": {
+    "mtime": 1786931970.4346738,
+    "ast_hash": "ce8aa743cadfd56f8ee0561e989cc348",
     "semantic_hash": ""
   }
 }

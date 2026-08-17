@@ -1,10 +1,12 @@
 import React, { useState, useMemo } from 'react';
 import { SaleWithItems, Branch, UserProfile } from '../types';
 import { formatCurrency } from '../utils/format';
+import { useToast } from '../utils/toast';
+import { exportSalesReportToXlsx } from '../utils/excelExport';
 import { 
   Receipt, Filter, ChevronDown, ChevronUp, Search, 
   Building2, Users, Calendar, X, RotateCcw, 
-  CreditCard, Wallet, Banknote, User
+  CreditCard, Wallet, Banknote, User, FileSpreadsheet
 } from 'lucide-react';
 
 interface SaleReportTabProps {
@@ -15,6 +17,8 @@ interface SaleReportTabProps {
 }
 
 export default function SaleReportTab({ sales, branches, cashiers, currency }: SaleReportTabProps) {
+  const { toast } = useToast();
+  const [isExporting, setIsExporting] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [dateFilter, setDateFilter] = useState<'all' | 'this-month' | 'last-month' | 'custom'>('all');
   const [startDate, setStartDate] = useState('');
@@ -23,6 +27,23 @@ export default function SaleReportTab({ sales, branches, cashiers, currency }: S
   const [cashierFilter, setCashierFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedSaleId, setExpandedSaleId] = useState<string | null>(null);
+
+  const handleExportXlsx = () => {
+    if (filteredSales.length === 0) {
+      toast('No sales data to export', 'warning');
+      return;
+    }
+    setIsExporting(true);
+    try {
+      exportSalesReportToXlsx(filteredSales);
+      toast(`Exported ${filteredSales.length} transactions to Excel`, 'success');
+    } catch (err) {
+      console.error(err);
+      toast('Failed to export sales report to Excel', 'error');
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   const activeFilterCount = useMemo(() => {
     let count = 0;
@@ -129,23 +150,35 @@ export default function SaleReportTab({ sales, branches, cashiers, currency }: S
           </div>
         </div>
 
-        <button 
-          onClick={() => setShowFilters(!showFilters)}
-          className={`w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border text-xs sm:text-sm font-bold transition-all cursor-pointer ${
-            showFilters || activeFilterCount > 0 
-              ? 'bg-black text-white border-black shadow-xs' 
-              : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
-          }`}
-        >
-          <Filter className="w-4 h-4" />
-          <span>{showFilters ? 'Hide Filters' : 'Filters'}</span>
-          {activeFilterCount > 0 && (
-            <span className="w-5 h-5 rounded-full bg-white text-black text-[10px] font-black flex items-center justify-center">
-              {activeFilterCount}
-            </span>
-          )}
-          {showFilters ? <ChevronUp className="w-4 h-4 ml-auto sm:ml-0" /> : <ChevronDown className="w-4 h-4 ml-auto sm:ml-0" />}
-        </button>
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          <button
+            onClick={handleExportXlsx}
+            disabled={isExporting || filteredSales.length === 0}
+            className="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs sm:text-sm font-bold transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shadow-xs"
+            title="Export sales report to Excel (.xlsx)"
+          >
+            <FileSpreadsheet className="w-4 h-4 text-slate-600" />
+            <span>{isExporting ? 'Exporting...' : 'Export XLSX'}</span>
+          </button>
+
+          <button 
+            onClick={() => setShowFilters(!showFilters)}
+            className={`flex-1 sm:flex-initial flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+              showFilters || activeFilterCount > 0 
+                ? 'bg-black text-white border-black shadow-xs' 
+                : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+            }`}
+          >
+            <Filter className="w-4 h-4" />
+            <span>{showFilters ? 'Hide Filters' : 'Filters'}</span>
+            {activeFilterCount > 0 && (
+              <span className="w-5 h-5 rounded-full bg-white text-black text-[10px] font-black flex items-center justify-center">
+                {activeFilterCount}
+              </span>
+            )}
+            {showFilters ? <ChevronUp className="w-4 h-4 ml-auto sm:ml-0" /> : <ChevronDown className="w-4 h-4 ml-auto sm:ml-0" />}
+          </button>
+        </div>
       </div>
 
 
@@ -381,7 +414,18 @@ export default function SaleReportTab({ sales, branches, cashiers, currency }: S
           <span className="text-xs font-extrabold text-slate-700 uppercase tracking-wider">
             {filteredSales.length} Transactions Found
           </span>
-          <span className="text-sm font-black text-gray-900">Total: {formatCurrency(totalAmount)}</span>
+          <div className="flex items-center gap-3">
+            <span className="text-sm font-black text-gray-900">Total: {formatCurrency(totalAmount)}</span>
+            <button
+              onClick={handleExportXlsx}
+              disabled={isExporting || filteredSales.length === 0}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 text-xs font-bold transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shadow-xs"
+              title="Export sales report to Excel (.xlsx)"
+            >
+              <FileSpreadsheet className="w-3.5 h-3.5 text-slate-600" />
+              <span>Export XLSX</span>
+            </button>
+          </div>
         </div>
 
         <div className="overflow-x-auto">

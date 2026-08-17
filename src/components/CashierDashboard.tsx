@@ -4,13 +4,14 @@ import {
   Search, ShoppingCart, LogOut, RefreshCw, User, ShoppingBag, 
   Minus, Plus, Trash2, DollarSign, CreditCard, Smartphone, Check, 
   FileText, Tag, ArrowRight, Printer, AlertCircle, Sparkles, Filter, ChevronDown, Menu, X, History, Camera,
-  SlidersHorizontal
+  SlidersHorizontal, FileSpreadsheet
 } from 'lucide-react';
 import { dbService, DEFAULT_BUSINESS_PROFILE } from '../lib/supabase';
 import { subscribeToDataChanges } from '../lib/realtimeSync';
 import { Product, SaleWithItems, UserProfile, BusinessProfile, SaleDeleteRequest } from '../types';
 import { formatCurrency } from '../utils/format';
 import { useToast } from '../utils/toast';
+import { exportSalesReportToXlsx } from '../utils/excelExport';
 import SearchableCategorySelect from './SearchableCategorySelect';
 import BarcodeScannerModal from './BarcodeScannerModal';
 import UiSizeModal from './UiSizeModal';
@@ -637,10 +638,28 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
                   </h3>
                   <p className="text-xs text-slate-500 font-medium">Your processed receipts for this branch</p>
                 </div>
-                <button onClick={loadRecentSales} className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 font-bold text-xs text-slate-700 transition-all cursor-pointer">
-                  <RefreshCw className={`w-3.5 h-3.5 ${isHistoryLoading ? 'animate-spin' : ''}`} />
-                  <span>Refresh</span>
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => {
+                      if (salesHistory.length === 0) {
+                        toast('No sales history to export', 'warning');
+                        return;
+                      }
+                      exportSalesReportToXlsx(salesHistory, `cashier_sales_${user.name.toLowerCase().replace(/\s+/g, '_')}_${new Date().toISOString().slice(0, 10)}.xlsx`);
+                      toast(`Exported ${salesHistory.length} sales to Excel`, 'success');
+                    }}
+                    disabled={salesHistory.length === 0}
+                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 font-bold text-xs text-slate-700 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                    title="Export your sales to Excel (.xlsx)"
+                  >
+                    <FileSpreadsheet className="w-3.5 h-3.5" />
+                    <span>Export XLSX</span>
+                  </button>
+                  <button onClick={loadRecentSales} className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 font-bold text-xs text-slate-700 transition-all cursor-pointer">
+                    <RefreshCw className={`w-3.5 h-3.5 ${isHistoryLoading ? 'animate-spin' : ''}`} />
+                    <span>Refresh</span>
+                  </button>
+                </div>
               </div>
 
               {isHistoryLoading ? (
