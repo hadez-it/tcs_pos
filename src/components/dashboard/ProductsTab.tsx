@@ -340,14 +340,12 @@ export default function ProductsTab({
 
             {/* Desktop Spreadsheet Table View */}
             <div className="hidden sm:block w-full max-w-full overflow-x-auto border-t border-slate-200">
-              <table className="w-full text-left text-xs border-collapse font-sans min-w-[1400px]">
+              <table className="w-full text-left text-xs border-collapse font-sans min-w-[1100px]">
                 <thead>
                   <tr className="bg-slate-100 border-b border-slate-200 text-slate-600 uppercase font-bold text-[10px] tracking-wider sticky top-0 z-10">
                     <th className="p-2.5 border-r border-slate-200 w-52 min-w-[180px] max-w-[240px]">Name</th>
-                    <th className="p-2.5 border-r border-slate-200 w-16 text-center">Image</th>
                     <th className="p-2.5 border-r border-slate-200 w-44 min-w-[150px] max-w-[200px]">Description</th>
                     <th className="p-2.5 border-r border-slate-200 w-28 min-w-[100px]">Category</th>
-                    <th className="p-2.5 border-r border-slate-200 w-20 text-center">Use Stock</th>
                     <th className="p-2.5 border-r border-slate-200 w-32 text-right">Purchased Price</th>
                     <th className="p-2.5 border-r border-slate-200 w-24 text-center">Unit Amount</th>
                     <th className="p-2.5 border-r border-slate-200 w-32 text-right">Unit Price</th>
@@ -355,7 +353,6 @@ export default function ProductsTab({
                     <th className="p-2.5 border-r border-slate-200 w-20 text-center">Stock</th>
                     <th className="p-2.5 border-r border-slate-200 w-28">Price Variant</th>
                     <th className="p-2.5 border-r border-slate-200 w-28">Expiry Date</th>
-                    <th className="p-2.5 border-r border-slate-200 w-36">Updated Date</th>
                     <th className="p-2.5 border-r border-slate-200 w-32">Barcode</th>
                     <th className="p-2.5 text-center w-24">Actions</th>
                   </tr>
@@ -372,15 +369,6 @@ export default function ProductsTab({
                           {prod.name}
                         </td>
 
-                        {/* Image */}
-                        <td className="p-3 text-center border-r border-slate-100">
-                          {prod.image && prod.image !== 'null' ? (
-                            <img src={prod.image} alt={prod.name} className="w-8 h-8 rounded object-cover mx-auto border border-slate-200" />
-                          ) : (
-                            <span className="text-slate-400 font-mono text-[10px]">null</span>
-                          )}
-                        </td>
-
                         {/* Description */}
                         <td className="p-3 text-slate-600 border-r border-slate-100 truncate max-w-[160px]" title={prod.description}>
                           {prod.description || '-'}
@@ -390,13 +378,6 @@ export default function ProductsTab({
                         <td className="p-3 border-r border-slate-100 font-semibold text-slate-700">
                           <span className="inline-block bg-slate-100 text-slate-700 px-2 py-0.5 rounded text-[10px]">
                             {prod.category}
-                          </span>
-                        </td>
-
-                        {/* Use Stock */}
-                        <td className="p-3 text-center border-r border-slate-100 font-mono text-[11px]">
-                          <span className={prod.use_stock !== false ? 'text-gray-900 font-bold' : 'text-slate-400'}>
-                            {prod.use_stock !== false ? 'true' : 'false'}
                           </span>
                         </td>
 
@@ -441,11 +422,6 @@ export default function ProductsTab({
                         {/* Expiry Date */}
                         <td className="p-3 text-slate-500 border-r border-slate-100">
                           {prod.expiry_date || '-'}
-                        </td>
-
-                        {/* Updated Date */}
-                        <td className="p-3 text-slate-500 border-r border-slate-100 whitespace-nowrap text-[11px]">
-                          {prod.updated_at || (prod.created_at ? new Date(prod.created_at).toLocaleTimeString() + ' ' + new Date(prod.created_at).toLocaleDateString() : '-')}
                         </td>
 
                         {/* Barcode */}
