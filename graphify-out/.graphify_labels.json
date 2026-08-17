@@ -1,5 +1,5 @@
 {
-  "0": "OwnerDashboard.tsx",
+  "0": "Branch",
   "1": "App.tsx",
   "2": "escpos.ts",
   "3": "compress.py",
@@ -47,5 +47,10 @@
   "45": "setupTests.ts",
   "46": "vitest.config.ts",
   "47": "realtimeSync.ts",
-  "48": "uiScale.ts"
+  "48": "CashierDashboard.tsx",
+  "49": "supabase.ts",
+  "50": "SaleWithItems",
+  "51": "CashierSalesHistory.tsx",
+  "52": "types.ts",
+  "53": "OwnerDashboard.tsx"
 }

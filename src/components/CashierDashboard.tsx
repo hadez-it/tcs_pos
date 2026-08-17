@@ -15,7 +15,7 @@ import { exportSalesReportToXlsx } from '../utils/excelExport';
 import SearchableCategorySelect from './SearchableCategorySelect';
 import BarcodeScannerModal from './BarcodeScannerModal';
 import UiSizeModal from './UiSizeModal';
-import FilterDrawer from './FilterDrawer';
+import CashierSalesHistory from './CashierSalesHistory';
 
 interface CashierDashboardProps {
   user: UserProfile;
@@ -63,9 +63,6 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
   const [salesHistory, setSalesHistory] = useState<SaleWithItems[]>([]);
   const [deleteRequests, setDeleteRequests] = useState<SaleDeleteRequest[]>([]);
   const [isHistoryLoading, setIsHistoryLoading] = useState(false);
-  const [historySearch, setHistorySearch] = useState('');
-  const [historyPaymentFilter, setHistoryPaymentFilter] = useState('all');
-  const [showHistoryFilters, setShowHistoryFilters] = useState(false);
   const [saleToDelete, setSaleToDelete] = useState<SaleWithItems | null>(null);
   const [deleteReason, setDeleteReason] = useState('');
   const [isSubmittingDeleteRequest, setIsSubmittingDeleteRequest] = useState(false);
@@ -85,37 +82,10 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
   const [showUiSizeModal, setShowUiSizeModal] = useState(false);
 
   useBackDismiss(showLogoutConfirm, () => setShowLogoutConfirm(false));
-  useBackDismiss(showUiSizeModal, () => setShowUiSizeModal(false));
   useBackDismiss(showCartModal, () => setShowCartModal(false));
   useBackDismiss(showHeldCartsModal, () => setShowHeldCartsModal(false));
   useBackDismiss(showReceipt, () => { setShowReceipt(false); setCompletedSale(null); });
-  useBackDismiss(showScanner, () => setShowScanner(false));
   useBackDismiss(saleToDelete !== null, () => setSaleToDelete(null));
-  useBackDismiss(showHistoryFilters, () => setShowHistoryFilters(false));
-
-  const activeHistoryFilterCount = useMemo(() => {
-    let count = 0;
-    if (historySearch.trim()) count++;
-    if (historyPaymentFilter !== 'all') count++;
-    return count;
-  }, [historySearch, historyPaymentFilter]);
-
-  const resetHistoryFilters = () => {
-    setHistorySearch('');
-    setHistoryPaymentFilter('all');
-  };
-
-  const filteredSalesHistory = useMemo(() => {
-    return salesHistory.filter(sale => {
-      const q = historySearch.toLowerCase();
-      const matchesSearch = !q ||
-        sale.id.toLowerCase().includes(q) ||
-        (sale.customer_name || '').toLowerCase().includes(q) ||
-        (sale.customer_phone || '').toLowerCase().includes(q);
-      const matchesPayment = historyPaymentFilter === 'all' || sale.payment_method === historyPaymentFilter;
-      return matchesSearch && matchesPayment;
-    });
-  }, [salesHistory, historySearch, historyPaymentFilter]);
 
   const handleTabSwitch = (tab: 'pos' | 'history') => {
     if (tab === activeTab) return;
@@ -656,183 +626,23 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
             </aside>
           </>
         ) : (
-          /* Sales History */
-          <div className="flex-1 overflow-y-auto android-scroll px-3 sm:px-6 pt-3 pb-4 max-w-5xl mx-auto w-full">
-            <div className="android-card p-4 sm:p-6 space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-base font-extrabold text-slate-900 flex items-center gap-2">
-                    <History className="w-5 h-5 text-gray-900" />
-                    Sales History
-                  </h3>
-                  <p className="text-xs text-slate-500 font-medium">Your processed receipts for this branch</p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => setShowHistoryFilters(true)}
-                    className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer shadow-2xs ${
-                      activeHistoryFilterCount > 0
-                        ? 'bg-black text-white'
-                        : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
-                    }`}
-                  >
-                    <Filter className="w-3.5 h-3.5" />
-                    <span>Filters</span>
-                    {activeHistoryFilterCount > 0 && (
-                      <span className="w-4.5 h-4.5 rounded-full bg-white text-black text-[10px] font-black flex items-center justify-center">
-                        {activeHistoryFilterCount}
-                      </span>
-                    )}
-                  </button>
-                  <button
-                    onClick={() => {
-                      if (filteredSalesHistory.length === 0) {
-                        toast('No sales history to export', 'warning');
-                        return;
-                      }
-                      exportSalesReportToXlsx(filteredSalesHistory, `cashier_sales_${user.name.toLowerCase().replace(/\s+/g, '_')}_${new Date().toISOString().slice(0, 10)}.xlsx`);
-                      toast(`Exported ${filteredSalesHistory.length} sales to Excel`, 'success');
-                    }}
-                    disabled={filteredSalesHistory.length === 0}
-                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 font-bold text-xs text-slate-700 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                    title="Export your sales to Excel (.xlsx)"
-                  >
-                    <FileSpreadsheet className="w-3.5 h-3.5" />
-                    <span>Export XLSX</span>
-                  </button>
-                  <button onClick={loadRecentSales} className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 font-bold text-xs text-slate-700 transition-all cursor-pointer">
-                    <RefreshCw className={`w-3.5 h-3.5 ${isHistoryLoading ? 'animate-spin' : ''}`} />
-                    <span>Refresh</span>
-                  </button>
-                </div>
-              </div>
-
-              <FilterDrawer
-                isOpen={showHistoryFilters}
-                onClose={() => setShowHistoryFilters(false)}
-                title="Sales History Filters"
-                subtitle="Filter your processed transactions"
-                activeCount={activeHistoryFilterCount}
-                onReset={resetHistoryFilters}
-              >
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">Search</label>
-                    <div className="relative">
-                      <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                      <input
-                        type="text"
-                        placeholder="Receipt ID, customer name or phone..."
-                        value={historySearch}
-                        onChange={(e) => setHistorySearch(e.target.value)}
-                        className="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:border-black focus:bg-white"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-2 pt-2 border-t border-slate-100">
-                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">Payment Method</label>
-                    <div className="grid grid-cols-2 gap-2">
-                      {[
-                        { val: 'all', label: 'All Methods' },
-                        { val: 'cash', label: 'Cash' },
-                        { val: 'card', label: 'Card' },
-                        { val: 'mobile', label: 'Mobile' }
-                      ].map(opt => (
-                        <button
-                          key={opt.val}
-                          onClick={() => setHistoryPaymentFilter(opt.val)}
-                          className={`py-2 px-3 rounded-xl text-xs font-bold transition-all cursor-pointer text-center ${
-                            historyPaymentFilter === opt.val
-                              ? 'bg-black text-white shadow-xs'
-                              : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                          }`}
-                        >
-                          {opt.label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </FilterDrawer>
-
-              {isHistoryLoading ? (
-                <div className="flex flex-col items-center justify-center py-16">
-                  <div className="w-8 h-8 border-[3px] border-gray-900/20 border-t-gray-900 rounded-full animate-spin" />
-                  <span className="text-slate-400 text-xs mt-3">Loading sales...</span>
-                </div>
-              ) : filteredSalesHistory.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-16 text-slate-400">
-                  <FileText className="w-12 h-12 text-slate-200 mb-3" />
-                  <p className="text-sm font-semibold">No sales found</p>
-                  <button onClick={() => setActiveTab('pos')} className="mt-4 px-5 py-2.5 bg-black hover:bg-gray-800 text-white rounded-xl text-xs font-bold transition-all cursor-pointer">
-                    Start Selling
-                  </button>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {filteredSalesHistory.map((sale) => {
-                    const existingReq = Array.isArray(deleteRequests) ? deleteRequests.find(r => r && r.sale_id === sale.id) : undefined;
-                    return (
-                      <div key={sale.id} className="android-card p-4 border border-slate-100 flex flex-col justify-between">
-                        <div>
-                          <div className="flex justify-between items-start mb-2">
-                            <div>
-                              <span className="font-mono font-bold text-slate-900 text-xs block">{sale.id.slice(0, 8)}</span>
-                              <span className="text-[10px] text-slate-500 font-medium">{new Date(sale.created_at).toLocaleString()}</span>
-                            </div>
-                            <div className="text-right">
-                              <span className="font-mono font-extrabold text-slate-950 text-base block">{formatCurrency(sale.total_amount)}</span>
-                              <span className="text-[10px] text-slate-400 font-medium">{sale.items.length} items</span>
-                            </div>
-                          </div>
-                          {sale.customer_name && (
-                            <div className="text-[10px] text-slate-500 mb-2 pb-2 border-b border-slate-100">
-                              <span className="font-semibold text-slate-600">{sale.customer_name}</span>
-                              {sale.customer_phone && <span className="ml-1 text-slate-400">({sale.customer_phone})</span>}
-                            </div>
-                          )}
-                          {existingReq && (
-                            <div className="mb-2">
-                              {existingReq.status === 'pending' && (
-                                <span className="inline-block px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-200">
-                                  Delete Request Pending
-                                </span>
-                              )}
-                              {existingReq.status === 'approved' && (
-                                <span className="inline-block px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-100 text-slate-800 border border-slate-200">
-                                  Approved & Voided
-                                </span>
-                              )}
-                              {existingReq.status === 'rejected' && (
-                                <span className="inline-block px-2.5 py-1 rounded-lg text-[10px] font-bold bg-red-50 text-red-600 border border-red-100">
-                                  Delete Rejected {existingReq.rejection_reason ? `(${existingReq.rejection_reason})` : ''}
-                                </span>
-                              )}
-                            </div>
-                          )}
-                        </div>
-                        <div className="flex items-center justify-between gap-2 pt-2 border-t border-slate-100/60 mt-2">
-                          {(!existingReq || existingReq.status === 'rejected') ? (
-                            <button onClick={() => { setSaleToDelete(sale); setDeleteReason(''); }} className="inline-flex items-center gap-1 px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 font-bold rounded-xl text-[11px] transition-all cursor-pointer">
-                              <Trash2 className="w-3 h-3" />
-                              Request Delete
-                            </button>
-                          ) : (
-                            <div />
-                          )}
-                          <button onClick={() => { setCompletedSale(sale); setShowReceipt(true); }} className="inline-flex items-center gap-1 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-xl text-[11px] transition-all cursor-pointer">
-                            <Printer className="w-3 h-3" />
-                            Receipt
-                          </button>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          </div>
+          <CashierSalesHistory
+            sales={salesHistory}
+            deleteRequests={deleteRequests}
+            isLoading={isHistoryLoading}
+            onRefresh={() => loadRecentSales(false)}
+            user={user}
+            businessProfile={businessProfile}
+            onRequestDelete={(sale) => {
+              setSaleToDelete(sale);
+              setDeleteReason('');
+            }}
+            onPrintReceipt={(sale) => {
+              setCompletedSale(sale);
+              setShowReceipt(true);
+            }}
+            onStartSelling={() => handleTabSwitch('pos')}
+          />
         )}
       </div>
 
@@ -1102,54 +912,96 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
         onClose={() => setShowScanner(false)}
         onScan={handleBarcodeScan}
       />
-      {/* Sale Delete Request Modal */}
       {saleToDelete && (
         <div className="bottom-sheet-overlay" onClick={() => setSaleToDelete(null)}>
-          <div className="bottom-sheet" onClick={(e) => e.stopPropagation()}>
-            <div className="pt-3 pb-2">
+          <div className="bottom-sheet max-w-lg mx-auto rounded-t-3xl sm:rounded-2xl" onClick={(e) => e.stopPropagation()}>
+            <div className="pt-3 pb-2 sm:hidden">
               <div className="pull-indicator" />
             </div>
-            <div className="px-4 pb-3 flex items-center justify-between border-b border-slate-100">
-              <h4 className="font-bold text-sm text-slate-900 flex items-center gap-2">
-                <Trash2 className="w-4 h-4 text-red-500" />
-                Request Sale Deletion
-              </h4>
-              <button onClick={() => setSaleToDelete(null)} className="p-2 text-slate-400 hover:text-slate-600 rounded-xl cursor-pointer">
-                <X className="w-5 h-5" />
+            <div className="px-5 py-4 flex items-center justify-between border-b border-slate-100 bg-white">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-xl bg-red-50 text-red-600 flex items-center justify-center">
+                  <Trash2 className="w-4 h-4" />
+                </div>
+                <div>
+                  <h4 className="font-extrabold text-sm text-slate-900 leading-tight">Request Sale Deletion</h4>
+                  <p className="text-[11px] text-slate-500 font-medium">Submit void request for store owner review</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSaleToDelete(null)}
+                className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer"
+              >
+                <X className="w-4.5 h-4.5" />
               </button>
             </div>
-            <form onSubmit={handleRequestDeleteSubmit} className="p-4 space-y-4">
-              <div className="bg-slate-50 p-3 rounded-xl border border-slate-100 text-xs space-y-1">
+
+            <form onSubmit={handleRequestDeleteSubmit} className="p-5 space-y-4">
+              <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-100 space-y-1 text-xs">
                 <div className="flex justify-between font-bold text-slate-900">
-                  <span>Sale #{saleToDelete.id.slice(0, 8)}</span>
-                  <span className="font-mono">{formatCurrency(saleToDelete.total_amount)}</span>
+                  <span className="font-mono">Receipt #{saleToDelete.id.slice(0, 8)}</span>
+                  <span className="font-mono text-slate-950 font-black">{formatCurrency(saleToDelete.total_amount)}</span>
                 </div>
-                <p className="text-slate-500 text-[11px]">{saleToDelete.items.length} items • {new Date(saleToDelete.created_at).toLocaleString()}</p>
+                <p className="text-slate-500 text-[11px] font-medium">
+                  {saleToDelete.items.length} items • {new Date(saleToDelete.created_at).toLocaleString()}
+                </p>
               </div>
 
-              <div>
-                <label className="block text-[10px] font-bold text-slate-600 uppercase tracking-wider mb-1.5">Reason for Deletion Request</label>
+              <div className="space-y-2">
+                <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider">
+                  Quick Reason Preset
+                </label>
+                <div className="flex flex-wrap gap-1.5">
+                  {[
+                    'Customer returned items',
+                    'Wrong item rung up',
+                    'Wrong payment method',
+                    'Duplicate transaction',
+                    'Customer canceled order'
+                  ].map((preset) => (
+                    <button
+                      key={preset}
+                      type="button"
+                      onClick={() => setDeleteReason(preset)}
+                      className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                        deleteReason === preset
+                          ? 'bg-black text-white'
+                          : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                      }`}
+                    >
+                      {preset}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider">
+                  Reason Details <span className="text-red-500">*</span>
+                </label>
                 <textarea
                   rows={3}
-                  placeholder="Explain why this sale should be deleted (e.g. customer return, cashier error...)"
+                  required
+                  placeholder="Explain why this receipt needs deletion/voiding..."
                   value={deleteReason}
                   onChange={(e) => setDeleteReason(e.target.value)}
-                  className="android-input w-full p-3 text-xs"
+                  className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-900 focus:outline-none focus:border-black focus:bg-white transition-all"
                 />
               </div>
 
-              <div className="flex justify-end gap-2 pt-2">
+              <div className="flex items-center gap-2.5 pt-2 border-t border-slate-100">
                 <button
                   type="button"
                   onClick={() => setSaleToDelete(null)}
-                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl cursor-pointer"
+                  className="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-all cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  disabled={isSubmittingDeleteRequest}
-                  className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-bold text-xs rounded-xl cursor-pointer disabled:opacity-50"
+                  disabled={isSubmittingDeleteRequest || !deleteReason.trim()}
+                  className="flex-1 py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold text-xs rounded-xl transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shadow-xs"
                 >
                   {isSubmittingDeleteRequest ? 'Submitting...' : 'Submit Request'}
                 </button>

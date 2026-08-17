@@ -552,12 +552,10 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
   // delete confirmation raised from inside a modal closes before that modal.
   useBackDismiss(showMoreMenu, () => setShowMoreMenu(false));
   useBackDismiss(showLogoutConfirm, () => setShowLogoutConfirm(false));
-  useBackDismiss(showUiSizeModal, () => setShowUiSizeModal(false));
   useBackDismiss(showProductModal, () => setShowProductModal(false));
   useBackDismiss(showCashierModal, () => setShowCashierModal(false));
   useBackDismiss(showBranchModal, () => setShowBranchModal(false));
   useBackDismiss(showBarcodeModal, () => setShowBarcodeModal(false));
-  useBackDismiss(showSingleLabelModal, () => setShowSingleLabelModal(false));
   useBackDismiss(showSqlModal, () => setShowSqlModal(false));
   useBackDismiss(showCsvModal, () => setShowCsvModal(false));
   useBackDismiss(restockProduct !== null, () => setRestockProduct(null));
