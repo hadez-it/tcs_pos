@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useBackDismiss, useBackTabHistory } from '../lib/backNavigation';
 import { 
   Search, ShoppingCart, LogOut, RefreshCw, User, ShoppingBag, 
-  Minus, Plus, Trash2, DollarSign, CreditCard, Smartphone, Check, 
+  Minus, Plus, Trash2, DollarSign, Smartphone, Check, 
   FileText, Tag, ArrowRight, Printer, AlertCircle, Sparkles, Filter, ChevronDown, Menu, X, History, Camera,
   SlidersHorizontal, FileSpreadsheet
 } from 'lucide-react';
@@ -34,6 +34,20 @@ interface HeldCart {
   discount: string;
   createdAt: string;
 }
+
+type MobileWalletType = 'kbzpay' | 'ayapay' | 'wavepay' | 'other';
+
+const formatPaymentMethodLabel = (method: string): string => {
+  switch (method) {
+    case 'kbzpay': return 'KBZPay';
+    case 'ayapay': return 'AYA Pay';
+    case 'wavepay': return 'WavePay';
+    case 'other': return 'Other';
+    case 'cash': return 'Cash';
+    case 'mobile': return 'Mobile';
+    default: return (method || '').toUpperCase();
+  }
+};
 
 const getQuickCashOptions = (total: number) => {
   if (total <= 0) return [];
@@ -68,7 +82,8 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
   const [isSubmittingDeleteRequest, setIsSubmittingDeleteRequest] = useState(false);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [discount, setDiscount] = useState<string>('');
-  const [paymentMethod, setPaymentMethod] = useState<'cash' | 'card' | 'mobile'>('cash');
+  const [paymentMethod, setPaymentMethod] = useState<'cash' | 'mobile'>('cash');
+  const [mobileWallet, setMobileWallet] = useState<MobileWalletType>('kbzpay');
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
   const [isCheckingOut, setIsCheckingOut] = useState(false);
@@ -260,7 +275,8 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
     setCheckoutError(null);
     setIsCheckingOut(true);
     try {
-      const sale = await dbService.sales.checkout(cart, paymentMethod, discountVal, user, { name: customerName, phone: customerPhone });
+      const selectedPayment = paymentMethod === 'mobile' ? mobileWallet : 'cash';
+      const sale = await dbService.sales.checkout(cart, selectedPayment, discountVal, user, { name: customerName, phone: customerPhone });
       setCompletedSale(sale);
       setShowReceipt(true);
       setCart([]);
@@ -382,8 +398,8 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
 
             <div className="space-y-2">
               <label className="block text-[10px] font-bold text-slate-600 uppercase tracking-wider">Payment Method</label>
-              <div className="grid grid-cols-3 gap-2 p-1.5 bg-slate-100 rounded-2xl">
-                {(['cash', 'card', 'mobile'] as const).map(method => (
+              <div className="grid grid-cols-2 gap-2 p-1.5 bg-slate-100 rounded-2xl">
+                {(['cash', 'mobile'] as const).map(method => (
                   <button
                     key={method}
                     type="button"
@@ -392,12 +408,39 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
                       paymentMethod === method ? 'bg-white text-gray-900 shadow-xs' : 'text-slate-600 hover:text-slate-800'
                     }`}
                   >
-                    {method === 'cash' ? <DollarSign className="w-5 h-5 mb-1" /> : method === 'card' ? <CreditCard className="w-5 h-5 mb-1" /> : <Smartphone className="w-5 h-5 mb-1" />}
-                    <span className="capitalize">{method}</span>
+                    {method === 'cash' ? <DollarSign className="w-5 h-5 mb-1" /> : <Smartphone className="w-5 h-5 mb-1" />}
+                    <span className="capitalize">{method === 'mobile' ? 'Mobile Wallet' : 'Cash'}</span>
                   </button>
                 ))}
               </div>
             </div>
+
+            {paymentMethod === 'mobile' && (
+              <div className="space-y-2 bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
+                <label className="block text-[10px] font-bold text-slate-600 uppercase tracking-wider">Select Wallet</label>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+                  {[
+                    { id: 'kbzpay', label: 'KBZPay' },
+                    { id: 'ayapay', label: 'AYA Pay' },
+                    { id: 'wavepay', label: 'WavePay' },
+                    { id: 'other', label: 'Other' },
+                  ].map((wallet) => (
+                    <button
+                      key={wallet.id}
+                      type="button"
+                      onClick={() => setMobileWallet(wallet.id as MobileWalletType)}
+                      className={`py-2 px-2 rounded-xl text-xs font-bold transition-all cursor-pointer text-center active-scale ${
+                        mobileWallet === wallet.id
+                          ? 'bg-black text-white shadow-2xs'
+                          : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
+                      }`}
+                    >
+                      {wallet.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {paymentMethod === 'cash' && totalDue > 0 && (
               <div className="space-y-3 bg-slate-50 p-4 rounded-2xl border border-slate-200">
@@ -885,7 +928,7 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
                 </div>
 
                 <div className="border-t border-dashed border-slate-300 pt-3 text-center space-y-2">
-                  <p className="text-[10px] text-slate-400">Payment: <span className="font-bold uppercase text-slate-600">{completedSale.payment_method}</span></p>
+                  <p className="text-[10px] text-slate-400">Payment: <span className="font-bold uppercase text-slate-600">{formatPaymentMethodLabel(completedSale.payment_method)}</span></p>
                   <div className="mx-auto w-3/4 flex flex-col items-center">
                     <div className="h-6 bg-slate-900 w-full flex items-stretch gap-0.5 opacity-80 mt-1 rounded">
                       <div className="bg-slate-900 grow" /><div className="bg-white w-0.5" /><div className="bg-slate-900 w-1" /><div className="bg-white w-1" /><div className="bg-slate-900 w-0.5" /><div className="bg-white w-0.5" /><div className="bg-slate-900 w-2" /><div className="bg-white w-1" /><div className="bg-slate-900 w-1.5" /><div className="bg-white w-0.5" />

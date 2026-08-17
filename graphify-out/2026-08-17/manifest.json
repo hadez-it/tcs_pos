@@ -45,8 +45,8 @@
     "semantic_hash": "1a6ac864f8a87546b561d6b7527571bc"
   },
   "src/components/CashierDashboard.tsx": {
-    "mtime": 1786952140.3072155,
-    "ast_hash": "352c80096f3cb5577d774a112676575f",
+    "mtime": 1786965396.252289,
+    "ast_hash": "3bd97f214fadcdbd17091a776f9cb253",
     "semantic_hash": ""
   },
   "src/components/CsvImportModal.tsx": {
@@ -295,8 +295,8 @@
     "semantic_hash": ""
   },
   "src/components/dashboard/ProductsTab.tsx": {
-    "mtime": 1786932544.0526698,
-    "ast_hash": "f2c6e84448afb6370ff39210cee9f74a",
+    "mtime": 1786961669.3053267,
+    "ast_hash": "4bb35a89f4d54f0a02b28badc8361ffe",
     "semantic_hash": ""
   },
   "src/components/dashboard/StaffPerformanceTab.tsx": {
@@ -530,8 +530,8 @@
     "semantic_hash": ""
   },
   "src/lib/realtimeSync.ts": {
-    "mtime": 1786885549.3164053,
-    "ast_hash": "1c62e8308955b6bb97d8d29688d9802f",
+    "mtime": 1786956758.6224995,
+    "ast_hash": "9243da5df42e1ebd8be36b6433a07b7b",
     "semantic_hash": ""
   },
   "src/components/UiSizeModal.tsx": {

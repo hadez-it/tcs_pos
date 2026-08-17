@@ -1,22 +1,22 @@
 # Graph Report - mibayate_pos  (2026-08-17)
 
 ## Corpus Check
-- 115 files · ~91,855 words
+- 115 files · ~92,078 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 693 nodes · 1373 edges · 54 communities (41 shown, 13 thin omitted)
+- 696 nodes · 1377 edges · 57 communities (43 shown, 14 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 13 edges (avg confidence: 0.53)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `eae58074`
+- Built from commit: `ddb21f94`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
-- Branch
-- App.tsx
+- Product
+- uiScale.ts
 - escpos.ts
 - compress.py
 - dependencies
@@ -60,10 +60,13 @@
 - realtimeSync.ts
 - CashierDashboard.tsx
 - supabase.ts
-- SaleWithItems
 - CashierSalesHistory.tsx
+- backNavigation.ts
 - types.ts
 - OwnerDashboard.tsx
+- App.tsx
+- useToast
+- PullToRefresh.tsx
 
 ## God Nodes (most connected - your core abstractions)
 1. `UserProfile` - 35 edges
@@ -80,14 +83,14 @@
 ## Surprising Connections (you probably didn't know these)
 - `Supabase Offline Fallback Rationale` --semantically_similar_to--> `Profiles Table`  [INFERRED] [semantically similar]
   AGENTS.md → supabase_schema.txt
+- `AuthProps` --references--> `UserProfile`  [EXTRACTED]
+  src/components/Auth.tsx → src/types.ts
 - `CashierDashboardProps` --references--> `UserProfile`  [EXTRACTED]
   src/components/CashierDashboard.tsx → src/types.ts
-- `CashiersTabProps` --references--> `UserProfile`  [EXTRACTED]
-  src/components/dashboard/CashiersTab.tsx → src/types.ts
-- `compress_file()` --calls--> `validate()`  [EXTRACTED]
-  .agents/skills/caveman-compress/scripts/compress.py → .agents/skills/caveman-compress/scripts/validate.py
-- `ExitPrompt()` --calls--> `useToast()`  [EXTRACTED]
-  src/App.tsx → src/utils/toast.tsx
+- `CsvImportModalProps` --references--> `Product`  [EXTRACTED]
+  src/components/CsvImportModal.tsx → src/types.ts
+- `QuickRestockModalProps` --references--> `Product`  [EXTRACTED]
+  src/components/QuickRestockModal.tsx → src/types.ts
 
 ## Import Cycles
 - None detected.
@@ -96,15 +99,15 @@
 - **Multi-branch Architecture Data Models** — supabase_schema_branches, supabase_schema_products, supabase_schema_sales, supabase_schema_cash_flow [EXTRACTED 1.00]
 - **Sales Transaction Processing Flow** — supabase_schema_sales, supabase_schema_sale_items, supabase_schema_inventory_transactions [EXTRACTED 1.00]
 
-## Communities (54 total, 13 thin omitted)
+## Communities (57 total, 14 thin omitted)
 
-### Community 0 - "Branch"
-Cohesion: 0.10
-Nodes (22): BarcodePrintModalProps, CartItem, CsvImportModal(), CsvImportModalProps, BranchesTabProps, ProductsTab(), ProductsTabProps, DeleteRequestsTabProps (+14 more)
+### Community 0 - "Product"
+Cohesion: 0.15
+Nodes (14): BarcodePrintModalProps, CartItem, ProductsTab(), ProductsTabProps, LabelGeneratorTabProps, ProductFormData, ProductModal(), ProductModalProps (+6 more)
 
-### Community 1 - "App.tsx"
-Cohesion: 0.08
-Nodes (34): App(), ExitPrompt(), OfflineSyncBar(), PullToRefresh(), PullToRefreshProps, SetupBanner(), SUPABASE_SCHEMA_SQL, depthState() (+26 more)
+### Community 1 - "uiScale.ts"
+Cohesion: 0.22
+Nodes (12): applyUiScale(), DEFAULT_UI_SCALE, getStoredUiScale(), initUiScale(), MAX_UI_SCALE, MIN_UI_SCALE, saveUiScale(), STEP_UI_SCALE (+4 more)
 
 ### Community 2 - "escpos.ts"
 Cohesion: 0.09
@@ -215,52 +218,60 @@ Cohesion: 0.40
 Nodes (4): caveman-learn skill, Honesty, Install, What it does
 
 ### Community 47 - "realtimeSync.ts"
-Cohesion: 0.31
-Nodes (13): handleCustomDataChange(), handleOnline(), handleVisibilityOrFocus(), listeners, notifyDataChanged(), notifyListeners(), setupRealtimeChannel(), startSyncEngine() (+5 more)
+Cohesion: 0.30
+Nodes (14): handleCustomDataChange(), handleOnline(), handleVisibilityOrFocus(), listeners, notifyDataChanged(), notifyListeners(), setupRealtimeChannel(), startSyncEngine() (+6 more)
 
 ### Community 48 - "CashierDashboard.tsx"
-Cohesion: 0.18
-Nodes (20): BarcodeScannerModal(), BarcodeScannerModalProps, CashierDashboard(), CashierDashboardProps, getQuickCashOptions(), HeldCart, DeleteRequestsTab(), OwnerDashboard() (+12 more)
+Cohesion: 0.26
+Nodes (10): CashierDashboard(), CashierDashboardProps, formatPaymentMethodLabel(), getQuickCashOptions(), HeldCart, MobileWalletType, UiSizeModal(), UiSizeModalProps (+2 more)
 
 ### Community 49 - "supabase.ts"
-Cohesion: 0.15
-Nodes (15): Auth(), AuthProps, ChangePasswordTab(), ChangePasswordTabProps, TransactionsTabProps, CashierModal(), CashierModalProps, OwnerDashboardProps (+7 more)
+Cohesion: 0.11
+Nodes (27): CashierSalesHistoryProps, ChangePasswordTab(), ChangePasswordTabProps, BranchesTabProps, CashiersTabProps, StaffPerformanceTabProps, BranchModal(), BranchModalProps (+19 more)
 
-### Community 50 - "SaleWithItems"
-Cohesion: 0.18
-Nodes (13): OverviewTab(), OverviewTabProps, SalesAnalytics, StaffPerformanceTab(), StaffPerformanceTabProps, FilterDrawer(), FilterDrawerProps, SaleReportTabProps (+5 more)
+### Community 50 - "CashierSalesHistory.tsx"
+Cohesion: 0.19
+Nodes (15): CashierSalesHistory(), DatePreset, PaymentFilter, SortOption, StatusFilter, ViewMode, SaleReportTab(), SaleReportTabProps (+7 more)
 
-### Community 51 - "CashierSalesHistory.tsx"
-Cohesion: 0.18
-Nodes (12): CashierSalesHistory(), CashierSalesHistoryProps, DatePreset, PaymentFilter, SortOption, StatusFilter, ViewMode, PosStore (+4 more)
+### Community 51 - "backNavigation.ts"
+Cohesion: 0.23
+Nodes (14): App(), BarcodeScannerModal(), BarcodeScannerModalProps, depthState(), handleCapacitorBackButton(), handleKeyDown(), handlePopState(), Layer (+6 more)
 
 ### Community 52 - "types.ts"
-Cohesion: 0.20
-Nodes (12): CashFlowTab(), CashFlowTabProps, CashFlowModal(), CashFlowModalProps, EXPENSE_CATEGORIES, INCOME_CATEGORIES, CashFlowEntry, CashFlowType (+4 more)
+Cohesion: 0.17
+Nodes (12): CashFlowTab(), CashFlowTabProps, TransactionsTabProps, FilterDrawer(), FilterDrawerProps, CashFlowType, DeleteRequestStatus, PaymentMethod (+4 more)
 
 ### Community 53 - "OwnerDashboard.tsx"
-Cohesion: 0.35
-Nodes (8): BranchesTab(), CashiersTab(), CashiersTabProps, TransactionsTab(), dbService, usePosStore, InventoryTransaction, formatDisplayEmail()
+Cohesion: 0.22
+Nodes (13): BranchesTab(), CashiersTab(), OverviewTab(), OverviewTabProps, SalesAnalytics, StaffPerformanceTab(), TransactionsTab(), OwnerDashboard() (+5 more)
+
+### Community 54 - "App.tsx"
+Cohesion: 0.22
+Nodes (9): ExitPrompt(), Auth(), AuthProps, OfflineSyncBar(), SetupBanner(), SUPABASE_SCHEMA_SQL, setExitPromptHandler(), formatEmailWithDefaultDomain() (+1 more)
+
+### Community 55 - "useToast"
+Cohesion: 0.21
+Nodes (10): CsvImportModal(), CsvImportModalProps, DeleteRequestsTab(), DeleteRequestsTabProps, Toast, ToastContext, ToastContextValue, ToastProvider() (+2 more)
 
 ## Knowledge Gaps
-- **271 isolated node(s):** `name`, `version`, `license`, `private`, `type` (+266 more)
+- **273 isolated node(s):** `name`, `version`, `license`, `private`, `type` (+268 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **13 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **14 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
+- **Why does `UserProfile` connect `supabase.ts` to `Product`, `CashierDashboard.tsx`, `CashierSalesHistory.tsx`, `types.ts`, `OwnerDashboard.tsx`, `App.tsx`, `useToast`?**
+  _High betweenness centrality (0.009) - this node is a cross-community bridge._
 - **Why does `dependencies` connect `dependencies` to `devDependencies`?**
   _High betweenness centrality (0.009) - this node is a cross-community bridge._
-- **Why does `UserProfile` connect `supabase.ts` to `Branch`, `App.tsx`, `CashierDashboard.tsx`, `SaleWithItems`, `CashierSalesHistory.tsx`, `types.ts`, `OwnerDashboard.tsx`?**
+- **Why does `Product` connect `Product` to `escpos.ts`, `CashierDashboard.tsx`, `supabase.ts`, `types.ts`, `OwnerDashboard.tsx`, `useToast`?**
   _High betweenness centrality (0.009) - this node is a cross-community bridge._
-- **Why does `Product` connect `Branch` to `escpos.ts`, `CashierDashboard.tsx`, `supabase.ts`, `SaleWithItems`, `CashierSalesHistory.tsx`, `types.ts`, `OwnerDashboard.tsx`?**
-  _High betweenness centrality (0.008) - this node is a cross-community bridge._
 - **What connects `name`, `version`, `license` to the rest of the system?**
-  _271 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `Branch` be split into smaller, more focused modules?**
-  _Cohesion score 0.10256410256410256 - nodes in this community are weakly interconnected._
-- **Should `App.tsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.0753045404208195 - nodes in this community are weakly interconnected._
+  _273 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `escpos.ts` be split into smaller, more focused modules?**
   _Cohesion score 0.08548479632816983 - nodes in this community are weakly interconnected._
+- **Should `compress.py` be split into smaller, more focused modules?**
+  _Cohesion score 0.1036036036036036 - nodes in this community are weakly interconnected._
+- **Should `dependencies` be split into smaller, more focused modules?**
+  _Cohesion score 0.05128205128205128 - nodes in this community are weakly interconnected._

@@ -67,7 +67,7 @@ export interface Sale {
   branch_name?: string;
   total_amount: number;
   discount: number;
-  payment_method: 'cash' | 'card' | 'mobile';
+  payment_method: SalePaymentMethod;
   customer_name?: string;
   customer_phone?: string;
   created_at: string;
@@ -122,6 +122,7 @@ export interface InventoryTransaction {
 
 export type CashFlowType = 'income' | 'expense';
 export type PaymentMethod = 'cash' | 'card' | 'mobile' | 'bank';
+export type SalePaymentMethod = 'cash' | 'card' | 'mobile' | 'kbzpay' | 'ayapay' | 'wavepay' | 'other' | string;
 
 export interface CashFlowEntry {
   id: string;

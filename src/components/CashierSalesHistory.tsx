@@ -45,7 +45,7 @@ interface CashierSalesHistoryProps {
 }
 
 type DatePreset = 'all' | 'today' | 'yesterday' | 'week' | 'month' | 'custom';
-type PaymentFilter = 'all' | 'cash' | 'card' | 'mobile';
+type PaymentFilter = 'all' | 'cash' | 'card' | 'mobile' | 'kbzpay' | 'ayapay' | 'wavepay' | 'other';
 type StatusFilter = 'all' | 'completed' | 'pending' | 'approved' | 'rejected';
 type SortOption = 'newest' | 'oldest' | 'amount_high' | 'amount_low';
 type ViewMode = 'table' | 'cards';
@@ -199,8 +199,13 @@ export default function CashierSalesHistory({
         return false;
       }
 
-      if (paymentFilter !== 'all' && sale.payment_method !== paymentFilter) {
-        return false;
+      if (paymentFilter !== 'all') {
+        if (paymentFilter === 'mobile') {
+          const isMobileMethod = ['mobile', 'kbzpay', 'ayapay', 'wavepay', 'other'].includes(sale.payment_method);
+          if (!isMobileMethod) return false;
+        } else if (sale.payment_method !== paymentFilter) {
+          return false;
+        }
       }
 
       if (statusFilter !== 'all') {
@@ -272,18 +277,50 @@ export default function CashierSalesHistory({
         </span>
       );
     }
+    if (method === 'kbzpay') {
+      return (
+        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-slate-900 text-white shadow-2xs">
+          <Smartphone className="w-3 h-3 text-slate-200" />
+          <span>KBZPay</span>
+        </span>
+      );
+    }
+    if (method === 'ayapay') {
+      return (
+        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-slate-900 text-white shadow-2xs">
+          <Smartphone className="w-3 h-3 text-slate-200" />
+          <span>AYA Pay</span>
+        </span>
+      );
+    }
+    if (method === 'wavepay') {
+      return (
+        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-slate-900 text-white shadow-2xs">
+          <Smartphone className="w-3 h-3 text-slate-200" />
+          <span>WavePay</span>
+        </span>
+      );
+    }
+    if (method === 'other') {
+      return (
+        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-slate-800 text-white shadow-2xs">
+          <Smartphone className="w-3 h-3 text-slate-200" />
+          <span>Other Pay</span>
+        </span>
+      );
+    }
     if (method === 'mobile') {
       return (
         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-slate-900 text-white shadow-2xs">
           <Smartphone className="w-3 h-3 text-slate-200" />
-          <span>Mobile / QR</span>
+          <span>Mobile</span>
         </span>
       );
     }
     return (
       <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-slate-200 text-slate-900 border border-slate-300">
         <CreditCard className="w-3 h-3 text-slate-700" />
-        <span>Card</span>
+        <span className="uppercase">{method}</span>
       </span>
     );
   };
@@ -920,9 +957,12 @@ export default function CashierSalesHistory({
             <div className="grid grid-cols-2 gap-2">
               {[
                 { val: 'all', label: 'All Methods' },
-                { val: 'cash', label: 'Cash Only' },
-                { val: 'mobile', label: 'Mobile / QR' },
-                { val: 'card', label: 'Card Only' }
+                { val: 'cash', label: 'Cash' },
+                { val: 'mobile', label: 'All Mobile / QR' },
+                { val: 'kbzpay', label: 'KBZPay' },
+                { val: 'ayapay', label: 'AYA Pay' },
+                { val: 'wavepay', label: 'WavePay' },
+                { val: 'other', label: 'Other Wallet' },
               ].map((opt) => (
                 <button
                   key={opt.val}

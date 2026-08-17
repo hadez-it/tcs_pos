@@ -31,7 +31,7 @@ export function generateSalesReportWorkbook(sales: SaleWithItems[]): XLSX.WorkBo
     .filter((s) => s.payment_method === 'card')
     .reduce((sum, s) => sum + (s.total_amount || 0), 0);
   const mobileSalesTotal = sales
-    .filter((s) => s.payment_method === 'mobile')
+    .filter((s) => ['mobile', 'kbzpay', 'ayapay', 'wavepay', 'other'].includes(s.payment_method))
     .reduce((sum, s) => sum + (s.total_amount || 0), 0);
 
   const summaryRows: (string | number)[][] = [
