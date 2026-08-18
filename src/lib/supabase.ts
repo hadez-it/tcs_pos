@@ -37,6 +37,46 @@ const randomSku = () => {
 const normalizeSku = (value?: string | null) => (value || '').trim().toUpperCase();
 const normalizeBarcode = (value?: string | null) => (value || '').trim();
 
+export const checkBarcodeExistsInDb = async (barcode: string, excludeId?: string): Promise<boolean> => {
+  if (!supabase || !barcode) return false;
+  try {
+    let query = supabase
+      .from('products')
+      .select('id')
+      .eq('barcode', normalizeBarcode(barcode))
+      .limit(1);
+    if (excludeId) {
+      query = query.neq('id', excludeId);
+    }
+    const { data, error } = await query;
+    if (error) throw error;
+    return !!(data && data.length > 0);
+  } catch (err) {
+    console.warn('checkBarcodeExistsInDb lookup failed:', err);
+    return false;
+  }
+};
+
+export const checkSkuExistsInDb = async (sku: string, excludeId?: string): Promise<boolean> => {
+  if (!supabase || !sku) return false;
+  try {
+    let query = supabase
+      .from('products')
+      .select('id')
+      .ilike('sku', normalizeSku(sku))
+      .limit(1);
+    if (excludeId) {
+      query = query.neq('id', excludeId);
+    }
+    const { data, error } = await query;
+    if (error) throw error;
+    return !!(data && data.length > 0);
+  } catch (err) {
+    console.warn('checkSkuExistsInDb lookup failed:', err);
+    return false;
+  }
+};
+
 const collectProductCodes = async (excludeId?: string): Promise<{ skus: Set<string>; barcodes: Set<string> }> => {
   const skus = new Set<string>();
   const barcodes = new Set<string>();
@@ -44,15 +84,37 @@ const collectProductCodes = async (excludeId?: string): Promise<{ skus: Set<stri
   if (!supabase) return { skus, barcodes };
 
   try {
-    const { data, error } = await supabase.from('products').select('id, sku, barcode');
-    if (error) throw error;
-    (data || []).forEach(row => {
-      if (excludeId && row.id === excludeId) return;
-      const sku = normalizeSku(row.sku);
-      const barcode = normalizeBarcode(row.barcode);
-      if (sku) skus.add(sku);
-      if (barcode) barcodes.add(barcode);
-    });
+    let from = 0;
+    const pageSize = 1000;
+    let hasMore = true;
+
+    while (hasMore) {
+      const { data, error } = await supabase
+        .from('products')
+        .select('id, sku, barcode')
+        .range(from, from + pageSize - 1);
+
+      if (error) throw error;
+
+      if (!data || data.length === 0) {
+        hasMore = false;
+        break;
+      }
+
+      data.forEach(row => {
+        if (excludeId && row.id === excludeId) return;
+        const sku = normalizeSku(row.sku);
+        const barcode = normalizeBarcode(row.barcode);
+        if (sku) skus.add(sku);
+        if (barcode) barcodes.add(barcode);
+      });
+
+      if (data.length < pageSize) {
+        hasMore = false;
+      } else {
+        from += pageSize;
+      }
+    }
   } catch (err) {
     console.warn('Product code lookup failed:', err);
   }
@@ -60,22 +122,65 @@ const collectProductCodes = async (excludeId?: string): Promise<{ skus: Set<stri
   return { skus, barcodes };
 };
 
-const nextSequentialBarcode = (taken: Set<string>): string => {
+const generateUniqueBarcode = async (taken: Set<string>, excludeId?: string): Promise<string> => {
   let highest = 0;
   taken.forEach(code => {
-    if (!/^\d+$/.test(code) || code.length > BARCODE_LENGTH) return;
+    if (!/^\d+$/.test(code)) return;
     const value = parseInt(code, 10);
-    if (value > highest) highest = value;
+    if (value > highest && value <= BARCODE_MAX) highest = value;
   });
 
-  let candidate = highest + 1;
-  while (candidate <= BARCODE_MAX && taken.has(String(candidate).padStart(BARCODE_LENGTH, '0'))) {
-    candidate++;
+  let candidateNum = highest + 1;
+  while (candidateNum <= BARCODE_MAX) {
+    const candidateBarcode = String(candidateNum).padStart(BARCODE_LENGTH, '0');
+    if (!taken.has(candidateBarcode)) {
+      const existsInDb = await checkBarcodeExistsInDb(candidateBarcode, excludeId);
+      if (!existsInDb) {
+        taken.add(candidateBarcode);
+        return candidateBarcode;
+      }
+      taken.add(candidateBarcode);
+    }
+    candidateNum++;
   }
-  if (candidate > BARCODE_MAX) {
-    throw new Error(`All ${BARCODE_LENGTH}-digit barcodes are in use. Widen the barcode format to add more products.`);
+
+  let attempts = 0;
+  while (attempts < 100) {
+    attempts++;
+    const randomCandidate = Math.floor(100000 + Math.random() * 900000).toString();
+    if (!taken.has(randomCandidate)) {
+      const existsInDb = await checkBarcodeExistsInDb(randomCandidate, excludeId);
+      if (!existsInDb) {
+        taken.add(randomCandidate);
+        return randomCandidate;
+      }
+      taken.add(randomCandidate);
+    }
   }
-  return String(candidate).padStart(BARCODE_LENGTH, '0');
+
+  const fallbackBarcode = Date.now().toString().slice(-6);
+  taken.add(fallbackBarcode);
+  return fallbackBarcode;
+};
+
+const generateUniqueSku = async (taken: Set<string>, excludeId?: string): Promise<string> => {
+  let attempts = 0;
+  while (attempts < 100) {
+    attempts++;
+    const sku = randomSku();
+    if (!taken.has(sku)) {
+      const existsInDb = await checkSkuExistsInDb(sku, excludeId);
+      if (!existsInDb) {
+        taken.add(sku);
+        return sku;
+      }
+      taken.add(sku);
+    }
+  }
+
+  const fallbackSku = `SKU-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+  taken.add(fallbackSku);
+  return fallbackSku;
 };
 
 const CURRENT_USER_KEY = 'retail_shop_current_user';
@@ -395,13 +500,9 @@ export const dbService = {
 
     async generateCodes(): Promise<{ sku: string; barcode: string }> {
       const { skus, barcodes } = await collectProductCodes();
-      let sku = randomSku();
-      let attempts = 0;
-      while (skus.has(sku)) {
-        if (++attempts > 50) throw new Error('Could not generate a unique SKU. Please enter one manually.');
-        sku = randomSku();
-      }
-      return { sku, barcode: nextSequentialBarcode(barcodes) };
+      const sku = await generateUniqueSku(skus);
+      const barcode = await generateUniqueBarcode(barcodes);
+      return { sku, barcode };
     },
 
     async create(prod: Omit<Product, 'id' | 'created_at'>, performedBy: string): Promise<Product> {
@@ -410,17 +511,24 @@ export const dbService = {
       const requestedSku = normalizeSku(prod.sku);
       const requestedBarcode = normalizeBarcode(prod.barcode);
 
-      if (requestedSku && skus.has(requestedSku)) {
-        throw new Error(`SKU "${requestedSku}" is already used by another product.`);
+      if (requestedSku) {
+        if (skus.has(requestedSku) || (await checkSkuExistsInDb(requestedSku))) {
+          throw new Error(`SKU "${requestedSku}" is already used by another product.`);
+        }
       }
-      if (requestedBarcode && barcodes.has(requestedBarcode)) {
-        throw new Error(`Barcode "${requestedBarcode}" is already used by another product.`);
+      if (requestedBarcode) {
+        if (barcodes.has(requestedBarcode) || (await checkBarcodeExistsInDb(requestedBarcode))) {
+          throw new Error(`Barcode "${requestedBarcode}" is already used by another product.`);
+        }
       }
+
+      const finalSku = requestedSku || (await generateUniqueSku(skus));
+      const finalBarcode = requestedBarcode || (await generateUniqueBarcode(barcodes));
 
       const newProd: Product = {
         ...prod,
-        sku: requestedSku || randomSku(),
-        barcode: requestedBarcode || nextSequentialBarcode(barcodes),
+        sku: finalSku,
+        barcode: finalBarcode,
         id: generateId(),
         created_at: new Date().toISOString()
       };
@@ -432,6 +540,18 @@ export const dbService = {
         .single();
       if (error) {
         console.error('Database error in products.create:', error);
+        if (
+          (error as any).code === '23505' ||
+          /duplicate key value violates unique constraint/i.test(error.message || '')
+        ) {
+          if (/barcode/i.test(error.message || '')) {
+            throw new Error(`Barcode "${finalBarcode}" already exists in the database. Please generate a new barcode.`);
+          }
+          if (/sku/i.test(error.message || '')) {
+            throw new Error(`SKU "${finalSku}" already exists in the database. Please enter or generate a different SKU.`);
+          }
+          throw new Error('A product with this SKU or Barcode already exists in the database.');
+        }
         if (
           (error as any).code === '42501' ||
           /row-level security|violates.*policy|permission denied/i.test(error.message || '')
@@ -468,10 +588,10 @@ export const dbService = {
         const { skus, barcodes } = await collectProductCodes(id);
         const nextSku = normalizeSku(updates.sku);
         const nextBarcode = normalizeBarcode(updates.barcode);
-        if (nextSku && skus.has(nextSku)) {
+        if (nextSku && (skus.has(nextSku) || (await checkSkuExistsInDb(nextSku, id)))) {
           throw new Error(`SKU "${nextSku}" is already used by another product.`);
         }
-        if (nextBarcode && barcodes.has(nextBarcode)) {
+        if (nextBarcode && (barcodes.has(nextBarcode) || (await checkBarcodeExistsInDb(nextBarcode, id)))) {
           throw new Error(`Barcode "${nextBarcode}" is already used by another product.`);
         }
       }
@@ -491,6 +611,18 @@ export const dbService = {
         .single();
       if (error) {
         console.error('Database error in products.update:', error);
+        if (
+          (error as any).code === '23505' ||
+          /duplicate key value violates unique constraint/i.test(error.message || '')
+        ) {
+          if (/barcode/i.test(error.message || '')) {
+            throw new Error('Barcode already exists in the database. Please enter a different barcode.');
+          }
+          if (/sku/i.test(error.message || '')) {
+            throw new Error('SKU already exists in the database. Please enter a different SKU.');
+          }
+          throw new Error('A product with this SKU or Barcode already exists in the database.');
+        }
         if (
           (error as any).code === '42501' ||
           /row-level security|violates.*policy|permission denied/i.test(error.message || '')
@@ -582,20 +714,12 @@ export const dbService = {
       const targetBranchId = branchId || null;
       const targetBranchName = branchName || null;
 
-      const usedBarcodes = new Set<string>();
-      const usedSkus = new Set<string>();
+      const { skus: usedSkus, barcodes: usedBarcodes } = await collectProductCodes();
       const usedIds = new Set<string>();
-
-      const { data: remoteRows } = await supabase.from('products').select('id, sku, barcode');
-      (remoteRows || []).forEach(p => {
-        if (p.barcode) usedBarcodes.add(normalizeBarcode(p.barcode));
-        if (p.sku) usedSkus.add(normalizeSku(p.sku));
-        if (p.id) usedIds.add(p.id);
-      });
 
       const upsertItems: Product[] = [];
 
-      importedItems.forEach(item => {
+      for (const item of importedItems) {
         let idKey = generateId();
         while (usedIds.has(idKey)) {
           idKey = generateId();
@@ -603,17 +727,14 @@ export const dbService = {
 
         const candidateBarcode = normalizeBarcode(item.barcode);
         let barcode = candidateBarcode;
-        if (!barcode || usedBarcodes.has(barcode)) {
-          barcode = nextSequentialBarcode(usedBarcodes);
+        if (!barcode || usedBarcodes.has(barcode) || (await checkBarcodeExistsInDb(barcode))) {
+          barcode = await generateUniqueBarcode(usedBarcodes);
         }
 
         const candidateSku = normalizeSku(item.sku || idKey);
         let sku = candidateSku;
-        if (!sku || usedSkus.has(sku)) {
-          sku = normalizeSku(idKey);
-          while (usedSkus.has(sku)) {
-            sku = normalizeSku(generateId());
-          }
+        if (!sku || usedSkus.has(sku) || (await checkSkuExistsInDb(sku))) {
+          sku = await generateUniqueSku(usedSkus);
         }
 
         usedIds.add(idKey);
@@ -644,7 +765,7 @@ export const dbService = {
         };
 
         upsertItems.push(fullItem);
-      });
+      }
 
       const { error } = await supabase.from('products').upsert(upsertItems);
       if (error) {
