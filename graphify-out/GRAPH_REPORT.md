@@ -1,21 +1,20 @@
 # Graph Report - mibayate_pos  (2026-08-18)
 
 ## Corpus Check
-- 116 files · ~93,692 words
+- 116 files · ~93,795 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 699 nodes · 1385 edges · 49 communities (36 shown, 13 thin omitted)
+- 699 nodes · 1388 edges · 48 communities (35 shown, 13 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 13 edges (avg confidence: 0.53)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `e1938469`
+- Built from commit: `c58ca1a1`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
-- uiScale.ts
 - escpos.ts
 - compress.py
 - dependencies
@@ -69,20 +68,20 @@
 6. `buildThermalLabel()` - 23 edges
 7. `Product` - 23 edges
 8. `BarcodePrintModal()` - 22 edges
-9. `PrinterSettings()` - 20 edges
-10. `useToast()` - 19 edges
+9. `useToast()` - 21 edges
+10. `PrinterSettings()` - 20 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `Supabase Offline Fallback Rationale` --semantically_similar_to--> `Profiles Table`  [INFERRED] [semantically similar]
   AGENTS.md → supabase_schema.txt
-- `AuthProps` --references--> `UserProfile`  [EXTRACTED]
-  src/components/Auth.tsx → src/types.ts
 - `BarcodePrintModalProps` --references--> `Product`  [EXTRACTED]
   src/components/BarcodePrintModal.tsx → src/types.ts
 - `CashierDashboardProps` --references--> `UserProfile`  [EXTRACTED]
   src/components/CashierDashboard.tsx → src/types.ts
 - `CartItem` --references--> `Product`  [EXTRACTED]
   src/components/CashierDashboard.tsx → src/types.ts
+- `LabelGeneratorTabProps` --references--> `Product`  [EXTRACTED]
+  src/components/LabelGeneratorTab.tsx → src/types.ts
 
 ## Import Cycles
 - None detected.
@@ -91,11 +90,7 @@
 - **Multi-branch Architecture Data Models** — supabase_schema_branches, supabase_schema_products, supabase_schema_sales, supabase_schema_cash_flow [EXTRACTED 1.00]
 - **Sales Transaction Processing Flow** — supabase_schema_sales, supabase_schema_sale_items, supabase_schema_inventory_transactions [EXTRACTED 1.00]
 
-## Communities (49 total, 13 thin omitted)
-
-### Community 1 - "uiScale.ts"
-Cohesion: 0.23
-Nodes (12): applyUiScale(), DEFAULT_UI_SCALE, getStoredUiScale(), initUiScale(), MAX_UI_SCALE, MIN_UI_SCALE, saveUiScale(), STEP_UI_SCALE (+4 more)
+## Communities (48 total, 13 thin omitted)
 
 ### Community 2 - "escpos.ts"
 Cohesion: 0.08
@@ -211,11 +206,11 @@ Nodes (14): handleCustomDataChange(), handleOnline(), handleVisibilityOrFocus(),
 
 ### Community 49 - "OwnerDashboard.tsx"
 Cohesion: 0.06
-Nodes (77): CashierSalesHistoryProps, ChangePasswordTab(), ChangePasswordTabProps, CsvImportModal(), CsvImportModalProps, BranchesTab(), BranchesTabProps, CashFlowTab() (+69 more)
+Nodes (82): Auth(), AuthProps, CashierSalesHistoryProps, ChangePasswordTab(), ChangePasswordTabProps, CsvImportModal(), CsvImportModalProps, BranchesTab() (+74 more)
 
 ### Community 51 - "CashierDashboard.tsx"
-Cohesion: 0.06
-Nodes (51): App(), ExitPrompt(), Auth(), AuthProps, BarcodeScannerModal(), BarcodeScannerModalProps, CartItem, CashierDashboard() (+43 more)
+Cohesion: 0.05
+Nodes (58): App(), ExitPrompt(), BarcodeScannerModal(), BarcodeScannerModalProps, CartItem, CashierDashboard(), CashierDashboardProps, formatPaymentMethodLabel() (+50 more)
 
 ## Knowledge Gaps
 - **273 isolated node(s):** `name`, `version`, `license`, `private`, `type` (+268 more)

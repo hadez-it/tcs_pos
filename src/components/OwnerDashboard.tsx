@@ -1629,8 +1629,15 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
             setShowProductModal(false);
             setEditingProduct(null);
           }}
-          onSuccess={() => {
-            loadData();
+          onSuccess={(savedProduct) => {
+            if (savedProduct) {
+              setProducts(
+                editingProduct
+                  ? products.map(p => (p.id === savedProduct.id ? savedProduct : p))
+                  : [savedProduct, ...products.filter(p => p.id !== savedProduct.id)]
+              );
+            }
+            loadData(true);
           }}
         />
       )}

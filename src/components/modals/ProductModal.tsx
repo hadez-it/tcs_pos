@@ -1,26 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Package, AlertTriangle, CheckCircle, Tag, RefreshCw, DollarSign, Layers } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Product, Branch, UserProfile } from '../../types';
 import { dbService } from '../../lib/supabase';
+import { useToast } from '../../utils/toast';
 import SearchableCategorySelect from '../SearchableCategorySelect';
 
 const productSchema = z.object({
   name: z.string().min(1, 'Product Name is required'),
-  sku: z.string().min(1, 'SKU is required'),
+  sku: z.string().optional(),
   barcode: z.string().optional(),
   category: z.string().min(1, 'Category is required'),
   price_variant: z.string().optional(),
   description: z.string().optional(),
-  cost: z.number().min(0, 'Cost must be 0 or greater'),
-  price: z.number().min(0, 'Price must be 0 or greater'),
-  unit_amount: z.number().min(0.01, 'Unit amount must be greater than 0'),
+  cost: z.number().min(0, 'Cost must be 0 or greater').default(0),
+  price: z.number().min(0, 'Price must be 0 or greater').default(0),
+  unit_amount: z.number().min(0.01, 'Unit amount must be greater than 0').default(1),
   unit_name: z.string().optional(),
-  use_stock: z.boolean(),
-  stock: z.number().min(0, 'Stock cannot be negative'),
-  min_stock_level: z.number().min(0, 'Min stock cannot be negative'),
+  use_stock: z.boolean().default(true),
+  stock: z.number().min(0, 'Stock cannot be negative').default(0),
+  min_stock_level: z.number().min(0, 'Min stock cannot be negative').default(5),
   expiry_date: z.string().optional(),
   branch_id: z.string().optional()
 });
@@ -34,7 +35,7 @@ interface ProductModalProps {
   branches: Branch[];
   categories: string[];
   onClose: () => void;
-  onSuccess: () => void;
+  onSuccess: (savedProduct?: Product) => void;
 }
 
 export default function ProductModal({
@@ -46,6 +47,8 @@ export default function ProductModal({
   onClose,
   onSuccess
 }: ProductModalProps) {
+  const { toast } = useToast();
+  const scrollRef = useRef<HTMLDivElement>(null);
   const [formError, setFormError] = useState<string | null>(null);
   const [formSuccess, setFormSuccess] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -58,16 +61,16 @@ export default function ProductModal({
       name: editingProduct?.name || '',
       sku: editingProduct?.sku || '',
       barcode: editingProduct?.barcode || '',
-      category: editingProduct?.category || '',
+      category: editingProduct?.category || 'General',
       price_variant: editingProduct?.price_variant || 'Standard',
       description: editingProduct?.description || '',
-      cost: editingProduct?.cost || 0,
-      price: editingProduct?.price || 0,
-      unit_amount: editingProduct?.unit_amount || 1,
+      cost: editingProduct?.cost ?? 0,
+      price: editingProduct?.price ?? 0,
+      unit_amount: editingProduct?.unit_amount ?? 1,
       unit_name: editingProduct?.unit_name || 'pcs',
       use_stock: editingProduct?.use_stock !== false,
-      stock: editingProduct?.stock || 0,
-      min_stock_level: editingProduct?.min_stock_level || 5,
+      stock: editingProduct?.stock ?? 0,
+      min_stock_level: editingProduct?.min_stock_level ?? 5,
       expiry_date: editingProduct?.expiry_date || '',
       branch_id: editingProduct?.branch_id || (user.role === 'manager' && user.branch_id ? user.branch_id : '')
     }
@@ -76,7 +79,6 @@ export default function ProductModal({
   const formValues = watch();
 
   useEffect(() => {
-    // Collect zod errors and set them to formError state
     const errorKeys = Object.keys(errors);
     if (errorKeys.length > 0) {
       const firstError = errors[errorKeys[0] as keyof ProductFormData]?.message;
@@ -114,37 +116,35 @@ export default function ProductModal({
       const selectedBranch = branches.find(b => b.id === data.branch_id);
       
       const payload = {
-        name: data.name,
-        sku: data.sku.toUpperCase(),
-        barcode: data.barcode || '',
-        description: data.description || '',
-        category: data.category,
+        name: data.name.trim(),
+        sku: (data.sku || '').trim().toUpperCase(),
+        barcode: (data.barcode || '').trim(),
+        description: (data.description || '').trim(),
+        category: (data.category || 'General').trim(),
         use_stock: data.use_stock,
-        price: data.price,
-        cost: data.cost,
-        unit_amount: data.unit_amount,
-        unit_name: data.unit_name || 'pcs',
-        stock: data.stock,
-        min_stock_level: data.min_stock_level,
-        price_variant: data.price_variant || 'Standard',
+        price: Number(data.price) || 0,
+        cost: Number(data.cost) || 0,
+        unit_amount: Number(data.unit_amount) || 1,
+        unit_name: (data.unit_name || 'pcs').trim(),
+        stock: Number(data.stock) || 0,
+        min_stock_level: Number(data.min_stock_level) || 5,
+        price_variant: (data.price_variant || 'Standard').trim(),
         expiry_date: data.expiry_date || null,
         branch_id: data.branch_id || null,
         branch_name: selectedBranch ? selectedBranch.name : null
       };
 
+      let savedProduct: Product;
       if (editingProduct) {
-        await dbService.products.update(editingProduct.id, payload, user.name);
-        setFormSuccess('Product updated successfully!');
+        savedProduct = await dbService.products.update(editingProduct.id, payload, user.name);
+        toast('Product updated successfully!', 'success');
       } else {
-        await dbService.products.create(payload, user.name);
-        setFormSuccess('Product created successfully!');
+        savedProduct = await dbService.products.create(payload, user.name);
+        toast('Product created successfully!', 'success');
       }
 
-      setTimeout(() => {
-        onSuccess();
-        onClose();
-      }, 1000);
-
+      onSuccess(savedProduct);
+      onClose();
     } catch (err: any) {
       console.error('Error saving product:', err);
       const msg = err?.message || '';
@@ -152,15 +152,28 @@ export default function ProductModal({
         err?.code === '42501' ||
         /row-level security|permission denied|violates.*policy/i.test(msg)
       ) {
-        setFormError(
-          editingProduct
-            ? 'Unable to update product. Please check your permissions and try again.'
-            : 'Unable to create product. Please check your permissions and try again.'
-        );
+        const permErr = editingProduct
+          ? 'Unable to update product. Please check your permissions and try again.'
+          : 'Unable to create product. Please check your permissions and try again.';
+        setFormError(permErr);
+        toast(permErr, 'error');
       } else {
-        setFormError(msg || 'Failed to save product');
+        const finalMsg = msg || 'Failed to save product';
+        setFormError(finalMsg);
+        toast(finalMsg, 'error');
       }
       setIsSubmitting(false);
+      scrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const onError = (formErrors: any) => {
+    const errorKeys = Object.keys(formErrors);
+    if (errorKeys.length > 0) {
+      const firstError = formErrors[errorKeys[0]]?.message || 'Please fill in all required fields.';
+      setFormError(firstError);
+      toast(firstError, 'error');
+      scrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -180,8 +193,8 @@ export default function ProductModal({
           </button>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} onKeyDown={(e) => { if (e.key === 'Enter' && !e.defaultPrevented) e.preventDefault(); }} className="flex flex-col flex-1 overflow-hidden min-h-0 text-xs">
-          <div className="p-5 overflow-y-auto space-y-5 flex-1">
+        <form onSubmit={handleSubmit(onSubmit, onError)} onKeyDown={(e) => { if (e.key === 'Enter' && !e.defaultPrevented) e.preventDefault(); }} className="flex flex-col flex-1 overflow-hidden min-h-0 text-xs">
+          <div ref={scrollRef} className="p-5 overflow-y-auto space-y-5 flex-1">
             {formError && (
               <div className="p-3 bg-red-50 border border-red-100 rounded-xl text-xs text-red-700 flex items-start space-x-1.5">
                 <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-red-500" />
@@ -249,9 +262,9 @@ export default function ProductModal({
                   <input
                     type="text"
                     {...register('sku')}
-                    disabled={!!editingProduct || isGeneratingCodes}
+                    readOnly={!!editingProduct || isGeneratingCodes}
                     placeholder="MILK-ORG-1L"
-                    className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-gray-900 disabled:opacity-50 font-mono font-bold text-gray-900 uppercase"
+                    className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-gray-900 read-only:opacity-75 font-mono font-bold text-gray-900 uppercase"
                   />
                 </div>
 
@@ -266,7 +279,7 @@ export default function ProductModal({
                     <input
                       type="text"
                       {...register('barcode')}
-                      disabled={isGeneratingCodes}
+                      readOnly={isGeneratingCodes}
                       placeholder="e.g. 000123"
                       className="flex-1 min-w-0 p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-gray-900 font-mono"
                     />
@@ -398,10 +411,10 @@ export default function ProductModal({
                   <input
                     type="number"
                     min="0"
-                    disabled={!formValues.use_stock}
+                    readOnly={!formValues.use_stock}
                     {...register('stock', { valueAsNumber: true })}
                     placeholder="0"
-                    className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-gray-900 disabled:opacity-50 font-bold"
+                    className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-gray-900 read-only:opacity-50 font-bold"
                   />
                 </div>
 
