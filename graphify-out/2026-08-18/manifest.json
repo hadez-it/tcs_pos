@@ -65,8 +65,8 @@
     "semantic_hash": ""
   },
   "src/components/OwnerDashboard.tsx": {
-    "mtime": 1787062853.8524163,
-    "ast_hash": "581fc1e0efe8c0cd5160530b36ffbff8",
+    "mtime": 1787063318.704266,
+    "ast_hash": "b011c012d7572c37b965dccf85a884c8",
     "semantic_hash": ""
   },
   "src/components/PrinterSettings.tsx": {
@@ -135,8 +135,8 @@
     "semantic_hash": "f93aee73eb3d4ab2c5d337793019a773"
   },
   "src/lib/supabase.ts": {
-    "mtime": 1787062434.812907,
-    "ast_hash": "cf6fd99d296c6bcb3fa4673c30adadda",
+    "mtime": 1787063294.2419593,
+    "ast_hash": "edfd1af4eb0f5027ec16105f54dd029a",
     "semantic_hash": ""
   },
   "src/main.tsx": {
@@ -295,8 +295,8 @@
     "semantic_hash": ""
   },
   "src/components/dashboard/ProductsTab.tsx": {
-    "mtime": 1786961669.3053267,
-    "ast_hash": "4bb35a89f4d54f0a02b28badc8361ffe",
+    "mtime": 1787063312.8037097,
+    "ast_hash": "7e0c44176220ee47a4ef9d87ab937c19",
     "semantic_hash": ""
   },
   "src/components/dashboard/StaffPerformanceTab.tsx": {

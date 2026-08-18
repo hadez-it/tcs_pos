@@ -37,18 +37,20 @@ const randomSku = () => {
 const normalizeSku = (value?: string | null) => (value || '').trim().toUpperCase();
 const normalizeBarcode = (value?: string | null) => (value || '').trim();
 
-export const checkBarcodeExistsInDb = async (barcode: string, excludeId?: string): Promise<boolean> => {
+export const checkBarcodeExistsInDb = async (barcode: string, branchId?: string | null, excludeId?: string): Promise<boolean> => {
   if (!supabase || !barcode) return false;
   try {
     let query = supabase
       .from('products')
       .select('id')
-      .eq('barcode', normalizeBarcode(barcode))
-      .limit(1);
+      .eq('barcode', normalizeBarcode(barcode));
+    if (branchId) {
+      query = query.eq('branch_id', branchId);
+    }
     if (excludeId) {
       query = query.neq('id', excludeId);
     }
-    const { data, error } = await query;
+    const { data, error } = await query.limit(1);
     if (error) throw error;
     return !!(data && data.length > 0);
   } catch (err) {
@@ -57,18 +59,20 @@ export const checkBarcodeExistsInDb = async (barcode: string, excludeId?: string
   }
 };
 
-export const checkSkuExistsInDb = async (sku: string, excludeId?: string): Promise<boolean> => {
+export const checkSkuExistsInDb = async (sku: string, branchId?: string | null, excludeId?: string): Promise<boolean> => {
   if (!supabase || !sku) return false;
   try {
     let query = supabase
       .from('products')
       .select('id')
-      .ilike('sku', normalizeSku(sku))
-      .limit(1);
+      .ilike('sku', normalizeSku(sku));
+    if (branchId) {
+      query = query.eq('branch_id', branchId);
+    }
     if (excludeId) {
       query = query.neq('id', excludeId);
     }
-    const { data, error } = await query;
+    const { data, error } = await query.limit(1);
     if (error) throw error;
     return !!(data && data.length > 0);
   } catch (err) {
@@ -512,32 +516,71 @@ export const dbService = {
       const requestedBarcode = normalizeBarcode(prod.barcode);
 
       if (requestedSku) {
-        if (skus.has(requestedSku) || (await checkSkuExistsInDb(requestedSku))) {
-          throw new Error(`SKU "${requestedSku}" is already used by another product.`);
+        if (await checkSkuExistsInDb(requestedSku, prod.branch_id || null)) {
+          throw new Error(`SKU "${requestedSku}" is already used by another product in this branch.`);
         }
       }
       if (requestedBarcode) {
-        if (barcodes.has(requestedBarcode) || (await checkBarcodeExistsInDb(requestedBarcode))) {
-          throw new Error(`Barcode "${requestedBarcode}" is already used by another product.`);
+        if (await checkBarcodeExistsInDb(requestedBarcode, prod.branch_id || null)) {
+          throw new Error(`Barcode "${requestedBarcode}" is already used by another product in this branch.`);
         }
       }
 
       const finalSku = requestedSku || (await generateUniqueSku(skus));
       const finalBarcode = requestedBarcode || (await generateUniqueBarcode(barcodes));
 
-      const newProd: Product = {
+      const { data: allBranches } = await supabase
+        .from('branches')
+        .select('*')
+        .order('name', { ascending: true });
+
+      const targetBranchId = prod.branch_id || (allBranches && allBranches[0]?.id) || null;
+      let targetBranchName = prod.branch_name || null;
+      if (targetBranchId && !targetBranchName && allBranches) {
+        const found = allBranches.find(b => b.id === targetBranchId);
+        if (found) targetBranchName = found.name;
+      }
+
+      const now = new Date().toISOString();
+      const primaryProd: Product = {
         ...prod,
         sku: finalSku,
         barcode: finalBarcode,
+        branch_id: targetBranchId,
+        branch_name: targetBranchName,
         id: generateId(),
-        created_at: new Date().toISOString()
+        created_at: now
       };
 
-      const { data, error } = await supabase
+      const itemsToInsert: Product[] = [primaryProd];
+
+      if (allBranches && allBranches.length > 0) {
+        for (const branch of allBranches) {
+          if (branch.id === targetBranchId) continue;
+
+          const alreadyInBranch = await checkBarcodeExistsInDb(finalBarcode, branch.id);
+          const skuInBranch = await checkSkuExistsInDb(finalSku, branch.id);
+
+          if (!alreadyInBranch && !skuInBranch) {
+            itemsToInsert.push({
+              ...prod,
+              id: generateId(),
+              sku: finalSku,
+              barcode: finalBarcode,
+              branch_id: branch.id,
+              branch_name: branch.name,
+              stock: 0,
+              created_at: now
+            });
+          }
+        }
+      }
+
+      const { data: insertedData, error } = await supabase
         .from('products')
-        .insert(newProd)
-        .select()
-        .single();
+        .insert(itemsToInsert)
+        .select();
+
       if (error) {
         console.error('Database error in products.create:', error);
         if (
@@ -545,12 +588,12 @@ export const dbService = {
           /duplicate key value violates unique constraint/i.test(error.message || '')
         ) {
           if (/barcode/i.test(error.message || '')) {
-            throw new Error(`Barcode "${finalBarcode}" already exists in the database. Please generate a new barcode.`);
+            throw new Error(`Barcode "${finalBarcode}" already exists in this branch.`);
           }
           if (/sku/i.test(error.message || '')) {
-            throw new Error(`SKU "${finalSku}" already exists in the database. Please enter or generate a different SKU.`);
+            throw new Error(`SKU "${finalSku}" already exists in this branch.`);
           }
-          throw new Error('A product with this SKU or Barcode already exists in the database.');
+          throw new Error('A product with this SKU or Barcode already exists in this branch.');
         }
         if (
           (error as any).code === '42501' ||
@@ -561,40 +604,33 @@ export const dbService = {
         throw error;
       }
 
-      try {
-        await supabase.from('inventory_transactions').insert({
-          id: generateId(),
-          product_id: data.id,
-          product_name: data.name,
-          branch_id: newProd.branch_id || DEFAULT_BRANCH_ID,
-          branch_name: newProd.branch_name || DEFAULT_BRANCH_NAME,
-          type: 'stock-in',
-          quantity: data.stock,
-          notes: 'Initial stock load on product creation',
-          performed_by: performedBy,
-          created_at: new Date().toISOString()
-        });
-      } catch (txErr) {
-        console.warn('inventory_transactions insert failed (non-fatal):', txErr);
+      const createdPrimary = (insertedData || []).find(p => p.id === primaryProd.id) || insertedData?.[0] || primaryProd;
+
+      if (primaryProd.stock > 0 && primaryProd.use_stock !== false) {
+        try {
+          await supabase.from('inventory_transactions').insert({
+            id: generateId(),
+            product_id: createdPrimary.id,
+            product_name: createdPrimary.name,
+            branch_id: primaryProd.branch_id || DEFAULT_BRANCH_ID,
+            branch_name: primaryProd.branch_name || DEFAULT_BRANCH_NAME,
+            type: 'stock-in',
+            quantity: primaryProd.stock,
+            notes: 'Initial stock load on product creation',
+            performed_by: performedBy,
+            created_at: now
+          });
+        } catch (txErr) {
+          console.warn('inventory_transactions insert failed (non-fatal):', txErr);
+        }
       }
 
       notifyDataChanged('products');
-      return data;
+      return createdPrimary;
     },
 
     async update(id: string, updates: Partial<Omit<Product, 'id' | 'created_at'>>, performedBy: string): Promise<Product> {
       if (!supabase) throw new Error('Supabase not configured.');
-      if (updates.sku !== undefined || updates.barcode !== undefined) {
-        const { skus, barcodes } = await collectProductCodes(id);
-        const nextSku = normalizeSku(updates.sku);
-        const nextBarcode = normalizeBarcode(updates.barcode);
-        if (nextSku && (skus.has(nextSku) || (await checkSkuExistsInDb(nextSku, id)))) {
-          throw new Error(`SKU "${nextSku}" is already used by another product.`);
-        }
-        if (nextBarcode && (barcodes.has(nextBarcode) || (await checkBarcodeExistsInDb(nextBarcode, id)))) {
-          throw new Error(`Barcode "${nextBarcode}" is already used by another product.`);
-        }
-      }
 
       const { data: current, error: fetchErr } = await supabase
         .from('products')
@@ -602,6 +638,19 @@ export const dbService = {
         .eq('id', id)
         .single();
       if (fetchErr) throw fetchErr;
+
+      const targetBranchId = updates.branch_id !== undefined ? updates.branch_id : current.branch_id;
+
+      if (updates.sku !== undefined || updates.barcode !== undefined) {
+        const nextSku = normalizeSku(updates.sku);
+        const nextBarcode = normalizeBarcode(updates.barcode);
+        if (nextSku && (await checkSkuExistsInDb(nextSku, targetBranchId, id))) {
+          throw new Error(`SKU "${nextSku}" is already used by another product in this branch.`);
+        }
+        if (nextBarcode && (await checkBarcodeExistsInDb(nextBarcode, targetBranchId, id))) {
+          throw new Error(`Barcode "${nextBarcode}" is already used by another product in this branch.`);
+        }
+      }
 
       const { data, error } = await supabase
         .from('products')
