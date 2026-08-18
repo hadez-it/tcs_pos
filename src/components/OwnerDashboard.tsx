@@ -975,6 +975,8 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                 totalCashierTxCount={totalCashierTxCount}
                 setSelectedCashierForHistory={setSelectedCashierForHistory}
                 startEditCashier={startEditCashier}
+                sales={sales}
+                cashiers={cashiers}
               />
             )}
 

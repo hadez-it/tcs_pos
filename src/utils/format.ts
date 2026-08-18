@@ -3,6 +3,32 @@ export const formatCurrency = (val?: number | null): string => {
   return `${num.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })} Ks`;
 };
 
+export const formatCompactCurrency = (val?: number | null): string => {
+  const num = typeof val === 'number' && !isNaN(val) ? val : 0;
+  if (Math.abs(num) >= 1_000_000) {
+    const formatted = (num / 1_000_000).toFixed(1).replace(/\.0$/, '');
+    return `${formatted}M Ks`;
+  }
+  if (Math.abs(num) >= 1_000) {
+    const formatted = (num / 1_000).toFixed(1).replace(/\.0$/, '');
+    return `${formatted}K Ks`;
+  }
+  return `${num.toLocaleString()} Ks`;
+};
+
+export const formatCompactNumber = (val?: number | null): string => {
+  const num = typeof val === 'number' && !isNaN(val) ? val : 0;
+  if (Math.abs(num) >= 1_000_000) {
+    const formatted = (num / 1_000_000).toFixed(1).replace(/\.0$/, '');
+    return `${formatted}M`;
+  }
+  if (Math.abs(num) >= 1_000) {
+    const formatted = (num / 1_000).toFixed(1).replace(/\.0$/, '');
+    return `${formatted}K`;
+  }
+  return num.toLocaleString();
+};
+
 export const formatDate = (dateStr: string): string => {
   return new Date(dateStr).toLocaleString();
 };
