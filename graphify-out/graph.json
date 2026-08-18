@@ -297,7 +297,7 @@
       "label": "BranchesTabProps",
       "file_type": "code",
       "source_file": "src/components/dashboard/BranchesTab.tsx",
-      "source_location": "L7",
+      "source_location": "L10",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
@@ -2166,7 +2166,7 @@
       "label": "BranchesTab()",
       "file_type": "code",
       "source_file": "src/components/dashboard/BranchesTab.tsx",
-      "source_location": "L13",
+      "source_location": "L16",
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_branchestab_branchestab",
@@ -9115,11 +9115,11 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/dashboard/BranchesTab.tsx",
-      "source_location": "L151",
+      "source_location": "L21",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_dashboard_branchestab_branchestab",
-      "target": "src_utils_format_formatcurrency"
+      "target": "src_store_useposstore_useposstore"
     },
     {
       "relation": "calls",
@@ -9127,11 +9127,11 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/dashboard/BranchesTab.tsx",
-      "source_location": "L18",
+      "source_location": "L246",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_dashboard_branchestab_branchestab",
-      "target": "src_store_useposstore_useposstore"
+      "target": "src_utils_format_formatcurrency"
     },
     {
       "relation": "calls",
@@ -11862,7 +11862,7 @@
       "context": "field",
       "confidence": "EXTRACTED",
       "source_file": "src/components/dashboard/BranchesTab.tsx",
-      "source_location": "L9",
+      "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_dashboard_branchestab_branchestabprops",
@@ -13674,7 +13674,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/components/dashboard/BranchesTab.tsx",
-      "source_location": "L3",
+      "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_dashboard_branchestab",
@@ -13686,7 +13686,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/components/dashboard/BranchesTab.tsx",
-      "source_location": "L4",
+      "source_location": "L7",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_dashboard_branchestab",
@@ -13698,7 +13698,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/components/dashboard/BranchesTab.tsx",
-      "source_location": "L5",
+      "source_location": "L8",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_dashboard_branchestab",
@@ -16446,7 +16446,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/components/dashboard/BranchesTab.tsx",
-      "source_location": "L3",
+      "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_dashboard_branchestab",
@@ -16458,7 +16458,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/components/dashboard/BranchesTab.tsx",
-      "source_location": "L4",
+      "source_location": "L7",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_dashboard_branchestab",
@@ -16470,7 +16470,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/components/dashboard/BranchesTab.tsx",
-      "source_location": "L5",
+      "source_location": "L8",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_dashboard_branchestab",
@@ -20977,22 +20977,22 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/dashboard/BranchesTab.tsx",
-      "source_location": "L13",
+      "source_location": "L10",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_dashboard_branchestab",
-      "target": "src_components_dashboard_branchestab_branchestab",
+      "target": "src_components_dashboard_branchestab_branchestabprops",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/dashboard/BranchesTab.tsx",
-      "source_location": "L7",
+      "source_location": "L16",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_dashboard_branchestab",
-      "target": "src_components_dashboard_branchestab_branchestabprops",
+      "target": "src_components_dashboard_branchestab_branchestab",
       "confidence_score": 1.0
     },
     {
@@ -24260,5 +24260,5 @@
       "source_file": "supabase_schema.txt"
     }
   ],
-  "built_at_commit": "d0bc03a822a9d2a008572046da72c29feb7d3d6e"
+  "built_at_commit": "85536d6e67f85e735f3eeb2d0fd1dad492f400e9"
 }
