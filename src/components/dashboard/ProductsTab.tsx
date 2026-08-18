@@ -63,8 +63,9 @@ export default function ProductsTab({
   };
 
   const filteredProducts = useMemo(() => {
-    return displayProducts.filter(p => {
-      const matchesSearch = p.name.toLowerCase().includes(productSearch.toLowerCase()) || 
+    const list = displayProducts.filter(p => {
+      const matchesSearch = !productSearch.trim() ||
+                            p.name.toLowerCase().includes(productSearch.toLowerCase()) || 
                             p.sku.toLowerCase().includes(productSearch.toLowerCase()) ||
                             (p.barcode && p.barcode.toLowerCase().includes(productSearch.toLowerCase()));
       const matchesCategory = categoryFilter === 'All' || p.category === categoryFilter;
@@ -77,6 +78,13 @@ export default function ProductsTab({
       }
 
       return matchesSearch && matchesCategory && matchesStock;
+    });
+
+    return [...list].sort((a, b) => {
+      const timeA = a.created_at ? new Date(a.created_at).getTime() : 0;
+      const timeB = b.created_at ? new Date(b.created_at).getTime() : 0;
+      if (timeA !== timeB) return timeB - timeA;
+      return a.name.localeCompare(b.name);
     });
   }, [displayProducts, productSearch, categoryFilter, stockFilter]);
 

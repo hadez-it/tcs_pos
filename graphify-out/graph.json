@@ -9187,7 +9187,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/dashboard/ProductsTab.tsx",
-      "source_location": "L270",
+      "source_location": "L278",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_dashboard_productstab_productstab",
@@ -9571,7 +9571,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/OwnerDashboard.tsx",
-      "source_location": "L1855",
+      "source_location": "L1858",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_ownerdashboard_ownerdashboard",
@@ -24260,5 +24260,5 @@
       "source_file": "supabase_schema.txt"
     }
   ],
-  "built_at_commit": "c58ca1a19e2e7678eaaea90ecaa6ae297779b012"
+  "built_at_commit": "2806925d3e43f2a768d514c69c1da49d752ec572"
 }

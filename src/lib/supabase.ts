@@ -493,7 +493,7 @@ export const dbService = {
       const { data, error } = await supabase
         .from('products')
         .select('*')
-        .order('name', { ascending: true });
+        .order('created_at', { ascending: false, nullsFirst: false });
       if (error) throw error;
       return data || [];
     },

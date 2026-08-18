@@ -1636,6 +1636,9 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                   ? products.map(p => (p.id === savedProduct.id ? savedProduct : p))
                   : [savedProduct, ...products.filter(p => p.id !== savedProduct.id)]
               );
+              if (user.role !== 'manager' && savedProduct.branch_id && selectedBranchId !== 'all' && selectedBranchId !== savedProduct.branch_id) {
+                setSelectedBranchId('all');
+              }
             }
             loadData(true);
           }}
