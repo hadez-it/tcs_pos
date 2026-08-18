@@ -69,7 +69,7 @@ export default function ProductModal({
       stock: editingProduct?.stock || 0,
       min_stock_level: editingProduct?.min_stock_level || 5,
       expiry_date: editingProduct?.expiry_date || '',
-      branch_id: editingProduct?.branch_id || ''
+      branch_id: editingProduct?.branch_id || (user.role === 'manager' && user.branch_id ? user.branch_id : '')
     }
   });
 
@@ -147,7 +147,19 @@ export default function ProductModal({
 
     } catch (err: any) {
       console.error('Error saving product:', err);
-      setFormError(err.message || 'Failed to save product');
+      const msg = err?.message || '';
+      if (
+        err?.code === '42501' ||
+        /row-level security|permission denied|violates.*policy/i.test(msg)
+      ) {
+        setFormError(
+          editingProduct
+            ? 'Unable to update product. Please check your permissions and try again.'
+            : 'Unable to create product. Please check your permissions and try again.'
+        );
+      } else {
+        setFormError(msg || 'Failed to save product');
+      }
       setIsSubmitting(false);
     }
   };
@@ -419,12 +431,16 @@ export default function ProductModal({
                     {...register('branch_id')}
                     className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-gray-900 font-medium"
                   >
-                    <option value="">🏢 Global Inventory / All Store Outlets</option>
-                    {branches.map(b => (
-                      <option key={b.id} value={b.id}>
-                        📍 {b.name} ({b.code})
-                      </option>
-                    ))}
+                    {user.role !== 'manager' || !user.branch_id ? (
+                      <option value="">🏢 Global Inventory / All Store Outlets</option>
+                    ) : null}
+                    {branches
+                      .filter(b => user.role !== 'manager' || !user.branch_id || b.id === user.branch_id)
+                      .map(b => (
+                        <option key={b.id} value={b.id}>
+                          📍 {b.name} ({b.code})
+                        </option>
+                      ))}
                   </select>
                 </div>
               </div>

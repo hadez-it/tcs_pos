@@ -430,7 +430,16 @@ export const dbService = {
         .insert(newProd)
         .select()
         .single();
-      if (error) throw error;
+      if (error) {
+        console.error('Database error in products.create:', error);
+        if (
+          (error as any).code === '42501' ||
+          /row-level security|violates.*policy|permission denied/i.test(error.message || '')
+        ) {
+          throw new Error('Unable to create product. Please check your permissions and try again.');
+        }
+        throw error;
+      }
 
       try {
         await supabase.from('inventory_transactions').insert({
@@ -480,7 +489,16 @@ export const dbService = {
         .eq('id', id)
         .select()
         .single();
-      if (error) throw error;
+      if (error) {
+        console.error('Database error in products.update:', error);
+        if (
+          (error as any).code === '42501' ||
+          /row-level security|violates.*policy|permission denied/i.test(error.message || '')
+        ) {
+          throw new Error('Unable to update product. Please check your permissions and try again.');
+        }
+        throw error;
+      }
 
       if (updates.stock !== undefined && updates.stock !== current.stock) {
         const diff = updates.stock - current.stock;
@@ -526,7 +544,16 @@ export const dbService = {
         .from('products')
         .update({ stock: newStock })
         .eq('id', id);
-      if (error) throw error;
+      if (error) {
+        console.error('Database error in products.restock:', error);
+        if (
+          (error as any).code === '42501' ||
+          /row-level security|violates.*policy|permission denied/i.test(error.message || '')
+        ) {
+          throw new Error('Unable to update product stock. Please check your permissions and try again.');
+        }
+        throw error;
+      }
 
       try {
         await supabase.from('inventory_transactions').insert({
@@ -620,7 +647,16 @@ export const dbService = {
       });
 
       const { error } = await supabase.from('products').upsert(upsertItems);
-      if (error) throw new Error(error.message || 'Failed to import products to database.');
+      if (error) {
+        console.error('Database error in products.bulkImport:', error);
+        if (
+          (error as any).code === '42501' ||
+          /row-level security|violates.*policy|permission denied/i.test(error.message || '')
+        ) {
+          throw new Error('Unable to import products. Please check your permissions and try again.');
+        }
+        throw new Error(error.message || 'Failed to import products to database.');
+      }
 
       notifyDataChanged('products');
       return importedItems.length;
@@ -631,7 +667,16 @@ export const dbService = {
       await supabase.from('inventory_transactions').update({ product_id: null }).eq('product_id', id);
       await supabase.from('sale_items').update({ product_id: null }).eq('product_id', id);
       const { error } = await supabase.from('products').delete().eq('id', id);
-      if (error) throw error;
+      if (error) {
+        console.error('Database error in products.delete:', error);
+        if (
+          (error as any).code === '42501' ||
+          /row-level security|violates.*policy|permission denied/i.test(error.message || '')
+        ) {
+          throw new Error('Unable to delete product. Please check your permissions and try again.');
+        }
+        throw error;
+      }
       notifyDataChanged('products');
     }
   },

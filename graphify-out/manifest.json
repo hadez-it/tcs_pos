@@ -105,8 +105,8 @@
     "semantic_hash": ""
   },
   "src/data/schemaSql.ts": {
-    "mtime": 1786885658.8067272,
-    "ast_hash": "362ee4faeb75e61c6091bb6c2699ed37",
+    "mtime": 1787061942.386498,
+    "ast_hash": "f6ae20645ba6d074e43d733c908afbb3",
     "semantic_hash": ""
   },
   "src/lib/backNavigation.ts": {
@@ -135,8 +135,8 @@
     "semantic_hash": "f93aee73eb3d4ab2c5d337793019a773"
   },
   "src/lib/supabase.ts": {
-    "mtime": 1786885604.6376204,
-    "ast_hash": "7e4b02935dd82bc04bbb8f6e1b2088fe",
+    "mtime": 1787061991.1910977,
+    "ast_hash": "d0769b73e28a5c26cce9c0e25f61f318",
     "semantic_hash": ""
   },
   "src/main.tsx": {
@@ -205,8 +205,8 @@
     "semantic_hash": ""
   },
   "supabase_schema.txt": {
-    "mtime": 1786540238.512726,
-    "ast_hash": "c6a9bb6fc253d0508f72cdd48993a128",
+    "mtime": 1787062029.6387212,
+    "ast_hash": "001f6e498b8ff5093334b06726fdd55c",
     "semantic_hash": ""
   },
   "src/components/DeleteRequestsTab.tsx": {
@@ -325,8 +325,8 @@
     "semantic_hash": ""
   },
   "src/components/modals/ProductModal.tsx": {
-    "mtime": 1786710644.95418,
-    "ast_hash": "6e16947b344100eafc163b3faf707ac1",
+    "mtime": 1787062010.5889258,
+    "ast_hash": "477dfc09ea3b9c4018e845cadffc2bcf",
     "semantic_hash": ""
   },
   "src/setupTests.ts": {
