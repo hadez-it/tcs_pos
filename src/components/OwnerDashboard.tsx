@@ -952,6 +952,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                 setSelectedBranchId={setSelectedBranchId}
                 startEditCashier={startEditCashier}
                 triggerDeleteCashier={triggerDeleteCashier}
+                openNewCashierModal={openNewCashierModal}
               />
             )}
 

@@ -1,5 +1,8 @@
-import React, { useState, useMemo } from 'react';
-import { Search, Users, Building2, Edit2, Trash2, Filter, ShieldCheck } from 'lucide-react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
+import { 
+  Search, Users, Building2, Edit2, Trash2, Filter, 
+  ShieldCheck, Plus, MoreVertical, Copy, Check, X, Shield, UserCheck
+} from 'lucide-react';
 import { usePosStore } from '../../store/usePosStore';
 import { formatDisplayEmail } from '../../utils/format';
 import { UserProfile } from '../../types';
@@ -11,6 +14,7 @@ interface CashiersTabProps {
   setSelectedBranchId: (id: string) => void;
   startEditCashier: (cashier: UserProfile) => void;
   triggerDeleteCashier: (id: string, name: string) => void;
+  openNewCashierModal?: () => void;
 }
 
 export default function CashiersTab({
@@ -18,20 +22,44 @@ export default function CashiersTab({
   selectedBranchId,
   setSelectedBranchId,
   startEditCashier,
-  triggerDeleteCashier
+  triggerDeleteCashier,
+  openNewCashierModal
 }: CashiersTabProps) {
   const { branches, cashiers } = usePosStore();
   const [cashierSearch, setCashierSearch] = useState('');
-  const [roleFilter, setRoleFilter] = useState('all');
+  const [roleFilter, setRoleFilter] = useState<'all' | 'manager' | 'cashier'>('all');
   const [showFilterDrawer, setShowFilterDrawer] = useState(false);
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+  const menuRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setOpenMenuId(null);
+      }
+    };
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setOpenMenuId(null);
+      }
+    };
+    if (openMenuId) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('keydown', handleKeyDown);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [openMenuId]);
 
   const activeFilterCount = useMemo(() => {
     let count = 0;
-    if (cashierSearch.trim()) count++;
     if (roleFilter !== 'all') count++;
     if (selectedBranchId !== 'all') count++;
     return count;
-  }, [cashierSearch, roleFilter, selectedBranchId]);
+  }, [roleFilter, selectedBranchId]);
 
   const resetFilters = () => {
     setCashierSearch('');
@@ -60,41 +88,158 @@ export default function CashiersTab({
     });
   }, [displayCashiers, cashierSearch, roleFilter]);
 
+  const totalManagers = useMemo(() => {
+    return displayCashiers.filter(c => c.role === 'manager').length;
+  }, [displayCashiers]);
+
+  const totalCashiers = useMemo(() => {
+    return displayCashiers.filter(c => c.role !== 'manager').length;
+  }, [displayCashiers]);
+
+  const filteredManagers = useMemo(() => {
+    return filteredCashiers.filter(c => c.role === 'manager').length;
+  }, [filteredCashiers]);
+
+  const filteredOnlyCashiers = useMemo(() => {
+    return filteredCashiers.filter(c => c.role !== 'manager').length;
+  }, [filteredCashiers]);
+
+  const summarySubtitle = useMemo(() => {
+    const isFiltered = cashierSearch.trim() !== '' || roleFilter !== 'all' || selectedBranchId !== 'all';
+    if (isFiltered) {
+      const mText = `${filteredManagers} ${filteredManagers === 1 ? 'manager' : 'managers'}`;
+      const cText = `${filteredOnlyCashiers} ${filteredOnlyCashiers === 1 ? 'cashier' : 'cashiers'}`;
+      return `Showing ${filteredCashiers.length} of ${displayCashiers.length} staff · ${mText} · ${cText}`;
+    }
+    const mText = `${totalManagers} ${totalManagers === 1 ? 'manager' : 'managers'}`;
+    const cText = `${totalCashiers} ${totalCashiers === 1 ? 'cashier' : 'cashiers'}`;
+    return `${displayCashiers.length} staff ${displayCashiers.length === 1 ? 'member' : 'members'} · ${mText} · ${cText}`;
+  }, [cashierSearch, roleFilter, selectedBranchId, filteredCashiers.length, displayCashiers.length, filteredManagers, filteredOnlyCashiers, totalManagers, totalCashiers]);
+
+  const getInitials = (name?: string) => {
+    if (!name || !name.trim()) return 'S';
+    const parts = name.trim().split(/\s+/);
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
+    return name.slice(0, 2).toUpperCase();
+  };
+
+  const handleCopyUsername = async (cashier: UserProfile) => {
+    const username = formatDisplayEmail(cashier.email);
+    try {
+      if (navigator.clipboard) {
+        await navigator.clipboard.writeText(username);
+      }
+      setCopiedId(cashier.id);
+      setTimeout(() => setCopiedId(null), 1800);
+    } catch {
+      setCopiedId(cashier.id);
+      setTimeout(() => setCopiedId(null), 1800);
+    }
+    setOpenMenuId(null);
+  };
+
   return (
-    <div className="space-y-6">
-      {/* Header and Search */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-xl font-extrabold text-slate-900 tracking-tight">Staff Accounts</h2>
-          <p className="text-xs text-slate-500 font-medium mt-1">Manage {filteredCashiers.length} store managers and cashiers</p>
+    <div className="space-y-4 max-w-6xl mx-auto pb-16 lg:pb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-2xs">
+        <div className="min-w-0">
+          <div className="flex items-center gap-2">
+            <h2 className="text-lg sm:text-xl font-extrabold text-slate-900 tracking-tight">Staff Accounts</h2>
+            <span className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 text-[10px] font-extrabold border border-slate-200">
+              {displayCashiers.length} Total
+            </span>
+          </div>
+          <p className="text-xs text-slate-500 font-medium mt-0.5 truncate">
+            {summarySubtitle}
+          </p>
         </div>
-        <div className="flex items-center gap-2.5">
-          <div className="relative max-w-xs w-full">
-            <Search className="absolute inset-y-0 left-0 pl-3 w-4 h-4 my-auto text-slate-400 pointer-events-none" />
-            <input
-              type="text"
-              placeholder="Search staff name or email..."
-              value={cashierSearch}
-              onChange={(e) => setCashierSearch(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-900 focus:outline-none focus:border-gray-900 shadow-2xs transition-colors"
-            />
+
+        {openNewCashierModal && (
+          <button
+            type="button"
+            onClick={openNewCashierModal}
+            className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 bg-black hover:bg-gray-800 text-white rounded-xl text-xs font-bold transition-all shadow-xs shrink-0 cursor-pointer active:scale-95"
+            aria-label="Add new staff member"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Add Staff</span>
+          </button>
+        )}
+      </div>
+
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 bg-white p-2.5 rounded-xl border border-slate-200/90 shadow-2xs">
+        <div className="relative flex-1 min-w-0">
+          <Search className="absolute inset-y-0 left-0 pl-3 w-4 h-4 my-auto text-slate-400 pointer-events-none" />
+          <input
+            type="text"
+            placeholder="Search staff by name, username, branch..."
+            value={cashierSearch}
+            onChange={(e) => setCashierSearch(e.target.value)}
+            className="w-full pl-9 pr-8 py-2 bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 rounded-xl text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-slate-900 transition-colors"
+            aria-label="Search staff"
+          />
+          {cashierSearch && (
+            <button
+              type="button"
+              onClick={() => setCashierSearch('')}
+              className="absolute inset-y-0 right-0 pr-2.5 flex items-center text-slate-400 hover:text-slate-600 cursor-pointer"
+              aria-label="Clear search"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
+
+        <div className="flex items-center gap-2 shrink-0">
+          <div className="hidden md:flex items-center p-0.5 bg-slate-100 rounded-lg border border-slate-200/70">
+            <button
+              type="button"
+              onClick={() => setRoleFilter('all')}
+              className={`px-2.5 py-1 text-[11px] font-bold rounded-md transition-all cursor-pointer ${
+                roleFilter === 'all'
+                  ? 'bg-white text-slate-900 shadow-2xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              All Roles
+            </button>
+            <button
+              type="button"
+              onClick={() => setRoleFilter('manager')}
+              className={`px-2.5 py-1 text-[11px] font-bold rounded-md transition-all cursor-pointer ${
+                roleFilter === 'manager'
+                  ? 'bg-white text-slate-900 shadow-2xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Managers
+            </button>
+            <button
+              type="button"
+              onClick={() => setRoleFilter('cashier')}
+              className={`px-2.5 py-1 text-[11px] font-bold rounded-md transition-all cursor-pointer ${
+                roleFilter === 'cashier'
+                  ? 'bg-white text-slate-900 shadow-2xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Cashiers
+            </button>
           </div>
 
           <button
+            type="button"
             onClick={() => setShowFilterDrawer(true)}
             className={`inline-flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-bold rounded-xl border transition-all cursor-pointer shadow-2xs shrink-0 ${
               activeFilterCount > 0
                 ? 'bg-black text-white border-black'
                 : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
             }`}
+            aria-label="Filter staff"
           >
             <Filter className="w-3.5 h-3.5" />
-            <span>Filters</span>
-            {activeFilterCount > 0 && (
-              <span className="w-4.5 h-4.5 rounded-full bg-white text-black text-[10px] font-black flex items-center justify-center">
-                {activeFilterCount}
-              </span>
-            )}
+            <span>{activeFilterCount > 0 ? `Filters · ${activeFilterCount}` : 'Filters'}</span>
           </button>
         </div>
       </div>
@@ -109,9 +254,9 @@ export default function CashiersTab({
       >
         <div className="space-y-4">
           <div className="space-y-2">
-            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">Search</label>
+            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">Search Query</label>
             <div className="relative">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
                 type="text"
                 placeholder="Name, email, or branch..."
@@ -128,11 +273,12 @@ export default function CashiersTab({
             </label>
             <div className="grid grid-cols-3 gap-2">
               {[
-                { val: 'all', label: 'All Roles' },
-                { val: 'manager', label: 'Manager' },
-                { val: 'cashier', label: 'Cashier' }
+                { val: 'all' as const, label: 'All Roles' },
+                { val: 'manager' as const, label: 'Manager' },
+                { val: 'cashier' as const, label: 'Cashier' }
               ].map(opt => (
                 <button
+                  type="button"
                   key={opt.val}
                   onClick={() => setRoleFilter(opt.val)}
                   className={`py-2 px-2 rounded-xl text-xs font-bold capitalize transition-all cursor-pointer text-center ${
@@ -150,7 +296,7 @@ export default function CashiersTab({
           {user.role !== 'manager' && branches.length > 0 && (
             <div className="space-y-2 pt-2 border-t border-slate-100">
               <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1">
-                <Building2 className="w-3.5 h-3.5 text-slate-400" /> Branch
+                <Building2 className="w-3.5 h-3.5 text-slate-400" /> Branch Location
               </label>
               <select
                 value={selectedBranchId}
@@ -167,68 +313,184 @@ export default function CashiersTab({
         </div>
       </FilterDrawer>
 
-      {/* Staff List */}
-      <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
-        {filteredCashiers.length === 0 ? (
-          <div className="text-center py-20 px-4 text-slate-400 flex flex-col items-center">
-            <div className="w-16 h-16 rounded-2xl bg-slate-50 flex items-center justify-center mb-4">
-              <Users className="w-8 h-8 text-slate-300" />
+      <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs overflow-visible">
+        {displayCashiers.length === 0 ? (
+          <div className="text-center py-16 px-4 flex flex-col items-center">
+            <div className="w-14 h-14 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mb-3.5 border border-slate-200/60">
+              <Users className="w-7 h-7" />
             </div>
-            <p className="font-bold text-slate-700 text-sm">No Staff Found</p>
-            <p className="text-xs mt-1 max-w-xs">We couldn't find any staff accounts matching your search or filters.</p>
+            <h3 className="font-extrabold text-slate-900 text-sm">No Staff Members Yet</h3>
+            <p className="text-xs text-slate-500 mt-1 max-w-xs leading-relaxed">
+              Add your first store manager or cashier account to grant access to the POS system.
+            </p>
+            {openNewCashierModal && (
+              <button
+                type="button"
+                onClick={openNewCashierModal}
+                className="mt-4 inline-flex items-center gap-1.5 px-4 py-2 bg-black hover:bg-gray-800 text-white text-xs font-bold rounded-xl transition-all cursor-pointer shadow-xs"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Add Staff Member</span>
+              </button>
+            )}
+          </div>
+        ) : filteredCashiers.length === 0 ? (
+          <div className="text-center py-16 px-4 flex flex-col items-center">
+            <div className="w-14 h-14 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mb-3.5 border border-slate-200/60">
+              <Search className="w-7 h-7" />
+            </div>
+            <h3 className="font-extrabold text-slate-900 text-sm">No Matching Staff Found</h3>
+            <p className="text-xs text-slate-500 mt-1 max-w-xs leading-relaxed">
+              We couldn't find any staff accounts matching your search or filters.
+            </p>
+            <button
+              type="button"
+              onClick={resetFilters}
+              className="mt-4 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold rounded-xl transition-all cursor-pointer"
+            >
+              Reset Filters
+            </button>
           </div>
         ) : (
           <div className="divide-y divide-slate-100">
-            {filteredCashiers.map((cashier) => (
-              <div key={cashier.id} className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-slate-50/50 transition-colors group">
-                
-                <div className="flex items-center gap-4 min-w-0">
-                  <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-700 font-extrabold text-sm flex items-center justify-center uppercase shrink-0 shadow-xs border border-slate-200/60">
-                    {cashier.name ? cashier.name.charAt(0) : 'S'}
-                  </div>
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2">
-                      <h4 className="font-extrabold text-slate-900 text-sm truncate">{cashier.name}</h4>
-                      <span className={`px-2 py-0.5 rounded-md font-extrabold text-[9px] uppercase tracking-wider border ${
-                        cashier.role === 'manager' 
-                          ? 'bg-black text-white border-black' 
-                          : 'bg-slate-100 text-slate-600 border-slate-200'
-                      }`}>
-                        {cashier.role || 'cashier'}
-                      </span>
-                    </div>
-                    <p className="text-xs text-slate-500 font-medium truncate mt-0.5">{formatDisplayEmail(cashier.email)}</p>
-                  </div>
-                </div>
+            {filteredCashiers.map((cashier) => {
+              const isMenuOpen = openMenuId === cashier.id;
+              const isCopied = copiedId === cashier.id;
+              const roleDisplay = cashier.role || 'cashier';
+              const isManager = roleDisplay === 'manager';
 
-                <div className="flex items-center gap-4 sm:gap-6 text-xs shrink-0 w-full sm:w-auto justify-between sm:justify-end">
-                  <div className="flex flex-col items-start sm:items-end gap-1">
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Assigned To</span>
-                    <div className="flex items-center gap-1.5 font-bold text-slate-700 bg-slate-100 px-2.5 py-1 rounded-lg">
-                      <Building2 className="w-3.5 h-3.5 text-slate-400" />
-                      <span>{cashier.branch_name || 'All Branches'}</span>
+              return (
+                <div
+                  key={cashier.id}
+                  className="px-4 py-3 sm:px-5 sm:py-3.5 flex items-center justify-between gap-3 hover:bg-slate-50/70 transition-colors"
+                >
+                  <div className="flex items-center gap-3 min-w-0 flex-1">
+                    <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-slate-100 border border-slate-200/80 text-slate-800 font-extrabold text-xs sm:text-sm flex items-center justify-center shrink-0 tracking-tight select-none shadow-2xs">
+                      {getInitials(cashier.name)}
+                    </div>
+
+                    <div className="min-w-0 flex-1 space-y-0.5">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span
+                          className="font-bold text-slate-900 text-sm tracking-tight truncate max-w-[180px] sm:max-w-[280px]"
+                          title={cashier.name}
+                        >
+                          {cashier.name}
+                        </span>
+                        <span
+                          className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md font-extrabold text-[9.5px] uppercase tracking-wider border shrink-0 ${
+                            isManager
+                              ? 'bg-slate-900 text-white border-slate-900'
+                              : 'bg-slate-100 text-slate-700 border-slate-200'
+                          }`}
+                        >
+                          {isManager ? <Shield className="w-2.5 h-2.5" /> : <UserCheck className="w-2.5 h-2.5" />}
+                          <span>{roleDisplay}</span>
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
+                        <span className="truncate max-w-[200px] sm:max-w-[300px]" title={formatDisplayEmail(cashier.email)}>
+                          @{formatDisplayEmail(cashier.email)}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-1.5 text-[11px] text-slate-500 font-medium">
+                        <Building2 className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                        <span className="truncate max-w-[200px] sm:max-w-[300px]" title={cashier.branch_name || 'All Branches'}>
+                          {cashier.branch_name || 'All Branches'}
+                        </span>
+                      </div>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1.5 shrink-0 relative">
                     <button
+                      type="button"
                       onClick={() => startEditCashier(cashier)}
-                      className="p-2.5 bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 rounded-xl transition-all cursor-pointer shadow-xs active-scale"
-                      title="Edit Account"
+                      className="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-xl bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 hover:text-slate-900 transition-colors shadow-2xs cursor-pointer active:scale-95"
+                      title="Edit Staff Account"
+                      aria-label={`Edit ${cashier.name}`}
                     >
                       <Edit2 className="w-4 h-4" />
                     </button>
-                    <button
-                      onClick={() => triggerDeleteCashier(cashier.id, cashier.name)}
-                      className="p-2.5 bg-white hover:bg-red-50 border border-slate-200 hover:border-red-100 text-red-500 rounded-xl transition-all cursor-pointer shadow-xs active-scale"
-                      title="Revoke Account"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+
+                    <div className="relative">
+                      <button
+                        type="button"
+                        onClick={() => setOpenMenuId(isMenuOpen ? null : cashier.id)}
+                        className={`w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-xl border transition-colors shadow-2xs cursor-pointer active:scale-95 ${
+                          isMenuOpen
+                            ? 'bg-slate-900 text-white border-slate-900'
+                            : 'bg-white hover:bg-slate-100 border-slate-200 text-slate-700 hover:text-slate-900'
+                        }`}
+                        title="More Actions"
+                        aria-label={`More options for ${cashier.name}`}
+                        aria-expanded={isMenuOpen}
+                        aria-haspopup="menu"
+                      >
+                        <MoreVertical className="w-4 h-4" />
+                      </button>
+
+                      {isMenuOpen && (
+                        <div
+                          ref={menuRef}
+                          className="absolute right-0 top-full mt-1.5 w-48 bg-white rounded-xl shadow-xl border border-slate-200/90 py-1.5 z-40 animate-scale-in"
+                          role="menu"
+                        >
+                          <button
+                            type="button"
+                            onClick={() => handleCopyUsername(cashier)}
+                            className="w-full px-3 py-2 text-left text-xs font-semibold text-slate-700 hover:bg-slate-50 flex items-center gap-2 transition-colors cursor-pointer"
+                            role="menuitem"
+                          >
+                            {isCopied ? (
+                              <>
+                                <Check className="w-3.5 h-3.5 text-slate-900" />
+                                <span className="text-slate-900 font-bold">Copied username!</span>
+                              </>
+                            ) : (
+                              <>
+                                <Copy className="w-3.5 h-3.5 text-slate-400" />
+                                <span>Copy Username</span>
+                              </>
+                            )}
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setOpenMenuId(null);
+                              startEditCashier(cashier);
+                            }}
+                            className="w-full px-3 py-2 text-left text-xs font-semibold text-slate-700 hover:bg-slate-50 flex items-center gap-2 transition-colors cursor-pointer"
+                            role="menuitem"
+                          >
+                            <Edit2 className="w-3.5 h-3.5 text-slate-400" />
+                            <span>Edit Account</span>
+                          </button>
+
+                          <div className="my-1 border-t border-slate-100" />
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setOpenMenuId(null);
+                              triggerDeleteCashier(cashier.id, cashier.name);
+                            }}
+                            className="w-full px-3 py-2 text-left text-xs font-bold text-red-600 hover:bg-red-50 flex items-center gap-2 transition-colors cursor-pointer"
+                            role="menuitem"
+                          >
+                            <Trash2 className="w-3.5 h-3.5 text-red-500" />
+                            <span>Revoke Access</span>
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
