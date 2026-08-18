@@ -359,6 +359,12 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
       : cashiers.filter(c => c.branch_id === selectedBranchId);
   }, [cashiers, selectedBranchId]);
 
+  const displayCashFlow = useMemo(() => {
+    return selectedBranchId === 'all'
+      ? cashFlowEntries
+      : cashFlowEntries.filter(c => !c.branch_id || c.branch_id === selectedBranchId);
+  }, [cashFlowEntries, selectedBranchId]);
+
   const openNewCashFlowModal = () => {
     setEditingCashFlow(null);
     setShowCashFlowModal(true);
@@ -905,14 +911,14 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
               />
             )}
 
-            {/* CASH FLOW ANALYTICS TAB */}
+            {/* CASH FLOW MANAGEMENT TAB */}
             {activeTab === 'cash-flow' && (
               <CashFlowTab 
                 user={user}
                 branches={branches}
                 selectedBranchId={selectedBranchId}
                 setSelectedBranchId={setSelectedBranchId}
-                cashFlowEntries={cashFlowEntries}
+                cashFlowEntries={displayCashFlow}
                 displaySales={displaySales}
                 openNewCashFlowModal={openNewCashFlowModal}
                 startEditCashFlow={startEditCashFlow}
@@ -1000,9 +1006,9 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
             {/* SALE REPORT TAB */}
             {activeTab === 'sale-report' && (
               <SaleReportTab
-                sales={sales}
+                sales={displaySales}
                 branches={branches}
-                cashiers={cashiers}
+                cashiers={displayCashiers}
                 currency={businessProfile.currency || 'Ks'}
               />
             )}

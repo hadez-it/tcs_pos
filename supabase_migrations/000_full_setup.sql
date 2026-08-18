@@ -72,27 +72,105 @@ REVOKE ALL ON FUNCTION public.current_user_can_manage_product(text) FROM PUBLIC;
 REVOKE ALL ON FUNCTION public.current_user_can_manage_product(text) FROM anon;
 GRANT EXECUTE ON FUNCTION public.current_user_can_manage_product(text) TO authenticated;
 
+CREATE OR REPLACE FUNCTION public.current_user_can_access_branch(target_branch_id text)
+RETURNS BOOLEAN
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  v_role text;
+  v_user_branch text;
+BEGIN
+  IF auth.uid() IS NULL THEN
+    RETURN false;
+  END IF;
+
+  SELECT role, branch_id INTO v_role, v_user_branch
+  FROM public.profiles
+  WHERE id = auth.uid();
+
+  IF v_role = 'owner' THEN
+    RETURN true;
+  ELSIF v_role = 'manager' THEN
+    IF v_user_branch IS NULL OR v_user_branch = '' OR target_branch_id IS NULL OR target_branch_id = '' OR v_user_branch = target_branch_id THEN
+      RETURN true;
+    ELSE
+      RETURN false;
+    END IF;
+  ELSIF v_role = 'cashier' THEN
+    IF v_user_branch IS NOT NULL AND v_user_branch <> '' AND target_branch_id IS NOT NULL AND target_branch_id <> '' THEN
+      RETURN v_user_branch = target_branch_id;
+    ELSE
+      RETURN true;
+    END IF;
+  ELSE
+    RETURN false;
+  END IF;
+END;
+$$;
+
+REVOKE ALL ON FUNCTION public.current_user_can_access_branch(text) FROM PUBLIC;
+REVOKE ALL ON FUNCTION public.current_user_can_access_branch(text) FROM anon;
+GRANT EXECUTE ON FUNCTION public.current_user_can_access_branch(text) TO authenticated;
+
+CREATE OR REPLACE FUNCTION public.current_user_is_manager_or_owner()
+RETURNS BOOLEAN
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  v_role text;
+BEGIN
+  IF auth.uid() IS NULL THEN
+    RETURN false;
+  END IF;
+
+  SELECT role INTO v_role
+  FROM public.profiles
+  WHERE id = auth.uid();
+
+  RETURN v_role IN ('owner', 'manager');
+END;
+$$;
+
+REVOKE ALL ON FUNCTION public.current_user_is_manager_or_owner() FROM PUBLIC;
+REVOKE ALL ON FUNCTION public.current_user_is_manager_or_owner() FROM anon;
+GRANT EXECUTE ON FUNCTION public.current_user_is_manager_or_owner() TO authenticated;
+
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Users can insert own profile"
+CREATE POLICY "Authenticated users can read profiles"
+  ON public.profiles FOR SELECT
+  USING (auth.role() = 'authenticated');
+
+CREATE POLICY "Authorized users can insert profiles"
   ON public.profiles FOR INSERT
-  WITH CHECK (auth.uid() = id);
+  WITH CHECK (
+    auth.role() = 'authenticated'
+    AND (
+      auth.uid() = id
+      OR public.current_user_is_manager_or_owner()
+    )
+  );
 
-CREATE POLICY "Users can read own profile"
-  ON public.profiles FOR SELECT
-  USING (auth.uid() = id);
-
-CREATE POLICY "Owners can read all profiles"
-  ON public.profiles FOR SELECT
-  USING (public.current_user_is_owner());
-
-CREATE POLICY "Users can update own profile"
+CREATE POLICY "Authorized users can update profiles"
   ON public.profiles FOR UPDATE
-  USING (auth.uid() = id);
+  USING (
+    auth.role() = 'authenticated'
+    AND (
+      auth.uid() = id
+      OR public.current_user_is_manager_or_owner()
+    )
+  );
 
-CREATE POLICY "Owners can manage all profiles"
-  ON public.profiles FOR ALL
-  USING (public.current_user_is_owner());
+CREATE POLICY "Authorized users can delete profiles"
+  ON public.profiles FOR DELETE
+  USING (
+    auth.role() = 'authenticated'
+    AND public.current_user_is_manager_or_owner()
+  );
 
 CREATE OR REPLACE FUNCTION public.protect_profile_role()
 RETURNS TRIGGER AS $$
@@ -232,24 +310,39 @@ CREATE TABLE public.sales (
 
 ALTER TABLE public.sales ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Cashiers can read own sales"
+CREATE POLICY "Authorized users can read sales"
   ON public.sales FOR SELECT
   USING (
-    cashier_id = auth.uid()
-    OR public.current_user_is_owner()
+    auth.role() = 'authenticated'
+    AND (
+      cashier_id = auth.uid()
+      OR public.current_user_can_access_branch(branch_id)
+    )
   );
 
-CREATE POLICY "Cashiers can insert sales"
+CREATE POLICY "Authorized users can insert sales"
   ON public.sales FOR INSERT
-  WITH CHECK (cashier_id = auth.uid());
+  WITH CHECK (
+    auth.role() = 'authenticated'
+    AND (
+      cashier_id = auth.uid()
+      OR public.current_user_can_access_branch(branch_id)
+    )
+  );
 
-CREATE POLICY "Owners can update sales"
+CREATE POLICY "Authorized users can update sales"
   ON public.sales FOR UPDATE
-  USING (public.current_user_is_owner());
+  USING (
+    auth.role() = 'authenticated'
+    AND public.current_user_can_access_branch(branch_id)
+  );
 
-CREATE POLICY "Owners can delete sales (void)"
+CREATE POLICY "Authorized users can delete sales (void)"
   ON public.sales FOR DELETE
-  USING (public.current_user_is_owner());
+  USING (
+    auth.role() = 'authenticated'
+    AND public.current_user_can_access_branch(branch_id)
+  );
 
 -- ── 5. Sale Items ────────────────────────────────────────────
 CREATE TABLE public.sale_items (
@@ -274,9 +367,9 @@ CREATE POLICY "Authenticated users can insert sale_items"
   ON public.sale_items FOR INSERT
   WITH CHECK (auth.role() = 'authenticated');
 
-CREATE POLICY "Owners can delete sale_items (void)"
+CREATE POLICY "Authorized users can delete sale_items (void)"
   ON public.sale_items FOR DELETE
-  USING (public.current_user_is_owner());
+  USING (auth.role() = 'authenticated');
 
 -- ── 6. Inventory Transactions ────────────────────────────────
 CREATE TABLE public.inventory_transactions (
@@ -299,7 +392,7 @@ CREATE POLICY "Authorized users can read inventory_transactions"
   USING (
     auth.role() = 'authenticated'
     AND (
-      public.current_user_can_manage_product(branch_id)
+      public.current_user_can_access_branch(branch_id)
       OR branch_id = (SELECT branch_id FROM public.profiles WHERE id = auth.uid())
     )
   );
@@ -309,7 +402,7 @@ CREATE POLICY "Authorized users can insert inventory_transactions"
   WITH CHECK (
     auth.role() = 'authenticated'
     AND (
-      public.current_user_can_manage_product(branch_id)
+      public.current_user_can_access_branch(branch_id)
       OR branch_id = (SELECT branch_id FROM public.profiles WHERE id = auth.uid())
     )
   );
@@ -360,13 +453,22 @@ CREATE TABLE public.cash_flow (
 
 ALTER TABLE public.cash_flow ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Authenticated users can read cash_flow"
+CREATE POLICY "Authorized users can read cash_flow"
   ON public.cash_flow FOR SELECT
-  USING (auth.role() = 'authenticated');
+  USING (
+    auth.role() = 'authenticated'
+    AND (
+      public.current_user_can_access_branch(branch_id)
+      OR branch_id = (SELECT branch_id FROM public.profiles WHERE id = auth.uid())
+    )
+  );
 
-CREATE POLICY "Owners can manage cash_flow"
+CREATE POLICY "Authorized users can manage cash_flow"
   ON public.cash_flow FOR ALL
-  USING (public.current_user_is_owner());
+  USING (
+    auth.role() = 'authenticated'
+    AND public.current_user_can_access_branch(branch_id)
+  );
 
 -- ── 9. Sale Delete Requests ──────────────────────────────────
 CREATE TABLE public.sale_delete_requests (
@@ -391,21 +493,16 @@ CREATE POLICY "Authenticated users can read sale_delete_requests"
   ON public.sale_delete_requests FOR SELECT
   USING (auth.role() = 'authenticated');
 
-CREATE POLICY "Cashiers can insert sale_delete_requests"
+CREATE POLICY "Authorized users can insert sale_delete_requests"
   ON public.sale_delete_requests FOR INSERT
-  WITH CHECK (
+  WITH CHECK (auth.role() = 'authenticated');
+
+CREATE POLICY "Authorized users can manage sale_delete_requests"
+  ON public.sale_delete_requests FOR ALL
+  USING (
     auth.role() = 'authenticated'
-    AND (cashier_id = auth.uid() OR cashier_id IS NULL)
-    AND status = 'pending'
+    AND public.current_user_can_access_branch(branch_id)
   );
-
-CREATE POLICY "Owners can update sale_delete_requests"
-  ON public.sale_delete_requests FOR UPDATE
-  USING (public.current_user_is_owner());
-
-CREATE POLICY "Owners can delete sale_delete_requests"
-  ON public.sale_delete_requests FOR DELETE
-  USING (public.current_user_is_owner());
 
 -- ── 10. Secure RPC Functions ─────────────────────────────────
 CREATE OR REPLACE FUNCTION public.delete_user_account(target_user_id uuid)
