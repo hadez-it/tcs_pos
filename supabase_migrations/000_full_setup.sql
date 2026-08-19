@@ -44,27 +44,16 @@ SET search_path = public
 AS $$
 DECLARE
   v_role text;
-  v_user_branch text;
 BEGIN
   IF auth.uid() IS NULL THEN
     RETURN false;
   END IF;
 
-  SELECT role, branch_id INTO v_role, v_user_branch
+  SELECT role INTO v_role
   FROM public.profiles
   WHERE id = auth.uid();
 
-  IF v_role = 'owner' THEN
-    RETURN true;
-  ELSIF v_role = 'manager' THEN
-    IF v_user_branch IS NULL OR v_user_branch = '' OR target_branch_id IS NULL OR target_branch_id = '' OR v_user_branch = target_branch_id THEN
-      RETURN true;
-    ELSE
-      RETURN false;
-    END IF;
-  ELSE
-    RETURN false;
-  END IF;
+  RETURN v_role IN ('owner', 'manager');
 END;
 $$;
 

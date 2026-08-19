@@ -444,16 +444,12 @@ export default function ProductModal({
                     {...register('branch_id')}
                     className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-gray-900 font-medium"
                   >
-                    {user.role !== 'manager' || !user.branch_id ? (
-                      <option value="">🏢 Global Inventory / All Store Outlets</option>
-                    ) : null}
-                    {branches
-                      .filter(b => user.role !== 'manager' || !user.branch_id || b.id === user.branch_id)
-                      .map(b => (
-                        <option key={b.id} value={b.id}>
-                          📍 {b.name} ({b.code})
-                        </option>
-                      ))}
+                    <option value="">🏢 Global Inventory / All Store Outlets</option>
+                    {branches.map(b => (
+                      <option key={b.id} value={b.id}>
+                        📍 {b.name} ({b.code})
+                      </option>
+                    ))}
                   </select>
                 </div>
               </div>

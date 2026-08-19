@@ -173,7 +173,7 @@ export default function ProductsTab({
             </div>
           </div>
 
-          {user.role !== 'manager' && branches.length > 0 && (
+          {branches.length > 0 && (
             <div className="space-y-2 pt-2 border-t border-slate-100">
               <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1">
                 <Building2 className="w-3.5 h-3.5 text-slate-400" /> Branch
