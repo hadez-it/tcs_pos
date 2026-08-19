@@ -554,7 +554,7 @@ export const dbService = {
 
       const itemsToInsert: Product[] = [primaryProd];
 
-      if (allBranches && allBranches.length > 0) {
+      if (!prod.branch_id && allBranches && allBranches.length > 0) {
         for (const branch of allBranches) {
           if (branch.id === targetBranchId) continue;
 
