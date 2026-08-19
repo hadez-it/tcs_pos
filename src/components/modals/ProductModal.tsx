@@ -113,7 +113,10 @@ export default function ProductModal({
     setIsSubmitting(true);
 
     try {
-      const selectedBranch = branches.find(b => b.id === data.branch_id);
+      const targetBranchId = user.role === 'manager'
+        ? (editingProduct?.branch_id || user.branch_id || null)
+        : (data.branch_id || null);
+      const selectedBranch = branches.find(b => b.id === targetBranchId);
       
       const payload = {
         name: data.name.trim(),
@@ -130,7 +133,7 @@ export default function ProductModal({
         min_stock_level: Number(data.min_stock_level) || 5,
         price_variant: (data.price_variant || 'Standard').trim(),
         expiry_date: data.expiry_date || null,
-        branch_id: data.branch_id || null,
+        branch_id: targetBranchId,
         branch_name: selectedBranch ? selectedBranch.name : null
       };
 
@@ -439,12 +442,17 @@ export default function ProductModal({
                 </div>
 
                 <div className="sm:col-span-3">
-                  <label className="block text-[10px] font-bold text-slate-600 uppercase tracking-wider mb-1">Branch Outlet Assignment</label>
+                  <label className="block text-[10px] font-bold text-slate-600 uppercase tracking-wider mb-1">
+                    Branch Outlet Assignment {user.role === 'manager' && <span className="text-slate-400 font-normal lowercase">(assigned branch)</span>}
+                  </label>
                   <select
                     {...register('branch_id')}
-                    className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-gray-900 font-medium"
+                    disabled={user.role === 'manager'}
+                    className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-gray-900 font-medium disabled:bg-slate-100 disabled:text-slate-500 disabled:cursor-not-allowed"
                   >
-                    <option value="">🏢 Global Inventory / All Store Outlets</option>
+                    {user.role !== 'manager' && (
+                      <option value="">🏢 Global Inventory / All Store Outlets</option>
+                    )}
                     {branches.map(b => (
                       <option key={b.id} value={b.id}>
                         📍 {b.name} ({b.code})
