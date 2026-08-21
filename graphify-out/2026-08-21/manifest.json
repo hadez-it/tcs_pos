@@ -65,8 +65,8 @@
     "semantic_hash": ""
   },
   "src/components/OwnerDashboard.tsx": {
-    "mtime": 1787278926.1380897,
-    "ast_hash": "acad0b11a9c55218d532c69fdd627ddd",
+    "mtime": 1787277453.4031928,
+    "ast_hash": "91a5e55f8c81c3b6672e48033d9e0dce",
     "semantic_hash": ""
   },
   "src/components/PrinterSettings.tsx": {
@@ -295,8 +295,8 @@
     "semantic_hash": ""
   },
   "src/components/dashboard/ProductsTab.tsx": {
-    "mtime": 1787278962.485517,
-    "ast_hash": "c0e8a3f52628ebce79d88015082d4028",
+    "mtime": 1787277288.3676357,
+    "ast_hash": "59cf2ce06816725485a7db1df488af10",
     "semantic_hash": ""
   },
   "src/components/dashboard/StaffPerformanceTab.tsx": {

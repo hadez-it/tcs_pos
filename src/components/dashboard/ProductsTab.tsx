@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Search, FileSpreadsheet, Download, Package, ChevronDown, Printer, Edit2, PackagePlus, Trash2, ChevronLeft, ChevronRight, Filter, Building2, Layers } from 'lucide-react';
+import { Search, FileSpreadsheet, Download, Package, ChevronDown, Printer, Edit2, PackagePlus, Trash2, ChevronLeft, ChevronRight, Filter, Building2, Layers, Plus, X } from 'lucide-react';
 import { formatCurrency } from '../../utils/format';
 import { UserProfile, Branch, Product } from '../../types';
 import SearchableCategorySelect from '../SearchableCategorySelect';
@@ -18,6 +18,7 @@ interface ProductsTabProps {
   startEditProduct: (product: Product) => void;
   openQuickRestock: (product: Product) => void;
   triggerDeleteProduct: (id: string, name: string) => void;
+  openNewProductModal?: () => void;
 }
 
 const PRODUCTS_PER_PAGE = 20;
@@ -34,7 +35,8 @@ export default function ProductsTab({
   openBarcodeModal,
   startEditProduct,
   openQuickRestock,
-  triggerDeleteProduct
+  triggerDeleteProduct,
+  openNewProductModal
 }: ProductsTabProps) {
   const [productSearch, setProductSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('All');
@@ -96,8 +98,44 @@ export default function ProductsTab({
     return filteredProducts.slice(startIndex, startIndex + PRODUCTS_PER_PAGE);
   }, [filteredProducts, safeProductPage]);
 
+  if (displayProducts.length === 0) {
+    return (
+      <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs w-full flex-1 flex flex-col items-center justify-center p-8 sm:p-14 text-center min-h-[380px] sm:min-h-[460px]">
+        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mb-3.5 border border-slate-200/70">
+          <Package className="w-6 h-6 sm:w-7 sm:h-7" />
+        </div>
+        <h3 className="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight">
+          You haven't added any products yet
+        </h3>
+        <p className="text-xs sm:text-sm text-slate-500 font-medium mt-1.5 max-w-md leading-relaxed">
+          Get started by creating your first product manually or importing your inventory from a CSV spreadsheet.
+        </p>
+        <div className="flex flex-wrap items-center justify-center gap-2.5 mt-5">
+          {openNewProductModal && (
+            <button
+              type="button"
+              onClick={openNewProductModal}
+              className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 bg-black hover:bg-gray-800 text-white rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-95"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Add Product</span>
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={() => setShowCsvModal(true)}
+            className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl text-xs font-bold transition-all border border-slate-200/80 cursor-pointer active:scale-95"
+          >
+            <FileSpreadsheet className="w-4 h-4 text-slate-700" />
+            <span>Import CSV</span>
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden w-full max-w-full min-w-0">
+    <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden w-full max-w-full min-w-0 flex-1 flex flex-col">
       <div className="p-3.5 sm:p-5 border-b border-slate-200/90 bg-gradient-to-b from-white to-slate-50/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex-1 flex items-center gap-2">
           <div className="relative flex-1">
@@ -107,8 +145,18 @@ export default function ProductsTab({
               placeholder="Search Name, SKU, or Barcode..."
               value={productSearch}
               onChange={(e) => { setProductSearch(e.target.value); setProductPage(1); }}
-              className="w-full pl-9 pr-3 py-2 bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-gray-900 shadow-2xs transition-colors"
+              className="w-full pl-9 pr-8 py-2 bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-gray-900 shadow-2xs transition-colors"
             />
+            {productSearch && (
+              <button
+                type="button"
+                onClick={() => { setProductSearch(''); setProductPage(1); }}
+                className="absolute inset-y-0 right-0 pr-2.5 flex items-center text-slate-400 hover:text-slate-600 cursor-pointer"
+                aria-label="Clear search"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
           </div>
 
           <button
@@ -235,17 +283,22 @@ export default function ProductsTab({
       </FilterDrawer>
 
       {/* Product Table & Mobile Cards */}
-      <div className="p-0">
+      <div className="p-0 flex-1 flex flex-col">
         {filteredProducts.length === 0 ? (
-          <div className="text-center py-16 text-slate-400 text-xs flex flex-col items-center justify-center gap-2">
-            <Package className="w-8 h-8 text-slate-300" />
-            <span>No inventory products found matching your search.</span>
+          <div className="text-center py-16 px-4 text-slate-500 text-xs flex flex-col items-center justify-center gap-2.5 flex-1 min-h-[280px]">
+            <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-400 flex items-center justify-center mb-1 border border-slate-200/60">
+              <Search className="w-5 h-5" />
+            </div>
+            <h4 className="font-extrabold text-slate-900 text-sm">No Matching Products Found</h4>
+            <p className="text-xs text-slate-500 max-w-xs leading-relaxed">
+              No inventory products found matching your search or filters.
+            </p>
             <button
-              onClick={() => setShowCsvModal(true)}
-              className="mt-2 text-gray-900 font-bold hover:underline flex items-center gap-1"
+              type="button"
+              onClick={resetFilters}
+              className="mt-2 px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold rounded-xl transition-all cursor-pointer shadow-2xs"
             >
-              <FileSpreadsheet className="w-4 h-4" />
-              <span>Import CSV Items</span>
+              Reset Filters
             </button>
           </div>
         ) : (

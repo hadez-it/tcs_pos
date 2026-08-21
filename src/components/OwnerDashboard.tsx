@@ -848,7 +848,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col min-h-0 overflow-hidden">
         {/* Content Body */}
-        <div className="p-3 sm:p-6 md:p-8 flex-1 overflow-y-auto android-scroll">
+        <div className="p-3 sm:p-6 md:p-8 flex-1 overflow-y-auto android-scroll flex flex-col">
           {isLoading || isTabChanging ? (
             <div className="space-y-6 animate-pulse">
               {/* Skeleton Header */}
@@ -898,7 +898,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
               </div>
             </div>
           ) : (
-            <div>
+            <div className="flex-1 flex flex-col min-h-0">
             {/* OVERVIEW ANALYTICS TAB */}
             {activeTab === 'overview' && (
               <OverviewTab 
@@ -941,6 +941,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                 startEditProduct={startEditProduct}
                 openQuickRestock={openQuickRestock}
                 triggerDeleteProduct={triggerDeleteProduct}
+                openNewProductModal={openNewProductModal}
               />
             )}
 
