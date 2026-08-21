@@ -140,215 +140,196 @@ export default function CashiersTab({
     setOpenMenuId(null);
   };
 
-  return (
-    <div className="space-y-4 max-w-6xl mx-auto pb-16 lg:pb-6">
-      {displayCashiers.length === 0 ? (
-        <div className="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200/90 shadow-2xs text-center flex flex-col items-center">
-          <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-500 flex items-center justify-center mb-3 border border-slate-200/70">
-            <Users className="w-5 h-5" />
-          </div>
-          <div className="flex items-center gap-2 mb-1">
-            <h2 className="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight">Staff Accounts</h2>
-            <span className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-[10px] font-extrabold border border-slate-200">
-              0 Total
-            </span>
-          </div>
-          <p className="text-xs text-slate-500 font-medium max-w-sm leading-relaxed">
-            No staff members added yet. Use the <span className="font-bold text-slate-800">+</span> button in the top header to add your first manager or cashier account.
-          </p>
+  if (displayCashiers.length === 0) {
+    return (
+      <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs w-full flex-1 flex flex-col items-center justify-center p-8 sm:p-14 text-center min-h-[380px] sm:min-h-[460px]">
+        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mb-3.5 border border-slate-200/70">
+          <Users className="w-6 h-6 sm:w-7 sm:h-7" />
         </div>
-      ) : (
-        <>
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-2xs">
-            <div className="min-w-0">
-              <div className="flex items-center gap-2">
-                <h2 className="text-lg sm:text-xl font-extrabold text-slate-900 tracking-tight">Staff Accounts</h2>
-                <span className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 text-[10px] font-extrabold border border-slate-200">
-                  {displayCashiers.length} Total
-                </span>
-              </div>
-              <p className="text-xs text-slate-500 font-medium mt-0.5 truncate">
-                {summarySubtitle}
-              </p>
-            </div>
+        <h3 className="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight">Staff Accounts</h3>
+        <p className="text-xs sm:text-sm text-slate-500 font-medium mt-1 max-w-sm leading-relaxed">
+          No staff members added yet. Use the <span className="font-bold text-slate-800">+</span> button in the top header to add your first manager or cashier account.
+        </p>
+      </div>
+    );
+  }
 
-            {openNewCashierModal && (
-              <button
-                type="button"
-                onClick={openNewCashierModal}
-                className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 bg-black hover:bg-gray-800 text-white rounded-xl text-xs font-bold transition-all shadow-xs shrink-0 cursor-pointer active:scale-95"
-                aria-label="Add new staff member"
-              >
-                <Plus className="w-4 h-4" />
-                <span>Add Staff</span>
-              </button>
-            )}
+  return (
+    <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden w-full max-w-full min-w-0 flex-1 flex flex-col">
+      {/* Top Toolbar */}
+      <div className="p-2.5 sm:p-3.5 border-b border-slate-200/90 bg-white space-y-2 shrink-0">
+        {/* Row 1: Full-width Search */}
+        <div className="relative w-full">
+          <Search className="absolute inset-y-0 left-0 pl-3 w-4 h-4 my-auto text-slate-400 pointer-events-none" />
+          <input
+            type="text"
+            placeholder="Search staff..."
+            value={cashierSearch}
+            onChange={(e) => setCashierSearch(e.target.value)}
+            className="w-full pl-9 pr-8 py-2 sm:py-2.5 bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-gray-900 shadow-2xs transition-colors"
+            aria-label="Search staff"
+          />
+          {cashierSearch && (
+            <button
+              type="button"
+              onClick={() => setCashierSearch('')}
+              className="absolute inset-y-0 right-0 pr-2.5 flex items-center text-slate-400 hover:text-slate-600 cursor-pointer"
+              aria-label="Clear search"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
+
+        {/* Row 2: Roles (Left) + Filter & Count (Right) */}
+        <div className="flex items-center justify-between gap-2">
+          {/* Left: Role Filter Pills */}
+          <div className="flex items-center p-0.5 bg-slate-100 rounded-lg border border-slate-200/70 shrink-0">
+            <button
+              type="button"
+              onClick={() => setRoleFilter('all')}
+              className={`px-2.5 py-1 text-[11px] font-bold rounded-md transition-all cursor-pointer ${
+                roleFilter === 'all'
+                  ? 'bg-white text-slate-900 shadow-2xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              All ({displayCashiers.length})
+            </button>
+            <button
+              type="button"
+              onClick={() => setRoleFilter('manager')}
+              className={`px-2.5 py-1 text-[11px] font-bold rounded-md transition-all cursor-pointer ${
+                roleFilter === 'manager'
+                  ? 'bg-white text-slate-900 shadow-2xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Managers ({totalManagers})
+            </button>
+            <button
+              type="button"
+              onClick={() => setRoleFilter('cashier')}
+              className={`px-2.5 py-1 text-[11px] font-bold rounded-md transition-all cursor-pointer ${
+                roleFilter === 'cashier'
+                  ? 'bg-white text-slate-900 shadow-2xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Cashiers ({totalCashiers})
+            </button>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 bg-white p-2.5 rounded-xl border border-slate-200/90 shadow-2xs">
-            <div className="relative flex-1 min-w-0">
-              <Search className="absolute inset-y-0 left-0 pl-3 w-4 h-4 my-auto text-slate-400 pointer-events-none" />
+          {/* Right: Filters Drawer Button */}
+          <button
+            type="button"
+            onClick={() => setShowFilterDrawer(true)}
+            className={`inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-xl border transition-all cursor-pointer shadow-2xs shrink-0 ${
+              activeFilterCount > 0
+                ? 'bg-black text-white border-black'
+                : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+            }`}
+            aria-label="Filter staff"
+          >
+            <Filter className="w-3.5 h-3.5" />
+            <span>Filters</span>
+            {activeFilterCount > 0 && (
+              <span className="w-4 h-4 rounded-full bg-white text-black text-[10px] font-black flex items-center justify-center">
+                {activeFilterCount}
+              </span>
+            )}
+          </button>
+        </div>
+      </div>
+
+      <FilterDrawer
+        isOpen={showFilterDrawer}
+        onClose={() => setShowFilterDrawer(false)}
+        title="Staff Filters"
+        subtitle="Filter accounts by branch and role"
+        activeCount={activeFilterCount}
+        onReset={resetFilters}
+      >
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">Search Query</label>
+            <div className="relative">
+              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
                 type="text"
-                placeholder="Search staff by name, username, branch..."
+                placeholder="Name, email, or branch..."
                 value={cashierSearch}
                 onChange={(e) => setCashierSearch(e.target.value)}
-                className="w-full pl-9 pr-8 py-2 bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 rounded-xl text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-slate-900 transition-colors"
-                aria-label="Search staff"
+                className="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:border-black focus:bg-white"
               />
-              {cashierSearch && (
-                <button
-                  type="button"
-                  onClick={() => setCashierSearch('')}
-                  className="absolute inset-y-0 right-0 pr-2.5 flex items-center text-slate-400 hover:text-slate-600 cursor-pointer"
-                  aria-label="Clear search"
-                >
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              )}
-            </div>
-
-            <div className="flex items-center gap-2 shrink-0">
-              <div className="hidden md:flex items-center p-0.5 bg-slate-100 rounded-lg border border-slate-200/70">
-                <button
-                  type="button"
-                  onClick={() => setRoleFilter('all')}
-                  className={`px-2.5 py-1 text-[11px] font-bold rounded-md transition-all cursor-pointer ${
-                    roleFilter === 'all'
-                      ? 'bg-white text-slate-900 shadow-2xs'
-                      : 'text-slate-600 hover:text-slate-900'
-                  }`}
-                >
-                  All Roles
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setRoleFilter('manager')}
-                  className={`px-2.5 py-1 text-[11px] font-bold rounded-md transition-all cursor-pointer ${
-                    roleFilter === 'manager'
-                      ? 'bg-white text-slate-900 shadow-2xs'
-                      : 'text-slate-600 hover:text-slate-900'
-                  }`}
-                >
-                  Managers
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setRoleFilter('cashier')}
-                  className={`px-2.5 py-1 text-[11px] font-bold rounded-md transition-all cursor-pointer ${
-                    roleFilter === 'cashier'
-                      ? 'bg-white text-slate-900 shadow-2xs'
-                      : 'text-slate-600 hover:text-slate-900'
-                  }`}
-                >
-                  Cashiers
-                </button>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => setShowFilterDrawer(true)}
-                className={`inline-flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-bold rounded-xl border transition-all cursor-pointer shadow-2xs shrink-0 ${
-                  activeFilterCount > 0
-                    ? 'bg-black text-white border-black'
-                    : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
-                }`}
-                aria-label="Filter staff"
-              >
-                <Filter className="w-3.5 h-3.5" />
-                <span>{activeFilterCount > 0 ? `Filters · ${activeFilterCount}` : 'Filters'}</span>
-              </button>
             </div>
           </div>
 
-          <FilterDrawer
-            isOpen={showFilterDrawer}
-            onClose={() => setShowFilterDrawer(false)}
-            title="Staff Filters"
-            subtitle="Filter accounts by branch and role"
-            activeCount={activeFilterCount}
-            onReset={resetFilters}
-          >
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">Search Query</label>
-                <div className="relative">
-                  <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-                  <input
-                    type="text"
-                    placeholder="Name, email, or branch..."
-                    value={cashierSearch}
-                    onChange={(e) => setCashierSearch(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:border-black focus:bg-white"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2 pt-2 border-t border-slate-100">
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1">
-                  <ShieldCheck className="w-3.5 h-3.5 text-slate-400" /> Account Role
-                </label>
-                <div className="grid grid-cols-3 gap-2">
-                  {[
-                    { val: 'all' as const, label: 'All Roles' },
-                    { val: 'manager' as const, label: 'Manager' },
-                    { val: 'cashier' as const, label: 'Cashier' }
-                  ].map(opt => (
-                    <button
-                      type="button"
-                      key={opt.val}
-                      onClick={() => setRoleFilter(opt.val)}
-                      className={`py-2 px-2 rounded-xl text-xs font-bold capitalize transition-all cursor-pointer text-center ${
-                        roleFilter === opt.val
-                          ? 'bg-black text-white shadow-xs'
-                          : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                      }`}
-                    >
-                      {opt.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {user.role !== 'manager' && branches.length > 0 && (
-                <div className="space-y-2 pt-2 border-t border-slate-100">
-                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1">
-                    <Building2 className="w-3.5 h-3.5 text-slate-400" /> Branch Location
-                  </label>
-                  <select
-                    value={selectedBranchId}
-                    onChange={(e) => setSelectedBranchId(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3 font-medium text-slate-800 text-xs focus:outline-none focus:border-black focus:bg-white cursor-pointer"
-                  >
-                    <option value="all">All Branches</option>
-                    {branches.map(b => (
-                      <option key={b.id} value={b.id}>{b.name}</option>
-                    ))}
-                  </select>
-                </div>
-              )}
-            </div>
-          </FilterDrawer>
-
-          <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs overflow-visible">
-            {filteredCashiers.length === 0 ? (
-              <div className="text-center py-8 px-4 flex flex-col items-center">
-                <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-400 flex items-center justify-center mb-2.5 border border-slate-200/60">
-                  <Search className="w-5 h-5" />
-                </div>
-                <h3 className="font-extrabold text-slate-900 text-sm">No Matching Staff Found</h3>
-                <p className="text-xs text-slate-500 mt-1 max-w-xs leading-relaxed">
-                  We couldn't find any staff accounts matching your search or filters.
-                </p>
+          <div className="space-y-2 pt-2 border-t border-slate-100">
+            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1">
+              <ShieldCheck className="w-3.5 h-3.5 text-slate-400" /> Account Role
+            </label>
+            <div className="grid grid-cols-3 gap-2">
+              {[
+                { val: 'all' as const, label: 'All Roles' },
+                { val: 'manager' as const, label: 'Manager' },
+                { val: 'cashier' as const, label: 'Cashier' }
+              ].map(opt => (
                 <button
                   type="button"
-                  onClick={resetFilters}
-                  className="mt-3 px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold rounded-xl transition-all cursor-pointer"
+                  key={opt.val}
+                  onClick={() => setRoleFilter(opt.val)}
+                  className={`py-2 px-2 rounded-xl text-xs font-bold capitalize transition-all cursor-pointer text-center ${
+                    roleFilter === opt.val
+                      ? 'bg-black text-white shadow-xs'
+                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                  }`}
                 >
-                  Reset Filters
+                  {opt.label}
                 </button>
-              </div>
-            ) : (
+              ))}
+            </div>
+          </div>
+
+          {user.role !== 'manager' && branches.length > 0 && (
+            <div className="space-y-2 pt-2 border-t border-slate-100">
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1">
+                <Building2 className="w-3.5 h-3.5 text-slate-400" /> Branch Location
+              </label>
+              <select
+                value={selectedBranchId}
+                onChange={(e) => setSelectedBranchId(e.target.value)}
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3 font-medium text-slate-800 text-xs focus:outline-none focus:border-black focus:bg-white cursor-pointer"
+              >
+                <option value="all">All Branches</option>
+                {branches.map(b => (
+                  <option key={b.id} value={b.id}>{b.name}</option>
+                ))}
+              </select>
+            </div>
+          )}
+        </div>
+      </FilterDrawer>
+
+      <div className="flex-1 flex flex-col p-0 overflow-visible">
+        {filteredCashiers.length === 0 ? (
+          <div className="text-center py-16 px-4 text-slate-500 text-xs flex flex-col items-center justify-center gap-2.5 flex-1 min-h-[260px]">
+            <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-400 flex items-center justify-center mb-1 border border-slate-200/60">
+              <Search className="w-5 h-5" />
+            </div>
+            <h4 className="font-extrabold text-slate-900 text-sm">No Matching Staff Found</h4>
+            <p className="text-xs text-slate-500 max-w-xs leading-relaxed">
+              We couldn't find any staff accounts matching your search or filters.
+            </p>
+            <button
+              type="button"
+              onClick={resetFilters}
+              className="mt-2 px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold rounded-xl transition-all cursor-pointer shadow-2xs"
+            >
+              Reset Filters
+            </button>
+          </div>
+        ) : (
           <div className="divide-y divide-slate-100">
             {filteredCashiers.map((cashier) => {
               const isMenuOpen = openMenuId === cashier.id;
@@ -359,23 +340,23 @@ export default function CashiersTab({
               return (
                 <div
                   key={cashier.id}
-                  className="px-4 py-3 sm:px-5 sm:py-3.5 flex items-center justify-between gap-3 hover:bg-slate-50/70 transition-colors"
+                  className="px-3.5 py-2.5 sm:px-4 sm:py-3 flex items-center justify-between gap-3 hover:bg-slate-50/70 transition-colors"
                 >
                   <div className="flex items-center gap-3 min-w-0 flex-1">
-                    <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-slate-100 border border-slate-200/80 text-slate-800 font-extrabold text-xs sm:text-sm flex items-center justify-center shrink-0 tracking-tight select-none shadow-2xs">
+                    <div className="w-9 h-9 rounded-xl bg-slate-100 border border-slate-200/80 text-slate-800 font-extrabold text-xs flex items-center justify-center shrink-0 tracking-tight select-none shadow-2xs">
                       {getInitials(cashier.name)}
                     </div>
 
                     <div className="min-w-0 flex-1 space-y-0.5">
                       <div className="flex items-center gap-2 flex-wrap">
                         <span
-                          className="font-bold text-slate-900 text-sm tracking-tight truncate max-w-[180px] sm:max-w-[280px]"
+                          className="font-bold text-slate-900 text-xs sm:text-sm tracking-tight truncate max-w-[180px] sm:max-w-[280px]"
                           title={cashier.name}
                         >
                           {cashier.name}
                         </span>
                         <span
-                          className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md font-extrabold text-[9.5px] uppercase tracking-wider border shrink-0 ${
+                          className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded font-extrabold text-[9px] uppercase tracking-wider border shrink-0 ${
                             isManager
                               ? 'bg-slate-900 text-white border-slate-900'
                               : 'bg-slate-100 text-slate-700 border-slate-200'
@@ -386,37 +367,35 @@ export default function CashiersTab({
                         </span>
                       </div>
 
-                      <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
-                        <span className="truncate max-w-[200px] sm:max-w-[300px]" title={formatDisplayEmail(cashier.email)}>
+                      <div className="flex items-center gap-2 text-[11px] text-slate-500 font-medium truncate">
+                        <span className="truncate" title={formatDisplayEmail(cashier.email)}>
                           @{formatDisplayEmail(cashier.email)}
                         </span>
-                      </div>
-
-                      <div className="flex items-center gap-1.5 text-[11px] text-slate-500 font-medium">
-                        <Building2 className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                        <span className="truncate max-w-[200px] sm:max-w-[300px]" title={cashier.branch_name || 'All Branches'}>
+                        <span className="text-slate-300">•</span>
+                        <span className="truncate flex items-center gap-1 text-[10px]" title={cashier.branch_name || 'All Branches'}>
+                          <Building2 className="w-3 h-3 text-slate-400 shrink-0" />
                           {cashier.branch_name || 'All Branches'}
                         </span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-1.5 shrink-0 relative">
+                  <div className="flex items-center gap-1 shrink-0 relative">
                     <button
                       type="button"
                       onClick={() => startEditCashier(cashier)}
-                      className="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-xl bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 hover:text-slate-900 transition-colors shadow-2xs cursor-pointer active:scale-95"
+                      className="w-8 h-8 flex items-center justify-center rounded-xl bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 hover:text-slate-900 transition-colors shadow-2xs cursor-pointer active:scale-95"
                       title="Edit Staff Account"
                       aria-label={`Edit ${cashier.name}`}
                     >
-                      <Edit2 className="w-4 h-4" />
+                      <Edit2 className="w-3.5 h-3.5" />
                     </button>
 
                     <div className="relative">
                       <button
                         type="button"
                         onClick={() => setOpenMenuId(isMenuOpen ? null : cashier.id)}
-                        className={`w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-xl border transition-colors shadow-2xs cursor-pointer active:scale-95 ${
+                        className={`w-8 h-8 flex items-center justify-center rounded-xl border transition-colors shadow-2xs cursor-pointer active:scale-95 ${
                           isMenuOpen
                             ? 'bg-slate-900 text-white border-slate-900'
                             : 'bg-white hover:bg-slate-100 border-slate-200 text-slate-700 hover:text-slate-900'
@@ -426,13 +405,13 @@ export default function CashiersTab({
                         aria-expanded={isMenuOpen}
                         aria-haspopup="menu"
                       >
-                        <MoreVertical className="w-4 h-4" />
+                        <MoreVertical className="w-3.5 h-3.5" />
                       </button>
 
                       {isMenuOpen && (
                         <div
                           ref={menuRef}
-                          className="absolute right-0 top-full mt-1.5 w-48 bg-white rounded-xl shadow-xl border border-slate-200/90 py-1.5 z-40 animate-scale-in"
+                          className="absolute right-0 top-full mt-1.5 w-44 bg-white rounded-xl shadow-xl border border-slate-200/90 py-1 z-40 animate-scale-in"
                           role="menu"
                         >
                           <button
@@ -444,7 +423,7 @@ export default function CashiersTab({
                             {isCopied ? (
                               <>
                                 <Check className="w-3.5 h-3.5 text-slate-900" />
-                                <span className="text-slate-900 font-bold">Copied username!</span>
+                                <span className="text-slate-900 font-bold">Copied!</span>
                               </>
                             ) : (
                               <>
@@ -491,8 +470,6 @@ export default function CashiersTab({
           </div>
         )}
       </div>
-    </>
-  )}
-</div>
+    </div>
   );
 }
