@@ -1,16 +1,16 @@
 # Graph Report - tcs_pos  (2026-08-21)
 
 ## Corpus Check
-- 235 files · ~307,778 words
+- 235 files · ~307,621 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 2902 nodes · 4206 edges · 214 communities (163 shown, 51 thin omitted)
+- 2902 nodes · 4206 edges · 215 communities (164 shown, 51 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 59 edges (avg confidence: 0.53)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `d45a9438`
+- Built from commit: `d677cc7a`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -171,23 +171,24 @@
 - Slides Reference
 - HTML Slide Template
 - HTML Slide Template
-- sm
+- shadow
 - Slides
 - Brand Guidelines Template
-- foreground
+- $type
 - radius
 - lg
 - package.json
-- padding-y
+- padding-x
 - radius
-- muted-foreground
+- none
 - test_sync_brand_to_tokens.py
 - main
-- primary-hover
+- destructive-foreground
 - muted
 - xl
-- full
+- primary-foreground
 - ring
+- secondary-foreground
 - .__init__
 - .temp_project
 - slides-create.md
@@ -198,7 +199,7 @@
 - .test_check_shadcn_config_exists
 - .test_get_installed_components_empty
 - .test_get_installed_components_with_files
-- .test_add_components_no_components
+- .test_add_components_already_installed
 - .test_add_fonts
 - .test_recommend_plugins
 - .test_recommend_plugins_nextjs
@@ -256,7 +257,7 @@
 - **Multi-branch Architecture Data Models** — supabase_schema_branches, supabase_schema_products, supabase_schema_sales, supabase_schema_cash_flow [EXTRACTED 1.00]
 - **Sales Transaction Processing Flow** — supabase_schema_sales, supabase_schema_sale_items, supabase_schema_inventory_transactions [EXTRACTED 1.00]
 
-## Communities (214 total, 51 thin omitted)
+## Communities (215 total, 51 thin omitted)
 
 ### Community 0 - "validate_data.py"
 Cohesion: 0.08
@@ -560,7 +561,7 @@ Nodes (18): 1. Wordmark (Logotype), 2. Lettermark (Monogram), 3. Pictorial Mark 
 
 ### Community 93 - "color"
 Cohesion: 0.11
-Nodes (19): $type, $value, background, destructive-foreground, primary, primary-foreground, secondary, secondary-foreground (+11 more)
+Nodes (19): $type, $value, background, foreground, muted-foreground, primary, primary-hover, secondary (+11 more)
 
 ### Community 94 - "Brand Consistency Checklist"
 Cohesion: 0.11
@@ -699,16 +700,16 @@ Cohesion: 0.24
 Nodes (11): extensions, formatReport(), fs, getFiles(), main(), parseArgs(), path, patterns (+3 more)
 
 ### Community 129 - "card"
-Cohesion: 0.15
-Nodes (17): $type, $value, $type, $value, bg, bg, border, padding (+9 more)
+Cohesion: 0.20
+Nodes (12): $type, $value, bg, bg, padding, shadow, card, bg (+4 more)
 
 ### Community 130 - "input"
 Cohesion: 0.29
-Nodes (8): padding-x, input, $type, $value, focus-ring, padding-x, $type, $value
+Nodes (8): padding-y, input, $type, $value, focus-ring, padding-y, $type, $value
 
 ### Community 131 - "ShadcnInstaller"
 Cohesion: 0.20
-Nodes (7): main(), Handle shadcn/ui component installation., ShadcnInstaller, Tests for shadcn_add.py, Test adding components that are already installed., Test listing installed components when they exist., Test getting installed components without config.
+Nodes (7): main(), Handle shadcn/ui component installation., ShadcnInstaller, Tests for shadcn_add.py, Test listing installed components when they exist., Test getting installed components without config., Test adding components with empty list.
 
 ### Community 132 - ".check_shadcn_config"
 Cohesion: 0.21
@@ -826,9 +827,9 @@ Nodes (6): Animation Classes, Background Images, Base Structure, Chart.js Integr
 Cohesion: 0.29
 Nodes (6): Animation Classes, Background Images, Base Structure, Chart.js Integration, CSS Variables Reference, HTML Slide Template
 
-### Community 161 - "sm"
-Cohesion: 0.60
-Nodes (5): sm, sm, sm, $type, $value
+### Community 161 - "shadow"
+Cohesion: 0.47
+Nodes (6): sm, shadow, sm, sm, $type, $value
 
 ### Community 162 - "Slides"
 Cohesion: 0.33
@@ -838,9 +839,9 @@ Nodes (5): References (Knowledge Base), Routing, Slides, Subcommands, When to Us
 Cohesion: 0.40
 Nodes (4): Brand Guidelines Template, Document Structure, Extractable Fields, Usage
 
-### Community 164 - "foreground"
-Cohesion: 0.67
-Nodes (3): foreground, $type, $value
+### Community 164 - "$type"
+Cohesion: 0.60
+Nodes (5): $type, $value, border, border, border
 
 ### Community 165 - "radius"
 Cohesion: 0.60
@@ -854,21 +855,21 @@ Nodes (5): lg, $type, $value, lg, lg
 Cohesion: 0.40
 Nodes (4): name, private, type, version
 
-### Community 168 - "padding-y"
+### Community 168 - "padding-x"
 Cohesion: 0.67
-Nodes (4): padding-y, padding-y, $type, $value
+Nodes (4): padding-x, padding-x, $type, $value
 
 ### Community 169 - "radius"
-Cohesion: 0.27
-Nodes (10): $type, $value, $type, $value, radius, shadow, md, none (+2 more)
+Cohesion: 0.29
+Nodes (8): $type, $value, $type, $value, radius, full, md, md
 
-### Community 170 - "muted-foreground"
+### Community 170 - "none"
 Cohesion: 0.67
-Nodes (3): muted-foreground, $type, $value
+Nodes (4): $type, $value, none, none
 
-### Community 173 - "primary-hover"
+### Community 173 - "destructive-foreground"
 Cohesion: 0.67
-Nodes (3): primary-hover, $type, $value
+Nodes (3): destructive-foreground, $type, $value
 
 ### Community 174 - "muted"
 Cohesion: 0.67
@@ -878,13 +879,17 @@ Nodes (3): muted, $type, $value
 Cohesion: 0.67
 Nodes (4): xl, xl, $type, $value
 
-### Community 176 - "full"
+### Community 176 - "primary-foreground"
 Cohesion: 0.67
-Nodes (3): $type, $value, full
+Nodes (3): primary-foreground, $type, $value
 
 ### Community 177 - "ring"
 Cohesion: 0.67
 Nodes (3): ring, $type, $value
+
+### Community 178 - "secondary-foreground"
+Cohesion: 0.67
+Nodes (3): secondary-foreground, $type, $value
 
 ### Community 214 - "destructive"
 Cohesion: 0.67
@@ -902,7 +907,7 @@ _Questions this graph is uniquely positioned to answer:_
   _High betweenness centrality (0.011) - this node is a cross-community bridge._
 - **Why does `search()` connect `search` to `validate_data.py`, `detect_domain`, `.generate`, `BM25`, `test_text_layout_resilience.py`, `scripts/core.py`, `generate_design_system`, `_row_identities`, `BM25`, `design_system.py`?**
   _High betweenness centrality (0.009) - this node is a cross-community bridge._
-- **Why does `primitive` connect `primitive` to `gray`, `fontSize`, `radius`, `spacing`, `design-tokens-starter.json`?**
+- **Why does `primitive` connect `primitive` to `shadow`, `gray`, `fontSize`, `radius`, `spacing`, `design-tokens-starter.json`?**
   _High betweenness centrality (0.007) - this node is a cross-community bridge._
 - **Are the 2 inferred relationships involving `TailwindConfigGenerator` (e.g. with `TestGeneratedConfigIsValidJs` and `TestTailwindConfigGenerator`) actually correct?**
   _`TailwindConfigGenerator` has 2 INFERRED edges - model-reasoned connections that need verification._

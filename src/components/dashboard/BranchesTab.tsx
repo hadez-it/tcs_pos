@@ -20,28 +20,18 @@ export default function BranchesTab({
 }: BranchesTabProps) {
   const { branches, cashiers, sales } = usePosStore();
   const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive'>('all');
 
   const filteredBranches = useMemo(() => {
     return branches.filter((branch) => {
       const q = searchQuery.trim().toLowerCase();
-      const matchesSearch = !q || 
+      return !q || 
         branch.name.toLowerCase().includes(q) ||
         branch.code.toLowerCase().includes(q) ||
         (branch.address && branch.address.toLowerCase().includes(q)) ||
         (branch.manager_name && branch.manager_name.toLowerCase().includes(q)) ||
         (branch.phone && branch.phone.toLowerCase().includes(q));
-
-      const matchesStatus = 
-        statusFilter === 'all' ||
-        (statusFilter === 'active' && branch.is_active) ||
-        (statusFilter === 'inactive' && !branch.is_active);
-
-      return matchesSearch && matchesStatus;
     });
-  }, [branches, searchQuery, statusFilter]);
-
-  const totalActive = useMemo(() => branches.filter(b => b.is_active).length, [branches]);
+  }, [branches, searchQuery]);
 
   if (branches.length === 0) {
     return (
@@ -70,13 +60,13 @@ export default function BranchesTab({
   return (
     <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden w-full max-w-full min-w-0 flex-1 flex flex-col">
       {/* Top Toolbar */}
-      <div className="p-2.5 sm:p-3.5 border-b border-slate-200/90 bg-white space-y-2 shrink-0">
-        {/* Row 1 — Full-width Search */}
+      <div className="p-2.5 sm:p-3.5 border-b border-slate-200/90 bg-white shrink-0">
+        {/* Full-width Search */}
         <div className="relative w-full">
           <Search className="absolute inset-y-0 left-0 pl-3 w-4 h-4 my-auto text-slate-400 pointer-events-none" />
           <input
             type="text"
-            placeholder="Search branches..."
+            placeholder="Search branches by name, code, manager, address..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-9 pr-8 py-2 sm:py-2.5 bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-gray-900 shadow-2xs transition-colors"
@@ -93,45 +83,6 @@ export default function BranchesTab({
             </button>
           )}
         </div>
-
-        {/* Row 2 — Status Filter Pills */}
-        <div className="flex items-center justify-between gap-2">
-          <div className="flex items-center p-0.5 bg-slate-100 rounded-lg border border-slate-200/70 shrink-0">
-            <button
-              type="button"
-              onClick={() => setStatusFilter('all')}
-              className={`px-2.5 py-1 text-[11px] font-bold rounded-md transition-all cursor-pointer ${
-                statusFilter === 'all'
-                  ? 'bg-white text-slate-900 shadow-2xs'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              All ({branches.length})
-            </button>
-            <button
-              type="button"
-              onClick={() => setStatusFilter('active')}
-              className={`px-2.5 py-1 text-[11px] font-bold rounded-md transition-all cursor-pointer ${
-                statusFilter === 'active'
-                  ? 'bg-white text-slate-900 shadow-2xs'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              Active ({totalActive})
-            </button>
-            <button
-              type="button"
-              onClick={() => setStatusFilter('inactive')}
-              className={`px-2.5 py-1 text-[11px] font-bold rounded-md transition-all cursor-pointer ${
-                statusFilter === 'inactive'
-                  ? 'bg-white text-slate-900 shadow-2xs'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              Inactive ({branches.length - totalActive})
-            </button>
-          </div>
-        </div>
       </div>
 
       {/* Branch Cards Content */}
@@ -143,14 +94,14 @@ export default function BranchesTab({
             </div>
             <h4 className="font-extrabold text-slate-900 text-sm">No Matching Branches</h4>
             <p className="text-xs text-slate-500 max-w-xs leading-relaxed">
-              No branch outlets found matching your search or filters.
+              No branch outlets found matching your search.
             </p>
             <button
               type="button"
-              onClick={() => { setSearchQuery(''); setStatusFilter('all'); }}
+              onClick={() => setSearchQuery('')}
               className="mt-2 px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold rounded-xl transition-all cursor-pointer shadow-2xs"
             >
-              Reset Filters
+              Clear Search
             </button>
           </div>
         ) : (

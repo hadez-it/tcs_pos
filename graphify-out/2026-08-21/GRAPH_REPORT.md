@@ -1,16 +1,16 @@
 # Graph Report - tcs_pos  (2026-08-21)
 
 ## Corpus Check
-- 235 files · ~307,826 words
+- 235 files · ~307,778 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 2902 nodes · 4206 edges · 215 communities (164 shown, 51 thin omitted)
+- 2902 nodes · 4206 edges · 214 communities (163 shown, 51 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 59 edges (avg confidence: 0.53)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `77869095`
+- Built from commit: `d45a9438`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -165,30 +165,29 @@
 - sync-brand-to-tokens.cjs
 - _run
 - generate_design_system
-- radius
+- default
 - _row_identities
 - format_ascii_box
 - Slides Reference
 - HTML Slide Template
 - HTML Slide Template
-- shadow
+- sm
 - Slides
 - Brand Guidelines Template
-- $type
+- foreground
 - radius
 - lg
 - package.json
 - padding-y
-- md
-- none
+- radius
+- muted-foreground
 - test_sync_brand_to_tokens.py
 - main
-- destructive-foreground
+- primary-hover
 - muted
 - xl
-- primary-foreground
+- full
 - ring
-- secondary-foreground
 - .__init__
 - .temp_project
 - slides-create.md
@@ -257,7 +256,7 @@
 - **Multi-branch Architecture Data Models** — supabase_schema_branches, supabase_schema_products, supabase_schema_sales, supabase_schema_cash_flow [EXTRACTED 1.00]
 - **Sales Transaction Processing Flow** — supabase_schema_sales, supabase_schema_sale_items, supabase_schema_inventory_transactions [EXTRACTED 1.00]
 
-## Communities (215 total, 51 thin omitted)
+## Communities (214 total, 51 thin omitted)
 
 ### Community 0 - "validate_data.py"
 Cohesion: 0.08
@@ -561,7 +560,7 @@ Nodes (18): 1. Wordmark (Logotype), 2. Lettermark (Monogram), 3. Pictorial Mark 
 
 ### Community 93 - "color"
 Cohesion: 0.11
-Nodes (19): $type, $value, background, foreground, muted-foreground, primary, primary-hover, secondary (+11 more)
+Nodes (19): $type, $value, background, destructive-foreground, primary, primary-foreground, secondary, secondary-foreground (+11 more)
 
 ### Community 94 - "Brand Consistency Checklist"
 Cohesion: 0.11
@@ -700,8 +699,8 @@ Cohesion: 0.24
 Nodes (11): extensions, formatReport(), fs, getFiles(), main(), parseArgs(), path, patterns (+3 more)
 
 ### Community 129 - "card"
-Cohesion: 0.20
-Nodes (12): $type, $value, bg, bg, padding, shadow, card, bg (+4 more)
+Cohesion: 0.15
+Nodes (17): $type, $value, $type, $value, bg, bg, border, padding (+9 more)
 
 ### Community 130 - "input"
 Cohesion: 0.29
@@ -803,9 +802,9 @@ Nodes (8): Path, Regression tests for validate-tokens.cjs. The validator used to
 Cohesion: 0.25
 Nodes (5): generate_design_system(), Main entry point for design system generation. Args: query: Search query (e.g.,…, format_output(), Format results for Claude consumption (token-optimized), TestPersistence
 
-### Community 155 - "radius"
-Cohesion: 0.29
-Nodes (8): $type, $value, $type, $value, radius, default, full, default
+### Community 155 - "default"
+Cohesion: 0.67
+Nodes (4): $type, $value, default, default
 
 ### Community 156 - "_row_identities"
 Cohesion: 0.25
@@ -827,9 +826,9 @@ Nodes (6): Animation Classes, Background Images, Base Structure, Chart.js Integr
 Cohesion: 0.29
 Nodes (6): Animation Classes, Background Images, Base Structure, Chart.js Integration, CSS Variables Reference, HTML Slide Template
 
-### Community 161 - "shadow"
-Cohesion: 0.47
-Nodes (6): sm, shadow, sm, sm, $type, $value
+### Community 161 - "sm"
+Cohesion: 0.60
+Nodes (5): sm, sm, sm, $type, $value
 
 ### Community 162 - "Slides"
 Cohesion: 0.33
@@ -839,9 +838,9 @@ Nodes (5): References (Knowledge Base), Routing, Slides, Subcommands, When to Us
 Cohesion: 0.40
 Nodes (4): Brand Guidelines Template, Document Structure, Extractable Fields, Usage
 
-### Community 164 - "$type"
-Cohesion: 0.60
-Nodes (5): $type, $value, border, border, border
+### Community 164 - "foreground"
+Cohesion: 0.67
+Nodes (3): foreground, $type, $value
 
 ### Community 165 - "radius"
 Cohesion: 0.60
@@ -859,17 +858,17 @@ Nodes (4): name, private, type, version
 Cohesion: 0.67
 Nodes (4): padding-y, padding-y, $type, $value
 
-### Community 169 - "md"
-Cohesion: 0.67
-Nodes (4): $type, $value, md, md
+### Community 169 - "radius"
+Cohesion: 0.27
+Nodes (10): $type, $value, $type, $value, radius, shadow, md, none (+2 more)
 
-### Community 170 - "none"
+### Community 170 - "muted-foreground"
 Cohesion: 0.67
-Nodes (4): $type, $value, none, none
+Nodes (3): muted-foreground, $type, $value
 
-### Community 173 - "destructive-foreground"
+### Community 173 - "primary-hover"
 Cohesion: 0.67
-Nodes (3): destructive-foreground, $type, $value
+Nodes (3): primary-hover, $type, $value
 
 ### Community 174 - "muted"
 Cohesion: 0.67
@@ -879,17 +878,13 @@ Nodes (3): muted, $type, $value
 Cohesion: 0.67
 Nodes (4): xl, xl, $type, $value
 
-### Community 176 - "primary-foreground"
+### Community 176 - "full"
 Cohesion: 0.67
-Nodes (3): primary-foreground, $type, $value
+Nodes (3): $type, $value, full
 
 ### Community 177 - "ring"
 Cohesion: 0.67
 Nodes (3): ring, $type, $value
-
-### Community 178 - "secondary-foreground"
-Cohesion: 0.67
-Nodes (3): secondary-foreground, $type, $value
 
 ### Community 214 - "destructive"
 Cohesion: 0.67
@@ -907,7 +902,7 @@ _Questions this graph is uniquely positioned to answer:_
   _High betweenness centrality (0.011) - this node is a cross-community bridge._
 - **Why does `search()` connect `search` to `validate_data.py`, `detect_domain`, `.generate`, `BM25`, `test_text_layout_resilience.py`, `scripts/core.py`, `generate_design_system`, `_row_identities`, `BM25`, `design_system.py`?**
   _High betweenness centrality (0.009) - this node is a cross-community bridge._
-- **Why does `primitive` connect `primitive` to `shadow`, `gray`, `fontSize`, `spacing`, `radius`, `design-tokens-starter.json`?**
+- **Why does `primitive` connect `primitive` to `gray`, `fontSize`, `radius`, `spacing`, `design-tokens-starter.json`?**
   _High betweenness centrality (0.007) - this node is a cross-community bridge._
 - **Are the 2 inferred relationships involving `TailwindConfigGenerator` (e.g. with `TestGeneratedConfigIsValidJs` and `TestTailwindConfigGenerator`) actually correct?**
   _`TailwindConfigGenerator` has 2 INFERRED edges - model-reasoned connections that need verification._
