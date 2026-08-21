@@ -295,8 +295,8 @@
     "semantic_hash": ""
   },
   "src/components/dashboard/ProductsTab.tsx": {
-    "mtime": 1787278962.485517,
-    "ast_hash": "c0e8a3f52628ebce79d88015082d4028",
+    "mtime": 1787279587.5164487,
+    "ast_hash": "5f899cfbc84be4bb78971fd620788896",
     "semantic_hash": ""
   },
   "src/components/dashboard/StaffPerformanceTab.tsx": {

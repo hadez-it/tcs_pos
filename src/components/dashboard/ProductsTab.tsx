@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from 'react';
-import { Search, FileSpreadsheet, Download, Package, Printer, Edit2, PackagePlus, Trash2, ChevronLeft, ChevronRight, Filter, Building2, Layers, Plus, X } from 'lucide-react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
+import { Search, FileSpreadsheet, Download, Package, ChevronDown, Printer, Edit2, PackagePlus, Trash2, ChevronLeft, ChevronRight, Filter, Building2, Layers, Plus, X } from 'lucide-react';
 import { formatCurrency } from '../../utils/format';
 import { UserProfile, Branch, Product } from '../../types';
 import SearchableCategorySelect from '../SearchableCategorySelect';
@@ -43,6 +43,29 @@ export default function ProductsTab({
   const [stockFilter, setStockFilter] = useState('All');
   const [productPage, setProductPage] = useState(1);
   const [showFilterDrawer, setShowFilterDrawer] = useState(false);
+  const [showCsvDropdown, setShowCsvDropdown] = useState(false);
+  const csvMenuRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (csvMenuRef.current && !csvMenuRef.current.contains(e.target as Node)) {
+        setShowCsvDropdown(false);
+      }
+    };
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setShowCsvDropdown(false);
+      }
+    };
+    if (showCsvDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('keydown', handleKeyDown);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [showCsvDropdown]);
 
   const activeFilterCount = useMemo(() => {
     let count = 0;
@@ -135,32 +158,37 @@ export default function ProductsTab({
 
   return (
     <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden w-full max-w-full min-w-0 flex-1 flex flex-col">
-      <div className="p-3.5 sm:p-5 border-b border-slate-200/90 bg-gradient-to-b from-white to-slate-50/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="flex-1 flex items-center gap-2">
-          <div className="relative flex-1">
-            <Search className="absolute inset-y-0 left-0 pl-3 w-4 h-4 my-auto text-slate-400 pointer-events-none" />
-            <input
-              type="text"
-              placeholder="Search Name, SKU, or Barcode..."
-              value={productSearch}
-              onChange={(e) => { setProductSearch(e.target.value); setProductPage(1); }}
-              className="w-full pl-9 pr-8 py-2 bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-gray-900 shadow-2xs transition-colors"
-            />
-            {productSearch && (
-              <button
-                type="button"
-                onClick={() => { setProductSearch(''); setProductPage(1); }}
-                className="absolute inset-y-0 right-0 pr-2.5 flex items-center text-slate-400 hover:text-slate-600 cursor-pointer"
-                aria-label="Clear search"
-              >
-                <X className="w-3.5 h-3.5" />
-              </button>
-            )}
-          </div>
+      {/* Top Toolbar */}
+      <div className="p-2.5 sm:p-3.5 border-b border-slate-200/90 bg-white space-y-2 shrink-0">
+        {/* Row 1 — Full-width Search */}
+        <div className="relative w-full">
+          <Search className="absolute inset-y-0 left-0 pl-3 w-4 h-4 my-auto text-slate-400 pointer-events-none" />
+          <input
+            type="text"
+            placeholder="Search Name, SKU, or Barcode..."
+            value={productSearch}
+            onChange={(e) => { setProductSearch(e.target.value); setProductPage(1); }}
+            className="w-full pl-9 pr-8 py-2 sm:py-2.5 bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-gray-900 shadow-2xs transition-colors"
+          />
+          {productSearch && (
+            <button
+              type="button"
+              onClick={() => { setProductSearch(''); setProductPage(1); }}
+              className="absolute inset-y-0 right-0 pr-2.5 flex items-center text-slate-400 hover:text-slate-600 cursor-pointer"
+              aria-label="Clear search"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
 
+        {/* Row 2 — Filters (Left) + CSV Actions Dropdown (Right) */}
+        <div className="flex items-center justify-between gap-2">
+          {/* Left: Filters Button */}
           <button
+            type="button"
             onClick={() => setShowFilterDrawer(true)}
-            className={`inline-flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-bold rounded-xl border transition-all cursor-pointer shadow-2xs shrink-0 ${
+            className={`inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-xl border transition-all cursor-pointer shadow-2xs shrink-0 ${
               activeFilterCount > 0
                 ? 'bg-black text-white border-black'
                 : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
@@ -169,31 +197,55 @@ export default function ProductsTab({
             <Filter className="w-3.5 h-3.5" />
             <span>Filters</span>
             {activeFilterCount > 0 && (
-              <span className="w-4.5 h-4.5 rounded-full bg-white text-black text-[10px] font-black flex items-center justify-center">
+              <span className={`w-4 h-4 rounded-full text-[10px] font-black flex items-center justify-center ${
+                activeFilterCount > 0 ? 'bg-white text-black' : 'bg-slate-200 text-slate-700'
+              }`}>
                 {activeFilterCount}
               </span>
             )}
           </button>
-        </div>
 
-        <div className="flex items-center justify-end gap-2 shrink-0">
-          <button
-            onClick={() => setShowCsvModal(true)}
-            className="inline-flex items-center justify-center gap-1.5 px-2.5 sm:px-3.5 py-2 bg-gray-50 hover:bg-gray-100 text-gray-900 font-bold text-[11px] sm:text-xs rounded-xl border border-gray-200/80 transition-all cursor-pointer active:scale-95"
-            title="Import inventory items from CSV file"
-          >
-            <FileSpreadsheet className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-900 shrink-0" />
-            <span className="truncate">Import CSV</span>
-          </button>
+          {/* Right: Single Compact CSV Dropdown */}
+          <div className="relative" ref={csvMenuRef}>
+            <button
+              type="button"
+              onClick={() => setShowCsvDropdown(prev => !prev)}
+              className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 transition-all cursor-pointer shadow-2xs"
+              title="CSV Import & Export options"
+              aria-expanded={showCsvDropdown}
+            >
+              <FileSpreadsheet className="w-3.5 h-3.5 text-slate-600" />
+              <span>CSV</span>
+              <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform ${showCsvDropdown ? 'rotate-180' : ''}`} />
+            </button>
 
-          <button
-            onClick={handleExportCsv}
-            className="inline-flex items-center justify-center gap-1.5 px-2.5 sm:px-3.5 py-2 bg-white hover:bg-slate-100 text-slate-700 font-bold text-[11px] sm:text-xs rounded-xl border border-slate-200 transition-all cursor-pointer active:scale-95 shadow-2xs"
-            title="Export current inventory list to CSV"
-          >
-            <Download className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-500 shrink-0" />
-            <span className="truncate">Export CSV</span>
-          </button>
+            {showCsvDropdown && (
+              <div className="absolute right-0 top-full mt-1.5 w-36 bg-white rounded-xl shadow-xl border border-slate-200/90 py-1 z-30 animate-scale-in">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowCsvDropdown(false);
+                    setShowCsvModal(true);
+                  }}
+                  className="w-full px-3 py-2 text-left text-xs font-semibold text-slate-700 hover:bg-slate-50 flex items-center gap-2 transition-colors cursor-pointer"
+                >
+                  <FileSpreadsheet className="w-3.5 h-3.5 text-slate-600" />
+                  <span>Import CSV</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowCsvDropdown(false);
+                    handleExportCsv();
+                  }}
+                  className="w-full px-3 py-2 text-left text-xs font-semibold text-slate-700 hover:bg-slate-50 flex items-center gap-2 transition-colors cursor-pointer"
+                >
+                  <Download className="w-3.5 h-3.5 text-slate-600" />
+                  <span>Export CSV</span>
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
