@@ -1,7 +1,7 @@
 # Graph Report - tcs_pos  (2026-08-21)
 
 ## Corpus Check
-- 235 files · ~307,676 words
+- 235 files · ~307,826 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `af0796c0`
+- Built from commit: `77869095`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -178,7 +178,7 @@
 - radius
 - lg
 - package.json
-- padding-x
+- padding-y
 - md
 - none
 - test_sync_brand_to_tokens.py
@@ -199,7 +199,7 @@
 - .test_check_shadcn_config_exists
 - .test_get_installed_components_empty
 - .test_get_installed_components_with_files
-- .test_add_components_already_installed
+- .test_add_components_no_components
 - .test_add_fonts
 - .test_recommend_plugins
 - .test_recommend_plugins_nextjs
@@ -216,7 +216,7 @@
 - .test_base_config_structure
 - .test_default_content_paths_react
 - .test_default_content_paths_vue
-- react-dom
+- @capacitor/cli
 - @capacitor/core
 - react
 - react-hook-form
@@ -277,7 +277,7 @@ Nodes (56): benchmark_pair(), count_tokens(), main(), print_table(), Path, main(
 
 ### Community 4 - "dependencies"
 Cohesion: 0.09
-Nodes (23): @capacitor/android, @capacitor/app, @capacitor/cli, @hookform/resolvers, lucide-react, dependencies, @capacitor/android, @capacitor/app (+15 more)
+Nodes (23): @capacitor/android, @capacitor/app, @hookform/resolvers, lucide-react, dependencies, @capacitor/android, @capacitor/app, @hookform/resolvers (+15 more)
 
 ### Community 5 - "devDependencies"
 Cohesion: 0.09
@@ -705,11 +705,11 @@ Nodes (12): $type, $value, bg, bg, padding, shadow, card, bg (+4 more)
 
 ### Community 130 - "input"
 Cohesion: 0.29
-Nodes (8): padding-y, input, $type, $value, focus-ring, padding-y, $type, $value
+Nodes (8): padding-x, input, $type, $value, focus-ring, padding-x, $type, $value
 
 ### Community 131 - "ShadcnInstaller"
 Cohesion: 0.20
-Nodes (7): main(), Handle shadcn/ui component installation., ShadcnInstaller, Tests for shadcn_add.py, Test listing installed components when they exist., Test getting installed components without config., Test adding components with empty list.
+Nodes (7): main(), Handle shadcn/ui component installation., ShadcnInstaller, Tests for shadcn_add.py, Test adding components that are already installed., Test listing installed components when they exist., Test getting installed components without config.
 
 ### Community 132 - ".check_shadcn_config"
 Cohesion: 0.21
@@ -855,9 +855,9 @@ Nodes (5): lg, $type, $value, lg, lg
 Cohesion: 0.40
 Nodes (4): name, private, type, version
 
-### Community 168 - "padding-x"
+### Community 168 - "padding-y"
 Cohesion: 0.67
-Nodes (4): padding-x, padding-x, $type, $value
+Nodes (4): padding-y, padding-y, $type, $value
 
 ### Community 169 - "md"
 Cohesion: 0.67

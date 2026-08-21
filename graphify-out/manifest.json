@@ -275,8 +275,8 @@
     "semantic_hash": ""
   },
   "src/components/dashboard/BranchesTab.tsx": {
-    "mtime": 1787277288.3636355,
-    "ast_hash": "947ee748a04f4084d0bcd0cf5be0d238",
+    "mtime": 1787280355.252818,
+    "ast_hash": "effa4625765cb89516959a250b6fa779",
     "semantic_hash": ""
   },
   "src/components/dashboard/CashFlowTab.tsx": {
