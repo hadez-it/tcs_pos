@@ -1,6 +1,6 @@
 {
-  "name": "Mibayate POS",
-  "short_name": "Mibayate POS",
+  "name": "TCS POS",
+  "short_name": "TCS POS",
   "description": "Multi-branch retail POS and inventory management",
   "start_url": "/",
   "display": "standalone",

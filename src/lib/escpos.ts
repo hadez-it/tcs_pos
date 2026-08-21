@@ -874,7 +874,7 @@ export function testPrint(): Uint8Array {
     init(),
     setCodePage('CP437'),
     resetFormat(),
-    text('MiBayate Printer Test', { align: 'center', bold: true, width: 1, height: 1 }),
+    text('TCS POS Printer Test', { align: 'center', bold: true, width: 1, height: 1 }),
     text('If you can read this,', { align: 'center', width: 1, height: 1 }),
     text('ESC/POS printing works.', { align: 'center', width: 1, height: 1 }),
     feed(4),

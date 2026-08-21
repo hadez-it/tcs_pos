@@ -2,7 +2,7 @@
 
 ## Project
 
-Mibayate POS — a React 19 + Vite + Tailwind v4 retail point-of-sale system. Targets web (Vercel) and Android (Capacitor). Dual dashboard: Owner (analytics, products, branches, cash flow) and Cashier (cart, checkout, receipts).
+TCS POS — a React 19 + Vite + Tailwind v4 retail point-of-sale system. Targets web (Vercel) and Android (Capacitor). Dual dashboard: Owner (analytics, products, branches, cash flow) and Cashier (cart, checkout, receipts).
 
 ## Commands
 

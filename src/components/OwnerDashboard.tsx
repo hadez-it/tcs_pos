@@ -586,11 +586,11 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
             />
           ) : (
             <div className="w-10 h-10 bg-black text-white rounded-xl flex items-center justify-center font-black text-xl shadow-xs shrink-0">
-              {businessProfile.name ? businessProfile.name.charAt(0).toUpperCase() : 'M'}
+              {businessProfile.name ? businessProfile.name.charAt(0).toUpperCase() : 'T'}
             </div>
           )}
           <div className="min-w-0 flex-1">
-            <h2 className="font-extrabold text-slate-900 text-sm truncate">{businessProfile.name || 'MiBayate POS'}</h2>
+            <h2 className="font-extrabold text-slate-900 text-sm truncate">{businessProfile.name || 'TCS POS'}</h2>
             <p className="text-[10px] text-slate-500 font-semibold flex items-center gap-1">
               <span className={`w-1.5 h-1.5 rounded-full inline-block ${isSupabaseConfigured ? 'bg-black' : 'bg-slate-400'} animate-pulse-soft`} />
               {isSupabaseConfigured ? 'Cloud Connected' : 'Offline Mode'}
@@ -700,7 +700,7 @@ export default function OwnerDashboard({ user, onLogout }: OwnerDashboardProps) 
                 />
               ) : (
                 <div className="w-9 h-9 bg-black text-white rounded-xl flex items-center justify-center font-black text-lg shadow-md shrink-0">
-                  {businessProfile.name ? businessProfile.name.charAt(0).toUpperCase() : 'M'}
+                  {businessProfile.name ? businessProfile.name.charAt(0).toUpperCase() : 'T'}
                 </div>
               )}
               <div className="min-w-0">

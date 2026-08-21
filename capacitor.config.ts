@@ -2,7 +2,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'com.mibayate.pos',
-  appName: 'MiBayate POS',
+  appName: 'TCS POS',
   webDir: 'dist',
   server: {
     url: 'https://mibayate-pos.vercel.app/',

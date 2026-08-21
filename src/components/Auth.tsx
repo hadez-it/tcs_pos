@@ -72,11 +72,11 @@ export default function Auth({ onLoginSuccess }: AuthProps) {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-11 h-11 shrink-0 bg-white/15 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/25 shadow-lg">
-              <span className="font-black text-xl text-white leading-none">M</span>
+              <span className="font-black text-xl text-white leading-none">T</span>
             </div>
             <div className="min-w-0">
               <h1 className="text-lg font-black text-white tracking-tight leading-tight truncate">
-                Mibayate POS
+                TCS POS
               </h1>
               <div className="flex items-center gap-1.5 mt-0.5">
                 <span

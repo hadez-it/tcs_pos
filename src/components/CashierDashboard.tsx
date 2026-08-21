@@ -492,11 +492,11 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
         <div className="flex items-center justify-between px-4 sm:px-6 h-14">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 bg-black text-white rounded-xl flex items-center justify-center font-black text-lg shadow-xs">
-              {businessProfile.name ? businessProfile.name.charAt(0).toUpperCase() : 'M'}
+              {businessProfile.name ? businessProfile.name.charAt(0).toUpperCase() : 'T'}
             </div>
             <div>
               <h1 className="text-sm font-bold text-slate-900 tracking-tight">
-                {businessProfile.name || 'Mibayate POS'}
+                {businessProfile.name || 'TCS POS'}
               </h1>
               <p className="text-[10px] text-slate-500 font-semibold flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-black animate-pulse-soft inline-block" />
@@ -871,7 +871,7 @@ export default function CashierDashboard({ user, onLogout }: CashierDashboardPro
                     <img src={businessProfile.logo_url} alt="Logo" className="w-14 h-14 object-contain mx-auto rounded-xl mb-1" />
                   ) : (
                     <div className="w-12 h-12 bg-gradient-to-br from-gray-700 to-gray-700 text-white font-black text-xl rounded-2xl flex items-center justify-center mx-auto shadow-lg shadow-black/20 mb-1">
-                      {businessProfile.name ? businessProfile.name.charAt(0).toUpperCase() : 'M'}
+                      {businessProfile.name ? businessProfile.name.charAt(0).toUpperCase() : 'T'}
                     </div>
                   )}
                   <h4 className="font-black text-sm tracking-tight uppercase text-slate-900">
