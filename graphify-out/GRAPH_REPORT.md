@@ -1,7 +1,7 @@
 # Graph Report - tcs_pos  (2026-08-21)
 
 ## Corpus Check
-- 235 files · ~307,639 words
+- 235 files · ~307,676 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `c52f249f`
+- Built from commit: `af0796c0`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -149,7 +149,7 @@
 - inject-brand-context.cjs
 - CIP Design Style Guide
 - embed-tokens.cjs
-- duration
+- primitive
 - patch
 - test_tailwind_config_gen.py
 - Brand
@@ -171,15 +171,15 @@
 - Slides Reference
 - HTML Slide Template
 - HTML Slide Template
-- sm
+- shadow
 - Slides
 - Brand Guidelines Template
 - $type
 - radius
 - lg
 - package.json
-- default
-- padding-y
+- padding-x
+- md
 - none
 - test_sync_brand_to_tokens.py
 - main
@@ -199,7 +199,7 @@
 - .test_check_shadcn_config_exists
 - .test_get_installed_components_empty
 - .test_get_installed_components_with_files
-- .test_add_components_no_components
+- .test_add_components_already_installed
 - .test_add_fonts
 - .test_recommend_plugins
 - .test_recommend_plugins_nextjs
@@ -216,7 +216,7 @@
 - .test_base_config_structure
 - .test_default_content_paths_react
 - .test_default_content_paths_vue
-- @capacitor/cli
+- react-dom
 - @capacitor/core
 - react
 - react-hook-form
@@ -277,7 +277,7 @@ Nodes (56): benchmark_pair(), count_tokens(), main(), print_table(), Path, main(
 
 ### Community 4 - "dependencies"
 Cohesion: 0.09
-Nodes (23): @capacitor/android, @capacitor/app, @hookform/resolvers, lucide-react, dependencies, @capacitor/android, @capacitor/app, @hookform/resolvers (+15 more)
+Nodes (23): @capacitor/android, @capacitor/app, @capacitor/cli, @hookform/resolvers, lucide-react, dependencies, @capacitor/android, @capacitor/app (+15 more)
 
 ### Community 5 - "devDependencies"
 Cohesion: 0.09
@@ -705,11 +705,11 @@ Nodes (12): $type, $value, bg, bg, padding, shadow, card, bg (+4 more)
 
 ### Community 130 - "input"
 Cohesion: 0.29
-Nodes (8): padding-x, input, $type, $value, focus-ring, padding-x, $type, $value
+Nodes (8): padding-y, input, $type, $value, focus-ring, padding-y, $type, $value
 
 ### Community 131 - "ShadcnInstaller"
 Cohesion: 0.20
-Nodes (7): main(), Handle shadcn/ui component installation., ShadcnInstaller, Tests for shadcn_add.py, Test adding components that are already installed., Test listing installed components when they exist., Test getting installed components without config.
+Nodes (7): main(), Handle shadcn/ui component installation., ShadcnInstaller, Tests for shadcn_add.py, Test listing installed components when they exist., Test getting installed components without config., Test adding components with empty list.
 
 ### Community 132 - ".check_shadcn_config"
 Cohesion: 0.21
@@ -739,9 +739,9 @@ Nodes (10): Bold Dynamic, CIP Design Style Guide, Classic Traditional, Color Psy
 Cohesion: 0.18
 Nodes (8): args, fs, minimal, MINIMAL_TOKENS, path, projectRoot, tokensPath, wrapStyle
 
-### Community 139 - "duration"
-Cohesion: 0.20
-Nodes (10): fast, normal, slow, $type, $value, $type, $value, duration (+2 more)
+### Community 139 - "primitive"
+Cohesion: 0.18
+Nodes (11): fast, normal, slow, $type, $value, $type, $value, primitive (+3 more)
 
 ### Community 140 - "patch"
 Cohesion: 0.18
@@ -804,8 +804,8 @@ Cohesion: 0.25
 Nodes (5): generate_design_system(), Main entry point for design system generation. Args: query: Search query (e.g.,…, format_output(), Format results for Claude consumption (token-optimized), TestPersistence
 
 ### Community 155 - "radius"
-Cohesion: 0.24
-Nodes (10): $type, $value, $type, $value, primitive, radius, shadow, full (+2 more)
+Cohesion: 0.29
+Nodes (8): $type, $value, $type, $value, radius, default, full, default
 
 ### Community 156 - "_row_identities"
 Cohesion: 0.25
@@ -827,9 +827,9 @@ Nodes (6): Animation Classes, Background Images, Base Structure, Chart.js Integr
 Cohesion: 0.29
 Nodes (6): Animation Classes, Background Images, Base Structure, Chart.js Integration, CSS Variables Reference, HTML Slide Template
 
-### Community 161 - "sm"
-Cohesion: 0.60
-Nodes (5): sm, sm, sm, $type, $value
+### Community 161 - "shadow"
+Cohesion: 0.47
+Nodes (6): sm, shadow, sm, sm, $type, $value
 
 ### Community 162 - "Slides"
 Cohesion: 0.33
@@ -855,13 +855,13 @@ Nodes (5): lg, $type, $value, lg, lg
 Cohesion: 0.40
 Nodes (4): name, private, type, version
 
-### Community 168 - "default"
+### Community 168 - "padding-x"
 Cohesion: 0.67
-Nodes (4): $type, $value, default, default
+Nodes (4): padding-x, padding-x, $type, $value
 
-### Community 169 - "padding-y"
+### Community 169 - "md"
 Cohesion: 0.67
-Nodes (4): padding-y, padding-y, $type, $value
+Nodes (4): $type, $value, md, md
 
 ### Community 170 - "none"
 Cohesion: 0.67
@@ -907,7 +907,7 @@ _Questions this graph is uniquely positioned to answer:_
   _High betweenness centrality (0.011) - this node is a cross-community bridge._
 - **Why does `search()` connect `search` to `validate_data.py`, `detect_domain`, `.generate`, `BM25`, `test_text_layout_resilience.py`, `scripts/core.py`, `generate_design_system`, `_row_identities`, `BM25`, `design_system.py`?**
   _High betweenness centrality (0.009) - this node is a cross-community bridge._
-- **Why does `primitive` connect `radius` to `gray`, `fontSize`, `duration`, `spacing`, `design-tokens-starter.json`?**
+- **Why does `primitive` connect `primitive` to `shadow`, `gray`, `fontSize`, `spacing`, `radius`, `design-tokens-starter.json`?**
   _High betweenness centrality (0.007) - this node is a cross-community bridge._
 - **Are the 2 inferred relationships involving `TailwindConfigGenerator` (e.g. with `TestGeneratedConfigIsValidJs` and `TestTailwindConfigGenerator`) actually correct?**
   _`TailwindConfigGenerator` has 2 INFERRED edges - model-reasoned connections that need verification._

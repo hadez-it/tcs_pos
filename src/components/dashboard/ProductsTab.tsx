@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Search, FileSpreadsheet, Download, Package, ChevronDown, Printer, Edit2, PackagePlus, Trash2, ChevronLeft, ChevronRight, Filter, Building2, Layers, Plus, X } from 'lucide-react';
+import { Search, FileSpreadsheet, Download, Package, Printer, Edit2, PackagePlus, Trash2, ChevronLeft, ChevronRight, Filter, Building2, Layers, Plus, X } from 'lucide-react';
 import { formatCurrency } from '../../utils/format';
 import { UserProfile, Branch, Product } from '../../types';
 import SearchableCategorySelect from '../SearchableCategorySelect';
@@ -42,7 +42,6 @@ export default function ProductsTab({
   const [categoryFilter, setCategoryFilter] = useState('All');
   const [stockFilter, setStockFilter] = useState('All');
   const [productPage, setProductPage] = useState(1);
-  const [expandedProductId, setExpandedProductId] = useState<string | null>(null);
   const [showFilterDrawer, setShowFilterDrawer] = useState(false);
 
   const activeFilterCount = useMemo(() => {
@@ -304,7 +303,7 @@ export default function ProductsTab({
         ) : (
           <>
             {/* Mobile Cards View */}
-            <div className="grid grid-cols-1 gap-3 sm:hidden p-4">
+            <div className="grid grid-cols-1 gap-2.5 sm:hidden p-3 bg-slate-50/50">
               {paginatedProducts.map((prod) => {
                 const isLowStock = prod.stock <= prod.min_stock_level;
                 const isOutOfStock = prod.stock === 0;
@@ -312,87 +311,99 @@ export default function ProductsTab({
                 return (
                   <div 
                     key={prod.id} 
-                    onClick={() => setExpandedProductId(expandedProductId === prod.id ? null : prod.id)}
-                    className="p-4 rounded-xl border border-slate-200 bg-white shadow-2xs space-y-3 cursor-pointer transition-all duration-300 active:scale-[0.98]"
+                    className="p-3 rounded-xl border border-slate-200 bg-white shadow-2xs space-y-2.5 transition-all"
                   >
-                    <div className="flex justify-between items-start">
-                      <div className="min-w-0">
-                        <h4 className="font-bold text-slate-950 text-xs">{prod.name}</h4>
-                        {prod.barcode && <p className="text-[9px] text-slate-400 font-mono">BC: {prod.barcode}</p>}
-                      </div>
-                      <span className="bg-slate-100 px-2 py-0.5 rounded text-[9px] font-semibold text-slate-600 shrink-0">
-                        {prod.category}
-                      </span>
-                    </div>
+                    <div className="flex items-center gap-3">
+                      {prod.image ? (
+                        <img 
+                          src={prod.image} 
+                          alt={prod.name} 
+                          className="w-12 h-12 rounded-xl object-cover border border-slate-200/80 shrink-0 bg-slate-50" 
+                        />
+                      ) : (
+                        <div className="w-12 h-12 rounded-xl bg-slate-100 border border-slate-200/80 flex items-center justify-center text-slate-400 shrink-0">
+                          <Package className="w-5 h-5 text-slate-400" />
+                        </div>
+                      )}
 
-                    <div className="grid grid-cols-3 gap-2 py-2 border-t border-b border-slate-100">
-                      <div>
-                        <p className="text-[8px] text-slate-400 uppercase font-bold">Purchased Price</p>
-                        <p className="font-mono text-[11px] text-slate-600 font-medium">{formatCurrency(prod.cost)}</p>
-                      </div>
-                      <div>
-                        <p className="text-[8px] text-slate-400 uppercase font-bold">Unit Price</p>
-                        <p className="font-mono text-[11px] text-slate-900 font-bold">{formatCurrency(prod.price)}</p>
-                      </div>
-                      <div>
-                        <p className="text-[8px] text-slate-400 uppercase font-bold">Stock</p>
-                        <span className={`inline-block font-mono text-[10px] font-bold ${
-                          isOutOfStock 
-                            ? 'text-red-600' 
-                            : isLowStock 
-                              ? 'text-gray-900' 
-                              : 'text-gray-900'
-                        }`}>
-                          {prod.stock} {prod.unit_name || 'ခု'}
-                        </span>
-                      </div>
-                    </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center justify-between gap-1.5">
+                          <h4 className="font-bold text-slate-950 text-xs truncate" title={prod.name}>
+                            {prod.name}
+                          </h4>
+                          <span className="bg-slate-100 px-2 py-0.5 rounded text-[9px] font-semibold text-slate-600 shrink-0">
+                            {prod.category}
+                          </span>
+                        </div>
 
-                    <div className="flex justify-between items-center pt-1">
-                      <div className="text-[9px] font-medium">
-                        {isOutOfStock ? (
-                          <span className="text-red-600 font-bold">Reorder Immediately</span>
-                        ) : isLowStock ? (
-                          <span className="text-gray-900">Low (≤{prod.min_stock_level})</span>
-                        ) : (
-                          <span className="text-gray-900">Stock OK</span>
+                        <div className="flex items-center gap-2 mt-0.5 text-[11px]">
+                          <span className="font-mono font-bold text-slate-900">{formatCurrency(prod.price)}</span>
+                          <span className="text-slate-300">•</span>
+                          <span className={`font-mono font-bold text-[10px] ${
+                            isOutOfStock ? 'text-red-600' : isLowStock ? 'text-slate-700' : 'text-slate-600'
+                          }`}>
+                            {prod.stock} {prod.unit_name || 'ခု'} {isOutOfStock ? '(Out)' : isLowStock ? '(Low)' : ''}
+                          </span>
+                        </div>
+
+                        {(prod.barcode || prod.sku) && (
+                          <p className="text-[9px] text-slate-400 font-mono mt-0.5 truncate">
+                            {prod.barcode ? `BC: ${prod.barcode}` : `SKU: ${prod.sku}`}
+                          </p>
                         )}
                       </div>
-                      <div className={`text-slate-400 transition-transform duration-300 ${expandedProductId === prod.id ? 'rotate-180' : ''}`}>
-                        <ChevronDown className="w-4 h-4" />
-                      </div>
                     </div>
 
-                    <div className={`grid grid-cols-2 gap-2 overflow-hidden transition-all duration-300 ease-in-out ${expandedProductId === prod.id ? 'max-h-40 opacity-100 mt-3 pt-3 border-t border-slate-100' : 'max-h-0 opacity-0 mt-0 pt-0 border-transparent'}`}>
-                      <button
-                        onClick={(e) => { e.stopPropagation(); openBarcodeModal(prod); }}
-                        className="p-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors flex items-center justify-center gap-1.5 text-[10px] font-bold w-full"
-                        title="Print Barcode Label"
-                      >
-                        <Printer className="w-3.5 h-3.5 text-gray-900" />
-                        <span>Barcode</span>
-                      </button>
-                      <button
-                        onClick={(e) => { e.stopPropagation(); startEditProduct(prod); }}
-                        className="p-2.5 bg-gray-50 hover:bg-gray-100 text-gray-900 rounded-lg transition-colors flex items-center justify-center gap-1.5 text-[10px] font-bold w-full"
-                      >
-                        <Edit2 className="w-3.5 h-3.5" />
-                        <span>Edit</span>
-                      </button>
-                      <button
-                        onClick={(e) => { e.stopPropagation(); openQuickRestock(prod); }}
-                        className="p-2.5 bg-gray-50 hover:bg-gray-100 text-gray-900 rounded-lg transition-colors flex items-center justify-center gap-1.5 text-[10px] font-bold w-full"
-                      >
-                        <PackagePlus className="w-3.5 h-3.5" />
-                        <span>Restock</span>
-                      </button>
-                      <button
-                        onClick={(e) => { e.stopPropagation(); triggerDeleteProduct(prod.id, prod.name); }}
-                        className="p-2.5 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg transition-colors flex items-center justify-center gap-1.5 text-[10px] font-bold w-full"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                        <span>Delete</span>
-                      </button>
+                    <div className="flex items-center justify-between pt-2 border-t border-slate-100 gap-1.5">
+                      <div className="flex items-center gap-1.5 text-[10px]">
+                        <span className="text-slate-400">Cost:</span>
+                        <span className="font-mono text-slate-600 font-medium">{formatCurrency(prod.cost)}</span>
+                      </div>
+
+                      <div className="flex items-center gap-1">
+                        <button
+                          type="button"
+                          onClick={() => openBarcodeModal(prod)}
+                          className="px-2 py-1.5 bg-slate-50 hover:bg-slate-100 text-slate-700 rounded-lg border border-slate-200/80 transition-colors flex items-center gap-1 text-[10px] font-bold cursor-pointer"
+                          title="Print Barcode Label"
+                          aria-label={`Barcode for ${prod.name}`}
+                        >
+                          <Printer className="w-3.5 h-3.5 text-slate-600" />
+                          <span className="hidden xs:inline">Barcode</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => openQuickRestock(prod)}
+                          className="px-2 py-1.5 bg-slate-50 hover:bg-slate-100 text-slate-700 rounded-lg border border-slate-200/80 transition-colors flex items-center gap-1 text-[10px] font-bold cursor-pointer"
+                          title="Quick Restock"
+                          aria-label={`Restock ${prod.name}`}
+                        >
+                          <PackagePlus className="w-3.5 h-3.5 text-slate-600" />
+                          <span className="hidden xs:inline">Restock</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => startEditProduct(prod)}
+                          className="px-2 py-1.5 bg-slate-50 hover:bg-slate-100 text-slate-900 rounded-lg border border-slate-200/80 transition-colors flex items-center gap-1 text-[10px] font-bold cursor-pointer"
+                          title="Edit Product"
+                          aria-label={`Edit ${prod.name}`}
+                        >
+                          <Edit2 className="w-3.5 h-3.5" />
+                          <span className="hidden xs:inline">Edit</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => triggerDeleteProduct(prod.id, prod.name)}
+                          className="p-1.5 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg border border-red-200/60 transition-colors flex items-center text-[10px] font-bold cursor-pointer"
+                          title="Delete Product"
+                          aria-label={`Delete ${prod.name}`}
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 );
@@ -426,8 +437,17 @@ export default function ProductsTab({
                     return (
                       <tr key={prod.id} className="hover:bg-slate-50 transition-colors">
                         {/* Name */}
-                        <td className="p-2.5 font-bold text-slate-900 border-r border-slate-100 truncate max-w-[240px]" title={prod.name}>
-                          {prod.name}
+                        <td className="p-2.5 font-bold text-slate-900 border-r border-slate-100 max-w-[240px]">
+                          <div className="flex items-center gap-2 min-w-0">
+                            {prod.image ? (
+                              <img src={prod.image} alt={prod.name} className="w-8 h-8 rounded-lg object-cover border border-slate-200 shrink-0 bg-slate-50" />
+                            ) : (
+                              <div className="w-8 h-8 rounded-lg bg-slate-100 border border-slate-200/80 flex items-center justify-center text-slate-400 shrink-0">
+                                <Package className="w-4 h-4" />
+                              </div>
+                            )}
+                            <span className="truncate font-bold text-slate-900" title={prod.name}>{prod.name}</span>
+                          </div>
                         </td>
 
                         {/* Description */}
@@ -531,7 +551,7 @@ export default function ProductsTab({
             </div>
 
             {/* Pagination Bar */}
-            {filteredProducts.length > 0 && (
+            {totalProductPages > 1 && (
               <div className="p-3.5 sm:p-4 bg-slate-50 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
                 <div className="text-slate-500 font-medium text-center sm:text-left">
                   Showing <span className="font-bold text-slate-800">{((safeProductPage - 1) * PRODUCTS_PER_PAGE) + 1}</span> to <span className="font-bold text-slate-800">{Math.min(safeProductPage * PRODUCTS_PER_PAGE, filteredProducts.length)}</span> of <span className="font-bold text-slate-800">{filteredProducts.length}</span> products
